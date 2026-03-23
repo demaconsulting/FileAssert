@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.TemplateDotNetTool.Tests;
+namespace DemaConsulting.FileAssert.Tests;
 
 /// <summary>
 ///     Unit tests for the Program class.
@@ -47,7 +47,7 @@ public class ProgramTests
             var output = outWriter.ToString();
             Assert.Contains(Program.Version, output);
             Assert.DoesNotContain("Copyright", output);
-            Assert.DoesNotContain("Template DotNet Tool version", output);
+            Assert.DoesNotContain("FileAssert version", output);
         }
         finally
         {
@@ -131,7 +131,7 @@ public class ProgramTests
 
             // Assert
             var output = outWriter.ToString();
-            Assert.Contains("Template DotNet Tool version", output);
+            Assert.Contains("FileAssert version", output);
             Assert.Contains("Copyright", output);
         }
         finally

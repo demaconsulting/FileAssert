@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.TemplateDotNetTool;
+namespace DemaConsulting.FileAssert;
 
 /// <summary>
 ///     Context class that handles command-line arguments and program output.

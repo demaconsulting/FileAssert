@@ -57,7 +57,7 @@
 
   <!-- Project References -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DemaConsulting.TemplateDotNetTool\DemaConsulting.TemplateDotNetTool.csproj" />
+    <ProjectReference Include="..\..\src\DemaConsulting.FileAssert\DemaConsulting.FileAssert.csproj" />
   </ItemGroup>
 
 </Project>

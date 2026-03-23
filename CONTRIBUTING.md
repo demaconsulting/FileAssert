@@ -1,6 +1,6 @@
-# Contributing to Template DotNet Tool
+# Contributing to FileAssert
 
-Thank you for your interest in contributing to Template DotNet Tool! We welcome contributions from the community and appreciate
+Thank you for your interest in contributing to FileAssert! We welcome contributions from the community and appreciate
 your help in making this project better.
 
 ## Code of Conduct
@@ -18,7 +18,7 @@ If you find a bug, please create an issue on GitHub with the following informati
 - **Steps to Reproduce**: Detailed steps to reproduce the issue
 - **Expected Behavior**: What you expected to happen
 - **Actual Behavior**: What actually happened
-- **Environment**: Operating system, .NET version, Template DotNet Tool version
+- **Environment**: Operating system, .NET version, FileAssert version
 - **Logs**: Any relevant error messages or logs
 
 ### Suggesting Features
@@ -56,8 +56,8 @@ We follow a standard GitHub workflow for contributions:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/demaconsulting/TemplateDotNetTool.git
-   cd TemplateDotNetTool
+   git clone https://github.com/demaconsulting/FileAssert.git
+   cd FileAssert
    ```
 
 2. Restore dependencies:
@@ -167,7 +167,7 @@ dotnet test --collect "XPlat Code Coverage"
 
 ```bash
 # Run self-validation tests
-dotnet run --project src/DemaConsulting.TemplateDotNetTool \
+dotnet run --project src/DemaConsulting.FileAssert \
   --configuration Release --framework net10.0 --no-build -- --validate
 ```
 
@@ -210,7 +210,7 @@ dotnet build --configuration Release
 dotnet test --configuration Release
 
 # Run self-validation tests
-dotnet run --project src/DemaConsulting.TemplateDotNetTool --configuration Release --framework net10.0 --no-build -- --validate
+dotnet run --project src/DemaConsulting.FileAssert --configuration Release --framework net10.0 --no-build -- --validate
 ```
 
 All tests must pass with zero warnings.
@@ -270,7 +270,7 @@ When creating a pull request, include:
 
 ## Requirements Management
 
-Template DotNet Tool uses [DemaConsulting.ReqStream][reqstream] for requirements traceability:
+FileAssert uses [DemaConsulting.ReqStream][reqstream] for requirements traceability:
 
 - All requirements are defined in `requirements.yaml`
 - Each requirement should be linked to test cases
@@ -295,14 +295,14 @@ Releases are managed by project maintainers. The process includes:
 
 ## License
 
-By contributing to Template DotNet Tool, you agree that your contributions will be licensed under the MIT License.
+By contributing to FileAssert, you agree that your contributions will be licensed under the MIT License.
 
-Thank you for contributing to Template DotNet Tool!
+Thank you for contributing to FileAssert!
 
-[code-of-conduct]: https://github.com/demaconsulting/TemplateDotNetTool/blob/main/CODE_OF_CONDUCT.md
+[code-of-conduct]: https://github.com/demaconsulting/FileAssert/blob/main/CODE_OF_CONDUCT.md
 [dotnet-download]: https://dotnet.microsoft.com/download
 [csharp-conventions]: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
 [reqstream]: https://github.com/demaconsulting/ReqStream
-[discussions]: https://github.com/demaconsulting/TemplateDotNetTool/discussions
-[issues]: https://github.com/demaconsulting/TemplateDotNetTool/issues
-[security]: https://github.com/demaconsulting/TemplateDotNetTool/blob/main/SECURITY.md
+[discussions]: https://github.com/demaconsulting/FileAssert/discussions
+[issues]: https://github.com/demaconsulting/FileAssert/issues
+[security]: https://github.com/demaconsulting/FileAssert/blob/main/SECURITY.md

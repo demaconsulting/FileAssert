@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.TemplateDotNetTool.Tests;
+namespace DemaConsulting.FileAssert.Tests;
 
 /// <summary>
 ///     Unit tests for the Validation class.

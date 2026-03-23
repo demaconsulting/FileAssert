@@ -17,22 +17,22 @@ needs-review:
 # and an index.json before enforcement (--enforce flag) can be enabled in the pipeline.
 evidence-source:
   type: url
-  location: https://raw.githubusercontent.com/demaconsulting/TemplateDotNetTool/reviews/index.json
+  location: https://raw.githubusercontent.com/demaconsulting/FileAssert/reviews/index.json
 
 # Review sets grouping files by logical unit of review.
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
 reviews:
   # Software unit reviews - one per class
-  - id: TemplateTool-Context
-    title: Review of Template DotNet Tool Context Unit
+  - id: FileAssert-Context
+    title: Review of FileAssert Context Unit
     paths:
       - "docs/reqstream/unit-context.yaml"
       - "src/**/Context.cs"
       - "test/**/ContextTests.cs"
 
-  - id: TemplateTool-Program
-    title: Review of Template DotNet Tool Program Unit
+  - id: FileAssert-Program
+    title: Review of FileAssert Program Unit
     paths:
       - "docs/reqstream/unit-program.yaml"
       - "src/**/Program.cs"
@@ -41,15 +41,15 @@ reviews:
       - "test/**/Runner.cs"
       - "test/**/AssemblyInfo.cs"
 
-  - id: TemplateTool-Validation
-    title: Review of Template DotNet Tool Validation Unit
+  - id: FileAssert-Validation
+    title: Review of FileAssert Validation Unit
     paths:
       - "docs/reqstream/unit-validation.yaml"
       - "src/**/Validation.cs"
       - "test/**/ValidationTests.cs"
 
-  - id: TemplateTool-PathHelpers
-    title: Review of Template DotNet Tool PathHelpers Unit
+  - id: FileAssert-PathHelpers
+    title: Review of FileAssert PathHelpers Unit
     paths:
       - "docs/reqstream/unit-path-helpers.yaml"
       - "src/**/PathHelpers.cs"

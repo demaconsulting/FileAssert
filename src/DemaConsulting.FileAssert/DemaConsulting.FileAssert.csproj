@@ -9,21 +9,21 @@
 
     <!-- NuGet Tool Package Configuration -->
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>templatetool</ToolCommandName>
-    <PackageId>DemaConsulting.TemplateDotNetTool</PackageId>
+    <ToolCommandName>fileassert</ToolCommandName>
+    <PackageId>DemaConsulting.FileAssert</PackageId>
     <Version>0.0.0</Version>
     <Authors>DEMA Consulting</Authors>
     <Company>DEMA Consulting</Company>
-    <Description>Template project for DEMA Consulting DotNet Tools</Description>
+    <Description>File assertion tool for testing file content, structure, and properties</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/demaconsulting/TemplateDotNetTool</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/demaconsulting/TemplateDotNetTool</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/demaconsulting/FileAssert</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/demaconsulting/FileAssert</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>Icon.png</PackageIcon>
-    <PackageTags>template;dotnet-tool</PackageTags>
+    <PackageTags>file;assert;testing;dotnet-tool</PackageTags>
     <Copyright>Copyright DEMA Consulting</Copyright>
-    <Title>Template DotNet Tool</Title>
-    <Product>DemaConsulting.TemplateDotNetTool</Product>
+    <Title>FileAssert</Title>
+    <Product>DemaConsulting.FileAssert</Product>
 
     <!-- Symbol Package Configuration -->
     <IncludeSymbols>true</IncludeSymbols>
@@ -49,6 +49,8 @@
   <!-- Runtime Dependencies -->
   <ItemGroup>
     <PackageReference Include="DemaConsulting.TestResults" Version="1.6.0" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.3" />
   </ItemGroup>
 
   <!-- Build Tool Dependencies -->
@@ -76,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="DemaConsulting.TemplateDotNetTool.Tests" />
+    <InternalsVisibleTo Include="DemaConsulting.FileAssert.Tests" />
   </ItemGroup>
 
   <ItemGroup>

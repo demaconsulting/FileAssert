@@ -1,11 +1,11 @@
 ---
-title: Template DotNet Tool Requirements
-subtitle: Requirements Specification for the Template DotNet Tool
+title: FileAssert Requirements
+subtitle: Requirements Specification for the FileAssert
 author: DEMA Consulting
-description: Requirements Specification for the Template DotNet Tool
+description: Requirements Specification for the FileAssert
 lang: en-US
 keywords:
-  - Template DotNet Tool
+  - FileAssert
   - Requirements
   - Specification
   - .NET

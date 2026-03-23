@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DemaConsulting.FileAssert/DemaConsulting.FileAssert.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/DemaConsulting.FileAssert.Tests/DemaConsulting.FileAssert.Tests.csproj" />
+  </Folder>
+</Solution>

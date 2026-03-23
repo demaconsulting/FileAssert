@@ -8,7 +8,7 @@
 sections:
   - title: Validation Unit Requirements
     requirements:
-      - id: Template-Validation-Run
+      - id: FileAssert-Validation-Run
         title: The Validation class shall run self-validation tests and print a summary.
         justification: |
           Provides a built-in mechanism to verify the tool is functioning correctly
@@ -17,7 +17,7 @@ sections:
           - Validation_Run_WithSilentContext_PrintsSummary
           - Validation_Run_WithSilentContext_ExitCodeIsZero
 
-      - id: Template-Validation-Results
+      - id: FileAssert-Validation-Results
         title: The Validation class shall write test results to a file in TRX or JUnit format.
         justification: |
           Enables integration with CI/CD systems that expect standard test result formats.
