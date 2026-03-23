@@ -1,0 +1,29 @@
+---
+# Software Unit Requirements for the Validation Class
+#
+# The Validation class provides the self-validation framework, running tests
+# that demonstrate the tool is functioning correctly in the deployment environment.
+# It supports writing results to TRX (MSTest) or JUnit XML format.
+
+sections:
+  - title: Validation Unit Requirements
+    requirements:
+      - id: Template-Validation-Run
+        title: The Validation class shall run self-validation tests and print a summary.
+        justification: |
+          Provides a built-in mechanism to verify the tool is functioning correctly
+          in the deployment environment. A summary is printed for human review.
+        tests:
+          - Validation_Run_WithSilentContext_PrintsSummary
+          - Validation_Run_WithSilentContext_ExitCodeIsZero
+
+      - id: Template-Validation-Results
+        title: The Validation class shall write test results to a file in TRX or JUnit format.
+        justification: |
+          Enables integration with CI/CD systems that expect standard test result formats.
+          TRX format is compatible with MSTest; JUnit XML is compatible with many CI tools.
+        tests:
+          - Validation_Run_WithTrxResultsFile_WritesTrxFile
+          - Validation_Run_WithXmlResultsFile_WritesXmlFile
+          - IntegrationTest_ValidateWithResults_GeneratesTrxFile
+          - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
