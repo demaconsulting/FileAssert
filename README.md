@@ -19,7 +19,7 @@ making it ideal for CI/CD pipelines and compliance workflows.
 - **Glob Pattern Matching**: Select files using glob patterns via Microsoft.Extensions.FileSystemGlobbing
 - **Multiple Acceptance Criteria**: Validate size (`min-size`, `max-size`), content (`contains`,
   `does-not-contain`), regex patterns (`contains-regex`, `does-not-contain-regex`), and file counts
-  (`count-of`)
+  (`count`, `count-min`, `count-max`)
 - **Tag-Based Test Filtering**: Run a targeted subset of tests by filtering on tags
 - **TRX and JUnit Output**: Write test results to TRX or JUnit format via DemaConsulting.TestResults
 - **Self-Validation**: Built-in validation tests confirm the tool is functioning correctly
