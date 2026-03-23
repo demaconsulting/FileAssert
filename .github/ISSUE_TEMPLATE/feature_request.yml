@@ -41,11 +41,11 @@ body:
       label: Usage Examples
       description: If applicable, provide examples of how this feature would be used
       placeholder: |
-        ```csharp
-        // Example usage
-        fileassert --input report.json --output report.md --feature-flag
+        ```bash
+        # Example usage
+        fileassert --output results.trx SomeTest some-tag
         ```
-      render: csharp
+      render: bash
 
   - type: textarea
     id: benefits

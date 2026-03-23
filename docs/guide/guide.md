@@ -68,13 +68,13 @@ fileassert
 Run tests from a specific file:
 
 ```bash
-fileassert tests.yaml
+fileassert --config tests.yaml
 ```
 
-Run only tests matching specific tags:
+Run only tests matching specific names or tags:
 
 ```bash
-fileassert --tags smoke,release
+fileassert smoke release
 ```
 
 Write results to a TRX file:
@@ -171,41 +171,45 @@ set of files using a glob pattern, optional tags for filtering, and one or more 
 ```yaml
 # .fileassert.yaml
 tests:
-  - name: "Application binaries exist"
+  - name: TestProject_BinariesExist
+    description: "Application binaries exist"
     tags: [smoke, release]
-    files: "bin/**/*.dll"
-    criteria:
-      count-of:
-        min: 1
+    files:
+      - path: "bin/**/*.exe"
+        count: 1
+      - path: "bin/**/*.dll"
+        count: 2
 
-  - name: "Config file size is reasonable"
+  - name: TestProject_ConfigValid
+    description: "Config file size is reasonable"
     tags: [config]
-    files: "config/appsettings.json"
-    criteria:
-      min-size: 10
-      max-size: 1048576
-      contains: '"ConnectionStrings"'
-      does-not-contain: "password123"
+    files:
+      - path: "config/settings.json"
+        min-size: 10
+        max-size: 1048576
+        contains: '"ConnectionStrings"'
+        does-not-contain: "password123"
 
-  - name: "Log files match expected pattern"
+  - name: TestProject_LogsValid
+    description: "Log files match expected pattern"
     tags: [logs]
-    files: "logs/*.log"
-    criteria:
-      contains-regex: "\\d{4}-\\d{2}-\\d{2}"
-      does-not-contain-regex: "FATAL|CRITICAL"
+    files:
+      - path: "logs/*.log"
+        contains-regex: "\\d{4}-\\d{2}-\\d{2}"
+        does-not-contain-regex: "FATAL|CRITICAL"
 ```
 
 ## Acceptance Criteria Reference
 
 | Criterion                | Description                                                      |
 | ------------------------ | ---------------------------------------------------------------- |
+| `count`                  | Number of files matching the path pattern (`min`, `max`)         |
 | `min-size`               | Minimum file size in bytes                                       |
 | `max-size`               | Maximum file size in bytes                                       |
 | `contains`               | File must contain the specified text                             |
 | `does-not-contain`       | File must not contain the specified text                         |
 | `contains-regex`         | File must match the specified regular expression                 |
 | `does-not-contain-regex` | File must not match the specified regular expression             |
-| `count-of`               | Number of files matching the glob pattern (`min`, `max`)         |
 
 # Command-Line Options
 
@@ -217,10 +221,10 @@ The following command-line options are supported:
 | `-?`, `-h`, `--help` | Display help message                                         |
 | `--silent`           | Suppress console output                                      |
 | `--validate`         | Run self-validation                                          |
-| `--results <file>`   | Write validation results to file (TRX or JUnit format)       |
+| `--results <file>`   | Write test results to file (TRX or JUnit format)             |
 | `--log <file>`       | Write output to log file                                     |
-| `<tests-file>`       | Path to the tests file (default: `.fileassert.yaml`)         |
-| `--tags <tags>`      | Run only tests with matching tags (comma-separated)          |
+| `--config <file>`    | Path to the tests file (default: `.fileassert.yaml`)         |
+| `<name-or-tag>`      | Test name or tag to run (any argument not starting with `--`)|
 
 # Examples
 
@@ -233,7 +237,7 @@ fileassert
 ## Example 2: Run Smoke Tests with Results
 
 ```bash
-fileassert --tags smoke --results smoke-results.trx
+fileassert --results smoke-results.trx smoke
 ```
 
 ## Example 3: Self-Validation with Results

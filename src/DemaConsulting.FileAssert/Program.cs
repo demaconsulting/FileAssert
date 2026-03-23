@@ -150,7 +150,7 @@ internal static class Program
     /// <param name="context">The context containing command line arguments and program state.</param>
     private static void RunToolLogic(Context context)
     {
-        context.WriteLine("Usage: fileassert [options] [<tests-file>]");
+        context.WriteLine("Usage: fileassert [options] [<name-or-tag>...]");
         context.WriteLine("");
         context.WriteLine("Run 'fileassert --help' for more information.");
     }
