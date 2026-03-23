@@ -178,7 +178,7 @@ tests:
       - path: "bin/**/*.exe"
         count: 1
       - path: "bin/**/*.dll"
-        count: 2
+        count-min: 1
 
   - name: TestProject_ConfigValid
     description: "Config file size is reasonable"
@@ -203,7 +203,9 @@ tests:
 
 | Criterion                | Description                                                      |
 | ------------------------ | ---------------------------------------------------------------- |
-| `count`                  | Number of files matching the path pattern (`min`, `max`)         |
+| `count`                  | Exact number of files matching the path pattern                  |
+| `count-min`              | Minimum number of files matching the path pattern                |
+| `count-max`              | Maximum number of files matching the path pattern                |
 | `min-size`               | Minimum file size in bytes                                       |
 | `max-size`               | Maximum file size in bytes                                       |
 | `contains`               | File must contain the specified text                             |
