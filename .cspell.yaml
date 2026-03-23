@@ -77,7 +77,8 @@ words:
   - SonarQube
   - spdx
   - streetsidesoftware
-  - templatetool
+  - fileassert
+  - FileAssert
   - testname
   - TMPL
   - triaging

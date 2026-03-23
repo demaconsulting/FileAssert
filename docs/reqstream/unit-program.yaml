@@ -8,7 +8,7 @@
 sections:
   - title: Program Unit Requirements
     requirements:
-      - id: Template-Program-Version
+      - id: FileAssert-Program-Version
         title: The Program class shall support -v and --version flags to display version information.
         justification: |
           Users need to quickly identify the version of the tool they are using for
@@ -18,7 +18,7 @@ sections:
           - Program_Version_ReturnsNonEmptyString
           - IntegrationTest_VersionFlag_OutputsVersion
 
-      - id: Template-Program-Help
+      - id: FileAssert-Program-Help
         title: The Program class shall support -?, -h, and --help flags to display usage information.
         justification: |
           Users need access to command-line usage documentation without requiring
@@ -27,7 +27,7 @@ sections:
           - Program_Run_WithHelpFlag_DisplaysUsageInformation
           - IntegrationTest_HelpFlag_OutputsUsageInformation
 
-      - id: Template-Program-Validate
+      - id: FileAssert-Program-Validate
         title: The Program class shall support --validate flag to invoke the self-validation framework.
         justification: |
           Provides a built-in mechanism to verify the tool is functioning correctly
@@ -36,7 +36,7 @@ sections:
           - Program_Run_WithValidateFlag_RunsValidation
           - IntegrationTest_ValidateFlag_RunsValidation
 
-      - id: Template-Program-ExitCode
+      - id: FileAssert-Program-ExitCode
         title: The Program class shall return a non-zero exit code on failure.
         justification: |
           Callers (scripts, CI/CD pipelines) must be able to detect failure conditions

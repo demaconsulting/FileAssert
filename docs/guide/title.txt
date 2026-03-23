@@ -1,13 +1,13 @@
 ---
-title: Template DotNet Tool User Guide
-subtitle: A .NET Reference Implementation for CLI Tools
+title: FileAssert User Guide
+subtitle: A .NET CLI Tool for File Property Assertion
 author: DEMA Consulting
-description: A .NET Reference Implementation for CLI Tools
+description: A .NET CLI Tool for File Property Assertion
 lang: en-US
 keywords:
-  - Template DotNet Tool
+  - FileAssert
   - .NET
   - Command-Line Tool
-  - Documentation
-  - Best Practices
+  - File Assertion
+  - CI/CD
 ---

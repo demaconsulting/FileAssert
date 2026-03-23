@@ -1,6 +1,6 @@
 ---
 name: ✨ Feature Request
-description: Suggest a new feature or enhancement for the TemplateDotNetTool
+description: Suggest a new feature or enhancement for the FileAssert
 title: "[Feature]: "
 labels: ["enhancement"]
 assignees: []
@@ -41,17 +41,17 @@ body:
       label: Usage Examples
       description: If applicable, provide examples of how this feature would be used
       placeholder: |
-        ```csharp
-        // Example usage
-        templatetool --input report.json --output report.md --feature-flag
+        ```bash
+        # Example usage
+        fileassert --output results.trx SomeTest some-tag
         ```
-      render: csharp
+      render: bash
 
   - type: textarea
     id: benefits
     attributes:
       label: Benefits
-      description: Explain why this enhancement would be useful to TemplateDotNetTool users
+      description: Explain why this enhancement would be useful to FileAssert users
       placeholder: This would be useful because...
     validations:
       required: true
