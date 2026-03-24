@@ -71,3 +71,28 @@ sections:
           programmatically via the process exit code.
         tests:
           - Context_WriteError_SetsErrorExitCode
+
+      - id: FileAssert-Context-ConfigFile
+        title: The Context class shall expose a configuration file path defaulting to '.fileassert.yaml'.
+        justification: |
+          Defaulting to '.fileassert.yaml' allows the tool to work without additional
+          arguments in the common case while still allowing users to specify an alternative
+          configuration file via '--config'. Tracking whether the path was explicitly set
+          allows the tool to distinguish between a missing default and a missing user-specified
+          file and produce an appropriate message in each case.
+        tests:
+          - Context_Create_NoArguments_ConfigFileHasDefaultValue
+          - Context_Create_ConfigFlag_SetsConfigFile
+          - Context_Create_ConfigFlag_WithoutValue_ThrowsArgumentException
+
+      - id: FileAssert-Context-Filters
+        title: The Context class shall collect positional command-line arguments as test name or tag filters.
+        justification: |
+          Positional arguments are the conventional way to pass filter values to CLI tools.
+          Treating non-flag arguments as filters allows users to run targeted test subsets
+          without requiring a dedicated option flag, improving usability.
+        tests:
+          - Context_Create_NoArguments_FiltersIsEmpty
+          - Context_Create_PositionalArguments_AddedToFilters
+          - Context_Create_MixedArguments_ParsesCorrectly
+          - Context_Create_UnknownFlagWithDash_ThrowsArgumentException

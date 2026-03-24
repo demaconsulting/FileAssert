@@ -1,0 +1,14 @@
+---
+title: FileAssert Design Document
+subtitle: Software Unit Design for the FileAssert Configuration Classes
+author: DEMA Consulting
+description: Software Unit Design for the FileAssert Configuration Classes
+lang: en-US
+keywords:
+  - FileAssert
+  - Design
+  - FileAssertConfig
+  - FileAssertTest
+  - FileAssertFile
+  - FileAssertRule
+---

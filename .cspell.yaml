@@ -79,6 +79,7 @@ words:
   - streetsidesoftware
   - fileassert
   - FileAssert
+  - filepart
   - testname
   - TMPL
   - triaging

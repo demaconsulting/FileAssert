@@ -5,6 +5,10 @@ includes:
   - docs/reqstream/unit-program.yaml
   - docs/reqstream/unit-validation.yaml
   - docs/reqstream/unit-path-helpers.yaml
+  - docs/reqstream/unit-file-assert-rule.yaml
+  - docs/reqstream/unit-file-assert-file.yaml
+  - docs/reqstream/unit-file-assert-test.yaml
+  - docs/reqstream/unit-file-assert-config.yaml
   - docs/reqstream/platform-requirements.yaml
   - docs/reqstream/ots-mstest.yaml
   - docs/reqstream/ots-reqstream.yaml

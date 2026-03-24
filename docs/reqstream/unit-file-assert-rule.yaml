@@ -1,0 +1,48 @@
+---
+# Software Unit Requirements for the FileAssertRule Classes
+#
+# The FileAssertRule abstract class and its derived implementations define
+# individual content validation rules applied to file text. The factory method
+# selects the correct derived class based on the YAML configuration.
+
+sections:
+  - title: FileAssertRule Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertRule-Factory
+        title: |
+          The FileAssertRule class shall provide a factory that creates the correct rule type from configuration data.
+        justification: |
+          A centralized factory decouples the YAML deserialization layer from the concrete
+          rule implementations, keeping construction logic in one place and making it easy
+          to add new rule types in future without modifying callers.
+        tests:
+          - FileAssertRule_Create_WithContains_ReturnsContainsRule
+          - FileAssertRule_Create_WithMatches_ReturnsMatchesRule
+          - FileAssertRule_Create_WithNoType_ThrowsInvalidOperationException
+          - FileAssertRule_Create_WithNullData_ThrowsArgumentNullException
+
+      - id: FileAssert-FileAssertRule-ContainsRule
+        title: |
+          The FileAssertContainsRule class shall report an error when file content does not
+          contain the expected substring.
+        justification: |
+          Substring presence checks are the most common content validation needed in CI/CD
+          pipelines (e.g., verifying a copyright header exists in every source file).
+          Using an ordinal comparison ensures byte-exact matching and predictable behavior
+          across locales.
+        tests:
+          - FileAssertContainsRule_Apply_ContentContainsValue_NoError
+          - FileAssertContainsRule_Apply_ContentMissingValue_WritesError
+
+      - id: FileAssert-FileAssertRule-MatchesRule
+        title: |
+          The FileAssertMatchesRule class shall report an error when file content does not
+          match the expected regular expression.
+        justification: |
+          Regular expression matching enables flexible content validation such as version
+          number formats, date patterns, or structural constraints that cannot be expressed
+          as a simple substring check. Compiling the regex with a timeout guards against
+          catastrophic backtracking on adversarial inputs.
+        tests:
+          - FileAssertMatchesRule_Apply_ContentMatchesPattern_NoError
+          - FileAssertMatchesRule_Apply_ContentDoesNotMatchPattern_WritesError
