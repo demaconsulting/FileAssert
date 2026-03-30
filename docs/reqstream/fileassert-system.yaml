@@ -1,0 +1,49 @@
+---
+# Software System Requirements for FileAssert
+#
+# These requirements describe the observable, end-to-end behavior of the FileAssert
+# tool as experienced by users. They are verified by integration tests that exercise
+# the tool as a complete, deployed unit.
+
+sections:
+  - title: FileAssert System Requirements
+    requirements:
+      - id: FileAssert-System-CoreExecution
+        title: |
+          The FileAssert tool shall load a YAML configuration file and run file assertions,
+          returning a zero exit code when all assertions pass.
+        justification: |
+          The primary purpose of the tool is to assert properties of files on the file system
+          using YAML-defined test suites. Verifying this core behavior at the system level
+          confirms that all subsystems integrate correctly to produce the expected outcome.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+
+      - id: FileAssert-System-FailureDetection
+        title: |
+          The FileAssert tool shall return a non-zero exit code when one or more file
+          assertions fail.
+        justification: |
+          CI/CD pipelines and scripts depend on the exit code to detect assertion failures.
+          A non-zero exit code when an assertion fails is the primary mechanism for the tool
+          to signal that files do not meet the declared constraints.
+        tests:
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
+
+      - id: FileAssert-System-SilentOutput
+        title: The FileAssert tool shall suppress console output when invoked with the --silent flag.
+        justification: |
+          Automated pipelines that parse or redirect tool output must be able to run the tool
+          without cluttering their own output. The --silent flag provides this capability
+          while still allowing exit code and log file output to carry result information.
+        tests:
+          - IntegrationTest_SilentFlag_SuppressesOutput
+
+      - id: FileAssert-System-LogFile
+        title: The FileAssert tool shall write all output to a log file when invoked with the --log flag.
+        justification: |
+          Persistent log files allow post-hoc inspection of tool output in CI/CD environments
+          where console output may be discarded. The log file must capture all messages that
+          would otherwise appear on the console.
+        tests:
+          - IntegrationTest_LogFlag_WritesOutputToFile

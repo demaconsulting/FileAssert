@@ -18,7 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.FileAssert.Tests;
+using DemaConsulting.FileAssert.Utilities;
+
+namespace DemaConsulting.FileAssert.Tests.Utilities;
 
 /// <summary>
 ///     Tests for the PathHelpers class.

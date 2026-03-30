@@ -18,10 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Configuration;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
 ///     Represents a glob file pattern with optional count constraints and content rules.

@@ -1,0 +1,19 @@
+---
+# Software Subsystem Requirements for the SelfTest Subsystem
+#
+# The SelfTest subsystem provides built-in self-validation functionality that
+# verifies the core behavior of the tool at run time. It is invoked via the
+# --validate command-line flag and produces structured test results.
+
+sections:
+  - title: SelfTest Subsystem Requirements
+    requirements:
+      - id: FileAssert-SelfTestSubsystem-ValidationPipeline
+        title: The SelfTest subsystem shall run built-in validation tests and produce a structured summary.
+        justification: |
+          The SelfTest subsystem integrates the Validation unit with the Cli and Utilities
+          subsystems to produce a complete self-validation report. Testing the full pipeline
+          at the subsystem level verifies that test execution, result collection, and summary
+          output all work together correctly.
+        tests:
+          - SelfTestSubsystem_Run_ExecutesBuiltInTestsAndProducesSummary

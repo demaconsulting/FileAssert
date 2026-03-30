@@ -1,0 +1,27 @@
+---
+# Software Subsystem Requirements for the Modeling Subsystem
+#
+# The Modeling subsystem contains the domain objects that represent a FileAssert
+# test suite at runtime. It transforms Configuration DTOs into executable domain
+# objects and drives the assertion logic through the test-file-rule hierarchy.
+
+sections:
+  - title: Modeling Subsystem Requirements
+    requirements:
+      - id: FileAssert-ModelingSubsystem-ExecutionChain
+        title: The Modeling subsystem shall execute the full test-file-rule chain and pass when all constraints are met.
+        justification: |
+          The Modeling subsystem integrates three unit types (FileAssertTest, FileAssertFile,
+          FileAssertRule) into a single execution chain. Verifying the chain end-to-end at the
+          subsystem level ensures that inter-unit delegation and data flow work correctly.
+        tests:
+          - ModelingSubsystem_ExecuteChain_PassesWhenAllConstraintsMet
+
+      - id: FileAssert-ModelingSubsystem-FailureReporting
+        title: The Modeling subsystem shall report failures through the context when assertions are violated.
+        justification: |
+          Assertion failures must propagate from the innermost rule through the file and test
+          layers to the context, setting the error exit code. Testing this at the subsystem
+          level verifies that the full error-reporting pipeline within the subsystem works.
+        tests:
+          - ModelingSubsystem_ExecuteChain_ReportsFailuresThroughContext

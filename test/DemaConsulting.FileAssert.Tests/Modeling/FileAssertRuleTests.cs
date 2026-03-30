@@ -18,7 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.FileAssert.Tests;
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Modeling;
+
+namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
 ///     Unit tests for <see cref="FileAssertRule"/> and its derived rule classes.

@@ -80,6 +80,7 @@ words:
   - fileassert
   - FileAssert
   - filepart
+  - selftest
   - testname
   - TMPL
   - triaging

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.Utilities;
 
 /// <summary>
 ///     Helper utilities for safe path operations.
