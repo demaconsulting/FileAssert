@@ -41,15 +41,20 @@ public class SelfTestSubsystemTests
         try
         {
             var logPath = Path.Combine(tempDir.FullName, "validation.log");
-            using var context = Context.Create(["--silent", "--log", logPath]);
+            int exitCode;
 
-            // Act
-            Validation.Run(context);
+            using (var context = Context.Create(["--silent", "--log", logPath]))
+            {
+                // Act
+                Validation.Run(context);
 
-            // Assert - exit code is 0 (all built-in tests passed)
-            Assert.AreEqual(0, context.ExitCode);
+                // Capture exit code before disposal
+                exitCode = context.ExitCode;
+            }
 
-            // Assert - the log contains the expected summary lines
+            // Assert - context is disposed above so the log file is fully flushed and closed
+            Assert.AreEqual(0, exitCode);
+
             var logContent = File.ReadAllText(logPath);
             Assert.IsTrue(logContent.Contains("Total Tests:"), "Log should contain 'Total Tests:'");
             Assert.IsTrue(logContent.Contains("Passed:"), "Log should contain 'Passed:'");

@@ -42,20 +42,21 @@ public class CliSubsystemTests
             var logPath = Path.Combine(tempDir.FullName, "out.log");
 
             // Act - create a context with the silent, validate, and log flags
-            using var context = Context.Create(
+            using (var context = Context.Create(
             [
                 "--silent",
                 "--validate",
                 "--log", logPath
-            ]);
-
-            // Assert - all flags are reflected in the context properties
-            Assert.IsTrue(context.Silent);
-            Assert.IsTrue(context.Validate);
-            Assert.IsFalse(context.Version);
-            Assert.IsFalse(context.Help);
-            Assert.AreEqual(".fileassert.yaml", context.ConfigFile);
-            Assert.AreEqual(0, context.ExitCode);
+            ]))
+            {
+                // Assert - all flags are reflected in the context properties
+                Assert.IsTrue(context.Silent);
+                Assert.IsTrue(context.Validate);
+                Assert.IsFalse(context.Version);
+                Assert.IsFalse(context.Help);
+                Assert.AreEqual(".fileassert.yaml", context.ConfigFile);
+                Assert.AreEqual(0, context.ExitCode);
+            }
         }
         finally
         {
