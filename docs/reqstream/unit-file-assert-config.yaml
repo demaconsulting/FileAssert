@@ -1,0 +1,34 @@
+---
+# Software Unit Requirements for the FileAssertConfig Class
+#
+# The FileAssertConfig class is the top-level entry point for loading and executing
+# a FileAssert YAML configuration. It deserializes the configuration file, builds
+# the test hierarchy, and drives test execution with optional name/tag filtering.
+
+sections:
+  - title: FileAssertConfig Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertConfig-ReadFromFile
+        title: The FileAssertConfig class shall load and parse a YAML configuration file via a static factory method.
+        justification: |
+          Providing a static factory method keeps construction concerns separate from the
+          caller and allows the class to validate its inputs before returning a usable
+          instance. Failing early with a descriptive exception when the file is missing
+          avoids silent failures that would be difficult to diagnose.
+        tests:
+          - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
+          - FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
+          - FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException
+
+      - id: FileAssert-FileAssertConfig-Run
+        title: |
+          The FileAssertConfig class shall run tests that match the provided filters and report results via the context.
+        justification: |
+          Driving test execution from the top-level configuration class provides a single
+          point of entry for the tool's main logic. Supporting name and tag filters lets
+          callers run targeted subsets of tests for smoke testing or phased validation,
+          while an empty filter list defaults to running all tests.
+        tests:
+          - FileAssertConfig_Run_WithNoFilter_RunsAllTests
+          - FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
+          - FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests

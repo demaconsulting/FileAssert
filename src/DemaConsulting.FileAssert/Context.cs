@@ -61,6 +61,21 @@ internal sealed class Context : IDisposable
     public string? ResultsFile { get; private init; }
 
     /// <summary>
+    ///     Gets the configuration file path. Defaults to <c>.fileassert.yaml</c>.
+    /// </summary>
+    public string ConfigFile { get; private init; } = ".fileassert.yaml";
+
+    /// <summary>
+    ///     Gets a value indicating whether the configuration file was explicitly provided via <c>--config</c>.
+    /// </summary>
+    internal bool IsConfigFileExplicit { get; private init; }
+
+    /// <summary>
+    ///     Gets the list of test name or tag filters provided as positional arguments.
+    /// </summary>
+    public IReadOnlyList<string> Filters { get; private init; } = [];
+
+    /// <summary>
     ///     Gets the proposed exit code for the application (0 for success, 1 for errors).
     /// </summary>
     public int ExitCode => _hasErrors ? 1 : 0;
@@ -92,7 +107,10 @@ internal sealed class Context : IDisposable
             Help = parser.Help,
             Silent = parser.Silent,
             Validate = parser.Validate,
-            ResultsFile = parser.ResultsFile
+            ResultsFile = parser.ResultsFile,
+            ConfigFile = parser.ConfigFile,
+            IsConfigFileExplicit = parser.IsConfigFileExplicit,
+            Filters = parser.Filters.AsReadOnly()
         };
 
         // Open log file if specified
@@ -161,6 +179,21 @@ internal sealed class Context : IDisposable
         public string? ResultsFile { get; private set; }
 
         /// <summary>
+        ///     Gets the configuration file path. Defaults to <c>.fileassert.yaml</c>.
+        /// </summary>
+        public string ConfigFile { get; private set; } = ".fileassert.yaml";
+
+        /// <summary>
+        ///     Gets a value indicating whether the configuration file was explicitly set via <c>--config</c>.
+        /// </summary>
+        public bool IsConfigFileExplicit { get; private set; }
+
+        /// <summary>
+        ///     Gets the list of test name or tag filters collected from positional arguments.
+        /// </summary>
+        public List<string> Filters { get; } = [];
+
+        /// <summary>
         ///     Parses command-line arguments
         /// </summary>
         /// <param name="args">Command-line arguments.</param>
@@ -215,8 +248,20 @@ internal sealed class Context : IDisposable
                     ResultsFile = GetRequiredStringArgument(arg, args, index, "a results filename argument");
                     return index + 1;
 
+                case "--config":
+                    ConfigFile = GetRequiredStringArgument(arg, args, index, "a filename argument");
+                    IsConfigFileExplicit = true;
+                    return index + 1;
+
                 default:
-                    throw new ArgumentException($"Unsupported argument '{arg}'", nameof(args));
+                    // Positional arguments (no leading dash) are treated as test name/tag filters
+                    if (arg.StartsWith('-'))
+                    {
+                        throw new ArgumentException($"Unsupported argument '{arg}'", nameof(args));
+                    }
+
+                    Filters.Add(arg);
+                    return index;
             }
         }
 

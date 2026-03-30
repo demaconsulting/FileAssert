@@ -1,0 +1,13 @@
+---
+resource-path:
+  - docs/design
+  - docs/template
+input-files:
+  - docs/design/title.txt
+  - docs/design/file-assert-rule.md
+  - docs/design/file-assert-file.md
+  - docs/design/file-assert-test.md
+  - docs/design/file-assert-config.md
+template: template.html
+table-of-contents: true
+number-sections: true

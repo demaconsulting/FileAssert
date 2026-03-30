@@ -1,0 +1,44 @@
+---
+# Software Unit Requirements for the FileAssertFile Class
+#
+# The FileAssertFile class locates files using a glob pattern, enforces optional
+# minimum and maximum count constraints, and applies a collection of content rules
+# to every matched file.
+
+sections:
+  - title: FileAssertFile Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertFile-Creation
+        title: The FileAssertFile class shall be constructed from validated configuration data.
+        justification: |
+          Centralizing validation in the factory prevents invalid configurations from
+          reaching the execution phase and makes the contract of required fields explicit.
+          Rejecting null or blank patterns at creation time provides an early, actionable
+          error rather than a silent skip or runtime exception during file search.
+        tests:
+          - FileAssertFile_Create_ValidData_CreatesFile
+          - FileAssertFile_Create_NullData_ThrowsArgumentNullException
+          - FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException
+
+      - id: FileAssert-FileAssertFile-CountConstraints
+        title: The FileAssertFile class shall enforce optional minimum and maximum file count constraints.
+        justification: |
+          Count constraints allow tests to assert that a glob pattern matches the expected
+          number of files, catching configuration drift such as missing required artifacts
+          or unexpected duplicate outputs. Reporting a count mismatch before content checks
+          avoids misleading downstream errors.
+        tests:
+          - FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError
+          - FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError
+          - FileAssertFile_Run_TooFewFiles_WritesError
+          - FileAssertFile_Run_TooManyFiles_WritesError
+
+      - id: FileAssert-FileAssertFile-ContentRules
+        title: The FileAssertFile class shall apply content rules to every matched file when rules are defined.
+        justification: |
+          Content rules are evaluated against each matching file's text so that every
+          file in the matched set is individually validated. This ensures that adding
+          new files does not silently bypass compliance checks.
+        tests:
+          - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
+          - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

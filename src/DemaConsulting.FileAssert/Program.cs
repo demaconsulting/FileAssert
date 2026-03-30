@@ -133,13 +133,14 @@ internal static class Program
     /// <param name="context">The context for output.</param>
     private static void PrintHelp(Context context)
     {
-        context.WriteLine("Usage: fileassert [options]");
+        context.WriteLine("Usage: fileassert [options] [<name-or-tag>...]");
         context.WriteLine("");
         context.WriteLine("Options:");
         context.WriteLine("  -v, --version              Display version information");
         context.WriteLine("  -?, -h, --help             Display this help message");
         context.WriteLine("  --silent                   Suppress console output");
         context.WriteLine("  --validate                 Run self-validation");
+        context.WriteLine("  --config <file>            Configuration file (default: .fileassert.yaml)");
         context.WriteLine("  --results <file>           Write validation results to file (.trx or .xml)");
         context.WriteLine("  --log <file>               Write output to log file");
     }
@@ -150,8 +151,26 @@ internal static class Program
     /// <param name="context">The context containing command line arguments and program state.</param>
     private static void RunToolLogic(Context context)
     {
-        context.WriteLine("Usage: fileassert [options] [<name-or-tag>...]");
-        context.WriteLine("");
-        context.WriteLine("Run 'fileassert --help' for more information.");
+        // If the configuration file does not exist, provide guidance or report an error
+        if (!File.Exists(context.ConfigFile))
+        {
+            if (context.IsConfigFileExplicit)
+            {
+                // User explicitly specified a file that cannot be found - this is an error
+                context.WriteError($"Configuration file not found: '{context.ConfigFile}'");
+            }
+            else
+            {
+                // No explicit config file; inform the user how to get started
+                context.WriteLine($"No configuration file found at '{context.ConfigFile}'.");
+                context.WriteLine("Create a configuration file or specify one with '--config <file>'.");
+            }
+
+            return;
+        }
+
+        // Load the configuration and run all matching tests
+        var config = FileAssertConfig.ReadFromFile(context.ConfigFile);
+        config.Run(context, context.Filters);
     }
 }

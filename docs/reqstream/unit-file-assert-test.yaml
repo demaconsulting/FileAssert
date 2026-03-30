@@ -1,0 +1,41 @@
+---
+# Software Unit Requirements for the FileAssertTest Class
+#
+# The FileAssertTest class represents a named test within a FileAssert configuration.
+# It holds a collection of file assertions and supports filtering by name or tag.
+
+sections:
+  - title: FileAssertTest Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertTest-Creation
+        title: The FileAssertTest class shall be constructed from validated configuration data with a non-empty name.
+        justification: |
+          A non-empty name is required to produce meaningful test output and to support
+          filter-based test selection. Validating the name at construction time provides
+          an actionable error before any file system operations are attempted.
+        tests:
+          - FileAssertTest_Create_ValidData_CreatesTest
+          - FileAssertTest_Create_NullData_ThrowsArgumentNullException
+          - FileAssertTest_Create_NullName_ThrowsInvalidOperationException
+
+      - id: FileAssert-FileAssertTest-Filtering
+        title: The FileAssertTest class shall match test filters by name or tag using case-insensitive comparison.
+        justification: |
+          Filter matching by name or tag lets users run targeted subsets of tests from the
+          command line. Case-insensitive comparison improves usability by not requiring the
+          user to know the exact casing of test names or tag values. An empty filter list
+          selects all tests so the default run executes the full suite.
+        tests:
+          - FileAssertTest_MatchesFilter_EmptyFilters_ReturnsTrue
+          - FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue
+          - FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue
+          - FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
+          - FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
+
+      - id: FileAssert-FileAssertTest-Execution
+        title: The FileAssertTest class shall execute all of its file assertions when run.
+        justification: |
+          Running all file assertions in the test ensures complete coverage; skipping any
+          file assertion entry would leave gaps in validation that may go undetected.
+        tests:
+          - FileAssertTest_Run_RunsAllFiles
