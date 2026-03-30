@@ -19,8 +19,10 @@
 // SOFTWARE.
 
 using System.Text.RegularExpressions;
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Configuration;
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
 ///     Abstract base class representing a content validation rule applied to file content.

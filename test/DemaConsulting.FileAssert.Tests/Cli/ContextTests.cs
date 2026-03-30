@@ -18,7 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.FileAssert.Tests;
+using DemaConsulting.FileAssert.Cli;
+
+namespace DemaConsulting.FileAssert.Tests.Cli;
 
 /// <summary>
 ///     Unit tests for the Context class.

@@ -18,7 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DemaConsulting.FileAssert;
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Configuration;
+
+namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
 ///     Represents a named test containing file assertions that can be filtered by name or tag.

@@ -19,6 +19,9 @@
 // SOFTWARE.
 
 using System.Reflection;
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.SelfTest;
 
 namespace DemaConsulting.FileAssert;
 

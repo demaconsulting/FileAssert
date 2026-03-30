@@ -20,7 +20,7 @@
 
 using YamlDotNet.Serialization;
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.Configuration;
 
 /// <summary>
 ///     YAML data transfer object representing a single file assertion rule.

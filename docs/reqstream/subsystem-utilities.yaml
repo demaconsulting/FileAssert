@@ -1,0 +1,19 @@
+---
+# Software Subsystem Requirements for the Utilities Subsystem
+#
+# The Utilities subsystem provides shared helper functionality used by other
+# subsystems. It contains security-sensitive operations that do not belong to
+# any specific domain subsystem.
+
+sections:
+  - title: Utilities Subsystem Requirements
+    requirements:
+      - id: FileAssert-UtilitiesSubsystem-SafePathOperations
+        title: The Utilities subsystem shall provide safe path operations that prevent path traversal.
+        justification: |
+          Security-sensitive path operations must be isolated in a dedicated subsystem so
+          that they can be verified in isolation and reused across the codebase without
+          duplicating path-safety logic. Testing at the subsystem level confirms that the
+          utility functions are accessible to and correctly used by dependent subsystems.
+        tests:
+          - UtilitiesSubsystem_SafePathCombine_PreventsPathTraversalToFileSystem

@@ -18,9 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Modeling;
 using YamlDotNet.Serialization;
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.Configuration;
 
 /// <summary>
 ///     Top-level configuration that loads a YAML file and runs its defined tests.

@@ -19,9 +19,11 @@
 // SOFTWARE.
 
 using System.Runtime.InteropServices;
+using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Utilities;
 using DemaConsulting.TestResults.IO;
 
-namespace DemaConsulting.FileAssert;
+namespace DemaConsulting.FileAssert.SelfTest;
 
 /// <summary>
 ///     Provides self-validation functionality for FileAssert.
