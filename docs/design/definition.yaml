@@ -4,6 +4,7 @@ resource-path:
   - docs/template
 input-files:
   - docs/design/title.txt
+  - docs/design/introduction.md
   - docs/design/file-assert-rule.md
   - docs/design/file-assert-file.md
   - docs/design/file-assert-test.md
