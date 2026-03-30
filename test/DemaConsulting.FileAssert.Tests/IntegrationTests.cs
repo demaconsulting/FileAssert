@@ -247,4 +247,88 @@ public class IntegrationTests
         Assert.AreNotEqual(0, exitCode);
         Assert.Contains("Error", output);
     }
+
+    /// <summary>
+    ///     Test that a valid configuration file causes the tool to run assertions and succeed.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file that satisfies the assertion
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "Copyright (c) DEMA Consulting");
+
+            // Write a config that asserts the file exists and contains the expected text
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "License Check"
+                    files:
+                      - pattern: "*.txt"
+                        min: 1
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--config",
+                configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a configuration file with a failing assertion causes the tool to return non-zero.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file that does NOT satisfy the assertion
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "no license here");
+
+            // Write a config that asserts the file contains text it does not contain
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "License Check"
+                    files:
+                      - pattern: "*.txt"
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code indicates assertion failure
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }

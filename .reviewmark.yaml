@@ -23,21 +23,68 @@ evidence-source:
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
 reviews:
+  # System review - end-to-end behavior and design overview
+  - id: FileAssert-System
+    title: Review of FileAssert System
+    paths:
+      - "docs/reqstream/fileassert-system.yaml"
+      - "docs/design/introduction.md"
+      - "docs/design/system.md"
+      - "test/**/IntegrationTests.cs"
+
+  # Subsystem reviews - one per subsystem
+  - id: FileAssert-Cli
+    title: Review of FileAssert Cli Subsystem
+    paths:
+      - "docs/reqstream/subsystem-cli.yaml"
+      - "docs/design/cli.md"
+      - "test/**/CliSubsystemTests.cs"
+
+  - id: FileAssert-Configuration
+    title: Review of FileAssert Configuration Subsystem
+    paths:
+      - "docs/reqstream/subsystem-configuration.yaml"
+      - "docs/design/configuration.md"
+      - "test/**/ConfigurationSubsystemTests.cs"
+
+  - id: FileAssert-Modeling
+    title: Review of FileAssert Modeling Subsystem
+    paths:
+      - "docs/reqstream/subsystem-modeling.yaml"
+      - "docs/design/modeling.md"
+      - "test/**/ModelingSubsystemTests.cs"
+
+  - id: FileAssert-Utilities
+    title: Review of FileAssert Utilities Subsystem
+    paths:
+      - "docs/reqstream/subsystem-utilities.yaml"
+      - "docs/design/utilities.md"
+      - "test/**/UtilitiesSubsystemTests.cs"
+
+  - id: FileAssert-SelfTest
+    title: Review of FileAssert SelfTest Subsystem
+    paths:
+      - "docs/reqstream/subsystem-selftest.yaml"
+      - "docs/design/selftest.md"
+      - "test/**/SelfTestSubsystemTests.cs"
+
   # Software unit reviews - one per class
   - id: FileAssert-Context
     title: Review of FileAssert Context Unit
     paths:
       - "docs/reqstream/unit-context.yaml"
+      - "docs/design/context.md"
       - "src/**/Context.cs"
       - "test/**/ContextTests.cs"
+      - "test/**/ContextNewPropertiesTests.cs"
 
   - id: FileAssert-Program
     title: Review of FileAssert Program Unit
     paths:
       - "docs/reqstream/unit-program.yaml"
+      - "docs/design/program.md"
       - "src/**/Program.cs"
       - "test/**/ProgramTests.cs"
-      - "test/**/IntegrationTests.cs"
       - "test/**/Runner.cs"
       - "test/**/AssemblyInfo.cs"
 
@@ -45,6 +92,7 @@ reviews:
     title: Review of FileAssert Validation Unit
     paths:
       - "docs/reqstream/unit-validation.yaml"
+      - "docs/design/validation.md"
       - "src/**/Validation.cs"
       - "test/**/ValidationTests.cs"
 
@@ -52,6 +100,7 @@ reviews:
     title: Review of FileAssert PathHelpers Unit
     paths:
       - "docs/reqstream/unit-path-helpers.yaml"
+      - "docs/design/path-helpers.md"
       - "src/**/PathHelpers.cs"
       - "test/**/PathHelpersTests.cs"
 
@@ -61,7 +110,6 @@ reviews:
       - "docs/reqstream/unit-file-assert-rule.yaml"
       - "docs/design/file-assert-rule.md"
       - "src/**/FileAssertRule.cs"
-      - "src/**/FileAssertData.cs"
       - "test/**/FileAssertRuleTests.cs"
 
   - id: FileAssert-FileAssertFile
@@ -87,7 +135,12 @@ reviews:
       - "docs/design/file-assert-config.md"
       - "src/**/FileAssertConfig.cs"
       - "test/**/FileAssertConfigTests.cs"
-      - "test/**/ContextNewPropertiesTests.cs"
+
+  - id: FileAssert-FileAssertData
+    title: Review of FileAssert FileAssertData Unit
+    paths:
+      - "docs/design/file-assert-data.md"
+      - "src/**/FileAssertData.cs"
 
   # Platform and OTS dependency reviews
   - id: Platform-Support

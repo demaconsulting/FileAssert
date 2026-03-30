@@ -1,6 +1,7 @@
 ---
 # Root requirements file - includes all subsystem, platform, and OTS requirements
 includes:
+  - docs/reqstream/fileassert-system.yaml
   - docs/reqstream/subsystem-cli.yaml
   - docs/reqstream/subsystem-configuration.yaml
   - docs/reqstream/subsystem-modeling.yaml
