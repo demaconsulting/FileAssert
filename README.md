@@ -206,5 +206,5 @@ By contributing to this project, you agree that your contributions will be licen
 [link-quality]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-security]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-nuget]: https://www.nuget.org/packages/DemaConsulting.FileAssert
-[link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/guide/guide.md
+[link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/user_guide/introduction.md
 [link-continuous-compliance]: https://github.com/demaconsulting/ContinuousCompliance
