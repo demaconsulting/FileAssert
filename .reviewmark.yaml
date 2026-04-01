@@ -6,8 +6,10 @@
 # Patterns identifying all files that require review.
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
-  - "**/*.cs"                    # All C# source and test files
+  - "requirements.yaml"          # Root requirements file
   - "docs/reqstream/**/*.yaml"   # Requirements files
+  - "docs/design/**/*.md"        # Design documentation
+  - "**/*.cs"                    # All C# source and test files
   - "!**/obj/**"                 # Exclude build output
   - "!**/bin/**"                 # Exclude build output
 
@@ -27,7 +29,7 @@ reviews:
   - id: FileAssert-System
     title: Review of FileAssert System
     paths:
-      - "docs/reqstream/fileassert-system.yaml"
+      - "docs/reqstream/system.yaml"
       - "docs/design/introduction.md"
       - "docs/design/system.md"
       - "test/**/IntegrationTests.cs"
@@ -36,44 +38,44 @@ reviews:
   - id: FileAssert-Cli
     title: Review of FileAssert Cli Subsystem
     paths:
-      - "docs/reqstream/subsystem-cli.yaml"
-      - "docs/design/cli.md"
+      - "docs/reqstream/cli/cli.yaml"
+      - "docs/design/cli/cli.md"
       - "test/**/CliSubsystemTests.cs"
 
   - id: FileAssert-Configuration
     title: Review of FileAssert Configuration Subsystem
     paths:
-      - "docs/reqstream/subsystem-configuration.yaml"
-      - "docs/design/configuration.md"
+      - "docs/reqstream/configuration/configuration.yaml"
+      - "docs/design/configuration/configuration.md"
       - "test/**/ConfigurationSubsystemTests.cs"
 
   - id: FileAssert-Modeling
     title: Review of FileAssert Modeling Subsystem
     paths:
-      - "docs/reqstream/subsystem-modeling.yaml"
-      - "docs/design/modeling.md"
+      - "docs/reqstream/modeling/modeling.yaml"
+      - "docs/design/modeling/modeling.md"
       - "test/**/ModelingSubsystemTests.cs"
 
   - id: FileAssert-Utilities
     title: Review of FileAssert Utilities Subsystem
     paths:
-      - "docs/reqstream/subsystem-utilities.yaml"
-      - "docs/design/utilities.md"
+      - "docs/reqstream/utilities/utilities.yaml"
+      - "docs/design/utilities/utilities.md"
       - "test/**/UtilitiesSubsystemTests.cs"
 
   - id: FileAssert-SelfTest
     title: Review of FileAssert SelfTest Subsystem
     paths:
-      - "docs/reqstream/subsystem-selftest.yaml"
-      - "docs/design/selftest.md"
+      - "docs/reqstream/selftest/selftest.yaml"
+      - "docs/design/selftest/selftest.md"
       - "test/**/SelfTestSubsystemTests.cs"
 
   # Software unit reviews - one per class
   - id: FileAssert-Context
     title: Review of FileAssert Context Unit
     paths:
-      - "docs/reqstream/unit-context.yaml"
-      - "docs/design/context.md"
+      - "docs/reqstream/cli/context.yaml"
+      - "docs/design/cli/context.md"
       - "src/**/Context.cs"
       - "test/**/ContextTests.cs"
       - "test/**/ContextNewPropertiesTests.cs"
@@ -81,7 +83,7 @@ reviews:
   - id: FileAssert-Program
     title: Review of FileAssert Program Unit
     paths:
-      - "docs/reqstream/unit-program.yaml"
+      - "docs/reqstream/program.yaml"
       - "docs/design/program.md"
       - "src/**/Program.cs"
       - "test/**/ProgramTests.cs"
@@ -91,70 +93,69 @@ reviews:
   - id: FileAssert-Validation
     title: Review of FileAssert Validation Unit
     paths:
-      - "docs/reqstream/unit-validation.yaml"
-      - "docs/design/validation.md"
+      - "docs/reqstream/selftest/validation.yaml"
+      - "docs/design/selftest/validation.md"
       - "src/**/Validation.cs"
       - "test/**/ValidationTests.cs"
 
   - id: FileAssert-PathHelpers
     title: Review of FileAssert PathHelpers Unit
     paths:
-      - "docs/reqstream/unit-path-helpers.yaml"
-      - "docs/design/path-helpers.md"
+      - "docs/reqstream/utilities/path-helpers.yaml"
+      - "docs/design/utilities/path-helpers.md"
       - "src/**/PathHelpers.cs"
       - "test/**/PathHelpersTests.cs"
 
   - id: FileAssert-FileAssertRule
     title: Review of FileAssert FileAssertRule Unit
     paths:
-      - "docs/reqstream/unit-file-assert-rule.yaml"
-      - "docs/design/file-assert-rule.md"
+      - "docs/reqstream/modeling/file-assert-rule.yaml"
+      - "docs/design/modeling/file-assert-rule.md"
       - "src/**/FileAssertRule.cs"
       - "test/**/FileAssertRuleTests.cs"
 
   - id: FileAssert-FileAssertFile
     title: Review of FileAssert FileAssertFile Unit
     paths:
-      - "docs/reqstream/unit-file-assert-file.yaml"
-      - "docs/design/file-assert-file.md"
+      - "docs/reqstream/modeling/file-assert-file.yaml"
+      - "docs/design/modeling/file-assert-file.md"
       - "src/**/FileAssertFile.cs"
       - "test/**/FileAssertFileTests.cs"
 
   - id: FileAssert-FileAssertTest
     title: Review of FileAssert FileAssertTest Unit
     paths:
-      - "docs/reqstream/unit-file-assert-test.yaml"
-      - "docs/design/file-assert-test.md"
+      - "docs/reqstream/modeling/file-assert-test.yaml"
+      - "docs/design/modeling/file-assert-test.md"
       - "src/**/FileAssertTest.cs"
       - "test/**/FileAssertTestTests.cs"
 
   - id: FileAssert-FileAssertConfig
     title: Review of FileAssert FileAssertConfig Unit
     paths:
-      - "docs/reqstream/unit-file-assert-config.yaml"
-      - "docs/design/file-assert-config.md"
+      - "docs/reqstream/configuration/file-assert-config.yaml"
+      - "docs/design/configuration/file-assert-config.md"
       - "src/**/FileAssertConfig.cs"
       - "test/**/FileAssertConfigTests.cs"
 
   - id: FileAssert-FileAssertData
     title: Review of FileAssert FileAssertData Unit
     paths:
-      - "docs/design/file-assert-data.md"
+      - "docs/reqstream/configuration/file-assert-data.yaml"
+      - "docs/design/configuration/file-assert-data.md"
       - "src/**/FileAssertData.cs"
+      - "test/**/FileAssertConfigTests.cs"
+      - "test/**/FileAssertFileTests.cs"
+      - "test/**/FileAssertRuleTests.cs"
 
   # Platform and OTS dependency reviews
   - id: Platform-Support
     title: Review of Platform and Runtime Support Requirements
     paths:
       - "docs/reqstream/platform-requirements.yaml"
+      - "test/**/IntegrationTests.cs"
 
   - id: OTS-Dependencies
     title: Review of Off-The-Shelf Software Dependencies
     paths:
-      - "docs/reqstream/ots-mstest.yaml"
-      - "docs/reqstream/ots-reqstream.yaml"
-      - "docs/reqstream/ots-buildmark.yaml"
-      - "docs/reqstream/ots-versionmark.yaml"
-      - "docs/reqstream/ots-sarifmark.yaml"
-      - "docs/reqstream/ots-sonarmark.yaml"
-      - "docs/reqstream/ots-reviewmark.yaml"
+      - "docs/reqstream/ots/**/*.yaml"

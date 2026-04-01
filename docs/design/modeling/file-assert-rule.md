@@ -21,10 +21,11 @@ correct concrete implementation based on the deserialized YAML data.
 internal static FileAssertRule Create(FileAssertRuleData data)
 ```
 
-The factory inspects the `Contains` and `Matches` properties of the data object in
-order. The first non-null property determines the concrete type returned. If neither
-property is set the factory throws `InvalidOperationException` with a descriptive
-message.
+The factory inspects the `Contains`, `DoesNotContain`, `Matches`, and
+`DoesNotContainRegex` properties of the data object in order. The first non-null
+property determines the concrete type returned. If no property is set the factory
+throws `InvalidOperationException` with a descriptive message listing all four
+supported rule types.
 
 ### Abstract Method
 
@@ -42,10 +43,22 @@ Checks whether the file content contains a required substring using an ordinal
 (byte-exact) string comparison. This is appropriate for license header checks,
 copyright notices, and other exact-text requirements.
 
-#### Error Message Format
+#### ContainsRule Error Message Format
 
 ```text
 File '<fileName>' does not contain expected text '<Value>'
+```
+
+### FileAssertDoesNotContainRule
+
+Checks whether the file content does NOT contain a forbidden substring using an
+ordinal (byte-exact) string comparison. This is appropriate for asserting that
+sensitive strings such as hard-coded passwords or debug flags are absent.
+
+#### DoesNotContainRule Error Message Format
+
+```text
+File '<fileName>' contains forbidden text '<Value>'
 ```
 
 ### FileAssertMatchesRule
@@ -54,10 +67,23 @@ Checks whether the file content matches a regular expression. The regex is compi
 at construction time with a ten-second evaluation timeout to guard against
 catastrophic backtracking on adversarial or malformed content.
 
-#### Regex Error Message Format
+#### MatchesRule Error Message Format
 
 ```text
 File '<fileName>' does not match pattern '<Pattern>'
+```
+
+### FileAssertDoesNotMatchRule
+
+Checks whether the file content does NOT match a forbidden regular expression. The
+regex is compiled at construction time with a ten-second evaluation timeout. This is
+appropriate for asserting that log files contain no fatal errors or that source files
+contain no debug-only patterns.
+
+#### DoesNotMatchRule Error Message Format
+
+```text
+File '<fileName>' matches forbidden pattern '<Pattern>'
 ```
 
 ## YAML Configuration
@@ -68,7 +94,9 @@ exactly one of the supported rule types:
 ```yaml
 rules:
   - contains: "Copyright (c) DEMA Consulting"
+  - does-not-contain: "password123"
   - matches: "Copyright \\(c\\) \\d{4}"
+  - does-not-contain-regex: "FATAL|ERROR"
 ```
 
 The `FileAssertRuleData` data transfer object is deserialized by YamlDotNet and
@@ -79,8 +107,8 @@ passed to `FileAssertRule.Create` to produce the concrete rule instance.
 - **Abstract base class over interface**: The base class provides the factory
   method alongside the abstract `Apply` method, keeping rule creation and
   execution logic in one cohesive type.
-- **Ordinal comparison in ContainsRule**: Locale-independent comparison avoids
-  subtle failures when CI runners have different cultural settings.
+- **Ordinal comparison in ContainsRule and DoesNotContainRule**: Locale-independent
+  comparison avoids subtle failures when CI runners have different cultural settings.
 - **Regex timeout**: A ten-second timeout prevents a single malformed pattern from
   blocking the entire test run indefinitely.
 - **No exception on failure**: Rules report failures via `context.WriteError` rather

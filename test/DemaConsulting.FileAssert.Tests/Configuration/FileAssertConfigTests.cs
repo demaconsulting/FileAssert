@@ -205,4 +205,97 @@ public class FileAssertConfigTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run writes a TRX results file with Passed outcome when all tests pass.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        var trxFile = Path.Combine(Path.GetTempPath(), $"config_test_{Guid.NewGuid()}.trx");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "Copyright");
+
+            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "LicenseCheck"
+                    files:
+                      - pattern: "sample.txt"
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            var config = FileAssertConfig.ReadFromFile(configPath);
+            using var context = Context.Create(["--silent", "--results", trxFile]);
+
+            // Act
+            config.Run(context, []);
+
+            // Assert - TRX file contains the test name with Passed outcome
+            Assert.AreEqual(0, context.ExitCode);
+            Assert.IsTrue(File.Exists(trxFile));
+            var trxContent = File.ReadAllText(trxFile);
+            Assert.Contains("LicenseCheck", trxContent);
+            Assert.Contains("outcome=\"Passed\"", trxContent);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+            if (File.Exists(trxFile))
+            {
+                File.Delete(trxFile);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes a JUnit XML results file with failure entries when tests fail.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        var xmlFile = Path.Combine(Path.GetTempPath(), $"config_test_{Guid.NewGuid()}.xml");
+        try
+        {
+            // File does NOT contain the expected text - assertion will fail
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "no license here");
+
+            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "LicenseCheck"
+                    files:
+                      - pattern: "sample.txt"
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            var config = FileAssertConfig.ReadFromFile(configPath);
+            using var context = Context.Create(["--silent", "--results", xmlFile]);
+
+            // Act
+            config.Run(context, []);
+
+            // Assert - JUnit file contains the test name with a failure entry
+            Assert.AreNotEqual(0, context.ExitCode);
+            Assert.IsTrue(File.Exists(xmlFile));
+            var xmlContent = File.ReadAllText(xmlFile);
+            Assert.Contains("LicenseCheck", xmlContent);
+            Assert.Contains("failures=\"1\"", xmlContent);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+            if (File.Exists(xmlFile))
+            {
+                File.Delete(xmlFile);
+            }
+        }
+    }
 }

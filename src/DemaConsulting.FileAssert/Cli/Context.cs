@@ -36,6 +36,11 @@ internal sealed class Context : IDisposable
     private bool _hasErrors;
 
     /// <summary>
+    ///     Total count of errors reported since this context was created.
+    /// </summary>
+    private int _errorCount;
+
+    /// <summary>
     ///     Gets a value indicating whether the version flag was specified.
     /// </summary>
     public bool Version { get; private init; }
@@ -79,6 +84,11 @@ internal sealed class Context : IDisposable
     ///     Gets the proposed exit code for the application (0 for success, 1 for errors).
     /// </summary>
     public int ExitCode => _hasErrors ? 1 : 0;
+
+    /// <summary>
+    ///     Gets the total number of errors reported since this context was created.
+    /// </summary>
+    internal int ErrorCount => _errorCount;
 
     /// <summary>
     ///     Private constructor - use Create factory method instead.
@@ -308,6 +318,7 @@ internal sealed class Context : IDisposable
     {
         // Mark that we have encountered errors
         _hasErrors = true;
+        _errorCount++;
 
         // Write to error console unless silent mode is enabled
         if (!Silent)

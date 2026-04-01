@@ -1,0 +1,163 @@
+---
+# Software System Requirements for FileAssert
+#
+# These requirements describe the observable, end-to-end behavior of the FileAssert
+# tool as experienced by users. They are verified by integration tests that exercise
+# the tool as a complete, deployed unit.
+
+sections:
+  - title: FileAssert System Requirements
+    requirements:
+      - id: FileAssert-System-CoreExecution
+        title: |
+          The FileAssert tool shall load a YAML configuration file and run file assertions,
+          returning a zero exit code when all assertions pass.
+        justification: |
+          The primary purpose of the tool is to assert properties of files on the file system
+          using YAML-defined test suites. Verifying this core behavior at the system level
+          confirms that all subsystems integrate correctly to produce the expected outcome.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+
+      - id: FileAssert-System-FailureDetection
+        title: |
+          The FileAssert tool shall return a non-zero exit code when one or more file
+          assertions fail.
+        justification: |
+          CI/CD pipelines and scripts depend on the exit code to detect assertion failures.
+          A non-zero exit code when an assertion fails is the primary mechanism for the tool
+          to signal that files do not meet the declared constraints.
+        tests:
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
+
+      - id: FileAssert-System-SilentOutput
+        title: The FileAssert tool shall suppress console output when invoked with the --silent flag.
+        justification: |
+          Automated pipelines that parse or redirect tool output must be able to run the tool
+          without cluttering their own output. The --silent flag provides this capability
+          while still allowing exit code and log file output to carry result information.
+        tests:
+          - IntegrationTest_SilentFlag_SuppressesOutput
+
+      - id: FileAssert-System-LogFile
+        title: The FileAssert tool shall write all output to a log file when invoked with the --log flag.
+        justification: |
+          Persistent log files allow post-hoc inspection of tool output in CI/CD environments
+          where console output may be discarded. The log file must capture all messages that
+          would otherwise appear on the console.
+        tests:
+          - IntegrationTest_LogFlag_WritesOutputToFile
+
+      - id: FileAssert-System-ConfigFile
+        title: |
+          The FileAssert tool shall load the YAML test suite from the path specified by the
+          --config flag, or from the default '.fileassert.yaml' when the flag is absent.
+        justification: |
+          Supporting a custom configuration file path lets users maintain multiple test suites
+          and select the appropriate one per invocation. The default path ensures the common
+          single-suite case requires no additional arguments.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
+
+      - id: FileAssert-System-Results
+        title: |
+          The FileAssert tool shall write test results to a TRX or JUnit XML
+          file when invoked with the --results flag.
+        justification: |
+          CI/CD systems and regulated environments require machine-readable test result formats
+          to collect tool-validation evidence. TRX format is compatible with MSTest and Azure
+          Pipelines; JUnit XML is supported by Jenkins, GitLab CI, and most other CI tools.
+          Results are written both from the self-validation path (--validate --results) and from
+          the normal file assertion path (--results without --validate).
+        tests:
+          - IntegrationTest_ValidateWithResults_GeneratesTrxFile
+          - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
+          - IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
+          - IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults
+
+      - id: FileAssert-System-TestFiltering
+        title: |
+          The FileAssert tool shall run only the tests whose name or tags match any of the
+          positional name-or-tag arguments provided on the command line.
+        justification: |
+          Selective test execution is essential for phased CI/CD pipelines where only a subset
+          of tests (for example, smoke tests) should run in a given stage. Filtering by name or
+          tag keeps the command line concise and consistent with common CLI testing tools.
+        tests:
+          - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
+
+      - id: FileAssert-System-MaxCountConstraint
+        title: |
+          The FileAssert tool shall return a non-zero exit code when the number of files
+          matching a glob pattern exceeds the declared maximum count constraint.
+        justification: |
+          Enforcing a maximum file count prevents unexpected duplicate build outputs or
+          configuration files from silently passing validation. Users declare the upper
+          bound they expect; the tool reports a violation when more files are found.
+        tests:
+          - IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero
+
+      - id: FileAssert-System-RegexRule
+        title: |
+          The FileAssert tool shall apply a regular expression rule to file content and
+          return a non-zero exit code when the content does not match the pattern.
+        justification: |
+          Regular expression rules enable flexible content validation such as version number
+          formats and date patterns that cannot be expressed as a simple substring check.
+          Verifying both the passing and failing paths at the system level confirms end-to-end
+          integration from the YAML rule definition through to the exit code.
+        tests:
+          - IntegrationTest_RegexRule_MatchingContent_ReturnsZero
+          - IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero
+
+      - id: FileAssert-System-ExactCountConstraint
+        title: |
+          The FileAssert tool shall return a non-zero exit code when the number of files
+          matching a glob pattern does not equal the declared exact count constraint.
+        justification: |
+          An exact count constraint is stricter than min/max and is needed when users
+          must assert that precisely one artifact, configuration file, or report was
+          produced. Any deviation from the expected count is a configuration drift
+          that should be caught immediately.
+        tests:
+          - IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero
+
+      - id: FileAssert-System-FileSizeConstraints
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          size violates the declared min-size or max-size constraint.
+        justification: |
+          File size constraints guard against accidentally empty build outputs (min-size)
+          or unexpectedly large files such as debug binaries committed to the repository
+          (max-size). Enforcing these constraints at the system level confirms that the
+          YAML configuration, deserialization, and file system inspection all integrate
+          correctly.
+        tests:
+          - IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero
+          - IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
+
+      - id: FileAssert-System-DoesNotContainRule
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          content contains a forbidden substring declared by the does-not-contain rule.
+        justification: |
+          The does-not-contain rule is the inverse of the contains rule and is used to
+          assert that sensitive strings such as hard-coded passwords or debug flags are
+          absent from committed files. System-level verification confirms the rule
+          integrates correctly from YAML configuration through to the exit code.
+        tests:
+          - IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero
+
+      - id: FileAssert-System-DoesNotContainRegexRule
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          content matches a forbidden regular expression declared by the
+          does-not-contain-regex rule.
+        justification: |
+          The does-not-contain-regex rule allows flexible forbidden-pattern checks such
+          as asserting that log files contain no FATAL or ERROR entries. System-level
+          verification confirms the rule integrates correctly from YAML configuration
+          through to the exit code.
+        tests:
+          - IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero

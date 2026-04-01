@@ -162,9 +162,6 @@ fileassert --log output.log
 
 # FileAssert YAML Format
 
-> **Proposed**: The FileAssert YAML test format described in this section is a planned design
-> and has not yet been implemented. The format and option names are subject to change.
-
 The tests file (`.fileassert.yaml` by default) defines one or more named tests. Each test specifies a
 set of files using a glob pattern, optional tags for filtering, and one or more acceptance criteria.
 
@@ -175,42 +172,44 @@ tests:
     description: "Application binaries exist"
     tags: [smoke, release]
     files:
-      - path: "bin/**/*.exe"
+      - pattern: "bin/**/*.exe"
         count: 1
-      - path: "bin/**/*.dll"
-        count-min: 1
+      - pattern: "bin/**/*.dll"
+        min: 1
 
   - name: TestProject_ConfigValid
     description: "Config file size is reasonable"
     tags: [config]
     files:
-      - path: "config/settings.json"
+      - pattern: "config/settings.json"
         min-size: 10
         max-size: 1048576
-        contains: '"ConnectionStrings"'
-        does-not-contain: "password123"
+        rules:
+          - contains: '"ConnectionStrings"'
+          - does-not-contain: "password123"
 
   - name: TestProject_LogsValid
     description: "Log files match expected pattern"
     tags: [logs]
     files:
-      - path: "logs/*.log"
-        contains-regex: "\\d{4}-\\d{2}-\\d{2}"
-        does-not-contain-regex: "FATAL|CRITICAL"
+      - pattern: "logs/*.log"
+        rules:
+          - matches: "\\d{4}-\\d{2}-\\d{2}"
+          - does-not-contain-regex: "FATAL|CRITICAL"
 ```
 
 ## Acceptance Criteria Reference
 
 | Criterion                | Description                                                      |
 | ------------------------ | ---------------------------------------------------------------- |
-| `count`                  | Exact number of files matching the path pattern                  |
-| `count-min`              | Minimum number of files matching the path pattern                |
-| `count-max`              | Maximum number of files matching the path pattern                |
+| `count`                  | Exact number of files matching the pattern                       |
+| `min`                    | Minimum number of files matching the pattern                     |
+| `max`                    | Maximum number of files matching the pattern                     |
 | `min-size`               | Minimum file size in bytes                                       |
 | `max-size`               | Maximum file size in bytes                                       |
 | `contains`               | File must contain the specified text                             |
 | `does-not-contain`       | File must not contain the specified text                         |
-| `contains-regex`         | File must match the specified regular expression                 |
+| `matches`                | File must match the specified regular expression                 |
 | `does-not-contain-regex` | File must not match the specified regular expression             |
 
 # Command-Line Options

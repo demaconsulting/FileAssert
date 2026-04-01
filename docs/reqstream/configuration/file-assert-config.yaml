@@ -32,3 +32,18 @@ sections:
           - FileAssertConfig_Run_WithNoFilter_RunsAllTests
           - FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
           - FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
+
+      - id: FileAssert-FileAssertConfig-Results
+        title: |
+          The FileAssertConfig class shall write per-test pass/fail results to a TRX or JUnit XML
+          file when context.ResultsFile is set.
+        justification: |
+          CI/CD pipelines and regulated environments require machine-readable test result files
+          to collect evidence of assertion outcomes. Recording per-test pass/fail outcomes allows
+          the results file to identify which individual tests passed and which failed, rather than
+          just reporting an aggregate exit code.
+        tests:
+          - FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
+          - FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
+          - IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
+          - IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults

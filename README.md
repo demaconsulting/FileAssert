@@ -18,8 +18,8 @@ making it ideal for CI/CD pipelines and compliance workflows.
 - **File Assertion Testing**: YAML-defined test suites that validate file properties against acceptance criteria
 - **Glob Pattern Matching**: Select files using glob patterns via Microsoft.Extensions.FileSystemGlobbing
 - **Multiple Acceptance Criteria**: Validate size (`min-size`, `max-size`), content (`contains`,
-  `does-not-contain`), regex patterns (`contains-regex`, `does-not-contain-regex`), and file counts
-  (`count`, `count-min`, `count-max`)
+  `does-not-contain`), regex patterns (`matches`, `does-not-contain-regex`), and file counts
+  (`count`, `min`, `max`)
 - **Tag-Based Test Filtering**: Run a targeted subset of tests by filtering on tags
 - **TRX and JUnit Output**: Write test results to TRX or JUnit format via DemaConsulting.TestResults
 - **Self-Validation**: Built-in validation tests confirm the tool is functioning correctly
@@ -87,9 +87,6 @@ fileassert --silent --log output.log
 
 ## FileAssert YAML Format
 
-> **Proposed**: The FileAssert YAML test format described in this section is a planned design
-> and has not yet been implemented. The format and option names are subject to change.
-
 The tests file (`.fileassert.yaml` by default) defines one or more named tests. Each test specifies a
 set of files using a glob pattern, optional tags for filtering, and one or more acceptance criteria.
 
@@ -100,42 +97,44 @@ tests:
     description: "Application binaries exist"
     tags: [smoke, release]
     files:
-      - path: "bin/**/*.exe"
+      - pattern: "bin/**/*.exe"
         count: 1
-      - path: "bin/**/*.dll"
-        count-min: 1
+      - pattern: "bin/**/*.dll"
+        min: 1
 
   - name: TestProject_ConfigValid
     description: "Config file size is reasonable"
     tags: [config]
     files:
-      - path: "config/settings.json"
+      - pattern: "config/settings.json"
         min-size: 10
         max-size: 1048576
-        contains: '"ConnectionStrings"'
-        does-not-contain: "password123"
+        rules:
+          - contains: '"ConnectionStrings"'
+          - does-not-contain: "password123"
 
   - name: TestProject_LogsValid
     description: "Log files match expected pattern"
     tags: [logs]
     files:
-      - path: "logs/*.log"
-        contains-regex: "\\d{4}-\\d{2}-\\d{2}"
-        does-not-contain-regex: "FATAL|CRITICAL"
+      - pattern: "logs/*.log"
+        rules:
+          - matches: "\\d{4}-\\d{2}-\\d{2}"
+          - does-not-contain-regex: "FATAL|CRITICAL"
 ```
 
 ### Acceptance Criteria Reference
 
 | Criterion                | Description                                                      |
 | ------------------------ | ---------------------------------------------------------------- |
-| `count`                  | Exact number of files matching the path pattern                  |
-| `count-min`              | Minimum number of files matching the path pattern                |
-| `count-max`              | Maximum number of files matching the path pattern                |
+| `count`                  | Exact number of files matching the pattern                       |
+| `min`                    | Minimum number of files matching the pattern                     |
+| `max`                    | Maximum number of files matching the pattern                     |
 | `min-size`               | Minimum file size in bytes                                       |
 | `max-size`               | Maximum file size in bytes                                       |
 | `contains`               | File must contain the specified text                             |
 | `does-not-contain`       | File must not contain the specified text                         |
-| `contains-regex`         | File must match the specified regular expression                 |
+| `matches`                | File must match the specified regular expression                 |
 | `does-not-contain-regex` | File must not match the specified regular expression             |
 
 ## Self Validation
@@ -206,5 +205,5 @@ By contributing to this project, you agree that your contributions will be licen
 [link-quality]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-security]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-nuget]: https://www.nuget.org/packages/DemaConsulting.FileAssert
-[link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/guide/guide.md
+[link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/user_guide/introduction.md
 [link-continuous-compliance]: https://github.com/demaconsulting/ContinuousCompliance

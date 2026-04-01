@@ -21,6 +21,7 @@ provides a unified interface for writing output and errors throughout the tool's
 | `IsConfigFileExplicit` | `bool`                  | True when `--config` was explicitly specified.                |
 | `Filters`              | `IReadOnlyList<string>` | Positional arguments treated as test name or tag filters.     |
 | `ExitCode`             | `int`                   | Returns `1` if any errors have been reported; otherwise `0`.  |
+| `ErrorCount`           | `int`                   | Monotonically increasing count of `WriteError` calls.         |
 
 ### Factory Method
 
@@ -60,3 +61,6 @@ The private nested class `ArgumentParser` processes each argument in order:
   tests can construct a context directly without invoking `Main`.
 - **Error flag over exception**: `WriteError` sets a flag rather than throwing, so the tool
   completes all assertions before reporting a final failure via the exit code.
+- **ErrorCount for per-test tracking**: The `ErrorCount` property increments monotonically so
+  that callers running multiple named tests can snapshot the count before each test and compare
+  after to derive a per-test pass/fail outcome without requiring a separate context per test.

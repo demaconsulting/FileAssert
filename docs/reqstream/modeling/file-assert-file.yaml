@@ -42,3 +42,27 @@ sections:
         tests:
           - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
           - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError
+
+      - id: FileAssert-FileAssertFile-ExactCount
+        title: The FileAssertFile class shall enforce an exact file count constraint when declared.
+        justification: |
+          The exact count constraint is a strict variant of the min/max bounds and is
+          needed when the user must assert that a pattern matches precisely the declared
+          number of files. It is checked after the min/max constraints and before per-file
+          rules to provide a clear, early failure when the count is wrong.
+        tests:
+          - FileAssertFile_Run_WrongCount_WritesError
+
+      - id: FileAssert-FileAssertFile-SizeConstraints
+        title: |
+          The FileAssertFile class shall enforce min-size and max-size constraints on
+          each matched file.
+        justification: |
+          Size constraints guard against empty outputs (min-size) and unexpectedly large
+          files (max-size). Checking sizes per matched file ensures every file in the
+          matched set individually satisfies the declared bounds. Size checks are
+          performed before reading file content to avoid unnecessary I/O when a size
+          violation is present.
+        tests:
+          - FileAssertFile_Run_TooSmall_WritesError
+          - FileAssertFile_Run_TooLarge_WritesError

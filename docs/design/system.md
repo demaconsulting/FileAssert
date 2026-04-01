@@ -13,6 +13,8 @@ files do not meet the declared constraints.
 | :---------------------- | :------------------------------------------------------------------------ |
 | Argument parsing        | Accept and validate command-line flags and positional filter arguments.   |
 | Configuration loading   | Read and deserialize a YAML test-suite configuration file.                |
+| Configuration file path | Accept a custom configuration file path via `--config`.                   |
+| Test filtering          | Run only the tests whose name or tags match the positional filter args.   |
 | Test execution          | Run selected tests, evaluating file patterns and content rules.           |
 | Output and logging      | Report results to stdout/stderr and optionally to a log file.             |
 | Self-validation         | Verify core functionality at run time via built-in tests.                 |
@@ -43,18 +45,21 @@ The following sequence describes the normal execution path:
    b. `--help` — prints usage information and exits.
    c. `--validate` — delegates to `Validation.Run` for self-validation and exits.
    d. Default — delegates to `Program.RunToolLogic`.
-3. `RunToolLogic` checks for the configuration file. If absent, it prints guidance (default
+3. `RunToolLogic` resolves the configuration file from `context.ConfigFile` (default:
+   `.fileassert.yaml`; overridden by `--config`). If absent, it prints guidance (default
    path) or an error (explicit path) and exits.
 4. `FileAssertConfig.ReadFromFile` deserializes the YAML configuration into a hierarchy of
    `FileAssertTest`, `FileAssertFile`, and `FileAssertRule` instances.
-5. `FileAssertConfig.Run` filters the test list against `context.Filters` and executes each
-   matching test.
+5. `FileAssertConfig.Run` filters the test list against `context.Filters` (the positional
+   name-or-tag arguments) and executes each matching test. An empty filter list runs all tests.
 6. Each `FileAssertTest.Run` iterates its `FileAssertFile` list.
 7. Each `FileAssertFile.Run` discovers files via a glob matcher, validates count constraints,
    and applies content rules.
 8. Content rules (`FileAssertContainsRule`, `FileAssertMatchesRule`) call
    `context.WriteError` on failure.
 9. After all tests complete, `context.ExitCode` reflects whether any errors occurred.
+10. When `--validate` is used with `--results`, `Validation.Run` writes TRX or JUnit XML
+    results to the file specified by `context.ResultsFile`.
 
 ## Design Decisions
 
