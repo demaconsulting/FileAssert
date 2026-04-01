@@ -483,4 +483,126 @@ public class IntegrationTests
             }
         }
     }
+
+    /// <summary>
+    ///     Test that a maximum file count constraint returns a non-zero exit code when exceeded.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create two files when the test asserts at most one
+            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "UniqueFileCheck"
+                    files:
+                      - pattern: "*.txt"
+                        max: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the max count constraint was exceeded
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a regex rule returns a zero exit code when file content matches the pattern.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_RegexRule_MatchingContent_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file whose content matches the regex pattern
+            File.WriteAllText(Path.Combine(tempDir.FullName, "version.txt"), "Version: 1.2.3");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "VersionFormatCheck"
+                    files:
+                      - pattern: "version.txt"
+                        rules:
+                          - matches: "\\d+\\.\\d+\\.\\d+"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--config",
+                configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a regex rule returns a non-zero exit code when file content does not match the pattern.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file whose content does NOT match the version regex
+            File.WriteAllText(Path.Combine(tempDir.FullName, "version.txt"), "no version here");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "VersionFormatCheck"
+                    files:
+                      - pattern: "version.txt"
+                        rules:
+                          - matches: "\\d+\\.\\d+\\.\\d+"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero because the file does not match the version pattern
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }

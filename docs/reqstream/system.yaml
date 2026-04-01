@@ -86,3 +86,27 @@ sections:
           tag keeps the command line concise and consistent with common CLI testing tools.
         tests:
           - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
+
+      - id: FileAssert-System-MaxCountConstraint
+        title: |
+          The FileAssert tool shall return a non-zero exit code when the number of files
+          matching a glob pattern exceeds the declared maximum count constraint.
+        justification: |
+          Enforcing a maximum file count prevents unexpected duplicate build outputs or
+          configuration files from silently passing validation. Users declare the upper
+          bound they expect; the tool reports a violation when more files are found.
+        tests:
+          - IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero
+
+      - id: FileAssert-System-RegexRule
+        title: |
+          The FileAssert tool shall apply a regular expression rule to file content and
+          return a non-zero exit code when the content does not match the pattern.
+        justification: |
+          Regular expression rules enable flexible content validation such as version number
+          formats and date patterns that cannot be expressed as a simple substring check.
+          Verifying both the passing and failing paths at the system level confirms end-to-end
+          integration from the YAML rule definition through to the exit code.
+        tests:
+          - IntegrationTest_RegexRule_MatchingContent_ReturnsZero
+          - IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero
