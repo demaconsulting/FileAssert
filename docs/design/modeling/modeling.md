@@ -20,7 +20,7 @@ executable domain objects and drives the assertion logic.
 - Validate required fields (test name, file pattern, rule type) during construction.
 - Execute file glob matching using `Microsoft.Extensions.FileSystemGlobbing`.
 - Enforce minimum and maximum file count constraints.
-- Apply content rules to matched file text.
+- Apply positive (contains/matches) and negative (does-not-contain/does-not-match) content rules to matched file text.
 - Report assertion failures via the `Context` from the Cli subsystem.
 
 ## Object Hierarchy
@@ -30,7 +30,9 @@ FileAssertTest
 └── FileAssertFile (one or more)
     └── FileAssertRule (zero or more)
         ├── FileAssertContainsRule
-        └── FileAssertMatchesRule
+        ├── FileAssertDoesNotContainRule
+        ├── FileAssertMatchesRule
+        └── FileAssertDoesNotMatchRule
 ```
 
 ## Interactions with Other Subsystems

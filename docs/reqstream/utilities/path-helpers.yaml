@@ -20,3 +20,16 @@ sections:
           - PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
           - PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
           - PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
+          - PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
+          - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
+
+      - id: FileAssert-PathHelpers-NullValidation
+        title: The PathHelpers class shall reject null base or relative path arguments.
+        justification: |
+          Passing null to path-combination functions produces undefined behavior and
+          platform-dependent exceptions. Explicit null validation with ArgumentNullException
+          gives callers a clear, actionable error and prevents downstream NullReferenceException
+          failures in file system operations.
+        tests:
+          - PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
+          - PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException

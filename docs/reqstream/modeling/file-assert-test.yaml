@@ -17,6 +17,7 @@ sections:
           - FileAssertTest_Create_ValidData_CreatesTest
           - FileAssertTest_Create_NullData_ThrowsArgumentNullException
           - FileAssertTest_Create_NullName_ThrowsInvalidOperationException
+          - FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException
 
       - id: FileAssert-FileAssertTest-Filtering
         title: The FileAssertTest class shall match test filters by name or tag using case-insensitive comparison.
@@ -31,6 +32,7 @@ sections:
           - FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue
           - FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
           - FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
+          - FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
 
       - id: FileAssert-FileAssertTest-Execution
         title: The FileAssertTest class shall execute all of its file assertions when run.

@@ -77,6 +77,20 @@ public class FileAssertTestTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Name is whitespace.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new FileAssertTestData { Name = "   " };
+
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertTest.Create(data));
+        Assert.Contains("name", exception.Message);
+    }
+
+    /// <summary>
     ///     Verifies that MatchesFilter returns true when the filter list is empty.
     /// </summary>
     [TestMethod]
@@ -159,6 +173,26 @@ public class FileAssertTestTests
 
         // Act
         var result = test.MatchesFilter(["ALPHA TEST"]);
+
+        // Assert
+        Assert.IsTrue(result);
+    }
+
+    /// <summary>
+    ///     Verifies that MatchesFilter tag comparison is case-insensitive.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue()
+    {
+        // Arrange
+        var test = FileAssertTest.Create(new FileAssertTestData
+        {
+            Name = "Alpha",
+            Tags = ["smoke"]
+        });
+
+        // Act
+        var result = test.MatchesFilter(["SMOKE"]);
 
         // Assert
         Assert.IsTrue(result);

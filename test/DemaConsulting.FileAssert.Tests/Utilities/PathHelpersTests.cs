@@ -151,4 +151,34 @@ public class PathHelpersTests
         // Assert
         Assert.AreEqual(Path.Combine(basePath, relativePath), result);
     }
+
+    /// <summary>
+    ///     Test that SafePathCombine throws ArgumentNullException when base path is null.
+    /// </summary>
+    [TestMethod]
+    public void PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException()
+    {
+        // Arrange
+        string? basePath = null;
+        var relativePath = "subfolder/file.txt";
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            PathHelpers.SafePathCombine(basePath!, relativePath));
+    }
+
+    /// <summary>
+    ///     Test that SafePathCombine throws ArgumentNullException when relative path is null.
+    /// </summary>
+    [TestMethod]
+    public void PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var basePath = "/home/user/project";
+        string? relativePath = null;
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            PathHelpers.SafePathCombine(basePath, relativePath!));
+    }
 }

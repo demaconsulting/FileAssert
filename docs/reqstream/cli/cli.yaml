@@ -17,6 +17,18 @@ sections:
           behavior independently of business logic.
         tests:
           - CliSubsystem_CreateContext_ParsesAllSupportedFlags
+          - CliSubsystem_CreateContext_ParsesVersionHelpConfigResultsFlags
+          - CliSubsystem_CreateContext_WithFilters_ParsesPositionalArguments
+          - CliSubsystem_CreateContext_UnknownArgument_ThrowsArgumentException
+
+      - id: FileAssert-CliSubsystem-ErrorReporting
+        title: The Cli subsystem shall set the exit code to 1 when errors are reported.
+        justification: |
+          A non-zero exit code is the standard Unix convention for indicating failure.
+          Setting the exit code to 1 as soon as any error is written ensures that
+          CI/CD pipelines and calling scripts can reliably detect failures.
+        tests:
+          - CliSubsystem_WriteError_ChangesExitCodeToOne
 
       - id: FileAssert-CliSubsystem-OutputPipeline
         title: The Cli subsystem shall route output and errors to the console and optional log file.
