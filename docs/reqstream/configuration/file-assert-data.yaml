@@ -1,0 +1,34 @@
+---
+# Software Unit Requirements for the FileAssertData Classes
+#
+# The FileAssertData classes are YAML data transfer objects (DTOs) used to
+# deserialize the FileAssert YAML configuration file. Each class maps directly
+# to a YAML structure and contains no business logic.
+
+sections:
+  - title: FileAssertData Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertData-YamlSchema
+        title: |
+          The FileAssertData classes shall define the YAML schema for the FileAssert configuration
+          file, mapping YAML keys to typed properties.
+        justification: |
+          Explicit YAML aliases decouple C# naming conventions from the YAML schema, ensuring
+          the configuration file format remains stable even if internal class names change.
+          All properties are nullable to correctly represent absent YAML keys without throwing
+          during deserialization.
+        tests:
+          - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
+
+      - id: FileAssert-FileAssertData-NoBusinessLogic
+        title: |
+          The FileAssertData classes shall contain no validation or business logic, delegating
+          all validation to the factory methods in the Modeling subsystem.
+        justification: |
+          Keeping DTOs free of business logic maintains a clean separation between
+          deserialization (Configuration subsystem) and domain object construction (Modeling
+          subsystem). This makes the DTOs simple, predictable, and easy to test indirectly
+          through the classes that consume them.
+        tests:
+          - FileAssertFile_Create_ValidData_CreatesFile
+          - FileAssertRule_Create_WithContains_ReturnsContainsRule

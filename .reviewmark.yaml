@@ -141,14 +141,19 @@ reviews:
   - id: FileAssert-FileAssertData
     title: Review of FileAssert FileAssertData Unit
     paths:
+      - "docs/reqstream/configuration/file-assert-data.yaml"
       - "docs/design/configuration/file-assert-data.md"
       - "src/**/FileAssertData.cs"
+      - "test/**/FileAssertConfigTests.cs"
+      - "test/**/FileAssertFileTests.cs"
+      - "test/**/FileAssertRuleTests.cs"
 
   # Platform and OTS dependency reviews
   - id: Platform-Support
     title: Review of Platform and Runtime Support Requirements
     paths:
       - "docs/reqstream/platform-requirements.yaml"
+      - "test/**/IntegrationTests.cs"
 
   - id: OTS-Dependencies
     title: Review of Off-The-Shelf Software Dependencies
@@ -160,3 +165,4 @@ reviews:
       - "docs/reqstream/ots/sarifmark.yaml"
       - "docs/reqstream/ots/sonarmark.yaml"
       - "docs/reqstream/ots/reviewmark.yaml"
+      - "test/**/IntegrationTests.cs"
