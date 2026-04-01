@@ -13,10 +13,12 @@ by the Modeling subsystem.
 
 Represents a single content validation rule within a file assertion.
 
-| Property   | YAML alias  | Type      | Description                                     |
-| :--------- | :---------- | :-------- | :---------------------------------------------- |
-| `Contains` | `contains`  | `string?` | Substring that file content must contain.       |
-| `Matches`  | `matches`   | `string?` | Regular expression the file content must match. |
+| Property              | YAML alias               | Type      | Description                                         |
+| :-------------------- | :----------------------- | :-------- | :-------------------------------------------------- |
+| `Contains`            | `contains`               | `string?` | Substring that file content must contain.           |
+| `DoesNotContain`      | `does-not-contain`       | `string?` | Substring that file content must NOT contain.       |
+| `Matches`             | `matches`                | `string?` | Regular expression the file content must match.     |
+| `DoesNotContainRegex` | `does-not-contain-regex` | `string?` | Regular expression the file content must NOT match. |
 
 Exactly one property shall be set per rule. The `FileAssertRule.Create` factory enforces this.
 
@@ -24,30 +26,33 @@ Exactly one property shall be set per rule. The `FileAssertRule.Create` factory 
 
 Represents a file pattern assertion within a test.
 
-| Property  | YAML alias | Type                         | Description                                                  |
-| :-------- | :--------- | :--------------------------- | :----------------------------------------------------------- |
-| `Pattern` | `pattern`  | `string?`                    | Glob pattern used to locate files.                           |
-| `Min`     | `min`      | `int?`                       | Minimum number of matching files; null means no lower bound. |
-| `Max`     | `max`      | `int?`                       | Maximum number of matching files; null means no upper bound. |
-| `Rules`   | `rules`    | `List<FileAssertRuleData>?`  | Content rules applied to each matched file.                  |
+| Property  | YAML alias | Type                        | Description                                                  |
+| :-------- | :--------- | :-------------------------- | :----------------------------------------------------------- |
+| `Pattern` | `pattern`  | `string?`                   | Glob pattern used to locate files.                           |
+| `Min`     | `min`      | `int?`                      | Minimum number of matching files; null means no lower bound. |
+| `Max`     | `max`      | `int?`                      | Maximum number of matching files; null means no upper bound. |
+| `Count`   | `count`    | `int?`                      | Exact number of matching files; null means no exact bound.   |
+| `MinSize` | `min-size` | `long?`                     | Minimum file size in bytes; null means no lower bound.       |
+| `MaxSize` | `max-size` | `long?`                     | Maximum file size in bytes; null means no upper bound.       |
+| `Rules`   | `rules`    | `List<FileAssertRuleData>?` | Content rules applied to each matched file.                  |
 
 ### FileAssertTestData
 
 Represents a named test within the configuration.
 
-| Property | YAML alias | Type                         | Description                                   |
-| :------- | :--------- | :--------------------------- | :-------------------------------------------- |
-| `Name`   | `name`     | `string?`                    | Human-readable name for the test.             |
-| `Tags`   | `tags`     | `List<string>?`              | Tags used for command-line filter selection.  |
-| `Files`  | `files`    | `List<FileAssertFileData>?`  | File assertions belonging to this test.       |
+| Property | YAML alias | Type                        | Description                                  |
+| :------- | :--------- | :-------------------------- | :------------------------------------------- |
+| `Name`   | `name`     | `string?`                   | Human-readable name for the test.            |
+| `Tags`   | `tags`     | `List<string>?`             | Tags used for command-line filter selection. |
+| `Files`  | `files`    | `List<FileAssertFileData>?` | File assertions belonging to this test.      |
 
 ### FileAssertConfigData
 
 Represents the top-level configuration document.
 
-| Property | YAML alias | Type                         | Description                                   |
-| :------- | :--------- | :--------------------------- | :-------------------------------------------- |
-| `Tests`  | `tests`    | `List<FileAssertTestData>?`  | Tests defined in this configuration file.     |
+| Property | YAML alias | Type                        | Description                               |
+| :------- | :--------- | :-------------------------- | :---------------------------------------- |
+| `Tests`  | `tests`    | `List<FileAssertTestData>?` | Tests defined in this configuration file. |
 
 ## Design Decisions
 

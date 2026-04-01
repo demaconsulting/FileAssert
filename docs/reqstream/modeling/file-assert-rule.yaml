@@ -18,6 +18,8 @@ sections:
         tests:
           - FileAssertRule_Create_WithContains_ReturnsContainsRule
           - FileAssertRule_Create_WithMatches_ReturnsMatchesRule
+          - FileAssertRule_Create_WithDoesNotContain_ReturnsDoesNotContainRule
+          - FileAssertRule_Create_WithDoesNotContainRegex_ReturnsDoesNotMatchRule
           - FileAssertRule_Create_WithNoType_ThrowsInvalidOperationException
           - FileAssertRule_Create_WithNullData_ThrowsArgumentNullException
 
@@ -46,3 +48,28 @@ sections:
         tests:
           - FileAssertMatchesRule_Apply_ContentMatchesPattern_NoError
           - FileAssertMatchesRule_Apply_ContentDoesNotMatchPattern_WritesError
+
+      - id: FileAssert-FileAssertRule-DoesNotContainRule
+        title: |
+          The FileAssertDoesNotContainRule class shall report an error when file content
+          contains the forbidden substring.
+        justification: |
+          The does-not-contain rule is the inverse of the contains rule and allows users
+          to assert that sensitive or undesirable strings are absent from files. Using an
+          ordinal comparison ensures byte-exact matching and predictable behavior across
+          locales.
+        tests:
+          - FileAssertDoesNotContainRule_Apply_ContentContainsValue_WritesError
+          - FileAssertDoesNotContainRule_Apply_ContentMissingValue_NoError
+
+      - id: FileAssert-FileAssertRule-DoesNotContainRegexRule
+        title: |
+          The FileAssertDoesNotMatchRule class shall report an error when file content
+          matches the forbidden regular expression.
+        justification: |
+          The does-not-contain-regex rule is the inverse of the matches rule and enables
+          flexible forbidden-pattern checks. Compiling the regex with a timeout guards
+          against catastrophic backtracking on adversarial inputs.
+        tests:
+          - FileAssertDoesNotMatchRule_Apply_ContentMatchesPattern_WritesError
+          - FileAssertDoesNotMatchRule_Apply_ContentDoesNotMatchPattern_NoError

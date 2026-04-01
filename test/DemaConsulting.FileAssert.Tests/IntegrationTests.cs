@@ -605,4 +605,207 @@ public class IntegrationTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Test that an exact count constraint returns a non-zero exit code when file count is wrong.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create two files when the test asserts exactly one
+            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "ExactCountCheck"
+                    files:
+                      - pattern: "*.txt"
+                        count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the exact count constraint was not met
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a min-size constraint returns a non-zero exit code when file is too small.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create an empty file when the test requires at least 10 bytes
+            File.WriteAllText(Path.Combine(tempDir.FullName, "empty.txt"), string.Empty);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "MinSizeCheck"
+                    files:
+                      - pattern: "*.txt"
+                        min-size: 10
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the file is smaller than the minimum size
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a max-size constraint returns a non-zero exit code when file is too large.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file with content larger than 5 bytes
+            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this content is more than five bytes");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "MaxSizeCheck"
+                    files:
+                      - pattern: "*.txt"
+                        max-size: 5
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the file exceeds the maximum size
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a does-not-contain rule returns a non-zero exit code when forbidden text is present.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file that contains the forbidden text
+            File.WriteAllText(Path.Combine(tempDir.FullName, "config.txt"), "password123=secret");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "NoSecretsCheck"
+                    files:
+                      - pattern: "*.txt"
+                        rules:
+                          - does-not-contain: "password123"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the forbidden text is present
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a does-not-contain-regex rule returns a non-zero exit code when the forbidden pattern matches.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file that matches the forbidden pattern
+            File.WriteAllText(Path.Combine(tempDir.FullName, "app.log"), "FATAL: unexpected error occurred");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "NoFatalErrorsCheck"
+                    files:
+                      - pattern: "*.log"
+                        rules:
+                          - does-not-contain-regex: "FATAL|ERROR"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the forbidden pattern matched
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }

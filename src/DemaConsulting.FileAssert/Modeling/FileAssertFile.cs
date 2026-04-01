@@ -36,13 +36,19 @@ internal sealed class FileAssertFile
     /// <param name="pattern">The glob pattern used to match files.</param>
     /// <param name="min">The minimum number of files that must match, or null for no lower bound.</param>
     /// <param name="max">The maximum number of files that may match, or null for no upper bound.</param>
+    /// <param name="count">The exact number of files that must match, or null for no constraint.</param>
+    /// <param name="minSize">The minimum file size in bytes, or null for no constraint.</param>
+    /// <param name="maxSize">The maximum file size in bytes, or null for no constraint.</param>
     /// <param name="rules">The content rules to apply to each matching file.</param>
-    private FileAssertFile(string pattern, int? min, int? max, IReadOnlyList<FileAssertRule> rules)
+    private FileAssertFile(string pattern, int? min, int? max, int? count, long? minSize, long? maxSize, IReadOnlyList<FileAssertRule> rules)
     {
         // Store all validated properties for use during execution
         Pattern = pattern;
         Min = min;
         Max = max;
+        Count = count;
+        MinSize = minSize;
+        MaxSize = maxSize;
         Rules = rules;
     }
 
@@ -60,6 +66,21 @@ internal sealed class FileAssertFile
     ///     Gets the maximum number of files that may match the pattern, or null for no constraint.
     /// </summary>
     internal int? Max { get; }
+
+    /// <summary>
+    ///     Gets the exact number of files that must match the pattern, or null for no constraint.
+    /// </summary>
+    internal int? Count { get; }
+
+    /// <summary>
+    ///     Gets the minimum file size in bytes, or null for no constraint.
+    /// </summary>
+    internal long? MinSize { get; }
+
+    /// <summary>
+    ///     Gets the maximum file size in bytes, or null for no constraint.
+    /// </summary>
+    internal long? MaxSize { get; }
 
     /// <summary>
     ///     Gets the list of content validation rules to apply to each matching file.
@@ -90,7 +111,7 @@ internal sealed class FileAssertFile
             .ToList();
 
         // Return the fully constructed file assertion
-        return new FileAssertFile(data.Pattern, data.Min, data.Max, rules.AsReadOnly());
+        return new FileAssertFile(data.Pattern, data.Min, data.Max, data.Count, data.MinSize, data.MaxSize, rules.AsReadOnly());
     }
 
     /// <summary>
@@ -127,18 +148,50 @@ internal sealed class FileAssertFile
             return;
         }
 
-        // Apply content rules to each matching file when rules are defined
-        if (Rules.Count > 0)
+        // Enforce the exact file count constraint if specified
+        if (Count.HasValue && count != Count.Value)
+        {
+            context.WriteError(
+                $"Pattern '{Pattern}' matched {count} file(s), but expected exactly {Count.Value}");
+            return;
+        }
+
+        // Apply per-file size and content constraints when any are defined
+        if (MinSize.HasValue || MaxSize.HasValue || Rules.Count > 0)
         {
             foreach (var file in files)
             {
-                // Read the full text of the file for content validation
-                var content = File.ReadAllText(Path.Combine(basePath, file));
+                var fullPath = Path.Combine(basePath, file);
 
-                // Apply each rule to validate the file content
-                foreach (var rule in Rules)
+                // Enforce minimum file size constraint if specified
+                if (MinSize.HasValue || MaxSize.HasValue)
                 {
-                    rule.Apply(context, file, content);
+                    var size = new FileInfo(fullPath).Length;
+
+                    if (MinSize.HasValue && size < MinSize.Value)
+                    {
+                        context.WriteError(
+                            $"File '{file}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
+                    }
+
+                    if (MaxSize.HasValue && size > MaxSize.Value)
+                    {
+                        context.WriteError(
+                            $"File '{file}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
+                    }
+                }
+
+                // Apply content rules when rules are defined
+                if (Rules.Count > 0)
+                {
+                    // Read the full text of the file for content validation
+                    var content = File.ReadAllText(fullPath);
+
+                    // Apply each rule to validate the file content
+                    foreach (var rule in Rules)
+                    {
+                        rule.Apply(context, file, content);
+                    }
                 }
             }
         }

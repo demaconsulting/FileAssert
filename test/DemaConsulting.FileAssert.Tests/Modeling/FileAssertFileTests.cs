@@ -241,4 +241,86 @@ public class FileAssertFileTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the file count does not match the exact count constraint.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Run_WrongCount_WritesError()
+    {
+        // Arrange - create two files but constrain count to exactly 1
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
+            var data = new FileAssertFileData { Pattern = "*.txt", Count = 1 };
+            var file = FileAssertFile.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            file.Run(context, tempDir.FullName);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when a file is smaller than the minimum size.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Run_TooSmall_WritesError()
+    {
+        // Arrange - create an empty file and require at least 10 bytes
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "small.txt"), string.Empty);
+            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 10 };
+            var file = FileAssertFile.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            file.Run(context, tempDir.FullName);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when a file exceeds the maximum size.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Run_TooLarge_WritesError()
+    {
+        // Arrange - create a file with content larger than 5 bytes
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this content is more than five bytes");
+            var data = new FileAssertFileData { Pattern = "*.txt", MaxSize = 5 };
+            var file = FileAssertFile.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            file.Run(context, tempDir.FullName);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }

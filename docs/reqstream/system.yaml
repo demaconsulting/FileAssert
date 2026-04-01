@@ -110,3 +110,54 @@ sections:
         tests:
           - IntegrationTest_RegexRule_MatchingContent_ReturnsZero
           - IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero
+
+      - id: FileAssert-System-ExactCountConstraint
+        title: |
+          The FileAssert tool shall return a non-zero exit code when the number of files
+          matching a glob pattern does not equal the declared exact count constraint.
+        justification: |
+          An exact count constraint is stricter than min/max and is needed when users
+          must assert that precisely one artifact, configuration file, or report was
+          produced. Any deviation from the expected count is a configuration drift
+          that should be caught immediately.
+        tests:
+          - IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero
+
+      - id: FileAssert-System-FileSizeConstraints
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          size violates the declared min-size or max-size constraint.
+        justification: |
+          File size constraints guard against accidentally empty build outputs (min-size)
+          or unexpectedly large files such as debug binaries committed to the repository
+          (max-size). Enforcing these constraints at the system level confirms that the
+          YAML configuration, deserialization, and file system inspection all integrate
+          correctly.
+        tests:
+          - IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero
+          - IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
+
+      - id: FileAssert-System-DoesNotContainRule
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          content contains a forbidden substring declared by the does-not-contain rule.
+        justification: |
+          The does-not-contain rule is the inverse of the contains rule and is used to
+          assert that sensitive strings such as hard-coded passwords or debug flags are
+          absent from committed files. System-level verification confirms the rule
+          integrates correctly from YAML configuration through to the exit code.
+        tests:
+          - IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero
+
+      - id: FileAssert-System-DoesNotContainRegexRule
+        title: |
+          The FileAssert tool shall return a non-zero exit code when a matched file's
+          content matches a forbidden regular expression declared by the
+          does-not-contain-regex rule.
+        justification: |
+          The does-not-contain-regex rule allows flexible forbidden-pattern checks such
+          as asserting that log files contain no FATAL or ERROR entries. System-level
+          verification confirms the rule integrates correctly from YAML configuration
+          through to the exit code.
+        tests:
+          - IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero

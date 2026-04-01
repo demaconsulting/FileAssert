@@ -34,10 +34,22 @@ internal sealed class FileAssertRuleData
     public string? Contains { get; set; }
 
     /// <summary>
+    ///     Gets or sets the substring that the file content must NOT contain.
+    /// </summary>
+    [YamlMember(Alias = "does-not-contain")]
+    public string? DoesNotContain { get; set; }
+
+    /// <summary>
     ///     Gets or sets the regular expression pattern that the file content must match.
     /// </summary>
     [YamlMember(Alias = "matches")]
     public string? Matches { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the regular expression pattern that the file content must NOT match.
+    /// </summary>
+    [YamlMember(Alias = "does-not-contain-regex")]
+    public string? DoesNotContainRegex { get; set; }
 }
 
 /// <summary>
@@ -62,6 +74,24 @@ internal sealed class FileAssertFileData
     /// </summary>
     [YamlMember(Alias = "max")]
     public int? Max { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the exact number of files that must match the pattern.
+    /// </summary>
+    [YamlMember(Alias = "count")]
+    public int? Count { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the minimum file size in bytes.
+    /// </summary>
+    [YamlMember(Alias = "min-size")]
+    public long? MinSize { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the maximum file size in bytes.
+    /// </summary>
+    [YamlMember(Alias = "max-size")]
+    public long? MaxSize { get; set; }
 
     /// <summary>
     ///     Gets or sets the list of content rules to apply to each matching file.
