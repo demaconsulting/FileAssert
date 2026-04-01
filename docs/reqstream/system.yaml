@@ -47,3 +47,38 @@ sections:
           would otherwise appear on the console.
         tests:
           - IntegrationTest_LogFlag_WritesOutputToFile
+
+      - id: FileAssert-System-ConfigFile
+        title: |
+          The FileAssert tool shall load the YAML test suite from the path specified by the
+          --config flag, or from the default '.fileassert.yaml' when the flag is absent.
+        justification: |
+          Supporting a custom configuration file path lets users maintain multiple test suites
+          and select the appropriate one per invocation. The default path ensures the common
+          single-suite case requires no additional arguments.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
+
+      - id: FileAssert-System-Results
+        title: |
+          The FileAssert tool shall write self-validation test results to a TRX or JUnit XML
+          file when invoked with --validate and the --results flag.
+        justification: |
+          CI/CD systems and regulated environments require machine-readable test result formats
+          to collect tool-validation evidence. TRX format is compatible with MSTest and Azure
+          Pipelines; JUnit XML is supported by Jenkins, GitLab CI, and most other CI tools.
+        tests:
+          - IntegrationTest_ValidateWithResults_GeneratesTrxFile
+          - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
+
+      - id: FileAssert-System-TestFiltering
+        title: |
+          The FileAssert tool shall run only the tests whose name or tags match any of the
+          positional name-or-tag arguments provided on the command line.
+        justification: |
+          Selective test execution is essential for phased CI/CD pipelines where only a subset
+          of tests (for example, smoke tests) should run in a given stage. Filtering by name or
+          tag keeps the command line concise and consistent with common CLI testing tools.
+        tests:
+          - IntegrationTest_TestFiltering_OnlyRunsMatchingTests

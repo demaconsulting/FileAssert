@@ -50,10 +50,12 @@ Inspects context flags in the following priority order:
 private static void RunToolLogic(Context context)
 ```
 
-Checks whether the configuration file exists. When the default configuration file is absent, it
-prints guidance without setting an error. When an explicit configuration file is absent, it calls
+Resolves the configuration file from `context.ConfigFile` (defaulting to `.fileassert.yaml`;
+overridden by `--config`). When the default configuration file is absent, it prints guidance
+without setting an error. When an explicitly specified file is absent, it calls
 `context.WriteError` to signal failure. When the file exists, it calls
-`FileAssertConfig.ReadFromFile` and then `config.Run`.
+`FileAssertConfig.ReadFromFile` and then passes `context.Filters` (the positional name-or-tag
+arguments) to `config.Run` so that only matching tests are executed.
 
 ## Interactions with Other Units
 

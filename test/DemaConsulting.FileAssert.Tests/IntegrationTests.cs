@@ -249,6 +249,54 @@ public class IntegrationTests
     }
 
     /// <summary>
+    ///     Test that positional name/tag filter arguments cause only matching tests to run.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_TestFiltering_OnlyRunsMatchingTests()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create a file that the smoke test will assert against
+            File.WriteAllText(Path.Combine(tempDir.FullName, "smoke.txt"), "smoke content");
+
+            // Write a config with a passing "smoke" test and a failing "regression" test
+            // (regression test references a file that does not exist with min: 1)
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "SmokeTest"
+                    tags: [smoke]
+                    files:
+                      - pattern: "smoke.txt"
+                        min: 1
+                  - name: "RegressionTest"
+                    tags: [regression]
+                    files:
+                      - pattern: "missing.txt"
+                        min: 1
+                """);
+
+            // Act - filter to only the "smoke" tag; the regression test should not run
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--config",
+                configPath,
+                "smoke");
+
+            // Assert - exit code 0 because the failing regression test was skipped by the filter
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
     ///     Test that a valid configuration file causes the tool to run assertions and succeed.
     /// </summary>
     [TestMethod]

@@ -43,3 +43,27 @@ sections:
           programmatically via the process exit code.
         tests:
           - IntegrationTest_UnknownArgument_ReturnsError
+
+      - id: FileAssert-Program-Config
+        title: |
+          The Program class shall use the configuration file path from --config (or the default
+          '.fileassert.yaml') when loading and executing the YAML test suite.
+        justification: |
+          The Program class dispatches to RunToolLogic, which reads context.ConfigFile to locate
+          the test suite. Capturing this at the requirement level ensures the --config flag is
+          explicitly exercised through the full program dispatch path.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
+
+      - id: FileAssert-Program-FilterTests
+        title: |
+          The Program class shall pass positional name-or-tag filter arguments to the
+          configuration runner so that only matching tests are executed.
+        justification: |
+          The Program class assembles the complete set of arguments and delegates execution to
+          FileAssertConfig.Run with context.Filters. A program-level requirement ensures the
+          end-to-end path from CLI filter arguments to selective test execution is explicitly
+          verified.
+        tests:
+          - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
