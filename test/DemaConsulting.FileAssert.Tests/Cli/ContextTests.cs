@@ -392,5 +392,36 @@ public class ContextTests
             }
         }
     }
-}
 
+    /// <summary>
+    ///     Test that ErrorCount starts at zero and increments with each WriteError call.
+    /// </summary>
+    [TestMethod]
+    public void Context_ErrorCount_IncrementsOnEachWriteError()
+    {
+        // Arrange
+        var originalError = Console.Error;
+        try
+        {
+            using var errWriter = new StringWriter();
+            Console.SetError(errWriter);
+            using var context = Context.Create(["--silent"]);
+
+            // Assert initial state
+            Assert.AreEqual(0, context.ErrorCount);
+
+            // Act - report two errors
+            context.WriteError("First error");
+            Assert.AreEqual(1, context.ErrorCount);
+
+            context.WriteError("Second error");
+
+            // Assert
+            Assert.AreEqual(2, context.ErrorCount);
+        }
+        finally
+        {
+            Console.SetError(originalError);
+        }
+    }
+}

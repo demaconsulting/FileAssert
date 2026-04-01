@@ -96,3 +96,14 @@ sections:
           - Context_Create_PositionalArguments_AddedToFilters
           - Context_Create_MixedArguments_ParsesCorrectly
           - Context_Create_UnknownFlagWithDash_ThrowsArgumentException
+
+      - id: FileAssert-Context-ErrorCount
+        title: The Context class shall expose an error count that increments each time WriteError is called.
+        justification: |
+          Callers that execute multiple named tests in sequence need to determine whether
+          a specific test introduced new errors, independently of errors from previous tests.
+          A monotonically incrementing error count allows the caller to take a snapshot
+          before the test and compare after to derive a per-test pass/fail outcome without
+          requiring a separate context per test.
+        tests:
+          - Context_ErrorCount_IncrementsOnEachWriteError

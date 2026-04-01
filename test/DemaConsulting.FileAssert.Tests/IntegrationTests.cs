@@ -379,4 +379,108 @@ public class IntegrationTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Test that passing file assertions write a TRX results file with Passed outcomes.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_PassingAssertions_WritesTrxWithPassedResults()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"integration_test_{Guid.NewGuid()}.trx");
+        try
+        {
+            // Create a file that satisfies the assertion
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "Copyright (c) DEMA Consulting");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "LicenseCheck"
+                    files:
+                      - pattern: "*.txt"
+                        min: 1
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--config",
+                configPath,
+                "--results",
+                resultsFile);
+
+            // Assert - exit code 0 and TRX file contains LicenseCheck with Passed outcome
+            Assert.AreEqual(0, exitCode);
+            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            var trxContent = File.ReadAllText(resultsFile);
+            Assert.Contains("LicenseCheck", trxContent);
+            Assert.Contains("outcome=\"Passed\"", trxContent);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+            if (File.Exists(resultsFile))
+            {
+                File.Delete(resultsFile);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Test that failing file assertions write a JUnit results file with failure entries.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"integration_test_{Guid.NewGuid()}.xml");
+        try
+        {
+            // Create a file that does NOT satisfy the assertion
+            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "no license here");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "LicenseCheck"
+                    files:
+                      - pattern: "*.txt"
+                        rules:
+                          - contains: "Copyright"
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath,
+                "--results",
+                resultsFile);
+
+            // Assert - non-zero exit code and JUnit file contains LicenseCheck with a failure entry
+            Assert.AreNotEqual(0, exitCode);
+            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            var xmlContent = File.ReadAllText(resultsFile);
+            Assert.Contains("LicenseCheck", xmlContent);
+            Assert.Contains("failures=\"1\"", xmlContent);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+            if (File.Exists(resultsFile))
+            {
+                File.Delete(resultsFile);
+            }
+        }
+    }
 }

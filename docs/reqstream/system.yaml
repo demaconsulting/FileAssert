@@ -62,15 +62,19 @@ sections:
 
       - id: FileAssert-System-Results
         title: |
-          The FileAssert tool shall write self-validation test results to a TRX or JUnit XML
-          file when invoked with --validate and the --results flag.
+          The FileAssert tool shall write test results to a TRX or JUnit XML
+          file when invoked with the --results flag.
         justification: |
           CI/CD systems and regulated environments require machine-readable test result formats
           to collect tool-validation evidence. TRX format is compatible with MSTest and Azure
           Pipelines; JUnit XML is supported by Jenkins, GitLab CI, and most other CI tools.
+          Results are written both from the self-validation path (--validate --results) and from
+          the normal file assertion path (--results without --validate).
         tests:
           - IntegrationTest_ValidateWithResults_GeneratesTrxFile
           - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
+          - IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
+          - IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults
 
       - id: FileAssert-System-TestFiltering
         title: |

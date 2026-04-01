@@ -48,7 +48,23 @@ Execution proceeds as follows:
    glob patterns in file assertions are resolved relative to the configuration file
    location, not the working directory.
 2. The `filters` collection is materialized to avoid multiple enumeration.
-3. Each test that satisfies `MatchesFilter(filterList)` is executed in order.
+3. A `TestResults` collection is created when `context.ResultsFile` is set.
+4. For each test that satisfies `MatchesFilter(filterList)`:
+   a. The test's start time and the current `context.ErrorCount` are recorded.
+   b. The test is executed.
+   c. If results serialization is active, a `TestResult` is appended with outcome
+      `Passed` when no new errors were recorded, or `Failed` when
+      `context.ErrorCount` increased during the test's execution.
+5. When results serialization is active, the results file is written in TRX format
+   (`.trx` extension) or JUnit XML format (`.xml` extension) after all tests complete.
+
+### Results Serialization
+
+When `context.ResultsFile` is non-null, `Run` collects one `TestResult` per executed
+test (tests skipped by the filter are not recorded) and calls `WriteResultsFile` after
+the test loop. `WriteResultsFile` serializes using `TrxSerializer.Serialize` or
+`JUnitSerializer.Serialize` from `DemaConsulting.TestResults.IO`, selecting the format
+from the file extension.
 
 ## YAML Configuration Format
 
@@ -86,3 +102,7 @@ file is absent, the tool reports an error and exits with a non-zero code.
 - **Base directory from config path**: Resolving glob patterns relative to the
   configuration file location is more intuitive than using the working directory,
   particularly when the tool is invoked from a build script in a different directory.
+- **Per-test pass/fail via ErrorCount snapshot**: Rather than routing errors through
+  a per-test sub-context, `Run` snapshots `context.ErrorCount` before each test and
+  compares after. This reuses the existing error-reporting path without additional
+  abstraction. Tests that were skipped by the filter are not recorded in the results.
