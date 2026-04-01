@@ -1,25 +1,25 @@
 ---
 # Root requirements file - includes all subsystem, platform, and OTS requirements
 includes:
-  - docs/reqstream/fileassert-system.yaml
-  - docs/reqstream/subsystem-cli.yaml
-  - docs/reqstream/subsystem-configuration.yaml
-  - docs/reqstream/subsystem-modeling.yaml
-  - docs/reqstream/subsystem-utilities.yaml
-  - docs/reqstream/subsystem-selftest.yaml
-  - docs/reqstream/unit-context.yaml
-  - docs/reqstream/unit-program.yaml
-  - docs/reqstream/unit-validation.yaml
-  - docs/reqstream/unit-path-helpers.yaml
-  - docs/reqstream/unit-file-assert-rule.yaml
-  - docs/reqstream/unit-file-assert-file.yaml
-  - docs/reqstream/unit-file-assert-test.yaml
-  - docs/reqstream/unit-file-assert-config.yaml
+  - docs/reqstream/system.yaml
+  - docs/reqstream/program.yaml
+  - docs/reqstream/cli/cli.yaml
+  - docs/reqstream/cli/context.yaml
+  - docs/reqstream/configuration/configuration.yaml
+  - docs/reqstream/configuration/file-assert-config.yaml
+  - docs/reqstream/modeling/modeling.yaml
+  - docs/reqstream/modeling/file-assert-test.yaml
+  - docs/reqstream/modeling/file-assert-file.yaml
+  - docs/reqstream/modeling/file-assert-rule.yaml
+  - docs/reqstream/utilities/utilities.yaml
+  - docs/reqstream/utilities/path-helpers.yaml
+  - docs/reqstream/selftest/selftest.yaml
+  - docs/reqstream/selftest/validation.yaml
   - docs/reqstream/platform-requirements.yaml
-  - docs/reqstream/ots-mstest.yaml
-  - docs/reqstream/ots-reqstream.yaml
-  - docs/reqstream/ots-buildmark.yaml
-  - docs/reqstream/ots-versionmark.yaml
-  - docs/reqstream/ots-sarifmark.yaml
-  - docs/reqstream/ots-sonarmark.yaml
-  - docs/reqstream/ots-reviewmark.yaml
+  - docs/reqstream/ots/mstest.yaml
+  - docs/reqstream/ots/reqstream.yaml
+  - docs/reqstream/ots/buildmark.yaml
+  - docs/reqstream/ots/versionmark.yaml
+  - docs/reqstream/ots/sarifmark.yaml
+  - docs/reqstream/ots/sonarmark.yaml
+  - docs/reqstream/ots/reviewmark.yaml
