@@ -24,6 +24,11 @@ This document covers the detailed design of the following software units:
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
 
+The following cross-cutting design topics are also covered:
+
+- **Platform** — multi-platform support design and CI/CD test matrix (`platform.md`)
+- **OTS Dependencies** — off-the-shelf tool dependencies and their roles (`ots-dependencies.md`)
+
 The following topics are out of scope:
 
 - External library internals (YamlDotNet, Microsoft.Extensions.FileSystemGlobbing,
