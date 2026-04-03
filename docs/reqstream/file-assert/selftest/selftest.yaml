@@ -19,7 +19,7 @@ sections:
           - SelfTestSubsystem_Run_ExecutesBuiltInTestsAndProducesSummary
 
       - id: FileAssert-SelfTestSubsystem-ResultsSerialization
-        title: The SelfTest subsystem shall write validation results to a file in TRX or JUnit XML format when requested.
+        title: The SelfTest subsystem shall write validation results to a TRX or JUnit XML file when requested.
         justification: |
           CI/CD pipelines and regulated environments require machine-readable test result files
           to collect evidence that self-validation passed. Supporting both TRX and JUnit XML
