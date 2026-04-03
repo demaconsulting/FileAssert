@@ -42,9 +42,12 @@ internal static class PathHelpers
         var combinedPath = Path.Combine(basePath, relativePath);
 
         // Security check: verify the combined path stays under the base directory.
+        // Trim any trailing separator from the resolved base so that appending one
+        // separator produces a clean prefix (e.g. base="/a/b/" would otherwise yield
+        // fullBasePathWithSeparator="/a/b//" which never matches the combined path).
         // Append a trailing directory separator to the base so that a partial match
         // (e.g. base="/a/b" vs combined="/a/bc/...") is not treated as "inside" the base.
-        var fullBasePath = Path.GetFullPath(basePath);
+        var fullBasePath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(basePath));
         var fullCombinedPath = Path.GetFullPath(combinedPath);
         var fullBasePathWithSeparator = fullBasePath + Path.DirectorySeparatorChar;
 
