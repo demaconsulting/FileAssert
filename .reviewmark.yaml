@@ -163,16 +163,10 @@ reviews:
       - "test/**/FileAssertFileTests.cs"
       - "test/**/FileAssertRuleTests.cs"
 
-  # Platform and OTS dependency reviews
+  # Platform review
   - id: FileAssert-Platform
     title: Review of Platform and Runtime Support Requirements
     paths:
       - "docs/reqstream/file-assert/platform-requirements.yaml"
       - "docs/design/file-assert/platform.md"
       - "test/**/IntegrationTests.cs"
-
-  - id: FileAssert-OtsDependencies
-    title: Review of Off-The-Shelf Software Dependencies
-    paths:
-      - "docs/reqstream/ots/**/*.yaml"
-      - "docs/design/file-assert/ots-dependencies.md"
