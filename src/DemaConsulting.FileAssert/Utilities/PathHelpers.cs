@@ -38,8 +38,13 @@ internal static class PathHelpers
         ArgumentNullException.ThrowIfNull(basePath);
         ArgumentNullException.ThrowIfNull(relativePath);
 
-        // Ensure the relative path doesn't contain path traversal sequences
-        if (relativePath.Contains("..") || Path.IsPathRooted(relativePath))
+        // Ensure the relative path doesn't contain path traversal sequences.
+        // Split by directory separators and check each component to avoid false positives
+        // for filenames that contain ".." as a substring (e.g. "my..file.txt").
+        var pathComponents = relativePath.Split(
+            [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+            StringSplitOptions.None);
+        if (pathComponents.Any(c => c == "..") || Path.IsPathRooted(relativePath))
         {
             throw new ArgumentException($"Invalid path component: {relativePath}", nameof(relativePath));
         }

@@ -153,6 +153,23 @@ public class PathHelpersTests
     }
 
     /// <summary>
+    ///     Test that SafePathCombine allows filenames that contain ".." as a substring but not as a path component.
+    /// </summary>
+    [TestMethod]
+    public void PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly()
+    {
+        // Arrange - filename with ".." as substring, not a path traversal component
+        var basePath = "/home/user/project";
+        var relativePath = "my..file.txt";
+
+        // Act
+        var result = PathHelpers.SafePathCombine(basePath, relativePath);
+
+        // Assert
+        Assert.AreEqual(Path.Combine(basePath, relativePath), result);
+    }
+
+    /// <summary>
     ///     Test that SafePathCombine throws ArgumentNullException when base path is null.
     /// </summary>
     [TestMethod]

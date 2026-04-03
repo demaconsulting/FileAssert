@@ -19,6 +19,7 @@ sections:
           - FileAssertFile_Create_ValidData_CreatesFile
           - FileAssertFile_Create_NullData_ThrowsArgumentNullException
           - FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException
+          - FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException
 
       - id: FileAssert-FileAssertFile-CountConstraints
         title: The FileAssertFile class shall enforce optional minimum and maximum file count constraints.
@@ -42,6 +43,7 @@ sections:
         tests:
           - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
           - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError
+          - FileAssertFile_Run_MultipleFiles_OneFailsContentRule_WritesError
 
       - id: FileAssert-FileAssertFile-ExactCount
         title: The FileAssertFile class shall enforce an exact file count constraint when declared.
@@ -66,3 +68,4 @@ sections:
         tests:
           - FileAssertFile_Run_TooSmall_WritesError
           - FileAssertFile_Run_TooLarge_WritesError
+          - FileAssertFile_Run_MultipleFiles_OneViolatesSizeConstraint_WritesError

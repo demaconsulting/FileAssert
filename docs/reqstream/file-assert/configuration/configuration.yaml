@@ -28,3 +28,4 @@ sections:
           that filtering works correctly across the full load-and-run pipeline.
         tests:
           - ConfigurationSubsystem_RunWithFilter_ExecutesOnlyMatchingTests
+          - ConfigurationSubsystem_RunWithTagFilter_ExecutesOnlyMatchingTests

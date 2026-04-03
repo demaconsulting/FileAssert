@@ -20,7 +20,7 @@ the base directory.
 **Validation steps:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Reject `relativePath` values that contain `..` (path traversal).
+2. Reject `relativePath` values that contain `..` as a path component (path traversal).
 3. Reject `relativePath` values that are rooted (absolute paths).
 4. Combine the paths with `Path.Combine`.
 5. Compute the full (canonical) paths of both base and combined paths.

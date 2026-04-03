@@ -74,6 +74,20 @@ public class FileAssertFileTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Pattern is blank.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new FileAssertFileData { Pattern = "   " };
+
+        // Act & Assert
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertFile.Create(data));
+        Assert.Contains("pattern", exception.Message);
+    }
+
+    /// <summary>
     ///     Verifies that Run produces no error when there are no matching files and no constraints.
     /// </summary>
     [TestMethod]
@@ -316,6 +330,66 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run checks size constraints against every matched file, not just the first.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Run_MultipleFiles_OneViolatesSizeConstraint_WritesError()
+    {
+        // Arrange - create two files: one large enough, one too small
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "ok.txt"), "enough content here");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "small.txt"), string.Empty);
+            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 5 };
+            var file = FileAssertFile.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            file.Run(context, tempDir.FullName);
+
+            // Assert - the small file should trigger an error
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run applies content rules to every matched file, not just the first.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertFile_Run_MultipleFiles_OneFailsContentRule_WritesError()
+    {
+        // Arrange - create two files: one with required content, one without
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "good.txt"), "expected content here");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "bad.txt"), "unrelated content");
+            var data = new FileAssertFileData
+            {
+                Pattern = "*.txt",
+                Rules = [new FileAssertRuleData { Contains = "expected content" }]
+            };
+            var file = FileAssertFile.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            file.Run(context, tempDir.FullName);
+
+            // Assert - the bad file should trigger an error
             Assert.AreEqual(1, context.ExitCode);
         }
         finally

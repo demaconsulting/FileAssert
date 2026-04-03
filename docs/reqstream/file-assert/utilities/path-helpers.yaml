@@ -22,6 +22,7 @@ sections:
           - PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
           - PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
           - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
+          - PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
 
       - id: FileAssert-PathHelpers-NullValidation
         title: The PathHelpers class shall reject null base or relative path arguments.

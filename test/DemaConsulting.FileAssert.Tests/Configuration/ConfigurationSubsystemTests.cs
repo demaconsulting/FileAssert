@@ -115,4 +115,50 @@ public class ConfigurationSubsystemTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Verifies that the Configuration subsystem executes only tests whose tag matches
+    ///     the provided filter when running a configuration with multiple tests.
+    /// </summary>
+    [TestMethod]
+    public void ConfigurationSubsystem_RunWithTagFilter_ExecutesOnlyMatchingTests()
+    {
+        // Arrange - two tests with different tags; only one file exists so only that test passes
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
+        try
+        {
+            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "Alpha"
+                    tags:
+                      - smoke
+                    files:
+                      - pattern: "alpha.txt"
+                        min: 1
+                  - name: "Beta"
+                    tags:
+                      - regression
+                    files:
+                      - pattern: "beta.txt"
+                        min: 1
+                """);
+
+            // Create only alpha.txt so the Alpha test passes and Beta would fail
+            File.WriteAllText(Path.Combine(tempDir.FullName, "alpha.txt"), "content");
+
+            var config = FileAssertConfig.ReadFromFile(configPath);
+            using var context = Context.Create(["--silent"]);
+
+            // Act - run with the "smoke" tag filter only
+            config.Run(context, ["smoke"]);
+
+            // Assert - no errors because only Alpha ran (matching the smoke tag) and alpha.txt exists
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }
