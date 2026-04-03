@@ -3,8 +3,10 @@
 ## Overview
 
 `PathHelpers` is a static utility class that provides a safe path-combination method. It
-protects callers against path-traversal attacks by verifying the canonical combined path
-stays within the base directory, regardless of the form of the relative path input.
+protects callers against path-traversal attacks by verifying the resolved combined path stays
+within the base directory. Note that `Path.GetFullPath` normalizes `.`/`..` segments but does
+not resolve symlinks or reparse points, so this check guards against string-level traversal
+only.
 
 ## Class Structure
 
@@ -20,26 +22,24 @@ the base directory.
 **Validation steps:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Combine the paths with `Path.Combine`.
-3. Compute the absolute canonical path of the base directory and derive a form with a trailing
-   directory separator appended (e.g. `/home/user/project/`). The trailing separator prevents
-   partial-segment false-positives such as `/base/dir` incorrectly matching `/base/dir2/...`.
-4. Compute the absolute canonical path of the combined result.
-5. Verify the combined path either equals the base directory or starts with the base path prefix
-   using a platform-appropriate comparison (case-insensitive on Windows/macOS, case-sensitive on
-   Linux); reject if it escapes the base directory.
+2. Combine the paths with `Path.Combine` to produce the candidate path (preserving the
+   caller's relative/absolute style).
+3. Resolve both `basePath` and the candidate to absolute form with `Path.GetFullPath`.
+4. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)` and reject the input if
+   the result is exactly `".."`, starts with `".."` followed by `Path.DirectorySeparatorChar`
+   or `Path.AltDirectorySeparatorChar`, or is itself rooted (absolute), which would indicate
+   the combined path escapes the base directory.
 
 ## Design Decisions
 
-- **Single canonical-path check**: The combined path is resolved to its absolute canonical form
-  and verified to start with the base directory prefix (with trailing separator). This single
-  check handles all traversal patterns — `../`, embedded `/../`, absolute paths, and edge-case
-  platform path formats — without requiring multiple pre-combine inspections.
-- **Trailing separator on base path**: Appending `Path.DirectorySeparatorChar` to the base
-  before the `StartsWith` check prevents partial-segment false-positives (e.g. base `/a/b`
-  incorrectly matching combined `/a/bc/file`).
-- **Platform-appropriate comparison**: Case-insensitive on Windows and macOS; case-sensitive on
-  Linux, matching each platform's file-system semantics.
+- **`Path.GetRelativePath` for containment check**: Using `GetRelativePath` to verify
+  containment handles root paths (e.g. `/`, `C:\`), platform case-sensitivity, and
+  directory-separator normalization natively. The containment test should treat `..` as an
+  escaping segment only when it is the entire relative result or is followed by a directory
+  separator, avoiding false positives for valid in-base names such as `..data`.
+- **Post-combine canonical-path check**: Resolving paths after combining handles all traversal
+  patterns — `../`, embedded `/../`, absolute-path overrides, and platform edge cases —
+  without fragile pre-combine string inspection of `relativePath`.
 - **ArgumentException on invalid input**: Callers receive a specific `ArgumentException`
   identifying `relativePath` as the problematic parameter, making debugging straightforward.
 - **No logging or error accumulation**: `SafePathCombine` is a pure utility method that throws
