@@ -43,7 +43,7 @@ sections:
         tests:
           - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
           - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError
-          - FileAssertFile_Run_MultipleFiles_OneFailsContentRule_WritesError
+          - FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation
 
       - id: FileAssert-FileAssertFile-ExactCount
         title: The FileAssertFile class shall enforce an exact file count constraint when declared.
@@ -68,4 +68,4 @@ sections:
         tests:
           - FileAssertFile_Run_TooSmall_WritesError
           - FileAssertFile_Run_TooLarge_WritesError
-          - FileAssertFile_Run_MultipleFiles_OneViolatesSizeConstraint_WritesError
+          - FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation

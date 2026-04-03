@@ -3,8 +3,8 @@
 ## Overview
 
 `PathHelpers` is a static utility class that provides a safe path-combination method. It
-protects callers against path-traversal attacks by rejecting relative paths that contain `..`
-or that are rooted (absolute) paths.
+protects callers against path-traversal attacks by verifying the canonical combined path
+stays within the base directory, regardless of the form of the relative path input.
 
 ## Class Structure
 
@@ -20,18 +20,26 @@ the base directory.
 **Validation steps:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Reject `relativePath` values that contain `..` as a path component (path traversal).
-3. Reject `relativePath` values that are rooted (absolute paths).
-4. Combine the paths with `Path.Combine`.
-5. Compute the full (canonical) paths of both base and combined paths.
-6. Use `Path.GetRelativePath` to verify the combined path is still under the base; reject if
-   it escapes the base directory.
+2. Combine the paths with `Path.Combine`.
+3. Compute the absolute canonical path of the base directory and derive a form with a trailing
+   directory separator appended (e.g. `/home/user/project/`). The trailing separator prevents
+   partial-segment false-positives such as `/base/dir` incorrectly matching `/base/dir2/...`.
+4. Compute the absolute canonical path of the combined result.
+5. Verify the combined path either equals the base directory or starts with the base path prefix
+   using a platform-appropriate comparison (case-insensitive on Windows/macOS, case-sensitive on
+   Linux); reject if it escapes the base directory.
 
 ## Design Decisions
 
-- **Two-phase validation**: The pre-combine check (steps 2–3) catches obvious traversal
-  attempts. The post-combine check (steps 5–6) adds defense-in-depth against edge cases that
-  bypass the initial checks on exotic file systems or path formats.
+- **Single canonical-path check**: The combined path is resolved to its absolute canonical form
+  and verified to start with the base directory prefix (with trailing separator). This single
+  check handles all traversal patterns — `../`, embedded `/../`, absolute paths, and edge-case
+  platform path formats — without requiring multiple pre-combine inspections.
+- **Trailing separator on base path**: Appending `Path.DirectorySeparatorChar` to the base
+  before the `StartsWith` check prevents partial-segment false-positives (e.g. base `/a/b`
+  incorrectly matching combined `/a/bc/file`).
+- **Platform-appropriate comparison**: Case-insensitive on Windows and macOS; case-sensitive on
+  Linux, matching each platform's file-system semantics.
 - **ArgumentException on invalid input**: Callers receive a specific `ArgumentException`
   identifying `relativePath` as the problematic parameter, making debugging straightforward.
 - **No logging or error accumulation**: `SafePathCombine` is a pure utility method that throws

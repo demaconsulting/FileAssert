@@ -339,26 +339,29 @@ public class FileAssertFileTests
     }
 
     /// <summary>
-    ///     Verifies that Run checks size constraints against every matched file, not just the first.
+    ///     Verifies that Run checks size constraints against every matched file, not just the first,
+    ///     by confirming one error is reported per violating file regardless of enumeration order.
     /// </summary>
     [TestMethod]
-    public void FileAssertFile_Run_MultipleFiles_OneViolatesSizeConstraint_WritesError()
+    public void FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation()
     {
-        // Arrange - create two files: one large enough, one too small
+        // Arrange - three files: one within bounds, one too small, one too large
         var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
         try
         {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "ok.txt"), "enough content here");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "ok.txt"), "valid");
             File.WriteAllText(Path.Combine(tempDir.FullName, "small.txt"), string.Empty);
-            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 5 };
+            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this file is too large");
+            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 2, MaxSize = 10 };
             var file = FileAssertFile.Create(data);
             using var context = Context.Create(["--silent"]);
 
             // Act
             file.Run(context, tempDir.FullName);
 
-            // Assert - the small file should trigger an error
+            // Assert - both invalid files should trigger errors regardless of enumeration order
             Assert.AreEqual(1, context.ExitCode);
+            Assert.AreEqual(2, context.ErrorCount);
         }
         finally
         {
@@ -367,17 +370,19 @@ public class FileAssertFileTests
     }
 
     /// <summary>
-    ///     Verifies that Run applies content rules to every matched file, not just the first.
+    ///     Verifies that Run applies content rules to every matched file, not just the first,
+    ///     by confirming one error is reported per violating file regardless of enumeration order.
     /// </summary>
     [TestMethod]
-    public void FileAssertFile_Run_MultipleFiles_OneFailsContentRule_WritesError()
+    public void FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation()
     {
-        // Arrange - create two files: one with required content, one without
+        // Arrange - three files: one with the required content, two without
         var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
         try
         {
             File.WriteAllText(Path.Combine(tempDir.FullName, "good.txt"), "expected content here");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "bad.txt"), "unrelated content");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "bad1.txt"), "unrelated content");
+            File.WriteAllText(Path.Combine(tempDir.FullName, "bad2.txt"), "also unrelated");
             var data = new FileAssertFileData
             {
                 Pattern = "*.txt",
@@ -389,8 +394,9 @@ public class FileAssertFileTests
             // Act
             file.Run(context, tempDir.FullName);
 
-            // Assert - the bad file should trigger an error
+            // Assert - both bad files should trigger errors regardless of enumeration order
             Assert.AreEqual(1, context.ExitCode);
+            Assert.AreEqual(2, context.ErrorCount);
         }
         finally
         {
