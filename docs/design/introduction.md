@@ -26,8 +26,8 @@ This document covers the detailed design of the following software units:
 
 The following cross-cutting design topics are also covered:
 
-- **Platform** — multi-platform support design and CI/CD test matrix (`platform.md`)
-- **OTS Dependencies** — off-the-shelf tool dependencies and their roles (`ots-dependencies.md`)
+- **Platform** — multi-platform support design and CI/CD test matrix (`file-assert/platform.md`)
+- **OTS Dependencies** — off-the-shelf tool dependencies and their roles (`file-assert/ots-dependencies.md`)
 
 The following topics are out of scope:
 
