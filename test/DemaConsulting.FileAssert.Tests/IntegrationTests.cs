@@ -148,15 +148,14 @@ public class IntegrationTests
     {
         // Act
         var exitCode = Runner.Run(
-            out var _,
+            out var output,
             "dotnet",
             _dllPath,
             "--silent");
 
         // Assert
         Assert.AreEqual(0, exitCode);
-
-        // Output check removed since silent mode may still produce some output
+        Assert.AreEqual(string.Empty, output);
     }
 
     /// <summary>

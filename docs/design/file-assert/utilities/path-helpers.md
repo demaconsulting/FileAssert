@@ -3,8 +3,10 @@
 ## Overview
 
 `PathHelpers` is a static utility class that provides a safe path-combination method. It
-protects callers against path-traversal attacks by rejecting relative paths that contain `..`
-or that are rooted (absolute) paths.
+protects callers against path-traversal attacks by verifying the resolved combined path stays
+within the base directory. Note that `Path.GetFullPath` normalizes `.`/`..` segments but does
+not resolve symlinks or reparse points, so this check guards against string-level traversal
+only.
 
 ## Class Structure
 
@@ -20,18 +22,24 @@ the base directory.
 **Validation steps:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Reject `relativePath` values that contain `..` (path traversal).
-3. Reject `relativePath` values that are rooted (absolute paths).
-4. Combine the paths with `Path.Combine`.
-5. Compute the full (canonical) paths of both base and combined paths.
-6. Use `Path.GetRelativePath` to verify the combined path is still under the base; reject if
-   it escapes the base directory.
+2. Combine the paths with `Path.Combine` to produce the candidate path (preserving the
+   caller's relative/absolute style).
+3. Resolve both `basePath` and the candidate to absolute form with `Path.GetFullPath`.
+4. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)` and reject the input if
+   the result is exactly `".."`, starts with `".."` followed by `Path.DirectorySeparatorChar`
+   or `Path.AltDirectorySeparatorChar`, or is itself rooted (absolute), which would indicate
+   the combined path escapes the base directory.
 
 ## Design Decisions
 
-- **Two-phase validation**: The pre-combine check (steps 2–3) catches obvious traversal
-  attempts. The post-combine check (steps 5–6) adds defense-in-depth against edge cases that
-  bypass the initial checks on exotic file systems or path formats.
+- **`Path.GetRelativePath` for containment check**: Using `GetRelativePath` to verify
+  containment handles root paths (e.g. `/`, `C:\`), platform case-sensitivity, and
+  directory-separator normalization natively. The containment test should treat `..` as an
+  escaping segment only when it is the entire relative result or is followed by a directory
+  separator, avoiding false positives for valid in-base names such as `..data`.
+- **Post-combine canonical-path check**: Resolving paths after combining handles all traversal
+  patterns — `../`, embedded `/../`, absolute-path overrides, and platform edge cases —
+  without fragile pre-combine string inspection of `relativePath`.
 - **ArgumentException on invalid input**: Callers receive a specific `ArgumentException`
   identifying `relativePath` as the problematic parameter, making debugging straightforward.
 - **No logging or error accumulation**: `SafePathCombine` is a pure utility method that throws
