@@ -75,7 +75,7 @@ Delegate to specialized agents only for specific scenarios:
 - **quality** - Quality assurance agent that grades developer work against DEMA
   Consulting standards and Continuous Compliance practices
 - **repo-consistency** - Ensures downstream repositories remain consistent with
-  the TemplateDotNetLibrary template patterns and best practices
+  the TemplateDotNetTool template patterns and best practices
 
 # Linting (Required Before Quality Gates)
 

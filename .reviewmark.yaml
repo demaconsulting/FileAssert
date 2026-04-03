@@ -47,7 +47,7 @@ reviews:
     title: Review of All FileAssert Requirements
     paths:
       - "requirements.yaml"
-      - "docs/reqstream/file-assert/**/*.yaml"
+      - "docs/reqstream/**/*.yaml"
 
   # Subsystem reviews - one per subsystem
   - id: FileAssert-Cli
