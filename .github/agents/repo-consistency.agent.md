@@ -1,14 +1,14 @@
 ---
 name: repo-consistency
 description: >
-  Ensures downstream repositories remain consistent with the TemplateDotNetLibrary
+  Ensures downstream repositories remain consistent with the TemplateDotNetTool
   template patterns and best practices.
 user-invocable: true
 ---
 
 # Repo Consistency Agent
 
-Maintain consistency between downstream projects and the TemplateDotNetLibrary template, ensuring repositories
+Maintain consistency between downstream projects and the TemplateDotNetTool template, ensuring repositories
 benefit from template evolution while respecting project-specific customizations.
 
 # Consistency Workflow (MANDATORY)
@@ -16,7 +16,7 @@ benefit from template evolution while respecting project-specific customizations
 **CRITICAL**: This agent MUST follow these steps systematically to ensure proper template consistency analysis:
 
 1. **Fetch Recent Template Changes**: Use GitHub search to fetch the 20 most recently merged PRs
-   (`is:pr is:merged sort:updated-desc`) from <https://github.com/demaconsulting/TemplateDotNetLibrary>
+   (`is:pr is:merged sort:updated-desc`) from <https://github.com/demaconsulting/TemplateDotNetTool>
 2. **Analyze Template Evolution**: For each relevant PR, determine the intent and scope of changes
    (what files were modified, what improvements were made)
 3. **Assess Downstream Applicability**: Evaluate which template changes would benefit this repository
