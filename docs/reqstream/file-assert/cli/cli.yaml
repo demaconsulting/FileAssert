@@ -16,7 +16,7 @@ sections:
           handling. It also enables consistent unit and integration testing of argument
           behavior independently of business logic.
         tests:
-          - CliSubsystem_CreateContext_ParsesAllSupportedFlags
+          - CliSubsystem_CreateContext_ParsesSilentValidateAndLogFlags
           - CliSubsystem_CreateContext_ParsesVersionHelpConfigResultsFlags
           - CliSubsystem_CreateContext_WithFilters_ParsesPositionalArguments
           - CliSubsystem_CreateContext_UnknownArgument_ThrowsArgumentException

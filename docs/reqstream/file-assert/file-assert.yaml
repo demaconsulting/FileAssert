@@ -178,3 +178,43 @@ sections:
           through to the exit code.
         tests:
           - IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero
+
+      - id: FileAssert-System-VersionFlag
+        title: The FileAssert tool shall output version information when invoked with the --version flag.
+        justification: |
+          Displaying the tool version on request is a standard CLI convention and allows
+          users and CI/CD pipelines to verify which version of the tool is installed.
+        children:
+          - FileAssert-Program-Version
+        tests:
+          - IntegrationTest_VersionFlag_OutputsVersion
+
+      - id: FileAssert-System-HelpFlag
+        title: The FileAssert tool shall output usage information when invoked with the --help flag.
+        justification: |
+          A help flag is a standard CLI convention that allows users to discover available
+          options and their usage without consulting external documentation.
+        children:
+          - FileAssert-Program-Help
+        tests:
+          - IntegrationTest_HelpFlag_OutputsUsageInformation
+
+      - id: FileAssert-System-ValidateFlag
+        title: The FileAssert tool shall run built-in self-validation tests when invoked with the --validate flag.
+        justification: |
+          The self-validation mode lets users verify that the installed tool is functioning
+          correctly in their environment. This is especially valuable in regulated environments
+          where tool qualification evidence is required.
+        children:
+          - FileAssert-Program-Validate
+        tests:
+          - IntegrationTest_ValidateFlag_RunsValidation
+
+      - id: FileAssert-System-UnknownArgument
+        title: The FileAssert tool shall return a non-zero exit code when an unknown argument is provided.
+        justification: |
+          Rejecting unknown arguments prevents silent misconfiguration where a typo in a flag
+          name causes the tool to run without the intended option. A non-zero exit code ensures
+          CI/CD pipelines detect the erroneous invocation.
+        tests:
+          - IntegrationTest_UnknownArgument_ReturnsError
