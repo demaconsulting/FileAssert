@@ -67,7 +67,7 @@ public class SelfTestSubsystemTests
     }
 
     /// <summary>
-    ///     Verifies that the SelfTest subsystem prints a system information header before running tests.
+    ///     Verifies that the SelfTest subsystem prints a system information header.
     /// </summary>
     [TestMethod]
     public void SelfTestSubsystem_Run_PrintsSystemInfoHeader()
