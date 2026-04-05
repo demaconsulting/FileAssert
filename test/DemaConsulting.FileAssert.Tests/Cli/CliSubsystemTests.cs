@@ -29,13 +29,12 @@ namespace DemaConsulting.FileAssert.Tests.Cli;
 public class CliSubsystemTests
 {
     /// <summary>
-    ///     Verifies that the Cli subsystem correctly parses all supported flags
-    ///     into structured properties on a single context.
+    ///     Verifies that the Cli subsystem correctly parses the --silent, --validate, and --log flags.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_CreateContext_ParsesAllSupportedFlags()
+    public void CliSubsystem_CreateContext_ParsesSilentValidateAndLogFlags()
     {
-        // Arrange - build an argument list with all supported flags
+        // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
         try
         {

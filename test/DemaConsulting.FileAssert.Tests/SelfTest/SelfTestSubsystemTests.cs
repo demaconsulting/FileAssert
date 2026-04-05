@@ -65,4 +65,63 @@ public class SelfTestSubsystemTests
             tempDir.Delete(recursive: true);
         }
     }
+
+    /// <summary>
+    ///     Verifies that the SelfTest subsystem prints a system information header before running tests.
+    /// </summary>
+    [TestMethod]
+    public void SelfTestSubsystem_Run_PrintsSystemInfoHeader()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");
+        try
+        {
+            var logPath = Path.Combine(tempDir.FullName, "validation.log");
+
+            using (var context = Context.Create(["--silent", "--log", logPath]))
+            {
+                // Act
+                Validation.Run(context);
+            }
+
+            // Assert - system information header must appear in the log
+            var logContent = File.ReadAllText(logPath);
+            Assert.IsTrue(logContent.Contains("Tool Version"), "Log should contain 'Tool Version'");
+            Assert.IsTrue(logContent.Contains("Machine Name"), "Log should contain 'Machine Name'");
+            Assert.IsTrue(logContent.Contains("OS Version"), "Log should contain 'OS Version'");
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the SelfTest subsystem writes a TRX results file when --results is specified.
+    /// </summary>
+    [TestMethod]
+    public void SelfTestSubsystem_Run_WithResultsFile_WritesTrxResultsFile()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");
+        try
+        {
+            var resultsPath = Path.Combine(tempDir.FullName, "results.trx");
+
+            using (var context = Context.Create(["--silent", "--results", resultsPath]))
+            {
+                // Act
+                Validation.Run(context);
+            }
+
+            // Assert - TRX results file must exist and contain test result content
+            Assert.IsTrue(File.Exists(resultsPath), "TRX results file should be created");
+            var content = File.ReadAllText(resultsPath);
+            Assert.IsTrue(content.Contains("TestRun"), "TRX file should contain 'TestRun' element");
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
 }

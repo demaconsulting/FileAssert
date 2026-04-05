@@ -55,8 +55,8 @@ The following sequence describes the normal execution path:
 6. Each `FileAssertTest.Run` iterates its `FileAssertFile` list.
 7. Each `FileAssertFile.Run` discovers files via a glob matcher, validates count constraints,
    and applies content rules.
-8. Content rules (`FileAssertContainsRule`, `FileAssertMatchesRule`) call
-   `context.WriteError` on failure.
+8. Content rules (`FileAssertContainsRule`, `FileAssertMatchesRule`, `FileAssertDoesNotContainRule`,
+   `FileAssertDoesNotMatchRule`) call `context.WriteError` on failure.
 9. After all tests complete, `context.ExitCode` reflects whether any errors occurred.
 10. When `--validate` is used with `--results`, `Validation.Run` writes TRX or JUnit XML
     results to the file specified by `context.ResultsFile`.
