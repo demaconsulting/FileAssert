@@ -218,3 +218,77 @@ sections:
           CI/CD pipelines detect the erroneous invocation.
         tests:
           - IntegrationTest_UnknownArgument_ReturnsError
+
+      - id: FileAssert-System-TextAssertions
+        title: |
+          The FileAssert tool shall evaluate text content assertions declared in a `text:` block
+          (or its backward-compatible alias `rules:`) and return a non-zero exit code when any
+          assertion fails.
+        justification: |
+          Text content assertions allow users to verify that files contain required strings,
+          do not contain forbidden strings, or match regular expression patterns. Renaming the
+          block from `rules:` to `text:` clarifies its purpose while preserving backward
+          compatibility for existing test suites. These assertions are the primary mechanism
+          for content validation in CI/CD pipelines.
+        tests: []
+
+      - id: FileAssert-System-PdfAssertions
+        title: |
+          The FileAssert tool shall evaluate PDF document assertions declared in a `pdf:` block
+          and return a non-zero exit code when any assertion fails or when the file cannot be
+          parsed as a valid PDF document.
+        justification: |
+          PDF files are a common output format for reports, compliance documents, and generated
+          artifacts in regulated environments. Asserting metadata fields, page counts, and body
+          text content allows users to verify that generated PDF outputs meet documented
+          requirements. An immediate failure when the file is not a valid PDF prevents
+          misleading partial results.
+        tests: []
+
+      - id: FileAssert-System-XmlAssertions
+        title: |
+          The FileAssert tool shall evaluate XML document assertions declared in an `xml:` block
+          using XPath expressions and return a non-zero exit code when any assertion fails or
+          when the file cannot be parsed as valid XML.
+        justification: |
+          XML is widely used for configuration files, build descriptors, and data interchange
+          in enterprise and regulated environments. XPath-based node count assertions allow
+          users to verify document structure and element presence without writing custom
+          parsers. An immediate failure on invalid XML prevents misleading partial results.
+        tests: []
+
+      - id: FileAssert-System-HtmlAssertions
+        title: |
+          The FileAssert tool shall evaluate HTML document assertions declared in an `html:` block
+          using XPath expressions and return a non-zero exit code when any assertion fails or
+          when the file cannot be parsed as valid HTML.
+        justification: |
+          HTML documents are common outputs of documentation generators, static site builders,
+          and report tools. XPath-based node count assertions allow users to verify page
+          structure such as title presence and link counts. An immediate failure on invalid
+          HTML prevents misleading partial results.
+        tests: []
+
+      - id: FileAssert-System-YamlAssertions
+        title: |
+          The FileAssert tool shall evaluate YAML document assertions declared in a `yaml:` block
+          using dot-notation paths and return a non-zero exit code when any assertion fails or
+          when the file cannot be parsed as valid YAML.
+        justification: |
+          YAML is a common format for application configuration, CI/CD pipeline definitions,
+          and infrastructure-as-code files. Dot-notation path assertions allow users to verify
+          that required configuration keys are present and have the expected cardinality.
+          An immediate failure on invalid YAML prevents misleading partial results.
+        tests: []
+
+      - id: FileAssert-System-JsonAssertions
+        title: |
+          The FileAssert tool shall evaluate JSON document assertions declared in a `json:` block
+          using dot-notation paths and return a non-zero exit code when any assertion fails or
+          when the file cannot be parsed as valid JSON.
+        justification: |
+          JSON is a ubiquitous format for application configuration, API responses, and build
+          outputs. Dot-notation paths allow users to verify that required keys are present and
+          have the expected cardinality without writing custom parsers. An immediate failure on
+          invalid JSON prevents misleading partial results.
+        tests: []

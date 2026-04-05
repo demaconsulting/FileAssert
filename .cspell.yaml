@@ -82,6 +82,9 @@ words:
   - filepart
   - selftest
   - testname
+  - appsettings
+  - xpath
+  - XPath
   - TMPL
   - triaging
   - Trivy
