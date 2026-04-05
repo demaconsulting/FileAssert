@@ -45,5 +45,3 @@ sections:
         tests:
           - FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
           - FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
-          - IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
-          - IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults

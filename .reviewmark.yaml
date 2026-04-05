@@ -25,9 +25,19 @@ evidence-source:
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
 reviews:
+  # Purpose review - user-facing capabilities and system promises
+  - id: FileAssert-Purpose
+    title: Review that Advertised Features Match System Design
+    paths:
+      - "README.md"
+      - "docs/user_guide/**/*.md"
+      - "docs/reqstream/file-assert/file-assert.yaml"
+      - "docs/design/introduction.md"
+      - "docs/design/file-assert/file-assert.md"
+
   # Architecture review - end-to-end behavior and design overview
   - id: FileAssert-Architecture
-    title: Review of FileAssert Architecture
+    title: Review that FileAssert Architecture Satisfies Requirements
     paths:
       - "docs/reqstream/file-assert/file-assert.yaml"
       - "docs/design/introduction.md"
@@ -36,7 +46,7 @@ reviews:
 
   # Design review - all design documentation and platform/system requirements
   - id: FileAssert-Design
-    title: Review of FileAssert Design Documentation
+    title: Review that FileAssert Design is Consistent and Complete
     paths:
       - "docs/reqstream/file-assert/file-assert.yaml"
       - "docs/reqstream/file-assert/platform-requirements.yaml"
@@ -44,42 +54,42 @@ reviews:
 
   # All-requirements review - all requirement files
   - id: FileAssert-AllRequirements
-    title: Review of All FileAssert Requirements
+    title: Review that All FileAssert Requirements are Complete
     paths:
       - "requirements.yaml"
       - "docs/reqstream/**/*.yaml"
 
   # Subsystem reviews - one per subsystem
   - id: FileAssert-Cli
-    title: Review of FileAssert Cli Subsystem
+    title: Review that FileAssert Cli Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/cli/cli.yaml"
       - "docs/design/file-assert/cli/cli.md"
       - "test/**/CliSubsystemTests.cs"
 
   - id: FileAssert-Configuration
-    title: Review of FileAssert Configuration Subsystem
+    title: Review that FileAssert Configuration Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/configuration/configuration.yaml"
       - "docs/design/file-assert/configuration/configuration.md"
       - "test/**/ConfigurationSubsystemTests.cs"
 
   - id: FileAssert-Modeling
-    title: Review of FileAssert Modeling Subsystem
+    title: Review that FileAssert Modeling Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/modeling/modeling.yaml"
       - "docs/design/file-assert/modeling/modeling.md"
       - "test/**/ModelingSubsystemTests.cs"
 
   - id: FileAssert-Utilities
-    title: Review of FileAssert Utilities Subsystem
+    title: Review that FileAssert Utilities Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/utilities/utilities.yaml"
       - "docs/design/file-assert/utilities/utilities.md"
       - "test/**/UtilitiesSubsystemTests.cs"
 
   - id: FileAssert-SelfTest
-    title: Review of FileAssert SelfTest Subsystem
+    title: Review that FileAssert SelfTest Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/selftest/selftest.yaml"
       - "docs/design/file-assert/selftest/selftest.md"
@@ -87,7 +97,7 @@ reviews:
 
   # Software unit reviews - one per class ([System]-[Subsystem]-[Unit])
   - id: FileAssert-Cli-Context
-    title: Review of FileAssert Context Unit
+    title: Review that FileAssert Cli Context Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/cli/context.yaml"
       - "docs/design/file-assert/cli/context.md"
@@ -96,7 +106,7 @@ reviews:
       - "test/**/ContextNewPropertiesTests.cs"
 
   - id: FileAssert-Program
-    title: Review of FileAssert Program Unit
+    title: Review that FileAssert Program Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/program.yaml"
       - "docs/design/file-assert/program.md"
@@ -106,7 +116,7 @@ reviews:
       - "test/**/AssemblyInfo.cs"
 
   - id: FileAssert-SelfTest-Validation
-    title: Review of FileAssert Validation Unit
+    title: Review that FileAssert SelfTest Validation Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/selftest/validation.yaml"
       - "docs/design/file-assert/selftest/validation.md"
@@ -114,7 +124,7 @@ reviews:
       - "test/**/ValidationTests.cs"
 
   - id: FileAssert-Utilities-PathHelpers
-    title: Review of FileAssert PathHelpers Unit
+    title: Review that FileAssert Utilities PathHelpers Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/utilities/path-helpers.yaml"
       - "docs/design/file-assert/utilities/path-helpers.md"
@@ -122,7 +132,7 @@ reviews:
       - "test/**/PathHelpersTests.cs"
 
   - id: FileAssert-Modeling-FileAssertRule
-    title: Review of FileAssert FileAssertRule Unit
+    title: Review that FileAssert Modeling FileAssertRule Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-rule.yaml"
       - "docs/design/file-assert/modeling/file-assert-rule.md"
@@ -130,7 +140,7 @@ reviews:
       - "test/**/FileAssertRuleTests.cs"
 
   - id: FileAssert-Modeling-FileAssertFile
-    title: Review of FileAssert FileAssertFile Unit
+    title: Review that FileAssert Modeling FileAssertFile Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-file.yaml"
       - "docs/design/file-assert/modeling/file-assert-file.md"
@@ -138,7 +148,7 @@ reviews:
       - "test/**/FileAssertFileTests.cs"
 
   - id: FileAssert-Modeling-FileAssertTest
-    title: Review of FileAssert FileAssertTest Unit
+    title: Review that FileAssert Modeling FileAssertTest Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-test.yaml"
       - "docs/design/file-assert/modeling/file-assert-test.md"
@@ -146,7 +156,7 @@ reviews:
       - "test/**/FileAssertTestTests.cs"
 
   - id: FileAssert-Configuration-FileAssertConfig
-    title: Review of FileAssert FileAssertConfig Unit
+    title: Review that FileAssert Configuration FileAssertConfig Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-config.yaml"
       - "docs/design/file-assert/configuration/file-assert-config.md"
@@ -154,14 +164,12 @@ reviews:
       - "test/**/FileAssertConfigTests.cs"
 
   - id: FileAssert-Configuration-FileAssertData
-    title: Review of FileAssert FileAssertData Unit
+    title: Review that FileAssert Configuration FileAssertData Implementation is Correct
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-data.yaml"
       - "docs/design/file-assert/configuration/file-assert-data.md"
       - "src/**/FileAssertData.cs"
       - "test/**/FileAssertConfigTests.cs"
-      - "test/**/FileAssertFileTests.cs"
-      - "test/**/FileAssertRuleTests.cs"
 
   # Platform review
   - id: FileAssert-Platform
