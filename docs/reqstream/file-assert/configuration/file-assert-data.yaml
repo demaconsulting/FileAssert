@@ -30,5 +30,4 @@ sections:
           subsystem). This makes the DTOs simple, predictable, and easy to test indirectly
           through the classes that consume them.
         tests:
-          - FileAssertFile_Create_ValidData_CreatesFile
-          - FileAssertRule_Create_WithContains_ReturnsContainsRule
+          - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig

@@ -16,7 +16,6 @@ sections:
         tests:
           - Program_Run_WithVersionFlag_DisplaysVersionOnly
           - Program_Version_ReturnsNonEmptyString
-          - IntegrationTest_VersionFlag_OutputsVersion
 
       - id: FileAssert-Program-Help
         title: The Program class shall support -?, -h, and --help flags to display usage information.
@@ -25,7 +24,6 @@ sections:
           external resources.
         tests:
           - Program_Run_WithHelpFlag_DisplaysUsageInformation
-          - IntegrationTest_HelpFlag_OutputsUsageInformation
 
       - id: FileAssert-Program-Validate
         title: The Program class shall support --validate flag to invoke the self-validation framework.
@@ -34,36 +32,14 @@ sections:
           in the deployment environment.
         tests:
           - Program_Run_WithValidateFlag_RunsValidation
-          - IntegrationTest_ValidateFlag_RunsValidation
 
-      - id: FileAssert-Program-ExitCode
-        title: The Program class shall return a non-zero exit code on failure.
-        justification: |
-          Callers (scripts, CI/CD pipelines) must be able to detect failure conditions
-          programmatically via the process exit code.
-        tests:
-          - IntegrationTest_UnknownArgument_ReturnsError
-
-      - id: FileAssert-Program-Config
+      - id: FileAssert-Program-DefaultBehavior
         title: |
-          The Program class shall use the configuration file path from --config (or the default
-          '.fileassert.yaml') when loading and executing the YAML test suite.
+          The Program class shall display version and copyright information when invoked
+          with no recognized flags or configuration file arguments.
         justification: |
-          The Program class dispatches to RunToolLogic, which reads context.ConfigFile to locate
-          the test suite. Capturing this at the requirement level ensures the --config flag is
-          explicitly exercised through the full program dispatch path.
+          When no arguments are supplied the tool has no test suite to run. Displaying the
+          version and copyright banner gives the user a quick visual confirmation that the
+          tool is installed and operational without producing an unexpected error.
         tests:
-          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
-          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
-
-      - id: FileAssert-Program-FilterTests
-        title: |
-          The Program class shall pass positional name-or-tag filter arguments to the
-          configuration runner so that only matching tests are executed.
-        justification: |
-          The Program class assembles the complete set of arguments and delegates execution to
-          FileAssertConfig.Run with context.Filters. A program-level requirement ensures the
-          end-to-end path from CLI filter arguments to selective test execution is explicitly
-          verified.
-        tests:
-          - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
+          - Program_Run_NoArguments_DisplaysDefaultBehavior

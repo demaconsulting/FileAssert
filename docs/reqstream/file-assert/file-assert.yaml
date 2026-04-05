@@ -16,6 +16,8 @@ sections:
           The primary purpose of the tool is to assert properties of files on the file system
           using YAML-defined test suites. Verifying this core behavior at the system level
           confirms that all subsystems integrate correctly to produce the expected outcome.
+        children:
+          - FileAssert-ConfigurationSubsystem-LoadAndBuild
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
 
@@ -27,6 +29,8 @@ sections:
           CI/CD pipelines and scripts depend on the exit code to detect assertion failures.
           A non-zero exit code when an assertion fails is the primary mechanism for the tool
           to signal that files do not meet the declared constraints.
+        children:
+          - FileAssert-Context-ExitCode
         tests:
           - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
 
@@ -36,6 +40,8 @@ sections:
           Automated pipelines that parse or redirect tool output must be able to run the tool
           without cluttering their own output. The --silent flag provides this capability
           while still allowing exit code and log file output to carry result information.
+        children:
+          - FileAssert-Context-Silent
         tests:
           - IntegrationTest_SilentFlag_SuppressesOutput
 
@@ -45,6 +51,8 @@ sections:
           Persistent log files allow post-hoc inspection of tool output in CI/CD environments
           where console output may be discarded. The log file must capture all messages that
           would otherwise appear on the console.
+        children:
+          - FileAssert-Context-Output
         tests:
           - IntegrationTest_LogFlag_WritesOutputToFile
 
@@ -56,6 +64,9 @@ sections:
           Supporting a custom configuration file path lets users maintain multiple test suites
           and select the appropriate one per invocation. The default path ensures the common
           single-suite case requires no additional arguments.
+        children:
+          - FileAssert-Context-ConfigFile
+          - FileAssert-FileAssertConfig-ReadFromFile
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
           - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
@@ -70,6 +81,9 @@ sections:
           Pipelines; JUnit XML is supported by Jenkins, GitLab CI, and most other CI tools.
           Results are written both from the self-validation path (--validate --results) and from
           the normal file assertion path (--results without --validate).
+        children:
+          - FileAssert-FileAssertConfig-Results
+          - FileAssert-Validation-Results
         tests:
           - IntegrationTest_ValidateWithResults_GeneratesTrxFile
           - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
@@ -84,6 +98,9 @@ sections:
           Selective test execution is essential for phased CI/CD pipelines where only a subset
           of tests (for example, smoke tests) should run in a given stage. Filtering by name or
           tag keeps the command line concise and consistent with common CLI testing tools.
+        children:
+          - FileAssert-Context-Filters
+          - FileAssert-ConfigurationSubsystem-FilterExecution
         tests:
           - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
 
