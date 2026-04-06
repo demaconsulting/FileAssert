@@ -88,4 +88,4 @@ files:
   Array elements are counted at the terminal segment, allowing users to assert the presence
   and cardinality of array-valued keys.
 - **Independent query model**: `FileAssertJsonQuery` is private to this unit so that JSON
-  assertion behaviour can evolve independently of the other structured-document assert units.
+  assertion behavior can evolve independently of the other structured-document assert units.

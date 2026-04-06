@@ -82,4 +82,4 @@ files:
   that is not valid XML would produce meaningless or misleading results. Reporting the parse
   failure immediately gives users a clear, actionable error message.
 - **Independent query model**: `FileAssertXmlQuery` is private to this unit so that XML
-  assertion behaviour can evolve independently of the other structured-document assert units.
+  assertion behavior can evolve independently of the other structured-document assert units.

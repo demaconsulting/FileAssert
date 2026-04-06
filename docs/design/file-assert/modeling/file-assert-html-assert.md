@@ -86,4 +86,4 @@ files:
   parse errors, applying XPath assertions would produce meaningless results. Reporting the
   parse failure immediately gives users a clear, actionable error message.
 - **Independent query model**: `FileAssertHtmlQuery` is private to this unit so that HTML
-  assertion behaviour can evolve independently of the other structured-document assert units.
+  assertion behavior can evolve independently of the other structured-document assert units.

@@ -87,4 +87,4 @@ files:
   Sequences count as zero or more items at the terminal segment, allowing users to assert
   the presence and cardinality of sequence keys.
 - **Independent query model**: `FileAssertYamlQuery` is private to this unit so that YAML
-  assertion behaviour can evolve independently of the other structured-document assert units.
+  assertion behavior can evolve independently of the other structured-document assert units.

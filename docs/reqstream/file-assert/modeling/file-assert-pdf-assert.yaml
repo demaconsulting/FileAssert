@@ -58,6 +58,6 @@ sections:
         justification: |
           Body text assertions allow users to verify that key content (such as required
           section headings or legal notices) is present in generated PDF outputs. Using the
-          same FileAssertRule hierarchy as the text: block ensures consistent rule behaviour.
+          same FileAssertRule hierarchy as the text: block ensures consistent rule behavior.
         tests:
           - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError

@@ -143,5 +143,5 @@ files:
   and extractable text without native dependencies, making it suitable for cross-platform
   CI/CD environments.
 - **Shared text rule hierarchy**: Body text assertions delegate to the same `FileAssertRule`
-  hierarchy used by `FileAssertTextAssert`, ensuring consistent rule behaviour across all
+  hierarchy used by `FileAssertTextAssert`, ensuring consistent rule behavior across all
   assertion types.
