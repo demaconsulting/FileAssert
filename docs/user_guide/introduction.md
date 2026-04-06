@@ -169,7 +169,7 @@ set of files using a glob pattern, optional tags for filtering, and one or more 
 # .fileassert.yaml
 tests:
   - name: TestProject_BinariesExist
-    description: "Application binaries exist"
+    # Application binaries exist
     tags: [smoke, release]
     files:
       - pattern: "bin/**/*.exe"
@@ -178,7 +178,7 @@ tests:
         min: 1
 
   - name: TestProject_ConfigValid
-    description: "Config file size is reasonable"
+    # Config file size is reasonable
     tags: [config]
     files:
       - pattern: "config/settings.json"
@@ -189,7 +189,7 @@ tests:
           - does-not-contain: "password123"
 
   - name: TestProject_LogsValid
-    description: "Log files match expected pattern"
+    # Log files match expected pattern
     tags: [logs]
     files:
       - pattern: "logs/*.log"
@@ -198,7 +198,7 @@ tests:
           - does-not-contain-regex: "FATAL|CRITICAL"
 
   - name: TestProject_ReportValid
-    description: "PDF report meets requirements"
+    # PDF report meets requirements
     tags: [report]
     files:
       - pattern: "output/report.pdf"
@@ -213,7 +213,7 @@ tests:
             - contains: "Executive Summary"
 
   - name: TestProject_XmlConfigValid
-    description: "XML configuration has required elements"
+    # XML configuration has required elements
     tags: [config]
     files:
       - pattern: "config/settings.xml"
@@ -222,7 +222,7 @@ tests:
             min: 1
 
   - name: TestProject_HtmlValid
-    description: "HTML document has required structure"
+    # HTML document has required structure
     tags: [web]
     files:
       - pattern: "docs/index.html"
@@ -231,7 +231,7 @@ tests:
             count: 1
 
   - name: TestProject_AppYamlConfigValid
-    description: "Application YAML config has required keys"
+    # Application YAML config has required keys
     tags: [config]
     files:
       - pattern: "config/appsettings.yaml"
@@ -240,7 +240,7 @@ tests:
             count: 1
 
   - name: TestProject_AppJsonConfigValid
-    description: "Application JSON config has required keys"
+    # Application JSON config has required keys
     tags: [config]
     files:
       - pattern: "config/appsettings.json"

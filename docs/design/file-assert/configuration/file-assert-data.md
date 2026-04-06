@@ -45,12 +45,11 @@ Represents a file pattern assertion within a test.
 
 Represents a named test within the configuration.
 
-| Property      | YAML alias    | Type                        | Description                                      |
-| :------------ | :------------ | :-------------------------- | :----------------------------------------------- |
-| `Name`        | `name`        | `string?`                   | Human-readable name for the test.                |
-| `Description` | `description` | `string?`                   | Optional human-readable description of the test. |
-| `Tags`        | `tags`        | `List<string>?`             | Tags used for command-line filter selection.     |
-| `Files`       | `files`       | `List<FileAssertFileData>?` | File assertions belonging to this test.          |
+| Property | YAML alias | Type                        | Description                                  |
+| :------- | :--------- | :-------------------------- | :------------------------------------------- |
+| `Name`   | `name`     | `string?`                   | Human-readable name for the test.            |
+| `Tags`   | `tags`     | `List<string>?`             | Tags used for command-line filter selection. |
+| `Files`  | `files`    | `List<FileAssertFileData>?` | File assertions belonging to this test.      |
 
 ### FileAssertConfigData
 
