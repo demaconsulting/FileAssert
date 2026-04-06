@@ -20,6 +20,8 @@ sections:
           - FileAssertFile_Create_NullData_ThrowsArgumentNullException
           - FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException
           - FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException
+
+      - id: FileAssert-FileAssertFile-CountConstraints
         title: The FileAssertFile class shall enforce optional minimum and maximum file count constraints.
         justification: |
           Count constraints allow tests to assert that a glob pattern matches the expected

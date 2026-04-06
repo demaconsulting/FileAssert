@@ -152,4 +152,23 @@ public sealed class FileAssertHtmlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the file does not exist and cannot be parsed.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_NonExistentFile_WritesError()
+    {
+        // Arrange - use a path that does not exist to trigger a parse failure
+        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.html");
+        var data = new List<FileAssertQueryData> { new() { Query = "//p", Count = 1 } };
+        var htmlAssert = FileAssertHtmlAssert.Create(data);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        htmlAssert.Run(context, missingFile);
+
+        // Assert
+        Assert.AreEqual(1, context.ExitCode);
+    }
 }

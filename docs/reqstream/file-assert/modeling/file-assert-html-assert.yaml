@@ -24,7 +24,8 @@ sections:
           Attempting to evaluate XPath queries against a file that cannot be parsed as HTML
           would produce meaningless or misleading results. Reporting the parse failure
           immediately gives users a clear, actionable error message.
-        tests: []
+        tests:
+          - FileAssertHtmlAssert_Run_NonExistentFile_WritesError
 
       - id: FileAssert-FileAssertHtmlAssert-QueryAssertions
         title: |

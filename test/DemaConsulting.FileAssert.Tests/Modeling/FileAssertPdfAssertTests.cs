@@ -153,4 +153,76 @@ public sealed class FileAssertPdfAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when a metadata contains assertion fails.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError()
+    {
+        // Arrange - build a PDF without metadata; assert Title contains "Test"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Metadata =
+                [
+                    new FileAssertPdfMetadataRuleData { Field = "Title", Contains = "Test" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when a text contains rule fails.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError()
+    {
+        // Arrange - build a PDF with no text content; assert text contains "Hello"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Text =
+                [
+                    new FileAssertRuleData { Contains = "Hello" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

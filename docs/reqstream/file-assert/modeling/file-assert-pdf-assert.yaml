@@ -36,9 +36,8 @@ sections:
           environments to assert document provenance and content classification. Verifying
           each declared field assertion allows users to confirm that generated PDFs meet
           documented requirements.
-        tests: []
-
-      - id: FileAssert-FileAssertPdfAssert-PageCountAssertions
+        tests:
+          - FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
         title: |
           The FileAssertPdfAssert class shall enforce page count constraints against the
           number of pages in the parsed PDF document.
@@ -58,4 +57,5 @@ sections:
           Body text assertions allow users to verify that key content (such as required
           section headings or legal notices) is present in generated PDF outputs. Using the
           same FileAssertRule hierarchy as the text: block ensures consistent rule behaviour.
-        tests: []
+        tests:
+          - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
