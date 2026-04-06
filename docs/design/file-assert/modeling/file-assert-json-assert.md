@@ -10,22 +10,24 @@ elements.
 
 ## Class Structure
 
-### FileAssertQueryAssert
-
-`FileAssertQueryAssert` is the standalone internal modeling class documented in
-[FileAssertXmlAssert](file-assert-xml-assert.md). It holds the query string and count
-constraints for a single structured-document query assertion and is shared across all four
-structured-document assert units (XML, HTML, YAML, JSON).
-
 ### FileAssertJsonAssert
 
 The main class coordinating dot-notation path assertions for a JSON file.
 
 #### FileAssertJsonAssert Properties
 
-| Property  | Type                                   | Description                         |
-| :-------- | :------------------------------------- | :---------------------------------- |
-| `Queries` | `IReadOnlyList<FileAssertQueryAssert>` | Dot-notation path query assertions. |
+| Property  | Type                                 | Description                         |
+| :-------- | :----------------------------------- | :---------------------------------- |
+| `Queries` | `IReadOnlyList<FileAssertJsonQuery>` | Dot-notation path query assertions. |
+
+Each `FileAssertJsonQuery` entry holds:
+
+| Property | Type     | Description                      |
+| :------- | :------- | :------------------------------- |
+| `Query`  | `string` | Dot-notation path to evaluate.   |
+| `Count`  | `int?`   | Exact number of matched nodes.   |
+| `Min`    | `int?`   | Minimum number of matched nodes. |
+| `Max`    | `int?`   | Maximum number of matched nodes. |
 
 #### FileAssertJsonAssert Factory
 
@@ -43,13 +45,22 @@ Execution proceeds in the following steps:
 
 1. Reads the file content and calls `JsonDocument.Parse`.
 2. If a `JsonException` is thrown, writes the error below and returns immediately.
-3. For each query assertion: traverses the JSON element tree following the dot-notation path
-   segments, counts the matched properties or array elements, and calls `queryAssert.Apply`.
+3. For each query entry: traverses the JSON element tree following the dot-notation path
+   segments, counts the matched properties or array elements, and applies `Count`, `Min`,
+   and `Max` constraints against the match count.
 
 #### FileAssertJsonAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as a JSON document
+```
+
+#### FileAssertJsonAssert Query Error Messages
+
+```text
+File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
+File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maximum of <Max>
+File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
 ## YAML Configuration
@@ -76,6 +87,5 @@ files:
 - **Dot-notation path traversal**: Segment-by-segment descent through JSON object properties.
   Array elements are counted at the terminal segment, allowing users to assert the presence
   and cardinality of array-valued keys.
-- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
-  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
-  consistent error messages and constraint logic across formats.
+- **Independent query model**: `FileAssertJsonQuery` is private to this unit so that JSON
+  assertion behaviour can evolve independently of the other structured-document assert units.

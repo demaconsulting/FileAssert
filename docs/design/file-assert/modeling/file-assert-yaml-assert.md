@@ -9,22 +9,24 @@ max, and exact count constraints to the number of matching nodes.
 
 ## Class Structure
 
-### FileAssertQueryAssert
-
-`FileAssertQueryAssert` is the standalone internal modeling class documented in
-[FileAssertXmlAssert](file-assert-xml-assert.md). It holds the query string and count
-constraints for a single structured-document query assertion and is shared across all four
-structured-document assert units (XML, HTML, YAML, JSON).
-
 ### FileAssertYamlAssert
 
 The main class coordinating dot-notation path assertions for a YAML file.
 
 #### FileAssertYamlAssert Properties
 
-| Property  | Type                                   | Description                         |
-| :-------- | :------------------------------------- | :---------------------------------- |
-| `Queries` | `IReadOnlyList<FileAssertQueryAssert>` | Dot-notation path query assertions. |
+| Property  | Type                                 | Description                         |
+| :-------- | :----------------------------------- | :---------------------------------- |
+| `Queries` | `IReadOnlyList<FileAssertYamlQuery>` | Dot-notation path query assertions. |
+
+Each `FileAssertYamlQuery` entry holds:
+
+| Property | Type     | Description                      |
+| :------- | :------- | :------------------------------- |
+| `Query`  | `string` | Dot-notation path to evaluate.   |
+| `Count`  | `int?`   | Exact number of matched nodes.   |
+| `Min`    | `int?`   | Minimum number of matched nodes. |
+| `Max`    | `int?`   | Maximum number of matched nodes. |
 
 #### FileAssertYamlAssert Factory
 
@@ -42,13 +44,22 @@ Execution proceeds in the following steps:
 
 1. Parses the file using YamlDotNet's `YamlStream.Load`.
 2. If a `YamlException` is thrown, writes the error below and returns immediately.
-3. For each query assertion: traverses the YAML document tree following the dot-notation
-   path segments, counts the matched nodes, and calls `queryAssert.Apply`.
+3. For each query entry: traverses the YAML document tree following the dot-notation
+   path segments, counts the matched nodes, and applies `Count`, `Min`, and `Max`
+   constraints against the match count.
 
 #### FileAssertYamlAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as a YAML document
+```
+
+#### FileAssertYamlAssert Query Error Messages
+
+```text
+File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
+File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maximum of <Max>
+File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
 ## YAML Configuration
@@ -75,6 +86,5 @@ files:
 - **Dot-notation path traversal**: Segment-by-segment descent through YAML mapping nodes.
   Sequences count as zero or more items at the terminal segment, allowing users to assert
   the presence and cardinality of sequence keys.
-- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
-  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
-  consistent error messages and constraint logic across formats.
+- **Independent query model**: `FileAssertYamlQuery` is private to this unit so that YAML
+  assertion behaviour can evolve independently of the other structured-document assert units.

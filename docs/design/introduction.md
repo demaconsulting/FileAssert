@@ -27,7 +27,6 @@ This document covers the detailed design of the following software units:
 - **FileAssertHtmlAssert** — HTML document assertions (`FileAssertHtmlAssert.cs`)
 - **FileAssertYamlAssert** — YAML document assertions (`FileAssertYamlAssert.cs`)
 - **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
-- **FileAssertQueryAssert** — shared query assertion for XML/HTML/YAML/JSON asserts (`FileAssertQueryAssert.cs`)
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
 
@@ -65,8 +64,7 @@ FileAssert (System)
 │   ├── FileAssertXmlAssert (Unit)
 │   ├── FileAssertHtmlAssert (Unit)
 │   ├── FileAssertYamlAssert (Unit)
-│   ├── FileAssertJsonAssert (Unit)
-│   └── FileAssertQueryAssert (Unit)
+│   └── FileAssertJsonAssert (Unit)
 ├── Utilities (Subsystem)
 │   └── PathHelpers (Unit)
 └── SelfTest (Subsystem)
@@ -97,8 +95,7 @@ src/DemaConsulting.FileAssert/
 │   ├── FileAssertXmlAssert.cs      — XML document assertions (System.Xml.Linq/XPath)
 │   ├── FileAssertHtmlAssert.cs     — HTML document assertions (HtmlAgilityPack)
 │   ├── FileAssertYamlAssert.cs     — YAML document assertions (YamlDotNet)
-│   ├── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
-│   └── FileAssertQueryAssert.cs    — shared query assertion for XML/HTML/YAML/JSON
+│   └── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
 ├── Utilities/
 │   └── PathHelpers.cs              — safe path-combination utility
 └── SelfTest/

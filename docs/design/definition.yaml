@@ -18,7 +18,6 @@ input-files:
   - docs/design/file-assert/modeling/file-assert-rule.md
   - docs/design/file-assert/modeling/file-assert-text-assert.md
   - docs/design/file-assert/modeling/file-assert-pdf-assert.md
-  - docs/design/file-assert/modeling/file-assert-query-assert.md
   - docs/design/file-assert/modeling/file-assert-xml-assert.md
   - docs/design/file-assert/modeling/file-assert-html-assert.md
   - docs/design/file-assert/modeling/file-assert-yaml-assert.md

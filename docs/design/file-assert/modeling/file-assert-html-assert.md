@@ -9,22 +9,24 @@ applies min, max, and exact count constraints to the number of matching nodes.
 
 ## Class Structure
 
-### FileAssertQueryAssert
-
-`FileAssertQueryAssert` is the standalone internal modeling class documented in
-[FileAssertXmlAssert](file-assert-xml-assert.md). It holds the query string and count
-constraints for a single structured-document query assertion and is shared across all four
-structured-document assert units (XML, HTML, YAML, JSON).
-
 ### FileAssertHtmlAssert
 
 The main class coordinating XPath-based node count assertions for an HTML file.
 
 #### FileAssertHtmlAssert Properties
 
-| Property  | Type                                   | Description             |
-| :-------- | :------------------------------------- | :---------------------- |
-| `Queries` | `IReadOnlyList<FileAssertQueryAssert>` | XPath query assertions. |
+| Property  | Type                                 | Description             |
+| :-------- | :----------------------------------- | :---------------------- |
+| `Queries` | `IReadOnlyList<FileAssertHtmlQuery>` | XPath query assertions. |
+
+Each `FileAssertHtmlQuery` entry holds:
+
+| Property | Type     | Description                      |
+| :------- | :------- | :------------------------------- |
+| `Query`  | `string` | XPath expression to evaluate.    |
+| `Count`  | `int?`   | Exact number of matched nodes.   |
+| `Min`    | `int?`   | Minimum number of matched nodes. |
+| `Max`    | `int?`   | Maximum number of matched nodes. |
 
 #### FileAssertHtmlAssert Factory
 
@@ -43,14 +45,22 @@ Execution proceeds in the following steps:
 1. Loads the file using `HtmlDocument.Load`.
 2. If `ParseErrors` contains critical errors, writes the error below and returns
    immediately.
-3. For each query assertion: selects nodes via
-   `HtmlDocument.DocumentNode.SelectNodes(xpathQuery)`, counts the result, and calls
-   `queryAssert.Apply`.
+3. For each query entry: selects nodes via
+   `HtmlDocument.DocumentNode.SelectNodes(xpathQuery)`, counts the result, and applies
+   `Count`, `Min`, and `Max` constraints against the match count.
 
 #### FileAssertHtmlAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as an HTML document
+```
+
+#### FileAssertHtmlAssert Query Error Messages
+
+```text
+File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
+File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maximum of <Max>
+File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
 ## YAML Configuration
@@ -75,6 +85,5 @@ files:
 - **Immediate failure on critical parse errors**: When HtmlAgilityPack reports critical
   parse errors, applying XPath assertions would produce meaningless results. Reporting the
   parse failure immediately gives users a clear, actionable error message.
-- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
-  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
-  consistent error messages and constraint logic across formats.
+- **Independent query model**: `FileAssertHtmlQuery` is private to this unit so that HTML
+  assertion behaviour can evolve independently of the other structured-document assert units.

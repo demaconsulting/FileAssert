@@ -19,7 +19,6 @@ executable domain objects and drives the assertion logic.
 | `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
 | `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
 | `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
-| `FileAssertQueryAssert` | `FileAssertQueryAssert.cs`  | Shared query assertion for XML/HTML/YAML/JSON asserts. |
 
 ## Subsystem Responsibilities
 
@@ -45,10 +44,10 @@ FileAssertTest
     │       ├── FileAssertMatchesRule
     │       └── FileAssertDoesNotMatchRule
     ├── FileAssertPdfAssert? (zero or one)
-    ├── FileAssertXmlAssert? (zero or one)   ─── FileAssertQueryAssert (one or more)
-    ├── FileAssertHtmlAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
-    ├── FileAssertYamlAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
-    └── FileAssertJsonAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
+    ├── FileAssertXmlAssert? (zero or one)
+    ├── FileAssertHtmlAssert? (zero or one)
+    ├── FileAssertYamlAssert? (zero or one)
+    └── FileAssertJsonAssert? (zero or one)
 ```
 
 ## Interactions with Other Subsystems
