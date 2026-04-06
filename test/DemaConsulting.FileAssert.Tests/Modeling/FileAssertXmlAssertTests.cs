@@ -202,4 +202,112 @@ public sealed class FileAssertXmlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when an XPath query selects nodes by exact text content.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertXmlAssert_Run_XPathExactTextMatch_Matches_NoError()
+    {
+        // Arrange - sample XML has an item with text "two"; query for exact match should return 1
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item[text()='two']", Count = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError()
+    {
+        // Arrange - no item has text "four"; exact match query should return 0 nodes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item[text()='four']", Min = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when an XPath contains() predicate matches a node.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertXmlAssert_Run_XPathContainsText_Matches_NoError()
+    {
+        // Arrange - sample XML has an item with text "three"; substring "hre" matches
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item[contains(text(),'hre')]", Count = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when an XPath contains() predicate finds no matching nodes.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertXmlAssert_Run_XPathContainsText_NoMatch_WritesError()
+    {
+        // Arrange - no item contains "xyz"; contains() query returns 0 nodes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item[contains(text(),'xyz')]", Min = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

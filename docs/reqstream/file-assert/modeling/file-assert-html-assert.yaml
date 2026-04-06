@@ -40,3 +40,9 @@ sections:
           - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
           - FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError
           - FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
+          - FileAssertHtmlAssert_Run_NonExistentFile_WritesError
+          - FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError
+          - FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError
+          - FileAssertHtmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError
+          - FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError
+          - FileAssertHtmlAssert_Run_XPathContainsText_NoMatch_WritesError

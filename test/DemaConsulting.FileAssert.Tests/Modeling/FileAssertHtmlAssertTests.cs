@@ -198,4 +198,112 @@ public sealed class FileAssertHtmlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when an XPath query selects HTML nodes by exact text.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError()
+    {
+        // Arrange - sample HTML has a <p> with text "Paragraph one"; query for exact match
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p[text()='Paragraph one']", Count = 1 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            htmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError()
+    {
+        // Arrange - no <p> has text "No such paragraph"; query should return 0 nodes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p[text()='No such paragraph']", Min = 1 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            htmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when an XPath contains() predicate matches an HTML node.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError()
+    {
+        // Arrange - sample HTML has paragraphs containing "Paragraph"; substring query returns 2
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p[contains(text(),'Paragraph')]", Count = 2 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            htmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when an XPath contains() predicate finds no matching nodes.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_XPathContainsText_NoMatch_WritesError()
+    {
+        // Arrange - no <p> contains "xyz"; contains() query returns 0 nodes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p[contains(text(),'xyz')]", Min = 1 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            htmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

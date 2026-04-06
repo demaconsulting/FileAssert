@@ -38,6 +38,10 @@ sections:
           documented requirements.
         tests:
           - FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
+          - FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
+          - FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
+          - FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
+          - FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
 
       - id: FileAssert-FileAssertPdfAssert-PageCountAssertions
         title: |
@@ -61,3 +65,5 @@ sections:
           same FileAssertRule hierarchy as the text: block ensures consistent rule behavior.
         tests:
           - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
+          - FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
+          - FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError

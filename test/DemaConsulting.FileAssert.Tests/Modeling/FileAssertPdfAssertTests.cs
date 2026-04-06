@@ -22,6 +22,8 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
 using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
@@ -219,6 +221,230 @@ public sealed class FileAssertPdfAssertTests
 
             // Assert
             Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the PDF metadata Title contains the required string.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError()
+    {
+        // Arrange - build a PDF with Title metadata set and assert it contains "Annual"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.DocumentInformation.Title = "Annual Report 2024";
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Metadata =
+                [
+                    new FileAssertPdfMetadataRuleData { Field = "Title", Contains = "Annual" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the PDF metadata Author field is checked.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError()
+    {
+        // Arrange - build a PDF with Author metadata and assert that field contains expected text
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.DocumentInformation.Author = "DEMA Consulting";
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Metadata =
+                [
+                    new FileAssertPdfMetadataRuleData { Field = "Author", Contains = "DEMA" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a PDF metadata matches regex rule succeeds.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError()
+    {
+        // Arrange - build a PDF with Title set; assert it matches regex pattern
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.DocumentInformation.Title = "Report 2024";
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Metadata =
+                [
+                    new FileAssertPdfMetadataRuleData { Field = "Title", Matches = @"Report \d{4}" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when a PDF metadata matches regex rule does not match.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError()
+    {
+        // Arrange - build a PDF with Title set; assert it matches a pattern it does not satisfy
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.DocumentInformation.Title = "Annual Report";
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Metadata =
+                [
+                    new FileAssertPdfMetadataRuleData { Field = "Title", Matches = @"^\d{4}$" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the PDF text contains the required string.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError()
+    {
+        // Arrange - build a PDF with text "Hello World" and assert text contains "Hello"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            var page = builder.AddPage(PageSize.A4);
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            page.AddText("Hello World", 12, new PdfPoint(50, 700), font);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Text =
+                [
+                    new FileAssertRuleData { Contains = "Hello" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the PDF text matches a regex pattern.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError()
+    {
+        // Arrange - build a PDF with text "Hello World 2024" and assert it matches a regex
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            var page = builder.AddPage(PageSize.A4);
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            page.AddText("Hello World 2024", 12, new PdfPoint(50, 700), font);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Text =
+                [
+                    new FileAssertRuleData { Matches = @"Hello World \d{4}" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
         }
         finally
         {

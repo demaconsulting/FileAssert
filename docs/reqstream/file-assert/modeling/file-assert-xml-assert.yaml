@@ -41,3 +41,8 @@ sections:
           - FileAssertXmlAssert_Run_ExactCount_Matches_NoError
           - FileAssertXmlAssert_Run_ExactCount_Mismatch_WritesError
           - FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError
+          - FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
+          - FileAssertXmlAssert_Run_XPathExactTextMatch_Matches_NoError
+          - FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError
+          - FileAssertXmlAssert_Run_XPathContainsText_Matches_NoError
+          - FileAssertXmlAssert_Run_XPathContainsText_NoMatch_WritesError
