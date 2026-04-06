@@ -87,7 +87,7 @@ internal sealed class FileAssertYamlAssert
             using var reader = new StreamReader(fileName);
             yaml.Load(reader);
         }
-        catch (YamlException)
+        catch (Exception ex) when (ex is YamlException or IOException or UnauthorizedAccessException)
         {
             context.WriteError($"File '{fileName}' could not be parsed as a YAML document");
             return;

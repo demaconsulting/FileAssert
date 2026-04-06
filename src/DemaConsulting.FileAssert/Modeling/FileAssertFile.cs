@@ -228,13 +228,13 @@ internal sealed class FileAssertFile
                     if (MinSize.HasValue && size < MinSize.Value)
                     {
                         context.WriteError(
-                            $"File '{file}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
+                            $"File '{fullPath}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
                     }
 
                     if (MaxSize.HasValue && size > MaxSize.Value)
                     {
                         context.WriteError(
-                            $"File '{file}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
+                            $"File '{fullPath}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
                     }
                 }
 

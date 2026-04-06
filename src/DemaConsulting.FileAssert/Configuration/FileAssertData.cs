@@ -94,7 +94,7 @@ internal sealed class FileAssertFileData
     public long? MaxSize { get; set; }
 
     /// <summary>
-    ///     Gets or sets the list of content rules to apply to each matching file.
+    ///     Gets or sets the list of text-content assertion rules to apply to each matching file.
     /// </summary>
     [YamlMember(Alias = "text")]
     public List<FileAssertRuleData>? Text { get; set; }

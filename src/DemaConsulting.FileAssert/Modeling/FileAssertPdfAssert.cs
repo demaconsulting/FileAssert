@@ -35,6 +35,9 @@ internal sealed class FileAssertPdfAssert
     /// </summary>
     private sealed class PdfMetadataRule
     {
+        /// <summary>The compiled regex for the matches constraint, or null if no matches check.</summary>
+        private readonly Regex? _matchesRegex;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="PdfMetadataRule"/> class.
         /// </summary>
@@ -46,6 +49,9 @@ internal sealed class FileAssertPdfAssert
             Field = field;
             Contains = contains;
             Matches = matches;
+            _matchesRegex = matches != null
+                ? new Regex(matches, RegexOptions.Compiled, TimeSpan.FromSeconds(10))
+                : null;
         }
 
         /// <summary>Gets the metadata field name.</summary>
@@ -63,13 +69,21 @@ internal sealed class FileAssertPdfAssert
         /// <param name="data">The rule data from YAML configuration.</param>
         /// <returns>A new <see cref="PdfMetadataRule"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when the field name is missing.</exception>
+        /// <exception cref="InvalidOperationException">
+        ///     Thrown when the field name is missing, or when neither contains nor matches is specified.
+        /// </exception>
         internal static PdfMetadataRule FromData(FileAssertPdfMetadataRuleData data)
         {
             ArgumentNullException.ThrowIfNull(data);
             if (string.IsNullOrWhiteSpace(data.Field))
             {
                 throw new InvalidOperationException("PDF metadata rule must specify a 'field'");
+            }
+
+            if (data.Contains == null && data.Matches == null)
+            {
+                throw new InvalidOperationException(
+                    $"PDF metadata rule for field '{data.Field}' must specify at least one of 'contains' or 'matches'");
             }
 
             return new PdfMetadataRule(data.Field, data.Contains, data.Matches);
@@ -92,15 +106,11 @@ internal sealed class FileAssertPdfAssert
                     $"File '{fileName}' PDF metadata '{Field}' does not contain '{Contains}'");
             }
 
-            // Check matches constraint when specified
-            if (Matches != null)
+            // Check matches constraint using pre-compiled regex when specified
+            if (_matchesRegex != null && (value == null || !_matchesRegex.IsMatch(value)))
             {
-                var regex = new Regex(Matches, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
-                if (value == null || !regex.IsMatch(value))
-                {
-                    context.WriteError(
-                        $"File '{fileName}' PDF metadata '{Field}' does not match '{Matches}'");
-                }
+                context.WriteError(
+                    $"File '{fileName}' PDF metadata '{Field}' does not match '{Matches}'");
             }
         }
     }

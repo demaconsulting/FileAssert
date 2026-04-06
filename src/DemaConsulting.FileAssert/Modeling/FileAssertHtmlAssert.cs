@@ -71,6 +71,9 @@ internal sealed class FileAssertHtmlAssert
 
     /// <summary>
     ///     Parses the HTML file and evaluates all configured XPath queries, reporting violations.
+    ///     HtmlAgilityPack is intentionally lenient (as browsers are): syntactically imperfect
+    ///     HTML is still parsed into a DOM and queries are evaluated against it.
+    ///     I/O errors (file not found, access denied) are reported as parse failures.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The full path to the HTML file to validate.</param>
@@ -79,13 +82,14 @@ internal sealed class FileAssertHtmlAssert
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(fileName);
 
-        // Load the HTML document using HtmlAgilityPack
+        // Load the HTML document using HtmlAgilityPack; HAP is lenient by design so only
+        // I/O failures are treated as parse errors
         var doc = new HtmlDocument();
         try
         {
             doc.Load(fileName);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             context.WriteError($"File '{fileName}' could not be parsed as an HTML document");
             return;

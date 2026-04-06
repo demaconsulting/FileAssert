@@ -21,7 +21,6 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
-using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 

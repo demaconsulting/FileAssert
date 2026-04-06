@@ -38,6 +38,8 @@ sections:
           documented requirements.
         tests:
           - FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
+
+      - id: FileAssert-FileAssertPdfAssert-PageCountAssertions
         title: |
           The FileAssertPdfAssert class shall enforce page count constraints against the
           number of pages in the parsed PDF document.
