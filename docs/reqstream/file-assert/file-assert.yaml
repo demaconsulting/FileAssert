@@ -228,9 +228,10 @@ sections:
           do not contain forbidden strings, or match regular expression patterns. These
           assertions are the primary mechanism for content validation in CI/CD pipelines.
         children:
-          - FileAssert-FileAssertTextAssert-RuleApplication
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
 
       - id: FileAssert-System-PdfAssertions
         title: |
@@ -244,12 +245,9 @@ sections:
           requirements. An immediate failure when the file is not a valid PDF prevents
           misleading partial results.
         children:
-          - FileAssert-FileAssertPdfAssert-ParseError
-          - FileAssert-FileAssertPdfAssert-MetadataAssertions
-          - FileAssert-FileAssertPdfAssert-PageCountAssertions
-          - FileAssert-FileAssertPdfAssert-TextAssertions
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+        tests:
+          - IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
 
       - id: FileAssert-System-XmlAssertions
         title: |
@@ -262,10 +260,11 @@ sections:
           users to verify document structure and element presence without writing custom
           parsers. An immediate failure on invalid XML prevents misleading partial results.
         children:
-          - FileAssert-FileAssertXmlAssert-ParseError
-          - FileAssert-FileAssertXmlAssert-QueryAssertions
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-ModelingSubsystem-QueryAssertions
+        tests:
+          - IntegrationTest_XmlAssert_PassingQuery_ReturnsZero
+          - IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero
 
       - id: FileAssert-System-HtmlAssertions
         title: |
@@ -278,10 +277,10 @@ sections:
           structure such as title presence and link counts. An immediate failure on invalid
           HTML prevents misleading partial results.
         children:
-          - FileAssert-FileAssertHtmlAssert-ParseError
-          - FileAssert-FileAssertHtmlAssert-QueryAssertions
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-ModelingSubsystem-QueryAssertions
+        tests:
+          - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
 
       - id: FileAssert-System-YamlAssertions
         title: |
@@ -294,10 +293,10 @@ sections:
           that required configuration keys are present and have the expected cardinality.
           An immediate failure on invalid YAML prevents misleading partial results.
         children:
-          - FileAssert-FileAssertYamlAssert-ParseError
-          - FileAssert-FileAssertYamlAssert-QueryAssertions
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-ModelingSubsystem-QueryAssertions
+        tests:
+          - IntegrationTest_YamlAssert_PassingQuery_ReturnsZero
 
       - id: FileAssert-System-JsonAssertions
         title: |
@@ -310,7 +309,7 @@ sections:
           have the expected cardinality without writing custom parsers. An immediate failure on
           invalid JSON prevents misleading partial results.
         children:
-          - FileAssert-FileAssertJsonAssert-ParseError
-          - FileAssert-FileAssertJsonAssert-QueryAssertions
-          - FileAssert-FileAssertFile-FileTypeAssertDelegation
-        tests: []
+          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-ModelingSubsystem-QueryAssertions
+        tests:
+          - IntegrationTest_JsonAssert_PassingQuery_ReturnsZero

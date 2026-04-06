@@ -35,7 +35,24 @@ sections:
           File-type parsing enables structured-document assertions (metadata, XPath, dot-notation
           paths) that are not possible with plain-text content rules. Reporting an immediate
           error on parse failure prevents misleading partial results from downstream assertions.
-        tests: []
+        children:
+          - FileAssert-FileAssertTextAssert-Creation
+          - FileAssert-FileAssertTextAssert-RuleApplication
+          - FileAssert-FileAssertPdfAssert-Creation
+          - FileAssert-FileAssertPdfAssert-ParseError
+          - FileAssert-FileAssertPdfAssert-MetadataAssertions
+          - FileAssert-FileAssertPdfAssert-PageCountAssertions
+          - FileAssert-FileAssertPdfAssert-TextAssertions
+          - FileAssert-FileAssertXmlAssert-Creation
+          - FileAssert-FileAssertXmlAssert-ParseError
+          - FileAssert-FileAssertHtmlAssert-Creation
+          - FileAssert-FileAssertHtmlAssert-ParseError
+          - FileAssert-FileAssertYamlAssert-Creation
+          - FileAssert-FileAssertYamlAssert-ParseError
+          - FileAssert-FileAssertJsonAssert-Creation
+          - FileAssert-FileAssertJsonAssert-ParseError
+        tests:
+          - ModelingSubsystem_FileTypeParsing_InvalidXml_ReportsParseError
 
       - id: FileAssert-ModelingSubsystem-QueryAssertions
         title: |
@@ -46,4 +63,10 @@ sections:
           Query-based assertions at the subsystem level verify that the parsing and assertion
           pipeline integrates correctly across all supported structured-document formats without
           requiring format-specific integration tests at the subsystem level.
-        tests: []
+        children:
+          - FileAssert-FileAssertXmlAssert-QueryAssertions
+          - FileAssert-FileAssertHtmlAssert-QueryAssertions
+          - FileAssert-FileAssertYamlAssert-QueryAssertions
+          - FileAssert-FileAssertJsonAssert-QueryAssertions
+        tests:
+          - ModelingSubsystem_QueryAssertions_XmlQueryMeetsCount_NoError
