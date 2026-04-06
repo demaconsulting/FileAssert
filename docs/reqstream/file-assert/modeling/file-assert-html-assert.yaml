@@ -1,0 +1,36 @@
+---
+# Software Unit Requirements for the FileAssertHtmlAssert Class
+#
+# The FileAssertHtmlAssert class parses matched files as HTML documents using HtmlAgilityPack
+# and applies XPath-based node count assertions.
+
+sections:
+  - title: FileAssertHtmlAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertHtmlAssert-Creation
+        title: The FileAssertHtmlAssert class shall be constructed from a list of query assertion data objects.
+        justification: |
+          Constructing query assertion models at creation time ensures that configuration
+          errors are detected before any file system or HTML parsing operations are attempted.
+        tests: []
+
+      - id: FileAssert-FileAssertHtmlAssert-ParseError
+        title: |
+          The FileAssertHtmlAssert class shall report an immediate error and skip remaining
+          assertions when a matched file cannot be parsed as a valid HTML document.
+        justification: |
+          Attempting to evaluate XPath queries against a file that cannot be parsed as HTML
+          would produce meaningless or misleading results. Reporting the parse failure
+          immediately gives users a clear, actionable error message.
+        tests: []
+
+      - id: FileAssert-FileAssertHtmlAssert-QueryAssertions
+        title: |
+          The FileAssertHtmlAssert class shall evaluate each configured XPath query against
+          the parsed HTML document and apply min, max, and exact count constraints to the
+          number of matching nodes.
+        justification: |
+          XPath node count assertions over HTML documents allow users to verify page structure
+          such as title presence, link counts, and heading hierarchy in generated documentation
+          and static site outputs.
+        tests: []

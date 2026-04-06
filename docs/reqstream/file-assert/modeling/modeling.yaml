@@ -25,3 +25,25 @@ sections:
           level verifies that the full error-reporting pipeline within the subsystem works.
         tests:
           - ModelingSubsystem_ExecuteChain_ReportsFailuresThroughContext
+
+      - id: FileAssert-ModelingSubsystem-FileTypeParsing
+        title: |
+          The Modeling subsystem shall parse matched files as structured documents (PDF, XML,
+          HTML, YAML, JSON) when the corresponding assertion block is declared, and report
+          an immediate error if the file cannot be parsed.
+        justification: |
+          File-type parsing enables structured-document assertions (metadata, XPath, dot-notation
+          paths) that are not possible with plain-text content rules. Reporting an immediate
+          error on parse failure prevents misleading partial results from downstream assertions.
+        tests: []
+
+      - id: FileAssert-ModelingSubsystem-QueryAssertions
+        title: |
+          The Modeling subsystem shall evaluate structured-document query assertions (XPath
+          for XML and HTML; dot-notation paths for YAML and JSON) and apply count constraints
+          to the number of matching nodes.
+        justification: |
+          Query-based assertions at the subsystem level verify that the parsing and assertion
+          pipeline integrates correctly across all supported structured-document formats without
+          requiring format-specific integration tests at the subsystem level.
+        tests: []

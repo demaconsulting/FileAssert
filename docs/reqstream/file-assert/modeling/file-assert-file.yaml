@@ -69,3 +69,15 @@ sections:
           - FileAssertFile_Run_TooSmall_WritesError
           - FileAssertFile_Run_TooLarge_WritesError
           - FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation
+
+      - id: FileAssert-FileAssertFile-FileTypeAssertDelegation
+        title: |
+          The FileAssertFile class shall delegate per-file assertions to the appropriate
+          file-type assert unit (FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,
+          FileAssertHtmlAssert, FileAssertYamlAssert, or FileAssertJsonAssert) when the
+          corresponding assertion block is declared.
+        justification: |
+          Delegating file-type assertions to dedicated units keeps FileAssertFile free of
+          format-specific parsing and assertion logic, making each unit independently testable
+          and the overall design extensible to future formats.
+        tests: []

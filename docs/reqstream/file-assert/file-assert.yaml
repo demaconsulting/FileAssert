@@ -222,14 +222,14 @@ sections:
       - id: FileAssert-System-TextAssertions
         title: |
           The FileAssert tool shall evaluate text content assertions declared in a `text:` block
-          (or its backward-compatible alias `rules:`) and return a non-zero exit code when any
-          assertion fails.
+          and return a non-zero exit code when any assertion fails.
         justification: |
           Text content assertions allow users to verify that files contain required strings,
-          do not contain forbidden strings, or match regular expression patterns. Renaming the
-          block from `rules:` to `text:` clarifies its purpose while preserving backward
-          compatibility for existing test suites. These assertions are the primary mechanism
-          for content validation in CI/CD pipelines.
+          do not contain forbidden strings, or match regular expression patterns. These
+          assertions are the primary mechanism for content validation in CI/CD pipelines.
+        children:
+          - FileAssert-FileAssertTextAssert-RuleApplication
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
       - id: FileAssert-System-PdfAssertions
@@ -243,6 +243,12 @@ sections:
           text content allows users to verify that generated PDF outputs meet documented
           requirements. An immediate failure when the file is not a valid PDF prevents
           misleading partial results.
+        children:
+          - FileAssert-FileAssertPdfAssert-ParseError
+          - FileAssert-FileAssertPdfAssert-MetadataAssertions
+          - FileAssert-FileAssertPdfAssert-PageCountAssertions
+          - FileAssert-FileAssertPdfAssert-TextAssertions
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
       - id: FileAssert-System-XmlAssertions
@@ -255,6 +261,10 @@ sections:
           in enterprise and regulated environments. XPath-based node count assertions allow
           users to verify document structure and element presence without writing custom
           parsers. An immediate failure on invalid XML prevents misleading partial results.
+        children:
+          - FileAssert-FileAssertXmlAssert-ParseError
+          - FileAssert-FileAssertXmlAssert-QueryAssertions
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
       - id: FileAssert-System-HtmlAssertions
@@ -267,6 +277,10 @@ sections:
           and report tools. XPath-based node count assertions allow users to verify page
           structure such as title presence and link counts. An immediate failure on invalid
           HTML prevents misleading partial results.
+        children:
+          - FileAssert-FileAssertHtmlAssert-ParseError
+          - FileAssert-FileAssertHtmlAssert-QueryAssertions
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
       - id: FileAssert-System-YamlAssertions
@@ -279,6 +293,10 @@ sections:
           and infrastructure-as-code files. Dot-notation path assertions allow users to verify
           that required configuration keys are present and have the expected cardinality.
           An immediate failure on invalid YAML prevents misleading partial results.
+        children:
+          - FileAssert-FileAssertYamlAssert-ParseError
+          - FileAssert-FileAssertYamlAssert-QueryAssertions
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
       - id: FileAssert-System-JsonAssertions
@@ -291,4 +309,8 @@ sections:
           outputs. Dot-notation paths allow users to verify that required keys are present and
           have the expected cardinality without writing custom parsers. An immediate failure on
           invalid JSON prevents misleading partial results.
+        children:
+          - FileAssert-FileAssertJsonAssert-ParseError
+          - FileAssert-FileAssertJsonAssert-QueryAssertions
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []

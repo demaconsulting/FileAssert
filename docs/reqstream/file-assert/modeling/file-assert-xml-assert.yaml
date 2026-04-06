@@ -1,0 +1,37 @@
+---
+# Software Unit Requirements for the FileAssertXmlAssert Class
+#
+# The FileAssertXmlAssert class parses matched files as XML documents using System.Xml.Linq
+# and applies XPath-based node count assertions.
+
+sections:
+  - title: FileAssertXmlAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertXmlAssert-Creation
+        title: The FileAssertXmlAssert class shall be constructed from a list of query assertion data objects.
+        justification: |
+          Constructing query assertion models at creation time ensures that configuration
+          errors are detected before any file system or XML parsing operations are attempted.
+        tests: []
+
+      - id: FileAssert-FileAssertXmlAssert-ParseError
+        title: |
+          The FileAssertXmlAssert class shall report an immediate error and skip remaining
+          assertions when a matched file cannot be parsed as a valid XML document.
+        justification: |
+          Attempting to evaluate XPath queries against a file that is not valid XML would
+          produce meaningless or misleading results. Reporting the parse failure immediately
+          gives users a clear, actionable error message.
+        tests: []
+
+      - id: FileAssert-FileAssertXmlAssert-QueryAssertions
+        title: |
+          The FileAssertXmlAssert class shall evaluate each configured XPath query against
+          the parsed XML document and apply min, max, and exact count constraints to the
+          number of matching nodes.
+        justification: |
+          XPath node count assertions enable users to verify document structure such as
+          required element presence and cardinality constraints without writing custom
+          parsers. Checking all three constraint types (exact, min, max) provides full
+          flexibility for different validation scenarios.
+        tests: []
