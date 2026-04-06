@@ -11,7 +11,7 @@ applies min, max, and exact count constraints to the number of matching nodes.
 
 ### FileAssertQueryAssert
 
-`FileAssertQueryAssert` is the shared inner modeling class documented in
+`FileAssertQueryAssert` is the standalone internal modeling class documented in
 [FileAssertXmlAssert](file-assert-xml-assert.md). It holds the query string and count
 constraints for a single structured-document query assertion and is shared across all four
 structured-document assert units (XML, HTML, YAML, JSON).
@@ -75,6 +75,6 @@ files:
 - **Immediate failure on critical parse errors**: When HtmlAgilityPack reports critical
   parse errors, applying XPath assertions would produce meaningless results. Reporting the
   parse failure immediately gives users a clear, actionable error message.
-- **Shared `FileAssertQueryAssert`**: The inner query-assert class is shared across all four
-  structured-document assert units (XML, HTML, YAML, JSON), ensuring consistent error
-  messages and constraint logic across formats.
+- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
+  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
+  consistent error messages and constraint logic across formats.

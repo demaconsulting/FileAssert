@@ -8,17 +8,18 @@ executable domain objects and drives the assertion logic.
 
 ## Subsystem Contents
 
-| Unit                   | File                      | Responsibility                                                 |
-| :--------------------- | :------------------------ | :------------------------------------------------------------- |
-| `FileAssertTest`       | `FileAssertTest.cs`       | Named test with file assertions and tag-based filter matching. |
-| `FileAssertFile`       | `FileAssertFile.cs`       | Glob pattern matcher with count constraints and content rules. |
-| `FileAssertRule`       | `FileAssertRule.cs`       | Abstract content validation rule hierarchy.                    |
-| `FileAssertTextAssert` | `FileAssertTextAssert.cs` | Applies text content rules to matched file text.               |
-| `FileAssertPdfAssert`  | `FileAssertPdfAssert.cs`  | Parses PDF files; applies metadata, page, and text rules.      |
-| `FileAssertXmlAssert`  | `FileAssertXmlAssert.cs`  | Parses XML files; applies XPath node count assertions.         |
-| `FileAssertHtmlAssert` | `FileAssertHtmlAssert.cs` | Parses HTML files; applies XPath node count assertions.        |
-| `FileAssertYamlAssert` | `FileAssertYamlAssert.cs` | Parses YAML files; applies dot-notation path assertions.       |
-| `FileAssertJsonAssert` | `FileAssertJsonAssert.cs` | Parses JSON files; applies dot-notation path assertions.       |
+| Unit                    | File                        | Responsibility                                         |
+| :---------------------- | :-------------------------- | :----------------------------------------------------- |
+| `FileAssertTest`        | `FileAssertTest.cs`         | Named test with file assertions and filter matching.   |
+| `FileAssertFile`        | `FileAssertFile.cs`         | Glob pattern matcher; count constraints and rules.     |
+| `FileAssertRule`        | `FileAssertRule.cs`         | Abstract content validation rule hierarchy.            |
+| `FileAssertTextAssert`  | `FileAssertTextAssert.cs`   | Applies text content rules to matched file text.       |
+| `FileAssertPdfAssert`   | `FileAssertPdfAssert.cs`    | Parses PDF; applies metadata, page, and text rules.    |
+| `FileAssertXmlAssert`   | `FileAssertXmlAssert.cs`    | Parses XML; applies XPath node count assertions.       |
+| `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
+| `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
+| `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
+| `FileAssertQueryAssert` | `FileAssertQueryAssert.cs`  | Shared query assertion for XML/HTML/YAML/JSON asserts. |
 
 ## Subsystem Responsibilities
 
@@ -44,10 +45,10 @@ FileAssertTest
     │       ├── FileAssertMatchesRule
     │       └── FileAssertDoesNotMatchRule
     ├── FileAssertPdfAssert? (zero or one)
-    ├── FileAssertXmlAssert? (zero or one)
-    ├── FileAssertHtmlAssert? (zero or one)
-    ├── FileAssertYamlAssert? (zero or one)
-    └── FileAssertJsonAssert? (zero or one)
+    ├── FileAssertXmlAssert? (zero or one)   ─── FileAssertQueryAssert (one or more)
+    ├── FileAssertHtmlAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
+    ├── FileAssertYamlAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
+    └── FileAssertJsonAssert? (zero or one)  ─── FileAssertQueryAssert (one or more)
 ```
 
 ## Interactions with Other Subsystems

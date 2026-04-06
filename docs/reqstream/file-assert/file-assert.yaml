@@ -264,6 +264,7 @@ sections:
         children:
           - FileAssert-FileAssertXmlAssert-ParseError
           - FileAssert-FileAssertXmlAssert-QueryAssertions
+          - FileAssert-FileAssertQueryAssert-CountConstraints
           - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
@@ -280,6 +281,7 @@ sections:
         children:
           - FileAssert-FileAssertHtmlAssert-ParseError
           - FileAssert-FileAssertHtmlAssert-QueryAssertions
+          - FileAssert-FileAssertQueryAssert-CountConstraints
           - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
@@ -296,6 +298,7 @@ sections:
         children:
           - FileAssert-FileAssertYamlAssert-ParseError
           - FileAssert-FileAssertYamlAssert-QueryAssertions
+          - FileAssert-FileAssertQueryAssert-CountConstraints
           - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []
 
@@ -312,5 +315,6 @@ sections:
         children:
           - FileAssert-FileAssertJsonAssert-ParseError
           - FileAssert-FileAssertJsonAssert-QueryAssertions
+          - FileAssert-FileAssertQueryAssert-CountConstraints
           - FileAssert-FileAssertFile-FileTypeAssertDelegation
         tests: []

@@ -11,7 +11,7 @@ max, and exact count constraints to the number of matching nodes.
 
 ### FileAssertQueryAssert
 
-`FileAssertQueryAssert` is the shared inner modeling class documented in
+`FileAssertQueryAssert` is the standalone internal modeling class documented in
 [FileAssertXmlAssert](file-assert-xml-assert.md). It holds the query string and count
 constraints for a single structured-document query assertion and is shared across all four
 structured-document assert units (XML, HTML, YAML, JSON).
@@ -75,6 +75,6 @@ files:
 - **Dot-notation path traversal**: Segment-by-segment descent through YAML mapping nodes.
   Sequences count as zero or more items at the terminal segment, allowing users to assert
   the presence and cardinality of sequence keys.
-- **Shared `FileAssertQueryAssert`**: The inner query-assert class is shared across all four
-  structured-document assert units (XML, HTML, YAML, JSON), ensuring consistent error
-  messages and constraint logic across formats.
+- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
+  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
+  consistent error messages and constraint logic across formats.

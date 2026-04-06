@@ -11,9 +11,9 @@ applies min, max, and exact count constraints to the number of matching nodes.
 
 ### FileAssertQueryAssert
 
-An inner modeling class shared across `FileAssertXmlAssert`, `FileAssertHtmlAssert`,
-`FileAssertYamlAssert`, and `FileAssertJsonAssert`. It holds the query string and count
-constraints for a single structured-document query assertion.
+A standalone internal modeling class in the Modeling namespace, shared by `FileAssertXmlAssert`,
+`FileAssertHtmlAssert`, `FileAssertYamlAssert`, and `FileAssertJsonAssert`. It holds the query
+string and count constraints for a single structured-document query assertion.
 
 #### FileAssertQueryAssert Properties
 
@@ -101,6 +101,6 @@ files:
 - **Immediate failure on parse error**: Attempting to evaluate XPath queries against a file
   that is not valid XML would produce meaningless or misleading results. Reporting the parse
   failure immediately gives users a clear, actionable error message.
-- **Shared `FileAssertQueryAssert`**: The inner query-assert class is shared by all four
-  structured-document assert units (XML, HTML, YAML, JSON), ensuring consistent error
-  messages and constraint logic across formats.
+- **Shared `FileAssertQueryAssert`**: The standalone internal query-assert class is shared
+  across all four structured-document assert units (XML, HTML, YAML, JSON), ensuring
+  consistent error messages and constraint logic across formats.
