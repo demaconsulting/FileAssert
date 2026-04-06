@@ -88,11 +88,11 @@ File '<fileName>' matches forbidden pattern '<Pattern>'
 
 ## YAML Configuration
 
-Rules are declared under the `rules` key of a file entry. Each rule item specifies
+Rules are declared under the `text` key of a file entry. Each rule item specifies
 exactly one of the supported rule types:
 
 ```yaml
-rules:
+text:
   - contains: "Copyright (c) DEMA Consulting"
   - does-not-contain: "password123"
   - matches: "Copyright \\(c\\) \\d{4}"

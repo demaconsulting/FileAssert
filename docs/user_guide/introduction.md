@@ -249,8 +249,6 @@ tests:
             count: 1
 ```
 
-> **Note**: The `rules:` key is retained for backward compatibility and is equivalent to `text:`.
-
 ## Acceptance Criteria Reference
 
 | Criterion                         | Description                                                  |
@@ -260,7 +258,7 @@ tests:
 | `max`                             | Maximum number of files matching the pattern                 |
 | `min-size`                        | Minimum file size in bytes                                   |
 | `max-size`                        | Maximum file size in bytes                                   |
-| `text:`                           | Text content assertions block (alias: `rules:`)              |
+| `text:`                           | Text content assertions block                                |
 | `text[].contains`                 | File must contain the specified text                         |
 | `text[].does-not-contain`         | File must not contain the specified text                     |
 | `text[].matches`                  | File must match the specified regular expression             |

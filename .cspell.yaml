@@ -85,6 +85,8 @@ words:
   - appsettings
   - xpath
   - XPath
+  - PdfPig
+  - HtmlAgilityPack
   - TMPL
   - triaging
   - Trivy
