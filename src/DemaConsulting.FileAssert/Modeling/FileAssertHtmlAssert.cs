@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml.XPath;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using HtmlAgilityPack;
@@ -98,8 +99,17 @@ internal sealed class FileAssertHtmlAssert
         // Evaluate each configured XPath query and apply count constraints
         foreach (var q in _queries)
         {
-            var nodes = doc.DocumentNode.SelectNodes(q.Query);
-            var n = nodes?.Count ?? 0;
+            int n;
+            try
+            {
+                n = doc.DocumentNode.SelectNodes(q.Query)?.Count ?? 0;
+            }
+            catch (XPathException)
+            {
+                context.WriteError($"File '{fileName}' query '{q.Query}' is not a valid XPath expression");
+                continue;
+            }
+
             ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, n);
         }
     }

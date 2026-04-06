@@ -175,4 +175,31 @@ public sealed class FileAssertXmlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the XPath query is invalid syntax.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError()
+    {
+        // Arrange - valid XML but an XPath expression with invalid syntax
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item[invalid", Count = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

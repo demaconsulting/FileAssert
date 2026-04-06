@@ -66,7 +66,16 @@ internal sealed class FileAssertTextAssert
         ArgumentNullException.ThrowIfNull(fileName);
 
         // Read the file content as UTF-8 text for rule evaluation
-        var content = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+        string content;
+        try
+        {
+            content = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            context.WriteError($"File '{fileName}' could not be read as text");
+            return;
+        }
 
         // Apply each rule to validate the file content
         foreach (var rule in Rules)

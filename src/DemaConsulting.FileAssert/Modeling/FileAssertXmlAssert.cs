@@ -95,8 +95,17 @@ internal sealed class FileAssertXmlAssert
         // Evaluate each configured XPath query and apply count constraints
         foreach (var q in _queries)
         {
-            var nodes = document.XPathSelectElements(q.Query).ToList();
-            var n = nodes.Count;
+            int n;
+            try
+            {
+                n = document.XPathSelectElements(q.Query).Count();
+            }
+            catch (XPathException)
+            {
+                context.WriteError($"File '{fileName}' query '{q.Query}' is not a valid XPath expression");
+                continue;
+            }
+
             ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, n);
         }
     }

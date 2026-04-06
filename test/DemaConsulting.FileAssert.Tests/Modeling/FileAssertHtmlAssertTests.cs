@@ -171,4 +171,31 @@ public sealed class FileAssertHtmlAssertTests
         // Assert
         Assert.AreEqual(1, context.ExitCode);
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the XPath query has invalid syntax.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError()
+    {
+        // Arrange - valid HTML but an XPath expression with invalid syntax
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p[invalid", Count = 1 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            htmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

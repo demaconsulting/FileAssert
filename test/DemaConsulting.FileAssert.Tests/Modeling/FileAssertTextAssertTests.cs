@@ -113,4 +113,23 @@ public sealed class FileAssertTextAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the file cannot be read (I/O error).
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTextAssert_Run_NonExistentFile_WritesError()
+    {
+        // Arrange - use a path that does not exist to trigger an I/O failure
+        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.txt");
+        var data = new List<FileAssertRuleData> { new() { Contains = "hello" } };
+        var textAssert = FileAssertTextAssert.Create(data);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        textAssert.Run(context, missingFile);
+
+        // Assert
+        Assert.AreEqual(1, context.ExitCode);
+    }
 }
