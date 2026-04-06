@@ -1,0 +1,42 @@
+---
+# Software Unit Requirements for the FileAssertJsonAssert Class
+#
+# The FileAssertJsonAssert class parses matched files as JSON documents using System.Text.Json
+# and applies dot-notation path assertions.
+
+sections:
+  - title: FileAssertJsonAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertJsonAssert-Creation
+        title: The FileAssertJsonAssert class shall be constructed from a list of query assertion data objects.
+        justification: |
+          Constructing query assertion models at creation time ensures that configuration
+          errors are detected before any file system or JSON parsing operations are attempted.
+        tests:
+          - FileAssertJsonAssert_Create_ValidData_CreatesJsonAssert
+          - FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
+
+      - id: FileAssert-FileAssertJsonAssert-ParseError
+        title: |
+          The FileAssertJsonAssert class shall report an immediate error and skip remaining
+          assertions when a matched file cannot be parsed as a valid JSON document.
+        justification: |
+          Attempting to traverse a JSON document tree against a file that is not valid JSON
+          would produce meaningless or misleading results. Reporting the parse failure
+          immediately gives users a clear, actionable error message.
+        tests:
+          - FileAssertJsonAssert_Run_InvalidFile_WritesError
+
+      - id: FileAssert-FileAssertJsonAssert-QueryAssertions
+        title: |
+          The FileAssertJsonAssert class shall evaluate each configured dot-notation path
+          against the parsed JSON document and apply min, max, and exact count constraints
+          to the number of matching elements.
+        justification: |
+          Dot-notation path assertions allow users to verify that required keys are present
+          and have the expected cardinality in JSON configuration files, API response
+          fixtures, and build output manifests.
+        tests:
+          - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
+          - FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
+          - FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError

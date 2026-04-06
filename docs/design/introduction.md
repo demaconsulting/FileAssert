@@ -21,6 +21,12 @@ This document covers the detailed design of the following software units:
 - **FileAssertTest** — named test with file assertions and tag filtering (`FileAssertTest.cs`)
 - **FileAssertFile** — glob pattern matcher with count constraints and content rules (`FileAssertFile.cs`)
 - **FileAssertRule** — abstract content validation rule hierarchy (`FileAssertRule.cs`)
+- **FileAssertTextAssert** — text content assertions (`FileAssertTextAssert.cs`)
+- **FileAssertPdfAssert** — PDF document assertions (`FileAssertPdfAssert.cs`)
+- **FileAssertXmlAssert** — XML document assertions (`FileAssertXmlAssert.cs`)
+- **FileAssertHtmlAssert** — HTML document assertions (`FileAssertHtmlAssert.cs`)
+- **FileAssertYamlAssert** — YAML document assertions (`FileAssertYamlAssert.cs`)
+- **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
 
@@ -52,7 +58,13 @@ FileAssert (System)
 ├── Modeling (Subsystem)
 │   ├── FileAssertTest (Unit)
 │   ├── FileAssertFile (Unit)
-│   └── FileAssertRule (Unit)
+│   ├── FileAssertRule (Unit)
+│   ├── FileAssertTextAssert (Unit)
+│   ├── FileAssertPdfAssert (Unit)
+│   ├── FileAssertXmlAssert (Unit)
+│   ├── FileAssertHtmlAssert (Unit)
+│   ├── FileAssertYamlAssert (Unit)
+│   └── FileAssertJsonAssert (Unit)
 ├── Utilities (Subsystem)
 │   └── PathHelpers (Unit)
 └── SelfTest (Subsystem)
@@ -77,7 +89,13 @@ src/DemaConsulting.FileAssert/
 ├── Modeling/
 │   ├── FileAssertTest.cs           — named test with file assertions and tag filtering
 │   ├── FileAssertFile.cs           — glob pattern matcher with count constraints and rules
-│   └── FileAssertRule.cs           — abstract content validation rule hierarchy
+│   ├── FileAssertRule.cs           — abstract content validation rule hierarchy
+│   ├── FileAssertTextAssert.cs     — text content assertions
+│   ├── FileAssertPdfAssert.cs      — PDF document assertions (PdfPig)
+│   ├── FileAssertXmlAssert.cs      — XML document assertions (System.Xml.Linq/XPath)
+│   ├── FileAssertHtmlAssert.cs     — HTML document assertions (HtmlAgilityPack)
+│   ├── FileAssertYamlAssert.cs     — YAML document assertions (YamlDotNet)
+│   └── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
 ├── Utilities/
 │   └── PathHelpers.cs              — safe path-combination utility
 └── SelfTest/

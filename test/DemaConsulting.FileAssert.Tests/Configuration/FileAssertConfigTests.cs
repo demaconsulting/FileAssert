@@ -225,7 +225,7 @@ public class FileAssertConfigTests
                   - name: "LicenseCheck"
                     files:
                       - pattern: "sample.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -272,7 +272,7 @@ public class FileAssertConfigTests
                   - name: "LicenseCheck"
                     files:
                       - pattern: "sample.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 

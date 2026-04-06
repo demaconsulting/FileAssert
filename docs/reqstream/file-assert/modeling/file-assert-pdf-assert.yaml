@@ -1,0 +1,69 @@
+---
+# Software Unit Requirements for the FileAssertPdfAssert Class
+#
+# The FileAssertPdfAssert class parses matched files as PDF documents using PdfPig and
+# applies metadata field assertions, page count constraints, and body text rules.
+
+sections:
+  - title: FileAssertPdfAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertPdfAssert-Creation
+        title: The FileAssertPdfAssert class shall be constructed from a validated PDF assertion data object.
+        justification: |
+          Constructing all assertion models at creation time ensures that configuration errors
+          are detected before any file system or PDF library operations are attempted.
+        tests:
+          - FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
+          - FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
+
+      - id: FileAssert-FileAssertPdfAssert-ParseError
+        title: |
+          The FileAssertPdfAssert class shall report an immediate error and skip remaining
+          assertions when a matched file cannot be parsed as a valid PDF document.
+        justification: |
+          Attempting to apply metadata, page, or text assertions against a file that is not a
+          valid PDF would produce meaningless partial results. Reporting the parse failure
+          immediately and stopping gives users a clear, actionable error message.
+        tests:
+          - FileAssertPdfAssert_Run_InvalidFile_WritesError
+
+      - id: FileAssert-FileAssertPdfAssert-MetadataAssertions
+        title: |
+          The FileAssertPdfAssert class shall apply each configured metadata field assertion
+          to the corresponding field in the parsed PDF document.
+        justification: |
+          PDF metadata fields such as Title, Author, and Subject are used in regulated
+          environments to assert document provenance and content classification. Verifying
+          each declared field assertion allows users to confirm that generated PDFs meet
+          documented requirements.
+        tests:
+          - FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
+          - FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
+          - FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
+          - FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
+          - FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
+
+      - id: FileAssert-FileAssertPdfAssert-PageCountAssertions
+        title: |
+          The FileAssertPdfAssert class shall enforce page count constraints against the
+          number of pages in the parsed PDF document.
+        justification: |
+          Page count constraints allow users to verify that generated reports and documents
+          have the expected length. Both a minimum (to catch empty or truncated outputs) and
+          a maximum (to catch unexpectedly verbose outputs) must be supported.
+        tests:
+          - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+          - FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
+
+      - id: FileAssert-FileAssertPdfAssert-TextAssertions
+        title: |
+          The FileAssertPdfAssert class shall extract the body text of the PDF document and
+          apply each configured text rule to the extracted content.
+        justification: |
+          Body text assertions allow users to verify that key content (such as required
+          section headings or legal notices) is present in generated PDF outputs. Using the
+          same FileAssertRule hierarchy as the text: block ensures consistent rule behavior.
+        tests:
+          - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
+          - FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
+          - FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError

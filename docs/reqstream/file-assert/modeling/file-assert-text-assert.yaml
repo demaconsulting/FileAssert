@@ -1,0 +1,42 @@
+---
+# Software Unit Requirements for the FileAssertTextAssert Class
+#
+# The FileAssertTextAssert class applies text content rules to the text of matched files.
+# It wraps a list of FileAssertRule instances and is invoked by FileAssertFile when a
+# `text:` assertion block is declared.
+
+sections:
+  - title: FileAssertTextAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertTextAssert-Creation
+        title: The FileAssertTextAssert class shall be constructed from a list of rule data objects.
+        justification: |
+          Constructing rules at creation time rather than at evaluation time avoids repeated
+          per-file construction overhead and allows validation errors (such as missing rule
+          types) to be reported before any file system operations are attempted.
+        tests:
+          - FileAssertTextAssert_Create_ValidData_CreatesTextAssert
+          - FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
+
+      - id: FileAssert-FileAssertTextAssert-RuleApplication
+        title: |
+          The FileAssertTextAssert class shall read each matched file as text and apply all
+          configured rules, reporting an error for each rule violation.
+        justification: |
+          Each rule must be applied to the complete file content so that all violations in a
+          single file are reported in one pass. Reading the file as text ensures that all rule
+          types (substring, inverse-substring, regex, inverse-regex) receive the same input.
+        tests:
+          - FileAssertTextAssert_Run_FileContainsText_NoError
+          - FileAssertTextAssert_Run_FileMissingText_WritesError
+
+      - id: FileAssert-FileAssertTextAssert-IOError
+        title: |
+          The FileAssertTextAssert class shall report an immediate error when a matched file
+          cannot be read due to an I/O failure.
+        justification: |
+          I/O failures (file not found, access denied) should be reported as clean assertion
+          errors rather than unhandled exceptions, consistent with the behavior of all other
+          file-type assert units.
+        tests:
+          - FileAssertTextAssert_Run_NonExistentFile_WritesError

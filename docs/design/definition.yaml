@@ -16,6 +16,12 @@ input-files:
   - docs/design/file-assert/modeling/file-assert-test.md
   - docs/design/file-assert/modeling/file-assert-file.md
   - docs/design/file-assert/modeling/file-assert-rule.md
+  - docs/design/file-assert/modeling/file-assert-text-assert.md
+  - docs/design/file-assert/modeling/file-assert-pdf-assert.md
+  - docs/design/file-assert/modeling/file-assert-xml-assert.md
+  - docs/design/file-assert/modeling/file-assert-html-assert.md
+  - docs/design/file-assert/modeling/file-assert-yaml-assert.md
+  - docs/design/file-assert/modeling/file-assert-json-assert.md
   - docs/design/file-assert/utilities/utilities.md
   - docs/design/file-assert/utilities/path-helpers.md
   - docs/design/file-assert/selftest/selftest.md

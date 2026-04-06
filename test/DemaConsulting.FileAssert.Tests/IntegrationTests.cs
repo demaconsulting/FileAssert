@@ -316,7 +316,7 @@ public class IntegrationTests
                     files:
                       - pattern: "*.txt"
                         min: 1
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -357,7 +357,7 @@ public class IntegrationTests
                   - name: "License Check"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -400,7 +400,7 @@ public class IntegrationTests
                     files:
                       - pattern: "*.txt"
                         min: 1
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -451,7 +451,7 @@ public class IntegrationTests
                   - name: "LicenseCheck"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -543,7 +543,7 @@ public class IntegrationTests
                   - name: "VersionFormatCheck"
                     files:
                       - pattern: "version.txt"
-                        rules:
+                        text:
                           - matches: "\\d+\\.\\d+\\.\\d+"
                 """);
 
@@ -583,7 +583,7 @@ public class IntegrationTests
                   - name: "VersionFormatCheck"
                     files:
                       - pattern: "version.txt"
-                        rules:
+                        text:
                           - matches: "\\d+\\.\\d+\\.\\d+"
                 """);
 
@@ -745,7 +745,7 @@ public class IntegrationTests
                   - name: "NoSecretsCheck"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - does-not-contain: "password123"
                 """);
 
@@ -786,7 +786,7 @@ public class IntegrationTests
                   - name: "NoFatalErrorsCheck"
                     files:
                       - pattern: "*.log"
-                        rules:
+                        text:
                           - does-not-contain-regex: "FATAL|ERROR"
                 """);
 
@@ -800,6 +800,235 @@ public class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the forbidden pattern matched
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that an XML assert with a passing query returns a zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_XmlAssert_PassingQuery_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), """
+                <configuration>
+                  <setting key="env">production</setting>
+                </configuration>
+                """);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "XmlCheck"
+                    files:
+                      - pattern: "*.xml"
+                        xml:
+                          - query: "//configuration/setting"
+                            min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that an XML assert with an invalid XML file returns a non-zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), "this is not xml <<>>");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "XmlCheck"
+                    files:
+                      - pattern: "*.xml"
+                        xml:
+                          - query: "//configuration"
+                            min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that an HTML assert with a passing query returns a zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "index.html"), """
+                <html>
+                  <head><title>Test Page</title></head>
+                  <body><p>Hello</p></body>
+                </html>
+                """);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "HtmlCheck"
+                    files:
+                      - pattern: "*.html"
+                        html:
+                          - query: "//head/title"
+                            count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a YAML assert with a passing dot-notation query returns a zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_YamlAssert_PassingQuery_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "appsettings.yaml"), """
+                server:
+                  host: localhost
+                  port: 8080
+                """);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "YamlCheck"
+                    files:
+                      - pattern: "appsettings.yaml"
+                        yaml:
+                          - query: "server.host"
+                            count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a JSON assert with a passing dot-notation query returns a zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_JsonAssert_PassingQuery_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "appsettings.json"), """
+                {
+                  "ConnectionStrings": {
+                    "DefaultConnection": "Server=localhost"
+                  }
+                }
+                """);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "JsonCheck"
+                    files:
+                      - pattern: "appsettings.json"
+                        json:
+                          - query: "ConnectionStrings"
+                            count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.AreEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a PDF assert with an invalid file returns a non-zero exit code.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "report.pdf"), "not a real pdf");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "PdfCheck"
+                    files:
+                      - pattern: "*.pdf"
+                        pdf:
+                          pages:
+                            min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
             Assert.AreNotEqual(0, exitCode);
         }
         finally

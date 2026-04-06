@@ -52,7 +52,7 @@ public class ModelingSubsystemTests
                     {
                         Pattern = "*.txt",
                         Min = 1,
-                        Rules =
+                        Text =
                         [
                             new FileAssertRuleData { Contains = "Copyright" }
                         ]
@@ -96,7 +96,7 @@ public class ModelingSubsystemTests
                     new FileAssertFileData
                     {
                         Pattern = "*.txt",
-                        Rules =
+                        Text =
                         [
                             new FileAssertRuleData { Contains = "Copyright" }
                         ]
@@ -112,6 +112,99 @@ public class ModelingSubsystemTests
 
             // Assert - an error was reported and the exit code is non-zero
             Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem reports a parse error when a file-type
+    ///     assertion block is declared but the file cannot be parsed as the declared format.
+    /// </summary>
+    [TestMethod]
+    public void ModelingSubsystem_FileTypeParsing_InvalidXml_ReportsParseError()
+    {
+        // Arrange - create a file with invalid XML content
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), "this is not valid xml <<>>");
+
+            var testData = new FileAssertTestData
+            {
+                Name = "XmlCheck",
+                Files =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "*.xml",
+                        Xml =
+                        [
+                            new FileAssertQueryData { Query = "//root", Count = 1 }
+                        ]
+                    }
+                ]
+            };
+
+            var test = FileAssertTest.Create(testData);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            test.Run(context, tempDir.FullName);
+
+            // Assert - an error was reported because the file could not be parsed as XML
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem evaluates XPath query assertions against
+    ///     a valid XML document and reports no error when the count constraint is satisfied.
+    /// </summary>
+    [TestMethod]
+    public void ModelingSubsystem_QueryAssertions_XmlQueryMeetsCount_NoError()
+    {
+        // Arrange - create a valid XML file with elements the query will match
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), """
+                <configuration>
+                  <setting key="env">production</setting>
+                  <setting key="debug">false</setting>
+                </configuration>
+                """);
+
+            var testData = new FileAssertTestData
+            {
+                Name = "XmlQueryCheck",
+                Files =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "*.xml",
+                        Xml =
+                        [
+                            new FileAssertQueryData { Query = "//configuration/setting", Min = 1 }
+                        ]
+                    }
+                ]
+            };
+
+            var test = FileAssertTest.Create(testData);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            test.Run(context, tempDir.FullName);
+
+            // Assert - no errors reported because the query matched the expected count
+            Assert.AreEqual(0, context.ExitCode);
         }
         finally
         {

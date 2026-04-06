@@ -94,7 +94,7 @@ set of files using a glob pattern, optional tags for filtering, and one or more 
 # .fileassert.yaml
 tests:
   - name: TestProject_BinariesExist
-    description: "Application binaries exist"
+    # Application binaries exist
     tags: [smoke, release]
     files:
       - pattern: "bin/**/*.exe"
@@ -103,39 +103,119 @@ tests:
         min: 1
 
   - name: TestProject_ConfigValid
-    description: "Config file size is reasonable"
+    # Config file size is reasonable
     tags: [config]
     files:
       - pattern: "config/settings.json"
         min-size: 10
         max-size: 1048576
-        rules:
+        text:
           - contains: '"ConnectionStrings"'
           - does-not-contain: "password123"
 
   - name: TestProject_LogsValid
-    description: "Log files match expected pattern"
+    # Log files match expected pattern
     tags: [logs]
     files:
       - pattern: "logs/*.log"
-        rules:
+        text:
           - matches: "\\d{4}-\\d{2}-\\d{2}"
           - does-not-contain-regex: "FATAL|CRITICAL"
+
+  - name: TestProject_ReportValid
+    # PDF report meets requirements
+    tags: [report]
+    files:
+      - pattern: "output/report.pdf"
+        pdf:
+          metadata:
+            - field: "Title"
+              contains: "Annual Report"
+          pages:
+            min: 1
+            max: 100
+          text:
+            - contains: "Executive Summary"
+
+  - name: TestProject_XmlConfigValid
+    # XML configuration has required elements
+    tags: [config]
+    files:
+      - pattern: "config/settings.xml"
+        xml:
+          - query: "//configuration/setting"
+            min: 1
+
+  - name: TestProject_HtmlValid
+    # HTML document has required structure
+    tags: [web]
+    files:
+      - pattern: "docs/index.html"
+        html:
+          - query: "//head/title"
+            count: 1
+
+  - name: TestProject_AppYamlConfigValid
+    # Application YAML config has required keys
+    tags: [config]
+    files:
+      - pattern: "config/appsettings.yaml"
+        yaml:
+          - query: "server.host"
+            count: 1
+
+  - name: TestProject_AppJsonConfigValid
+    # Application JSON config has required keys
+    tags: [config]
+    files:
+      - pattern: "config/appsettings.json"
+        json:
+          - query: "ConnectionStrings"
+            count: 1
 ```
 
 ### Acceptance Criteria Reference
 
-| Criterion                | Description                                                      |
-| ------------------------ | ---------------------------------------------------------------- |
-| `count`                  | Exact number of files matching the pattern                       |
-| `min`                    | Minimum number of files matching the pattern                     |
-| `max`                    | Maximum number of files matching the pattern                     |
-| `min-size`               | Minimum file size in bytes                                       |
-| `max-size`               | Maximum file size in bytes                                       |
-| `contains`               | File must contain the specified text                             |
-| `does-not-contain`       | File must not contain the specified text                         |
-| `matches`                | File must match the specified regular expression                 |
-| `does-not-contain-regex` | File must not match the specified regular expression             |
+| Criterion                         | Description                                                  |
+| --------------------------------- | ------------------------------------------------------------ |
+| `count`                           | Exact number of files matching the pattern                   |
+| `min`                             | Minimum number of files matching the pattern                 |
+| `max`                             | Maximum number of files matching the pattern                 |
+| `min-size`                        | Minimum file size in bytes                                   |
+| `max-size`                        | Maximum file size in bytes                                   |
+| `text:`                           | Text content assertions block                                |
+| `text[].contains`                 | File must contain the specified text                         |
+| `text[].does-not-contain`         | File must not contain the specified text                     |
+| `text[].matches`                  | File must match the specified regular expression             |
+| `text[].does-not-contain-regex`   | File must not match the specified regular expression         |
+| `pdf:`                            | PDF document assertions (fails if file is not a valid PDF)   |
+| `pdf.metadata[].field`            | PDF metadata field name to assert                            |
+| `pdf.metadata[].contains`         | PDF metadata field must contain the specified text           |
+| `pdf.metadata[].matches`          | PDF metadata field must match the regular expression         |
+| `pdf.pages.min`                   | Minimum number of pages in the PDF document                  |
+| `pdf.pages.max`                   | Maximum number of pages in the PDF document                  |
+| `pdf.text[].contains`             | PDF body text must contain the specified text                |
+| `pdf.text[].matches`              | PDF body text must match the specified regular expression    |
+| `xml:`                            | XML document assertions (fails if file is not valid XML)     |
+| `xml[].query`                     | XPath expression selecting nodes                             |
+| `xml[].count`                     | Exact number of matched XML nodes                            |
+| `xml[].min`                       | Minimum number of matched XML nodes                          |
+| `xml[].max`                       | Maximum number of matched XML nodes                          |
+| `html:`                           | HTML document assertions (fails if file is not valid HTML)   |
+| `html[].query`                    | XPath expression selecting nodes                             |
+| `html[].count`                    | Exact number of matched HTML nodes                           |
+| `html[].min`                      | Minimum number of matched HTML nodes                         |
+| `html[].max`                      | Maximum number of matched HTML nodes                         |
+| `yaml:`                           | YAML document assertions (fails if file is not valid YAML)   |
+| `yaml[].query`                    | Dot-notation path selecting YAML nodes (e.g. `server.host`)  |
+| `yaml[].count`                    | Exact number of matched YAML nodes                           |
+| `yaml[].min`                      | Minimum number of matched YAML nodes                         |
+| `yaml[].max`                      | Maximum number of matched YAML nodes                         |
+| `json:`                           | JSON document assertions (fails if file is not valid JSON)   |
+| `json[].query`                    | Dot-notation path selecting JSON nodes (e.g. `app.version`)  |
+| `json[].count`                    | Exact number of matched JSON nodes                           |
+| `json[].min`                      | Minimum number of matched JSON nodes                         |
+| `json[].max`                      | Maximum number of matched JSON nodes                         |
 
 ## Self Validation
 

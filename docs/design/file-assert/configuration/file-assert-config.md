@@ -79,7 +79,7 @@ tests:
     files:
       - pattern: "**/*.cs"
         min: 1
-        rules:
+        text:
           - contains: "Copyright"
 ```
 

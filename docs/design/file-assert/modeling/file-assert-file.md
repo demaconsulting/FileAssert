@@ -3,22 +3,27 @@
 ## Overview
 
 The `FileAssertFile` class locates files on disk using a glob pattern, enforces
-optional minimum and maximum count constraints, and applies a collection of
-`FileAssertRule` instances to the text content of every matched file.
+optional minimum and maximum count constraints, and delegates per-file assertions to
+file-type-specific assert units.
 
 ## Class Structure
 
 ### Properties
 
-| Property  | Type                            | Description                                       |
-| :-------- | :------------------------------ | :------------------------------------------------ |
-| `Pattern` | `string`                        | Glob pattern used to locate files.                |
-| `Min`     | `int?`                          | Optional minimum number of matching files.        |
-| `Max`     | `int?`                          | Optional maximum number of matching files.        |
-| `Count`   | `int?`                          | Optional exact number of matching files.          |
-| `MinSize` | `long?`                         | Optional minimum file size in bytes per file.     |
-| `MaxSize` | `long?`                         | Optional maximum file size in bytes per file.     |
-| `Rules`   | `IReadOnlyList<FileAssertRule>` | Content rules applied to every matched file.      |
+| Property     | Type                             | Description                                       |
+| :----------- | :------------------------------- | :------------------------------------------------ |
+| `Pattern`    | `string`                         | Glob pattern used to locate files.                |
+| `Min`        | `int?`                           | Optional minimum number of matching files.        |
+| `Max`        | `int?`                           | Optional maximum number of matching files.        |
+| `Count`      | `int?`                           | Optional exact number of matching files.          |
+| `MinSize`    | `long?`                          | Optional minimum file size in bytes per file.     |
+| `MaxSize`    | `long?`                          | Optional maximum file size in bytes per file.     |
+| `TextAssert` | `FileAssertTextAssert?`          | Text content assertions (null if not declared).   |
+| `PdfAssert`  | `FileAssertPdfAssert?`           | PDF document assertions (null if not declared).   |
+| `XmlAssert`  | `FileAssertXmlAssert?`           | XML node assertions (null if not declared).       |
+| `HtmlAssert` | `FileAssertHtmlAssert?`          | HTML node assertions (null if not declared).      |
+| `YamlAssert` | `FileAssertYamlAssert?`          | YAML node assertions (null if not declared).      |
+| `JsonAssert` | `FileAssertJsonAssert?`          | JSON node assertions (null if not declared).      |
 
 ### Factory Method
 
@@ -27,8 +32,8 @@ internal static FileAssertFile Create(FileAssertFileData data)
 ```
 
 The factory validates that `Pattern` is not null or whitespace before constructing
-the instance. Rules are created via `FileAssertRule.Create` for each entry in the
-data's rule list.
+the instance. Each file-type assert is created from the corresponding data block when
+that block is present.
 
 ### Execution Method
 
@@ -51,10 +56,25 @@ Execution proceeds in five phases:
    it, an error is written and execution returns immediately. Early return prevents
    misleading per-file errors when the count constraint already signals a failure.
 
-5. **Per-file validation** — If `MinSize`, `MaxSize`, or any rules are defined, each
-   matched file is inspected individually. Size is checked first using
-   `FileInfo.Length`. File content is read only when at least one content rule is
-   defined.
+5. **Per-file validation** — Each matched file is inspected individually:
+   a. Validates size constraints (`MinSize`, `MaxSize`) using `FileInfo.Length`.
+   b. If `TextAssert` is defined, delegates to `FileAssertTextAssert` which reads the
+      file as text and applies each `FileAssertRule`.
+   c. If `PdfAssert` is defined, attempts to parse the file using PdfPig; reports
+      an immediate error if parsing fails, otherwise applies metadata, page, and
+      body text assertions.
+   d. If `XmlAssert` is defined, attempts to parse the file using `System.Xml.Linq`;
+      reports an immediate error if parsing fails, otherwise applies XPath node count
+      assertions.
+   e. If `HtmlAssert` is defined, attempts to parse the file using HtmlAgilityPack;
+      reports an immediate error if parsing fails, otherwise applies XPath node count
+      assertions.
+   f. If `YamlAssert` is defined, attempts to parse the file using YamlDotNet; reports
+      an immediate error if parsing fails, otherwise applies dot-notation path count
+      assertions.
+   g. If `JsonAssert` is defined, attempts to parse the file using `System.Text.Json`;
+      reports an immediate error if parsing fails, otherwise applies dot-notation path
+      count assertions.
 
 ## YAML Configuration
 
@@ -66,7 +86,7 @@ files:
     count: 5
     min-size: 10
     max-size: 1048576
-    rules:
+    text:
       - contains: "Copyright (c) DEMA Consulting"
 ```
 
@@ -81,5 +101,7 @@ All properties except `pattern` are optional.
   cascading content-rule errors for files that should not exist at all.
 - **Size checked before content**: File size is inspected before reading content to
   avoid unnecessary I/O when a size violation is already present.
-- **Content loaded on demand**: File content is only read when at least one content
-  rule is defined, avoiding unnecessary I/O for count-only or size-only checks.
+- **Lazy content and document loading**: File content is read as text only when at
+  least one text rule is defined. File-type parsing (PDF, XML, HTML, YAML, JSON) is
+  attempted only when the corresponding assertion block is declared, avoiding
+  unnecessary I/O and third-party library invocations.

@@ -171,6 +171,54 @@ reviews:
       - "src/**/FileAssertData.cs"
       - "test/**/FileAssertConfigTests.cs"
 
+  - id: FileAssert-Modeling-FileAssertTextAssert
+    title: Review that FileAssert Modeling FileAssertTextAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-text-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-text-assert.md"
+      - "src/**/Modeling/FileAssertTextAssert.cs"
+      - "test/**/Modeling/FileAssertTextAssertTests.cs"
+
+  - id: FileAssert-Modeling-FileAssertPdfAssert
+    title: Review that FileAssert Modeling FileAssertPdfAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-pdf-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-pdf-assert.md"
+      - "src/**/Modeling/FileAssertPdfAssert.cs"
+      - "test/**/Modeling/FileAssertPdfAssertTests.cs"
+
+  - id: FileAssert-Modeling-FileAssertXmlAssert
+    title: Review that FileAssert Modeling FileAssertXmlAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-xml-assert.md"
+      - "src/**/Modeling/FileAssertXmlAssert.cs"
+      - "test/**/Modeling/FileAssertXmlAssertTests.cs"
+
+  - id: FileAssert-Modeling-FileAssertHtmlAssert
+    title: Review that FileAssert Modeling FileAssertHtmlAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-html-assert.md"
+      - "src/**/Modeling/FileAssertHtmlAssert.cs"
+      - "test/**/Modeling/FileAssertHtmlAssertTests.cs"
+
+  - id: FileAssert-Modeling-FileAssertYamlAssert
+    title: Review that FileAssert Modeling FileAssertYamlAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-yaml-assert.md"
+      - "src/**/Modeling/FileAssertYamlAssert.cs"
+      - "test/**/Modeling/FileAssertYamlAssertTests.cs"
+
+  - id: FileAssert-Modeling-FileAssertJsonAssert
+    title: Review that FileAssert Modeling FileAssertJsonAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml"
+      - "docs/design/file-assert/modeling/file-assert-json-assert.md"
+      - "src/**/Modeling/FileAssertJsonAssert.cs"
+      - "test/**/Modeling/FileAssertJsonAssertTests.cs"
+
   # Platform review
   - id: FileAssert-Platform
     title: Review of Platform and Runtime Support Requirements

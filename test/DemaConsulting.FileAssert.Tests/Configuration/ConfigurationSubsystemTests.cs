@@ -49,7 +49,7 @@ public class ConfigurationSubsystemTests
                     files:
                       - pattern: "**/*.txt"
                         min: 1
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -66,7 +66,7 @@ public class ConfigurationSubsystemTests
             var file = test.Files[0];
             Assert.AreEqual("**/*.txt", file.Pattern);
             Assert.AreEqual(1, file.Min);
-            Assert.AreEqual(1, file.Rules.Count);
+            Assert.AreEqual(1, file.TextAssert!.Rules.Count);
         }
         finally
         {

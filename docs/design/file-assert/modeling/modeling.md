@@ -8,11 +8,17 @@ executable domain objects and drives the assertion logic.
 
 ## Subsystem Contents
 
-| Unit              | File                | Responsibility                                                  |
-| :---------------- | :------------------ | :-------------------------------------------------------------- |
-| `FileAssertTest`  | `FileAssertTest.cs` | Named test with file assertions and tag-based filter matching.  |
-| `FileAssertFile`  | `FileAssertFile.cs` | Glob pattern matcher with count constraints and content rules.  |
-| `FileAssertRule`  | `FileAssertRule.cs` | Abstract content validation rule hierarchy.                     |
+| Unit                    | File                        | Responsibility                                         |
+| :---------------------- | :-------------------------- | :----------------------------------------------------- |
+| `FileAssertTest`        | `FileAssertTest.cs`         | Named test with file assertions and filter matching.   |
+| `FileAssertFile`        | `FileAssertFile.cs`         | Glob pattern matcher; count constraints and rules.     |
+| `FileAssertRule`        | `FileAssertRule.cs`         | Abstract content validation rule hierarchy.            |
+| `FileAssertTextAssert`  | `FileAssertTextAssert.cs`   | Applies text content rules to matched file text.       |
+| `FileAssertPdfAssert`   | `FileAssertPdfAssert.cs`    | Parses PDF; applies metadata, page, and text rules.    |
+| `FileAssertXmlAssert`   | `FileAssertXmlAssert.cs`    | Parses XML; applies XPath node count assertions.       |
+| `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
+| `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
+| `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
 
 ## Subsystem Responsibilities
 
@@ -21,6 +27,9 @@ executable domain objects and drives the assertion logic.
 - Execute file glob matching using `Microsoft.Extensions.FileSystemGlobbing`.
 - Enforce minimum and maximum file count constraints.
 - Apply positive (contains/matches) and negative (does-not-contain/does-not-match) content rules to matched file text.
+- Parse matched files as PDF, XML, HTML, YAML, or JSON documents when the corresponding assertion block is declared.
+- Report an immediate error when a file cannot be parsed as the declared format.
+- Apply structured-document query assertions (XPath or dot-notation) to parsed document nodes.
 - Report assertion failures via the `Context` from the Cli subsystem.
 
 ## Object Hierarchy
@@ -28,11 +37,17 @@ executable domain objects and drives the assertion logic.
 ```text
 FileAssertTest
 └── FileAssertFile (one or more)
-    └── FileAssertRule (zero or more)
-        ├── FileAssertContainsRule
-        ├── FileAssertDoesNotContainRule
-        ├── FileAssertMatchesRule
-        └── FileAssertDoesNotMatchRule
+    ├── FileAssertTextAssert? (zero or one)
+    │   └── FileAssertRule (zero or more)
+    │       ├── FileAssertContainsRule
+    │       ├── FileAssertDoesNotContainRule
+    │       ├── FileAssertMatchesRule
+    │       └── FileAssertDoesNotMatchRule
+    ├── FileAssertPdfAssert? (zero or one)
+    ├── FileAssertXmlAssert? (zero or one)
+    ├── FileAssertHtmlAssert? (zero or one)
+    ├── FileAssertYamlAssert? (zero or one)
+    └── FileAssertJsonAssert? (zero or one)
 ```
 
 ## Interactions with Other Subsystems
@@ -52,3 +67,8 @@ FileAssertTest
   cross-platform glob pattern evaluation consistent with the rest of the .NET ecosystem.
 - **Compiled regex with timeout**: The `FileAssertMatchesRule` compiles its regex at construction
   time and applies a ten-second evaluation timeout to guard against catastrophic backtracking.
+- **Lazy file-type parsing**: A file is only parsed as a structured document if the corresponding
+  assertion block is declared, avoiding unnecessary I/O and library invocations.
+- **Immediate failure on parse error**: If a file-type assertion block is declared and the file
+  cannot be parsed, an error is written immediately and no further assertions for that file are
+  evaluated.

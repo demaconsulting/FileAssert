@@ -12,6 +12,12 @@ includes:
   - docs/reqstream/file-assert/modeling/file-assert-test.yaml
   - docs/reqstream/file-assert/modeling/file-assert-file.yaml
   - docs/reqstream/file-assert/modeling/file-assert-rule.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-text-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-pdf-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml
   - docs/reqstream/file-assert/utilities/utilities.yaml
   - docs/reqstream/file-assert/utilities/path-helpers.yaml
   - docs/reqstream/file-assert/selftest/selftest.yaml
