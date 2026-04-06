@@ -34,7 +34,7 @@ Represents a file pattern assertion within a test.
 | `Count`    | `count`    | `int?`                      | Exact number of matching files; null means no exact bound.   |
 | `MinSize`  | `min-size` | `long?`                     | Minimum file size in bytes; null means no lower bound.       |
 | `MaxSize`  | `max-size` | `long?`                     | Maximum file size in bytes; null means no upper bound.       |
-| `Text`     | `text`     | `List<FileAssertRuleData>?` | Text content rules applied to each matched file.             |
+| `Text`     | `text`     | `List<FileAssertRuleData>?` | Text content rules (used by `FileAssertTextAssert`).         |
 | `Pdf`      | `pdf`      | `FileAssertPdfData?`        | PDF document assertions.                                     |
 | `Xml`      | `xml`      | `List<FileAssertQueryData>?`| XML node count assertions using XPath.                       |
 | `Html`     | `html`     | `List<FileAssertQueryData>?`| HTML node count assertions using XPath.                      |

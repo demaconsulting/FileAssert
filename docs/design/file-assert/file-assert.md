@@ -35,7 +35,7 @@ one or more units:
 | Cli           | Subsystem | Context                                                                       |
 | Configuration | Subsystem | FileAssertConfig, FileAssertData                                              |
 | Modeling      | Subsystem | FileAssertTest, FileAssertFile, FileAssertRule,                               |
-|               |           | FileAssertPdfAssert, FileAssertXmlAssert,                                     |
+|               |           | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,               |
 |               |           | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert              |
 | Utilities     | Subsystem | PathHelpers                                                                   |
 | SelfTest      | Subsystem | Validation                                                                    |
@@ -54,14 +54,15 @@ The following sequence describes the normal execution path:
    `.fileassert.yaml`; overridden by `--config`). If absent, it prints guidance (default
    path) or an error (explicit path) and exits.
 4. `FileAssertConfig.ReadFromFile` deserializes the YAML configuration into a hierarchy of
-   `FileAssertTest`, `FileAssertFile`, and `FileAssertRule` instances.
+   `FileAssertTest`, `FileAssertFile`, `FileAssertTextAssert`, and `FileAssertRule` instances.
 5. `FileAssertConfig.Run` filters the test list against `context.Filters` (the positional
    name-or-tag arguments) and executes each matching test. An empty filter list runs all tests.
 6. Each `FileAssertTest.Run` iterates its `FileAssertFile` list.
 7. Each `FileAssertFile.Run` discovers files via a glob matcher, validates count constraints,
    and per matched file:
    a. Validates size constraints (`MinSize`, `MaxSize`).
-   b. If a `text:` block is defined, reads the file as text and applies each `FileAssertRule`.
+   b. If a `text:` block is defined, delegates to `FileAssertTextAssert` which reads the
+      file as text and applies each `FileAssertRule`.
    c. If a `pdf:` block is defined, attempts to parse the file using PdfPig; reports an immediate
       error if parsing fails, otherwise applies metadata, page, and body text assertions.
    d. If an `xml:` block is defined, attempts to parse the file using `System.Xml.Linq`; reports

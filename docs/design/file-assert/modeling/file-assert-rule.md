@@ -3,7 +3,7 @@
 ## Overview
 
 The `FileAssertRule` class hierarchy provides the content validation rules used by
-`FileAssertFile` to assert the textual content of matched files. Rules are created
+`FileAssertTextAssert` to assert the textual content of matched files. Rules are created
 from YAML configuration data using a factory method and are applied to file content
 during test execution.
 

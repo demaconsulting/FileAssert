@@ -3,8 +3,8 @@
 ## Overview
 
 The `FileAssertFile` class locates files on disk using a glob pattern, enforces
-optional minimum and maximum count constraints, and applies a collection of
-`FileAssertRule` instances to the text content of every matched file.
+optional minimum and maximum count constraints, and delegates per-file assertions to
+file-type-specific assert units.
 
 ## Class Structure
 
@@ -18,7 +18,7 @@ optional minimum and maximum count constraints, and applies a collection of
 | `Count`      | `int?`                           | Optional exact number of matching files.          |
 | `MinSize`    | `long?`                          | Optional minimum file size in bytes per file.     |
 | `MaxSize`    | `long?`                          | Optional maximum file size in bytes per file.     |
-| `Text`       | `IReadOnlyList<FileAssertRule>`  | Text content rules applied to every matched file. |
+| `TextAssert` | `FileAssertTextAssert?`          | Text content assertions (null if not declared).   |
 | `PdfAssert`  | `FileAssertPdfAssert?`           | PDF document assertions (null if not declared).   |
 | `XmlAssert`  | `FileAssertXmlAssert?`           | XML node assertions (null if not declared).       |
 | `HtmlAssert` | `FileAssertHtmlAssert?`          | HTML node assertions (null if not declared).      |
@@ -32,8 +32,8 @@ internal static FileAssertFile Create(FileAssertFileData data)
 ```
 
 The factory validates that `Pattern` is not null or whitespace before constructing
-the instance. Rules are created via `FileAssertRule.Create` for each entry in the
-data's rule list.
+the instance. Each file-type assert is created from the corresponding data block when
+that block is present.
 
 ### Execution Method
 
@@ -58,8 +58,8 @@ Execution proceeds in five phases:
 
 5. **Per-file validation** — Each matched file is inspected individually:
    a. Validates size constraints (`MinSize`, `MaxSize`) using `FileInfo.Length`.
-   b. If `Text` rules are defined, reads the file as text and applies each
-      `FileAssertRule`.
+   b. If `TextAssert` is defined, delegates to `FileAssertTextAssert` which reads the
+      file as text and applies each `FileAssertRule`.
    c. If `PdfAssert` is defined, attempts to parse the file using PdfPig; reports
       an immediate error if parsing fails, otherwise applies metadata, page, and
       body text assertions.

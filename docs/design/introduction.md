@@ -21,6 +21,7 @@ This document covers the detailed design of the following software units:
 - **FileAssertTest** — named test with file assertions and tag filtering (`FileAssertTest.cs`)
 - **FileAssertFile** — glob pattern matcher with count constraints and content rules (`FileAssertFile.cs`)
 - **FileAssertRule** — abstract content validation rule hierarchy (`FileAssertRule.cs`)
+- **FileAssertTextAssert** — text content assertions (`FileAssertTextAssert.cs`)
 - **FileAssertPdfAssert** — PDF document assertions (`FileAssertPdfAssert.cs`)
 - **FileAssertXmlAssert** — XML document assertions (`FileAssertXmlAssert.cs`)
 - **FileAssertHtmlAssert** — HTML document assertions (`FileAssertHtmlAssert.cs`)
@@ -58,6 +59,7 @@ FileAssert (System)
 │   ├── FileAssertTest (Unit)
 │   ├── FileAssertFile (Unit)
 │   ├── FileAssertRule (Unit)
+│   ├── FileAssertTextAssert (Unit)
 │   ├── FileAssertPdfAssert (Unit)
 │   ├── FileAssertXmlAssert (Unit)
 │   ├── FileAssertHtmlAssert (Unit)
@@ -87,7 +89,8 @@ src/DemaConsulting.FileAssert/
 ├── Modeling/
 │   ├── FileAssertTest.cs           — named test with file assertions and tag filtering
 │   ├── FileAssertFile.cs           — glob pattern matcher with count constraints and rules
-│   ├── FileAssertRule.cs           — abstract text content validation rule hierarchy
+│   ├── FileAssertRule.cs           — abstract content validation rule hierarchy
+│   ├── FileAssertTextAssert.cs     — text content assertions
 │   ├── FileAssertPdfAssert.cs      — PDF document assertions (PdfPig)
 │   ├── FileAssertXmlAssert.cs      — XML document assertions (System.Xml.Linq/XPath)
 │   ├── FileAssertHtmlAssert.cs     — HTML document assertions (HtmlAgilityPack)
