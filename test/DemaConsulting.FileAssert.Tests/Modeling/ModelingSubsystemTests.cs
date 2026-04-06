@@ -52,7 +52,7 @@ public class ModelingSubsystemTests
                     {
                         Pattern = "*.txt",
                         Min = 1,
-                        Rules =
+                        Text =
                         [
                             new FileAssertRuleData { Contains = "Copyright" }
                         ]
@@ -96,7 +96,7 @@ public class ModelingSubsystemTests
                     new FileAssertFileData
                     {
                         Pattern = "*.txt",
-                        Rules =
+                        Text =
                         [
                             new FileAssertRuleData { Contains = "Copyright" }
                         ]

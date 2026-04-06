@@ -46,7 +46,7 @@ public class FileAssertFileTests
         Assert.AreEqual("**/*.txt", file.Pattern);
         Assert.AreEqual(1, file.Min);
         Assert.AreEqual(10, file.Max);
-        Assert.AreEqual(0, file.Rules.Count);
+        Assert.IsNull(file.TextAssert);
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public class FileAssertFileTests
             var data = new FileAssertFileData
             {
                 Pattern = "*.txt",
-                Rules = [new FileAssertRuleData { Contains = "expected content" }]
+                Text = [new FileAssertRuleData { Contains = "expected content" }]
             };
             var file = FileAssertFile.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -239,7 +239,7 @@ public class FileAssertFileTests
             var data = new FileAssertFileData
             {
                 Pattern = "*.txt",
-                Rules = [new FileAssertRuleData { Contains = "expected content" }]
+                Text = [new FileAssertRuleData { Contains = "expected content" }]
             };
             var file = FileAssertFile.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -386,7 +386,7 @@ public class FileAssertFileTests
             var data = new FileAssertFileData
             {
                 Pattern = "*.txt",
-                Rules = [new FileAssertRuleData { Contains = "expected content" }]
+                Text = [new FileAssertRuleData { Contains = "expected content" }]
             };
             var file = FileAssertFile.Create(data);
             using var context = Context.Create(["--silent"]);

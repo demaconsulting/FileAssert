@@ -12,7 +12,9 @@ sections:
         justification: |
           Constructing all assertion models at creation time ensures that configuration errors
           are detected before any file system or PDF library operations are attempted.
-        tests: []
+        tests:
+          - FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
+          - FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertPdfAssert-ParseError
         title: |
@@ -22,7 +24,8 @@ sections:
           Attempting to apply metadata, page, or text assertions against a file that is not a
           valid PDF would produce meaningless partial results. Reporting the parse failure
           immediately and stopping gives users a clear, actionable error message.
-        tests: []
+        tests:
+          - FileAssertPdfAssert_Run_InvalidFile_WritesError
 
       - id: FileAssert-FileAssertPdfAssert-MetadataAssertions
         title: |
@@ -43,7 +46,9 @@ sections:
           Page count constraints allow users to verify that generated reports and documents
           have the expected length. Both a minimum (to catch empty or truncated outputs) and
           a maximum (to catch unexpectedly verbose outputs) must be supported.
-        tests: []
+        tests:
+          - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+          - FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
 
       - id: FileAssert-FileAssertPdfAssert-TextAssertions
         title: |

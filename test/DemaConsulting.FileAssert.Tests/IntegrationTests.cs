@@ -316,7 +316,7 @@ public class IntegrationTests
                     files:
                       - pattern: "*.txt"
                         min: 1
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -357,7 +357,7 @@ public class IntegrationTests
                   - name: "License Check"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -400,7 +400,7 @@ public class IntegrationTests
                     files:
                       - pattern: "*.txt"
                         min: 1
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -451,7 +451,7 @@ public class IntegrationTests
                   - name: "LicenseCheck"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - contains: "Copyright"
                 """);
 
@@ -543,7 +543,7 @@ public class IntegrationTests
                   - name: "VersionFormatCheck"
                     files:
                       - pattern: "version.txt"
-                        rules:
+                        text:
                           - matches: "\\d+\\.\\d+\\.\\d+"
                 """);
 
@@ -583,7 +583,7 @@ public class IntegrationTests
                   - name: "VersionFormatCheck"
                     files:
                       - pattern: "version.txt"
-                        rules:
+                        text:
                           - matches: "\\d+\\.\\d+\\.\\d+"
                 """);
 
@@ -745,7 +745,7 @@ public class IntegrationTests
                   - name: "NoSecretsCheck"
                     files:
                       - pattern: "*.txt"
-                        rules:
+                        text:
                           - does-not-contain: "password123"
                 """);
 
@@ -786,7 +786,7 @@ public class IntegrationTests
                   - name: "NoFatalErrorsCheck"
                     files:
                       - pattern: "*.log"
-                        rules:
+                        text:
                           - does-not-contain-regex: "FATAL|ERROR"
                 """);
 

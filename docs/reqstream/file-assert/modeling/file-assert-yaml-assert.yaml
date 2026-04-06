@@ -12,7 +12,9 @@ sections:
         justification: |
           Constructing query assertion models at creation time ensures that configuration
           errors are detected before any file system or YAML parsing operations are attempted.
-        tests: []
+        tests:
+          - FileAssertYamlAssert_Create_ValidData_CreatesYamlAssert
+          - FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertYamlAssert-ParseError
         title: |
@@ -22,7 +24,8 @@ sections:
           Attempting to traverse a YAML document tree against a file that is not valid YAML
           would produce meaningless or misleading results. Reporting the parse failure
           immediately gives users a clear, actionable error message.
-        tests: []
+        tests:
+          - FileAssertYamlAssert_Run_InvalidFile_WritesError
 
       - id: FileAssert-FileAssertYamlAssert-QueryAssertions
         title: |
@@ -33,4 +36,7 @@ sections:
           Dot-notation path assertions allow users to verify that required configuration
           keys are present and have the expected cardinality in YAML configuration files,
           CI/CD pipeline definitions, and infrastructure-as-code documents.
-        tests: []
+        tests:
+          - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
+          - FileAssertYamlAssert_Run_SequenceCount_Mismatch_WritesError
+          - FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError

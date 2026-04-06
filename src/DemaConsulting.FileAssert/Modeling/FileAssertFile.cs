@@ -26,7 +26,7 @@ using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
-///     Represents a glob file pattern with optional count constraints and content rules.
+///     Represents a glob file pattern with optional count constraints and file-type assertions.
 /// </summary>
 internal sealed class FileAssertFile
 {
@@ -39,8 +39,25 @@ internal sealed class FileAssertFile
     /// <param name="count">The exact number of files that must match, or null for no constraint.</param>
     /// <param name="minSize">The minimum file size in bytes, or null for no constraint.</param>
     /// <param name="maxSize">The maximum file size in bytes, or null for no constraint.</param>
-    /// <param name="rules">The content rules to apply to each matching file.</param>
-    private FileAssertFile(string pattern, int? min, int? max, int? count, long? minSize, long? maxSize, IReadOnlyList<FileAssertRule> rules)
+    /// <param name="textAssert">The text assert unit, or null when no text: block is declared.</param>
+    /// <param name="pdfAssert">The PDF assert unit, or null when no pdf: block is declared.</param>
+    /// <param name="xmlAssert">The XML assert unit, or null when no xml: block is declared.</param>
+    /// <param name="htmlAssert">The HTML assert unit, or null when no html: block is declared.</param>
+    /// <param name="yamlAssert">The YAML assert unit, or null when no yaml: block is declared.</param>
+    /// <param name="jsonAssert">The JSON assert unit, or null when no json: block is declared.</param>
+    private FileAssertFile(
+        string pattern,
+        int? min,
+        int? max,
+        int? count,
+        long? minSize,
+        long? maxSize,
+        FileAssertTextAssert? textAssert,
+        FileAssertPdfAssert? pdfAssert,
+        FileAssertXmlAssert? xmlAssert,
+        FileAssertHtmlAssert? htmlAssert,
+        FileAssertYamlAssert? yamlAssert,
+        FileAssertJsonAssert? jsonAssert)
     {
         // Store all validated properties for use during execution
         Pattern = pattern;
@@ -49,7 +66,12 @@ internal sealed class FileAssertFile
         Count = count;
         MinSize = minSize;
         MaxSize = maxSize;
-        Rules = rules;
+        TextAssert = textAssert;
+        PdfAssert = pdfAssert;
+        XmlAssert = xmlAssert;
+        HtmlAssert = htmlAssert;
+        YamlAssert = yamlAssert;
+        JsonAssert = jsonAssert;
     }
 
     /// <summary>
@@ -83,9 +105,34 @@ internal sealed class FileAssertFile
     internal long? MaxSize { get; }
 
     /// <summary>
-    ///     Gets the list of content validation rules to apply to each matching file.
+    ///     Gets the text assert unit, or null when no text: block is declared.
     /// </summary>
-    internal IReadOnlyList<FileAssertRule> Rules { get; }
+    internal FileAssertTextAssert? TextAssert { get; }
+
+    /// <summary>
+    ///     Gets the PDF assert unit, or null when no pdf: block is declared.
+    /// </summary>
+    internal FileAssertPdfAssert? PdfAssert { get; }
+
+    /// <summary>
+    ///     Gets the XML assert unit, or null when no xml: block is declared.
+    /// </summary>
+    internal FileAssertXmlAssert? XmlAssert { get; }
+
+    /// <summary>
+    ///     Gets the HTML assert unit, or null when no html: block is declared.
+    /// </summary>
+    internal FileAssertHtmlAssert? HtmlAssert { get; }
+
+    /// <summary>
+    ///     Gets the YAML assert unit, or null when no yaml: block is declared.
+    /// </summary>
+    internal FileAssertYamlAssert? YamlAssert { get; }
+
+    /// <summary>
+    ///     Gets the JSON assert unit, or null when no json: block is declared.
+    /// </summary>
+    internal FileAssertJsonAssert? JsonAssert { get; }
 
     /// <summary>
     ///     Creates a new <see cref="FileAssertFile"/> from the provided YAML data.
@@ -105,13 +152,18 @@ internal sealed class FileAssertFile
             throw new InvalidOperationException("File assertion must specify a pattern");
         }
 
-        // Build the list of content rules from the YAML data
-        var rules = (data.Rules ?? [])
-            .Select(FileAssertRule.Create)
-            .ToList();
+        // Build file-type assert units from the YAML data when declared
+        var textAssert = data.Text != null ? FileAssertTextAssert.Create(data.Text) : null;
+        var pdfAssert = data.Pdf != null ? FileAssertPdfAssert.Create(data.Pdf) : null;
+        var xmlAssert = data.Xml != null ? FileAssertXmlAssert.Create(data.Xml) : null;
+        var htmlAssert = data.Html != null ? FileAssertHtmlAssert.Create(data.Html) : null;
+        var yamlAssert = data.Yaml != null ? FileAssertYamlAssert.Create(data.Yaml) : null;
+        var jsonAssert = data.Json != null ? FileAssertJsonAssert.Create(data.Json) : null;
 
         // Return the fully constructed file assertion
-        return new FileAssertFile(data.Pattern, data.Min, data.Max, data.Count, data.MinSize, data.MaxSize, rules.AsReadOnly());
+        return new FileAssertFile(
+            data.Pattern, data.Min, data.Max, data.Count, data.MinSize, data.MaxSize,
+            textAssert, pdfAssert, xmlAssert, htmlAssert, yamlAssert, jsonAssert);
     }
 
     /// <summary>
@@ -156,14 +208,19 @@ internal sealed class FileAssertFile
             return;
         }
 
-        // Apply per-file size and content constraints when any are defined
-        if (MinSize.HasValue || MaxSize.HasValue || Rules.Count > 0)
+        // Apply per-file size and file-type assertions when any are defined
+        var hasPerFileChecks = MinSize.HasValue || MaxSize.HasValue ||
+                               TextAssert != null || PdfAssert != null ||
+                               XmlAssert != null || HtmlAssert != null ||
+                               YamlAssert != null || JsonAssert != null;
+
+        if (hasPerFileChecks)
         {
             foreach (var file in files)
             {
                 var fullPath = Path.Combine(basePath, file);
 
-                // Enforce minimum file size constraint if specified
+                // Enforce size constraints when specified
                 if (MinSize.HasValue || MaxSize.HasValue)
                 {
                     var size = new FileInfo(fullPath).Length;
@@ -181,18 +238,13 @@ internal sealed class FileAssertFile
                     }
                 }
 
-                // Apply content rules when rules are defined
-                if (Rules.Count > 0)
-                {
-                    // Read the full text of the file for content validation
-                    var content = File.ReadAllText(fullPath);
-
-                    // Apply each rule to validate the file content
-                    foreach (var rule in Rules)
-                    {
-                        rule.Apply(context, file, content);
-                    }
-                }
+                // Delegate to each file-type assert unit when declared
+                TextAssert?.Run(context, fullPath);
+                PdfAssert?.Run(context, fullPath);
+                XmlAssert?.Run(context, fullPath);
+                HtmlAssert?.Run(context, fullPath);
+                YamlAssert?.Run(context, fullPath);
+                JsonAssert?.Run(context, fullPath);
             }
         }
     }

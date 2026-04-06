@@ -14,7 +14,9 @@ sections:
           Constructing rules at creation time rather than at evaluation time avoids repeated
           per-file construction overhead and allows validation errors (such as missing rule
           types) to be reported before any file system operations are attempted.
-        tests: []
+        tests:
+          - FileAssertTextAssert_Create_ValidData_CreatesTextAssert
+          - FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertTextAssert-RuleApplication
         title: |
@@ -24,4 +26,6 @@ sections:
           Each rule must be applied to the complete file content so that all violations in a
           single file are reported in one pass. Reading the file as text ensures that all rule
           types (substring, inverse-substring, regex, inverse-regex) receive the same input.
-        tests: []
+        tests:
+          - FileAssertTextAssert_Run_FileContainsText_NoError
+          - FileAssertTextAssert_Run_FileMissingText_WritesError

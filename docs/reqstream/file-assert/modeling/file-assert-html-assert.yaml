@@ -12,7 +12,9 @@ sections:
         justification: |
           Constructing query assertion models at creation time ensures that configuration
           errors are detected before any file system or HTML parsing operations are attempted.
-        tests: []
+        tests:
+          - FileAssertHtmlAssert_Create_ValidData_CreatesHtmlAssert
+          - FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertHtmlAssert-ParseError
         title: |
@@ -33,4 +35,7 @@ sections:
           XPath node count assertions over HTML documents allow users to verify page structure
           such as title presence, link counts, and heading hierarchy in generated documentation
           and static site outputs.
-        tests: []
+        tests:
+          - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+          - FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError
+          - FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError

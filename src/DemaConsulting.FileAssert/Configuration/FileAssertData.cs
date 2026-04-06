@@ -96,8 +96,100 @@ internal sealed class FileAssertFileData
     /// <summary>
     ///     Gets or sets the list of content rules to apply to each matching file.
     /// </summary>
-    [YamlMember(Alias = "rules")]
-    public List<FileAssertRuleData>? Rules { get; set; }
+    [YamlMember(Alias = "text")]
+    public List<FileAssertRuleData>? Text { get; set; }
+
+    /// <summary>Gets or sets the PDF assertion block for this file pattern.</summary>
+    [YamlMember(Alias = "pdf")]
+    public FileAssertPdfData? Pdf { get; set; }
+
+    /// <summary>Gets or sets the list of XML XPath query assertions for this file pattern.</summary>
+    [YamlMember(Alias = "xml")]
+    public List<FileAssertQueryData>? Xml { get; set; }
+
+    /// <summary>Gets or sets the list of HTML XPath query assertions for this file pattern.</summary>
+    [YamlMember(Alias = "html")]
+    public List<FileAssertQueryData>? Html { get; set; }
+
+    /// <summary>Gets or sets the list of YAML dot-notation path assertions for this file pattern.</summary>
+    [YamlMember(Alias = "yaml")]
+    public List<FileAssertQueryData>? Yaml { get; set; }
+
+    /// <summary>Gets or sets the list of JSON dot-notation path assertions for this file pattern.</summary>
+    [YamlMember(Alias = "json")]
+    public List<FileAssertQueryData>? Json { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object for a PDF metadata assertion rule.
+/// </summary>
+internal sealed class FileAssertPdfMetadataRuleData
+{
+    /// <summary>Gets or sets the metadata field name to check (e.g. "Title", "Author").</summary>
+    [YamlMember(Alias = "field")]
+    public string? Field { get; set; }
+
+    /// <summary>Gets or sets the substring that the field value must contain.</summary>
+    [YamlMember(Alias = "contains")]
+    public string? Contains { get; set; }
+
+    /// <summary>Gets or sets the regular expression pattern the field value must match.</summary>
+    [YamlMember(Alias = "matches")]
+    public string? Matches { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object for PDF page count constraints.
+/// </summary>
+internal sealed class FileAssertPdfPagesData
+{
+    /// <summary>Gets or sets the minimum number of pages required.</summary>
+    [YamlMember(Alias = "min")]
+    public int? Min { get; set; }
+
+    /// <summary>Gets or sets the maximum number of pages allowed.</summary>
+    [YamlMember(Alias = "max")]
+    public int? Max { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object for the PDF assertion block.
+/// </summary>
+internal sealed class FileAssertPdfData
+{
+    /// <summary>Gets or sets the list of metadata field assertions.</summary>
+    [YamlMember(Alias = "metadata")]
+    public List<FileAssertPdfMetadataRuleData>? Metadata { get; set; }
+
+    /// <summary>Gets or sets the page count constraints.</summary>
+    [YamlMember(Alias = "pages")]
+    public FileAssertPdfPagesData? Pages { get; set; }
+
+    /// <summary>Gets or sets the list of text content rules applied to extracted PDF text.</summary>
+    [YamlMember(Alias = "text")]
+    public List<FileAssertRuleData>? Text { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object for a structured-document query assertion (XML, HTML, YAML, JSON).
+/// </summary>
+internal sealed class FileAssertQueryData
+{
+    /// <summary>Gets or sets the query string (XPath or dot-notation path).</summary>
+    [YamlMember(Alias = "query")]
+    public string? Query { get; set; }
+
+    /// <summary>Gets or sets the exact count of matching nodes expected.</summary>
+    [YamlMember(Alias = "count")]
+    public int? Count { get; set; }
+
+    /// <summary>Gets or sets the minimum number of matching nodes required.</summary>
+    [YamlMember(Alias = "min")]
+    public int? Min { get; set; }
+
+    /// <summary>Gets or sets the maximum number of matching nodes allowed.</summary>
+    [YamlMember(Alias = "max")]
+    public int? Max { get; set; }
 }
 
 /// <summary>

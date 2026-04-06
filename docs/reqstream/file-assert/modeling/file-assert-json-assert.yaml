@@ -12,7 +12,9 @@ sections:
         justification: |
           Constructing query assertion models at creation time ensures that configuration
           errors are detected before any file system or JSON parsing operations are attempted.
-        tests: []
+        tests:
+          - FileAssertJsonAssert_Create_ValidData_CreatesJsonAssert
+          - FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertJsonAssert-ParseError
         title: |
@@ -22,7 +24,8 @@ sections:
           Attempting to traverse a JSON document tree against a file that is not valid JSON
           would produce meaningless or misleading results. Reporting the parse failure
           immediately gives users a clear, actionable error message.
-        tests: []
+        tests:
+          - FileAssertJsonAssert_Run_InvalidFile_WritesError
 
       - id: FileAssert-FileAssertJsonAssert-QueryAssertions
         title: |
@@ -33,4 +36,7 @@ sections:
           Dot-notation path assertions allow users to verify that required keys are present
           and have the expected cardinality in JSON configuration files, API response
           fixtures, and build output manifests.
-        tests: []
+        tests:
+          - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
+          - FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
+          - FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError

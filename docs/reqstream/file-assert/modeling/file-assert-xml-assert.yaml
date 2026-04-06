@@ -12,7 +12,9 @@ sections:
         justification: |
           Constructing query assertion models at creation time ensures that configuration
           errors are detected before any file system or XML parsing operations are attempted.
-        tests: []
+        tests:
+          - FileAssertXmlAssert_Create_ValidData_CreatesXmlAssert
+          - FileAssertXmlAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertXmlAssert-ParseError
         title: |
@@ -22,7 +24,8 @@ sections:
           Attempting to evaluate XPath queries against a file that is not valid XML would
           produce meaningless or misleading results. Reporting the parse failure immediately
           gives users a clear, actionable error message.
-        tests: []
+        tests:
+          - FileAssertXmlAssert_Run_InvalidFile_WritesError
 
       - id: FileAssert-FileAssertXmlAssert-QueryAssertions
         title: |
@@ -34,4 +37,7 @@ sections:
           required element presence and cardinality constraints without writing custom
           parsers. Checking all three constraint types (exact, min, max) provides full
           flexibility for different validation scenarios.
-        tests: []
+        tests:
+          - FileAssertXmlAssert_Run_ExactCount_Matches_NoError
+          - FileAssertXmlAssert_Run_ExactCount_Mismatch_WritesError
+          - FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError
