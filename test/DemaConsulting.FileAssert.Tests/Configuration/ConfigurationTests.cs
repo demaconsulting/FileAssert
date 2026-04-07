@@ -27,14 +27,14 @@ namespace DemaConsulting.FileAssert.Tests.Configuration;
 ///     Subsystem tests for the Configuration subsystem.
 /// </summary>
 [TestClass]
-public class ConfigurationSubsystemTests
+public class ConfigurationTests
 {
     /// <summary>
     ///     Verifies that the Configuration subsystem loads a YAML file and builds the
     ///     complete test hierarchy (tests → files → rules) correctly.
     /// </summary>
     [TestMethod]
-    public void ConfigurationSubsystem_LoadYaml_BuildsCompleteTestHierarchy()
+    public void Configuration_LoadYaml_BuildsCompleteTestHierarchy()
     {
         // Arrange - write a YAML configuration with nested test, file, and rule entries
         var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
@@ -79,7 +79,7 @@ public class ConfigurationSubsystemTests
     ///     the provided filters when running a configuration with multiple tests.
     /// </summary>
     [TestMethod]
-    public void ConfigurationSubsystem_RunWithFilter_ExecutesOnlyMatchingTests()
+    public void Configuration_RunWithFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests in config; only one file exists so only that test should pass
         var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
@@ -121,7 +121,7 @@ public class ConfigurationSubsystemTests
     ///     the provided filter when running a configuration with multiple tests.
     /// </summary>
     [TestMethod]
-    public void ConfigurationSubsystem_RunWithTagFilter_ExecutesOnlyMatchingTests()
+    public void Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests with different tags; only one file exists so only that test passes
         var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");

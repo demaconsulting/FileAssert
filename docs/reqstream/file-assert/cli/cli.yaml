@@ -8,7 +8,7 @@
 sections:
   - title: Cli Subsystem Requirements
     requirements:
-      - id: FileAssert-CliSubsystem-ArgumentParsing
+      - id: FileAssert-Cli-ArgumentParsing
         title: The Cli subsystem shall parse command-line arguments and expose them as structured properties.
         justification: |
           A dedicated argument-parsing subsystem provides a single point of truth for all
@@ -16,25 +16,25 @@ sections:
           handling. It also enables consistent unit and integration testing of argument
           behavior independently of business logic.
         tests:
-          - CliSubsystem_CreateContext_ParsesSilentValidateAndLogFlags
-          - CliSubsystem_CreateContext_ParsesVersionHelpConfigResultsFlags
-          - CliSubsystem_CreateContext_WithFilters_ParsesPositionalArguments
-          - CliSubsystem_CreateContext_UnknownArgument_ThrowsArgumentException
+          - Cli_CreateContext_ParsesSilentValidateAndLogFlags
+          - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
+          - Cli_CreateContext_WithFilters_ParsesPositionalArguments
+          - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
 
-      - id: FileAssert-CliSubsystem-ErrorReporting
+      - id: FileAssert-Cli-ErrorReporting
         title: The Cli subsystem shall set the exit code to 1 when errors are reported.
         justification: |
           A non-zero exit code is the standard Unix convention for indicating failure.
           Setting the exit code to 1 as soon as any error is written ensures that
           CI/CD pipelines and calling scripts can reliably detect failures.
         tests:
-          - CliSubsystem_WriteError_ChangesExitCodeToOne
+          - Cli_WriteError_ChangesExitCodeToOne
 
-      - id: FileAssert-CliSubsystem-OutputPipeline
+      - id: FileAssert-Cli-OutputPipeline
         title: The Cli subsystem shall route output and errors to the console and optional log file.
         justification: |
           A unified output pipeline ensures that all messages, whether informational or
           error-level, are consistently written to both the console and any active log file.
           This provides a reliable audit trail for automated environments and CI/CD pipelines.
         tests:
-          - CliSubsystem_OutputPipeline_WritesMessagesToLogFile
+          - Cli_OutputPipeline_WritesMessagesToLogFile

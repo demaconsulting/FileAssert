@@ -9,7 +9,7 @@
 sections:
   - title: Configuration Subsystem Requirements
     requirements:
-      - id: FileAssert-ConfigurationSubsystem-LoadAndBuild
+      - id: FileAssert-Configuration-LoadAndBuild
         title: The Configuration subsystem shall load a YAML configuration file and build a complete test hierarchy.
         justification: |
           The Configuration subsystem must correctly translate a YAML configuration document
@@ -18,14 +18,14 @@ sections:
           subsystem level ensures that the deserialization and domain-object construction
           stages interact correctly.
         tests:
-          - ConfigurationSubsystem_LoadYaml_BuildsCompleteTestHierarchy
+          - Configuration_LoadYaml_BuildsCompleteTestHierarchy
 
-      - id: FileAssert-ConfigurationSubsystem-FilterExecution
+      - id: FileAssert-Configuration-FilterExecution
         title: The Configuration subsystem shall execute only tests that match the provided name or tag filters.
         justification: |
           Selective test execution based on names and tags is a core feature of the
           Configuration subsystem. Testing this capability at the subsystem level verifies
           that filtering works correctly across the full load-and-run pipeline.
         tests:
-          - ConfigurationSubsystem_RunWithFilter_ExecutesOnlyMatchingTests
-          - ConfigurationSubsystem_RunWithTagFilter_ExecutesOnlyMatchingTests
+          - Configuration_RunWithFilter_ExecutesOnlyMatchingTests
+          - Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests

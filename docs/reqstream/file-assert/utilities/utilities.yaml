@@ -8,7 +8,7 @@
 sections:
   - title: Utilities Subsystem Requirements
     requirements:
-      - id: FileAssert-UtilitiesSubsystem-SafePathOperations
+      - id: FileAssert-Utilities-SafePathOperations
         title: The Utilities subsystem shall provide a safe path operation that prevents path traversal.
         justification: |
           Security-sensitive path operations must be isolated in a dedicated subsystem so
@@ -16,4 +16,4 @@ sections:
           duplicating path-safety logic. Testing at the subsystem level confirms that the
           utility functions are accessible to and correctly used by dependent subsystems.
         tests:
-          - UtilitiesSubsystem_SafePathCombine_PreventsPathTraversalToFileSystem
+          - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem

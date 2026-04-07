@@ -65,35 +65,35 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/cli/cli.yaml"
       - "docs/design/file-assert/cli/cli.md"
-      - "test/**/CliSubsystemTests.cs"
+      - "test/**/CliTests.cs"
 
   - id: FileAssert-Configuration
     title: Review that FileAssert Configuration Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/configuration/configuration.yaml"
       - "docs/design/file-assert/configuration/configuration.md"
-      - "test/**/ConfigurationSubsystemTests.cs"
+      - "test/**/ConfigurationTests.cs"
 
   - id: FileAssert-Modeling
     title: Review that FileAssert Modeling Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/modeling/modeling.yaml"
       - "docs/design/file-assert/modeling/modeling.md"
-      - "test/**/ModelingSubsystemTests.cs"
+      - "test/**/ModelingTests.cs"
 
   - id: FileAssert-Utilities
     title: Review that FileAssert Utilities Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/utilities/utilities.yaml"
       - "docs/design/file-assert/utilities/utilities.md"
-      - "test/**/UtilitiesSubsystemTests.cs"
+      - "test/**/UtilitiesTests.cs"
 
   - id: FileAssert-SelfTest
     title: Review that FileAssert SelfTest Satisfies Subsystem Requirements
     paths:
       - "docs/reqstream/file-assert/selftest/selftest.yaml"
       - "docs/design/file-assert/selftest/selftest.md"
-      - "test/**/SelfTestSubsystemTests.cs"
+      - "test/**/SelfTestTests.cs"
 
   # Software unit reviews - one per class ([System]-[Subsystem]-[Unit])
   - id: FileAssert-Cli-Context

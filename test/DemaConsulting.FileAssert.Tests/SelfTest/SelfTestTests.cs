@@ -27,14 +27,14 @@ namespace DemaConsulting.FileAssert.Tests.SelfTest;
 ///     Subsystem tests for the SelfTest subsystem.
 /// </summary>
 [TestClass]
-public class SelfTestSubsystemTests
+public class SelfTestTests
 {
     /// <summary>
     ///     Verifies that the SelfTest subsystem runs all built-in tests and produces
     ///     a summary that includes pass and fail counts.
     /// </summary>
     [TestMethod]
-    public void SelfTestSubsystem_Run_ExecutesBuiltInTestsAndProducesSummary()
+    public void SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");
@@ -70,7 +70,7 @@ public class SelfTestSubsystemTests
     ///     Verifies that the SelfTest subsystem prints a system information header.
     /// </summary>
     [TestMethod]
-    public void SelfTestSubsystem_Run_PrintsSystemInfoHeader()
+    public void SelfTest_Run_PrintsSystemInfoHeader()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");
@@ -100,7 +100,7 @@ public class SelfTestSubsystemTests
     ///     Verifies that the SelfTest subsystem writes a TRX results file when --results is specified.
     /// </summary>
     [TestMethod]
-    public void SelfTestSubsystem_Run_WithResultsFile_WritesTrxResultsFile()
+    public void SelfTest_Run_WithResultsFile_WritesTrxResultsFile()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");
