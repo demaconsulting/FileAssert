@@ -8,7 +8,7 @@
 sections:
   - title: SelfTest Subsystem Requirements
     requirements:
-      - id: FileAssert-SelfTestSubsystem-ValidationPipeline
+      - id: FileAssert-SelfTest-ValidationPipeline
         title: The SelfTest subsystem shall run built-in validation tests and produce a structured summary.
         justification: |
           The SelfTest subsystem integrates the Validation unit with the Cli and Utilities
@@ -16,6 +16,6 @@ sections:
           at the subsystem level verifies that test execution, result collection, and summary
           output all work together correctly.
         tests:
-          - SelfTestSubsystem_Run_ExecutesBuiltInTestsAndProducesSummary
-          - SelfTestSubsystem_Run_PrintsSystemInfoHeader
-          - SelfTestSubsystem_Run_WithResultsFile_WritesTrxResultsFile
+          - SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary
+          - SelfTest_Run_PrintsSystemInfoHeader
+          - SelfTest_Run_WithResultsFile_WritesTrxResultsFile

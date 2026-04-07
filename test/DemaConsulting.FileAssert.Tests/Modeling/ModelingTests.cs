@@ -28,14 +28,14 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 ///     Subsystem tests for the Modeling subsystem.
 /// </summary>
 [TestClass]
-public class ModelingSubsystemTests
+public class ModelingTests
 {
     /// <summary>
     ///     Verifies that the Modeling subsystem executes the full test → file → rule
     ///     chain without errors when all constraints are satisfied.
     /// </summary>
     [TestMethod]
-    public void ModelingSubsystem_ExecuteChain_PassesWhenAllConstraintsMet()
+    public void Modeling_ExecuteChain_PassesWhenAllConstraintsMet()
     {
         // Arrange - create a real file with content that satisfies all rules
         var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");
@@ -80,7 +80,7 @@ public class ModelingSubsystemTests
     ///     when a content rule is not satisfied.
     /// </summary>
     [TestMethod]
-    public void ModelingSubsystem_ExecuteChain_ReportsFailuresThroughContext()
+    public void Modeling_ExecuteChain_ReportsFailuresThroughContext()
     {
         // Arrange - create a file that does NOT contain the required text
         var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");
@@ -124,7 +124,7 @@ public class ModelingSubsystemTests
     ///     assertion block is declared but the file cannot be parsed as the declared format.
     /// </summary>
     [TestMethod]
-    public void ModelingSubsystem_FileTypeParsing_InvalidXml_ReportsParseError()
+    public void Modeling_FileTypeParsing_InvalidXml_ReportsParseError()
     {
         // Arrange - create a file with invalid XML content
         var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");
@@ -168,7 +168,7 @@ public class ModelingSubsystemTests
     ///     a valid XML document and reports no error when the count constraint is satisfied.
     /// </summary>
     [TestMethod]
-    public void ModelingSubsystem_QueryAssertions_XmlQueryMeetsCount_NoError()
+    public void Modeling_QueryAssertions_XmlQueryMeetsCount_NoError()
     {
         // Arrange - create a valid XML file with elements the query will match
         var tempDir = Directory.CreateTempSubdirectory("fileassert_modeling_");

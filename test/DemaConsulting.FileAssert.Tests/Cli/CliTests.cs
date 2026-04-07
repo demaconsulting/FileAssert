@@ -26,13 +26,13 @@ namespace DemaConsulting.FileAssert.Tests.Cli;
 ///     Subsystem tests for the Cli subsystem.
 /// </summary>
 [TestClass]
-public class CliSubsystemTests
+public class CliTests
 {
     /// <summary>
     ///     Verifies that the Cli subsystem correctly parses the --silent, --validate, and --log flags.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_CreateContext_ParsesSilentValidateAndLogFlags()
+    public void Cli_CreateContext_ParsesSilentValidateAndLogFlags()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
@@ -67,7 +67,7 @@ public class CliSubsystemTests
     ///     Verifies that the Cli subsystem correctly parses --version, --help, --config, and --results flags.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_CreateContext_ParsesVersionHelpConfigResultsFlags()
+    public void Cli_CreateContext_ParsesVersionHelpConfigResultsFlags()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
@@ -101,7 +101,7 @@ public class CliSubsystemTests
     ///     Verifies that the Cli subsystem captures positional arguments as test name/tag filters.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_CreateContext_WithFilters_ParsesPositionalArguments()
+    public void Cli_CreateContext_WithFilters_ParsesPositionalArguments()
     {
         // Arrange & Act
         using var context = Context.Create(["--silent", "smoke", "regression"]);
@@ -116,7 +116,7 @@ public class CliSubsystemTests
     ///     Verifies that the Cli subsystem throws ArgumentException for unknown flags.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_CreateContext_UnknownArgument_ThrowsArgumentException()
+    public void Cli_CreateContext_UnknownArgument_ThrowsArgumentException()
     {
         // Arrange & Act & Assert
         Assert.Throws<ArgumentException>(() => Context.Create(["--unknown-flag"]));
@@ -126,7 +126,7 @@ public class CliSubsystemTests
     ///     Verifies that WriteError changes the context exit code from 0 to 1.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_WriteError_ChangesExitCodeToOne()
+    public void Cli_WriteError_ChangesExitCodeToOne()
     {
         // Arrange
         using var context = Context.Create(["--silent"]);
@@ -144,7 +144,7 @@ public class CliSubsystemTests
     ///     through the log file when a log path is specified.
     /// </summary>
     [TestMethod]
-    public void CliSubsystem_OutputPipeline_WritesMessagesToLogFile()
+    public void Cli_OutputPipeline_WritesMessagesToLogFile()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");

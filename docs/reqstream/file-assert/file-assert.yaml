@@ -17,7 +17,7 @@ sections:
           using YAML-defined test suites. Verifying this core behavior at the system level
           confirms that all subsystems integrate correctly to produce the expected outcome.
         children:
-          - FileAssert-ConfigurationSubsystem-LoadAndBuild
+          - FileAssert-Configuration-LoadAndBuild
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
 
@@ -100,7 +100,7 @@ sections:
           tag keeps the command line concise and consistent with common CLI testing tools.
         children:
           - FileAssert-Context-Filters
-          - FileAssert-ConfigurationSubsystem-FilterExecution
+          - FileAssert-Configuration-FilterExecution
         tests:
           - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
 
@@ -228,7 +228,7 @@ sections:
           do not contain forbidden strings, or match regular expression patterns. These
           assertions are the primary mechanism for content validation in CI/CD pipelines.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParsing
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
           - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
@@ -245,7 +245,7 @@ sections:
           requirements. An immediate failure when the file is not a valid PDF prevents
           misleading partial results.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParsing
         tests:
           - IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
 
@@ -260,8 +260,8 @@ sections:
           users to verify document structure and element presence without writing custom
           parsers. An immediate failure on invalid XML prevents misleading partial results.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
-          - FileAssert-ModelingSubsystem-QueryAssertions
+          - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_XmlAssert_PassingQuery_ReturnsZero
           - IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero
@@ -277,8 +277,8 @@ sections:
           structure such as title presence and link counts. An immediate failure on invalid
           HTML prevents misleading partial results.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
-          - FileAssert-ModelingSubsystem-QueryAssertions
+          - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
 
@@ -293,8 +293,8 @@ sections:
           that required configuration keys are present and have the expected cardinality.
           An immediate failure on invalid YAML prevents misleading partial results.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
-          - FileAssert-ModelingSubsystem-QueryAssertions
+          - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_YamlAssert_PassingQuery_ReturnsZero
 
@@ -309,7 +309,7 @@ sections:
           have the expected cardinality without writing custom parsers. An immediate failure on
           invalid JSON prevents misleading partial results.
         children:
-          - FileAssert-ModelingSubsystem-FileTypeParsing
-          - FileAssert-ModelingSubsystem-QueryAssertions
+          - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_JsonAssert_PassingQuery_ReturnsZero

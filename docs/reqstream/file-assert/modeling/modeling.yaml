@@ -8,25 +8,25 @@
 sections:
   - title: Modeling Subsystem Requirements
     requirements:
-      - id: FileAssert-ModelingSubsystem-ExecutionChain
+      - id: FileAssert-Modeling-ExecutionChain
         title: The Modeling subsystem shall execute the full test-file-rule chain and pass when all constraints are met.
         justification: |
           The Modeling subsystem integrates three unit types (FileAssertTest, FileAssertFile,
           FileAssertRule) into a single execution chain. Verifying the chain end-to-end at the
           subsystem level ensures that inter-unit delegation and data flow work correctly.
         tests:
-          - ModelingSubsystem_ExecuteChain_PassesWhenAllConstraintsMet
+          - Modeling_ExecuteChain_PassesWhenAllConstraintsMet
 
-      - id: FileAssert-ModelingSubsystem-FailureReporting
+      - id: FileAssert-Modeling-FailureReporting
         title: The Modeling subsystem shall report failures through the context when assertions are violated.
         justification: |
           Assertion failures must propagate from the innermost rule through the file and test
           layers to the context, setting the error exit code. Testing this at the subsystem
           level verifies that the full error-reporting pipeline within the subsystem works.
         tests:
-          - ModelingSubsystem_ExecuteChain_ReportsFailuresThroughContext
+          - Modeling_ExecuteChain_ReportsFailuresThroughContext
 
-      - id: FileAssert-ModelingSubsystem-FileTypeParsing
+      - id: FileAssert-Modeling-FileTypeParsing
         title: |
           The Modeling subsystem shall parse matched files as structured documents (PDF, XML,
           HTML, YAML, JSON) when the corresponding assertion block is declared, and report
@@ -52,9 +52,9 @@ sections:
           - FileAssert-FileAssertJsonAssert-Creation
           - FileAssert-FileAssertJsonAssert-ParseError
         tests:
-          - ModelingSubsystem_FileTypeParsing_InvalidXml_ReportsParseError
+          - Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 
-      - id: FileAssert-ModelingSubsystem-QueryAssertions
+      - id: FileAssert-Modeling-QueryAssertions
         title: |
           The Modeling subsystem shall evaluate structured-document query assertions (XPath
           for XML and HTML; dot-notation paths for YAML and JSON) and apply count constraints
@@ -69,4 +69,4 @@ sections:
           - FileAssert-FileAssertYamlAssert-QueryAssertions
           - FileAssert-FileAssertJsonAssert-QueryAssertions
         tests:
-          - ModelingSubsystem_QueryAssertions_XmlQueryMeetsCount_NoError
+          - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError

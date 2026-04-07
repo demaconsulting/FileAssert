@@ -26,14 +26,14 @@ namespace DemaConsulting.FileAssert.Tests.Utilities;
 ///     Subsystem tests for the Utilities subsystem.
 /// </summary>
 [TestClass]
-public class UtilitiesSubsystemTests
+public class UtilitiesTests
 {
     /// <summary>
     ///     Verifies that the Utilities subsystem's safe path combination prevents
     ///     path traversal when used against the real file system.
     /// </summary>
     [TestMethod]
-    public void UtilitiesSubsystem_SafePathCombine_PreventsPathTraversalToFileSystem()
+    public void Utilities_SafePathCombine_PreventsPathTraversalToFileSystem()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_util_");
