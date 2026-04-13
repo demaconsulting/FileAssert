@@ -164,6 +164,20 @@ public class ContextTests
     }
 
     /// <summary>
+    ///     Test creating a context with the result alias flag.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_ResultAliasFlag_SetsResultsFile()
+    {
+        // Act
+        using var context = Context.Create(["--result", "test.trx"]);
+
+        // Assert
+        Assert.AreEqual("test.trx", context.ResultsFile);
+        Assert.AreEqual(0, context.ExitCode);
+    }
+
+    /// <summary>
     ///     Test creating a context with the log flag.
     /// </summary>
     [TestMethod]

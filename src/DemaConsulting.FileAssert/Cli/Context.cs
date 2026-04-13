@@ -254,6 +254,7 @@ internal sealed class Context : IDisposable
                     LogFile = GetRequiredStringArgument(arg, args, index, "a filename argument");
                     return index + 1;
 
+                case "--result":
                 case "--results":
                     ResultsFile = GetRequiredStringArgument(arg, args, index, "a results filename argument");
                     return index + 1;
