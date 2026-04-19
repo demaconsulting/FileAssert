@@ -39,4 +39,5 @@ sections:
         tests:
           - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
           - FileAssertYamlAssert_Run_SequenceCount_Mismatch_WritesError
+          - FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError
           - FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError

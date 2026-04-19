@@ -65,7 +65,7 @@ public sealed class FileAssertXmlAssertTests
     public void FileAssertXmlAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertXmlAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertXmlAssert.Create(null!));
     }
 
     /// <summary>

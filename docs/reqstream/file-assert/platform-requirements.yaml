@@ -25,8 +25,8 @@ sections:
           DEMA Consulting tools must support Windows as a major development platform.
         tests:
           # Tests link to "windows" to ensure results come from Windows platform
-          - "windows@FileAssert_VersionDisplay"
-          - "windows@FileAssert_HelpDisplay"
+          - "windows@IntegrationTest_VersionFlag_OutputsVersion"
+          - "windows@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Linux
         title: The tool shall build and run on Linux platforms.
@@ -34,8 +34,8 @@ sections:
           DEMA Consulting tools must support Linux for CI/CD and containerized environments.
         tests:
           # Tests link to "ubuntu" to ensure results come from Linux platform
-          - "ubuntu@FileAssert_VersionDisplay"
-          - "ubuntu@FileAssert_HelpDisplay"
+          - "ubuntu@IntegrationTest_VersionFlag_OutputsVersion"
+          - "ubuntu@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-MacOS
         title: The tool shall build and run on macOS platforms.
@@ -43,29 +43,29 @@ sections:
           DEMA Consulting tools must support macOS for developers using Apple platforms.
         tests:
           # Tests link to "macos" to ensure results come from macOS platform
-          - "macos@FileAssert_VersionDisplay"
-          - "macos@FileAssert_HelpDisplay"
+          - "macos@IntegrationTest_VersionFlag_OutputsVersion"
+          - "macos@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Net8
         title: The tool shall support .NET 8 runtime.
         justification: |
           .NET 8 is an LTS release providing long-term stability for enterprise users.
         tests:
-          - "dotnet8.x@FileAssert_VersionDisplay"
-          - "dotnet8.x@FileAssert_HelpDisplay"
+          - "dotnet8.x@IntegrationTest_VersionFlag_OutputsVersion"
+          - "dotnet8.x@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Net9
         title: The tool shall support .NET 9 runtime.
         justification: |
           .NET 9 support enables users to leverage the latest .NET features.
         tests:
-          - "dotnet9.x@FileAssert_VersionDisplay"
-          - "dotnet9.x@FileAssert_HelpDisplay"
+          - "dotnet9.x@IntegrationTest_VersionFlag_OutputsVersion"
+          - "dotnet9.x@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Net10
         title: The tool shall support .NET 10 runtime.
         justification: |
           .NET 10 support ensures the tool remains compatible with the latest .NET ecosystem.
         tests:
-          - "dotnet10.x@FileAssert_VersionDisplay"
-          - "dotnet10.x@FileAssert_HelpDisplay"
+          - "dotnet10.x@IntegrationTest_VersionFlag_OutputsVersion"
+          - "dotnet10.x@IntegrationTest_HelpFlag_OutputsUsageInformation"

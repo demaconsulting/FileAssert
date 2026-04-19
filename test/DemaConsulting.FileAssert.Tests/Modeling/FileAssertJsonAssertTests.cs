@@ -67,7 +67,7 @@ public sealed class FileAssertJsonAssertTests
     public void FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertJsonAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertJsonAssert.Create(null!));
     }
 
     /// <summary>
@@ -144,6 +144,33 @@ public sealed class FileAssertJsonAssertTests
 
             // Assert
             Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the array count is within min/max bounds.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError()
+    {
+        // Arrange - sample JSON has 3 tools entries; assert min=2, max=5
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleJson);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 2, Max = 5 } };
+            var jsonAssert = FileAssertJsonAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            jsonAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
         }
         finally
         {
