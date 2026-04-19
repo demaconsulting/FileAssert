@@ -156,7 +156,8 @@ public sealed class FileAssertTextAssertTests
             // Act
             textAssert.Run(context, tempFile);
 
-            // Assert - both rules must have been evaluated
+            // Assert - both rules must have been evaluated (no short-circuit)
+            Assert.AreEqual(2, context.ErrorCount);
             Assert.AreEqual(1, context.ExitCode);
         }
         finally
