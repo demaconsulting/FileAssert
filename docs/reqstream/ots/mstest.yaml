@@ -8,7 +8,7 @@ sections:
     sections:
       - title: MSTest Requirements
         requirements:
-          - id: Template-OTS-MSTest
+          - id: FileAssert-OTS-MSTest
             title: MSTest shall execute unit tests and report results.
             justification: |
               MSTest (MSTest.TestFramework and MSTest.TestAdapter) is the unit-testing framework used

@@ -6,10 +6,12 @@
 # Patterns identifying all files that require review.
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
+  - "README.md"                  # Project readme
+  - "**/*.cs"                    # All C# source and test files
   - "requirements.yaml"          # Root requirements file
   - "docs/reqstream/**/*.yaml"   # Requirements files
-  - "docs/design/**/*.md"        # Design documentation
-  - "**/*.cs"                    # All C# source and test files
+  - "docs/user_guide/**/*.md"    # User guide documents
+  - "docs/design/**/*.md"        # Design documents
   - "!**/obj/**"                 # Exclude build output
   - "!**/bin/**"                 # Exclude build output
 
@@ -25,9 +27,9 @@ evidence-source:
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
 reviews:
-  # Purpose review - user-facing capabilities and system promises
+  # Purpose Review (only one per repository)
   - id: FileAssert-Purpose
-    title: Review that Advertised Features Match System Design
+    title: Review of FileAssert user-facing capabilities and system promises
     paths:
       - "README.md"
       - "docs/user_guide/**/*.md"
@@ -35,69 +37,75 @@ reviews:
       - "docs/design/introduction.md"
       - "docs/design/file-assert/file-assert.md"
 
-  # Architecture review - end-to-end behavior and design overview
+  # FileAssert-Architecture Review (one per system)
   - id: FileAssert-Architecture
-    title: Review that FileAssert Architecture Satisfies Requirements
+    title: Review of FileAssert system architecture and operational validation
     paths:
       - "docs/reqstream/file-assert/file-assert.yaml"
       - "docs/design/introduction.md"
       - "docs/design/file-assert/file-assert.md"
       - "test/**/IntegrationTests.cs"
 
-  # Design review - all design documentation and platform/system requirements
+  # FileAssert-Design Review (one per system)
   - id: FileAssert-Design
-    title: Review that FileAssert Design is Consistent and Complete
+    title: Review of FileAssert architectural and design consistency
     paths:
       - "docs/reqstream/file-assert/file-assert.yaml"
       - "docs/reqstream/file-assert/platform-requirements.yaml"
-      - "docs/design/**/*.md"
+      - "docs/design/introduction.md"
+      - "docs/design/file-assert/**/*.md"
 
-  # All-requirements review - all requirement files
+  # FileAssert-AllRequirements Review (one per system)
   - id: FileAssert-AllRequirements
-    title: Review that All FileAssert Requirements are Complete
+    title: Review of FileAssert requirements quality and traceability
     paths:
       - "requirements.yaml"
       - "docs/reqstream/**/*.yaml"
+      - "docs/reqstream/ots/**/*.yaml"
 
-  # Subsystem reviews - one per subsystem
+  # FileAssert-Cli Review (one per subsystem)
   - id: FileAssert-Cli
-    title: Review that FileAssert Cli Satisfies Subsystem Requirements
+    title: Review of FileAssert Cli subsystem architecture and interfaces
     paths:
       - "docs/reqstream/file-assert/cli/cli.yaml"
       - "docs/design/file-assert/cli/cli.md"
       - "test/**/CliTests.cs"
 
+  # FileAssert-Configuration Review (one per subsystem)
   - id: FileAssert-Configuration
-    title: Review that FileAssert Configuration Satisfies Subsystem Requirements
+    title: Review of FileAssert Configuration subsystem architecture and interfaces
     paths:
       - "docs/reqstream/file-assert/configuration/configuration.yaml"
       - "docs/design/file-assert/configuration/configuration.md"
       - "test/**/ConfigurationTests.cs"
 
+  # FileAssert-Modeling Review (one per subsystem)
   - id: FileAssert-Modeling
-    title: Review that FileAssert Modeling Satisfies Subsystem Requirements
+    title: Review of FileAssert Modeling subsystem architecture and interfaces
     paths:
       - "docs/reqstream/file-assert/modeling/modeling.yaml"
       - "docs/design/file-assert/modeling/modeling.md"
       - "test/**/ModelingTests.cs"
 
+  # FileAssert-Utilities Review (one per subsystem)
   - id: FileAssert-Utilities
-    title: Review that FileAssert Utilities Satisfies Subsystem Requirements
+    title: Review of FileAssert Utilities subsystem architecture and interfaces
     paths:
       - "docs/reqstream/file-assert/utilities/utilities.yaml"
       - "docs/design/file-assert/utilities/utilities.md"
       - "test/**/UtilitiesTests.cs"
 
+  # FileAssert-SelfTest Review (one per subsystem)
   - id: FileAssert-SelfTest
-    title: Review that FileAssert SelfTest Satisfies Subsystem Requirements
+    title: Review of FileAssert SelfTest subsystem architecture and interfaces
     paths:
       - "docs/reqstream/file-assert/selftest/selftest.yaml"
       - "docs/design/file-assert/selftest/selftest.md"
       - "test/**/SelfTestTests.cs"
 
-  # Software unit reviews - one per class ([System]-[Subsystem]-[Unit])
+  # FileAssert-Cli-Context Review (one per unit)
   - id: FileAssert-Cli-Context
-    title: Review that FileAssert Cli Context Implementation is Correct
+    title: Review of FileAssert Cli Context unit implementation
     paths:
       - "docs/reqstream/file-assert/cli/context.yaml"
       - "docs/design/file-assert/cli/context.md"
@@ -105,8 +113,9 @@ reviews:
       - "test/**/ContextTests.cs"
       - "test/**/ContextNewPropertiesTests.cs"
 
+  # FileAssert-Program Review (one per unit)
   - id: FileAssert-Program
-    title: Review that FileAssert Program Implementation is Correct
+    title: Review of FileAssert Program unit implementation
     paths:
       - "docs/reqstream/file-assert/program.yaml"
       - "docs/design/file-assert/program.md"
@@ -115,113 +124,126 @@ reviews:
       - "test/**/Runner.cs"
       - "test/**/AssemblyInfo.cs"
 
+  # FileAssert-SelfTest-Validation Review (one per unit)
   - id: FileAssert-SelfTest-Validation
-    title: Review that FileAssert SelfTest Validation Implementation is Correct
+    title: Review of FileAssert SelfTest Validation unit implementation
     paths:
       - "docs/reqstream/file-assert/selftest/validation.yaml"
       - "docs/design/file-assert/selftest/validation.md"
       - "src/**/Validation.cs"
       - "test/**/ValidationTests.cs"
 
+  # FileAssert-Utilities-PathHelpers Review (one per unit)
   - id: FileAssert-Utilities-PathHelpers
-    title: Review that FileAssert Utilities PathHelpers Implementation is Correct
+    title: Review of FileAssert Utilities PathHelpers unit implementation
     paths:
       - "docs/reqstream/file-assert/utilities/path-helpers.yaml"
       - "docs/design/file-assert/utilities/path-helpers.md"
       - "src/**/PathHelpers.cs"
       - "test/**/PathHelpersTests.cs"
 
+  # FileAssert-Modeling-FileAssertRule Review (one per unit)
   - id: FileAssert-Modeling-FileAssertRule
-    title: Review that FileAssert Modeling FileAssertRule Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertRule unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-rule.yaml"
       - "docs/design/file-assert/modeling/file-assert-rule.md"
       - "src/**/FileAssertRule.cs"
       - "test/**/FileAssertRuleTests.cs"
 
+  # FileAssert-Modeling-FileAssertFile Review (one per unit)
   - id: FileAssert-Modeling-FileAssertFile
-    title: Review that FileAssert Modeling FileAssertFile Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertFile unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-file.yaml"
       - "docs/design/file-assert/modeling/file-assert-file.md"
       - "src/**/FileAssertFile.cs"
       - "test/**/FileAssertFileTests.cs"
 
+  # FileAssert-Modeling-FileAssertTest Review (one per unit)
   - id: FileAssert-Modeling-FileAssertTest
-    title: Review that FileAssert Modeling FileAssertTest Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertTest unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-test.yaml"
       - "docs/design/file-assert/modeling/file-assert-test.md"
       - "src/**/FileAssertTest.cs"
       - "test/**/FileAssertTestTests.cs"
 
+  # FileAssert-Configuration-FileAssertConfig Review (one per unit)
   - id: FileAssert-Configuration-FileAssertConfig
-    title: Review that FileAssert Configuration FileAssertConfig Implementation is Correct
+    title: Review of FileAssert Configuration FileAssertConfig unit implementation
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-config.yaml"
       - "docs/design/file-assert/configuration/file-assert-config.md"
       - "src/**/FileAssertConfig.cs"
       - "test/**/FileAssertConfigTests.cs"
 
+  # FileAssert-Configuration-FileAssertData Review (one per unit)
   - id: FileAssert-Configuration-FileAssertData
-    title: Review that FileAssert Configuration FileAssertData Implementation is Correct
+    title: Review of FileAssert Configuration FileAssertData unit implementation
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-data.yaml"
       - "docs/design/file-assert/configuration/file-assert-data.md"
       - "src/**/FileAssertData.cs"
       - "test/**/FileAssertConfigTests.cs"
 
+  # FileAssert-Modeling-FileAssertTextAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertTextAssert
-    title: Review that FileAssert Modeling FileAssertTextAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertTextAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-text-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-text-assert.md"
       - "src/**/Modeling/FileAssertTextAssert.cs"
       - "test/**/Modeling/FileAssertTextAssertTests.cs"
 
+  # FileAssert-Modeling-FileAssertPdfAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertPdfAssert
-    title: Review that FileAssert Modeling FileAssertPdfAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertPdfAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-pdf-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-pdf-assert.md"
       - "src/**/Modeling/FileAssertPdfAssert.cs"
       - "test/**/Modeling/FileAssertPdfAssertTests.cs"
 
+  # FileAssert-Modeling-FileAssertXmlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertXmlAssert
-    title: Review that FileAssert Modeling FileAssertXmlAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertXmlAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-xml-assert.md"
       - "src/**/Modeling/FileAssertXmlAssert.cs"
       - "test/**/Modeling/FileAssertXmlAssertTests.cs"
 
+  # FileAssert-Modeling-FileAssertHtmlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertHtmlAssert
-    title: Review that FileAssert Modeling FileAssertHtmlAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertHtmlAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-html-assert.md"
       - "src/**/Modeling/FileAssertHtmlAssert.cs"
       - "test/**/Modeling/FileAssertHtmlAssertTests.cs"
 
+  # FileAssert-Modeling-FileAssertYamlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertYamlAssert
-    title: Review that FileAssert Modeling FileAssertYamlAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertYamlAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-yaml-assert.md"
       - "src/**/Modeling/FileAssertYamlAssert.cs"
       - "test/**/Modeling/FileAssertYamlAssertTests.cs"
 
+  # FileAssert-Modeling-FileAssertJsonAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertJsonAssert
-    title: Review that FileAssert Modeling FileAssertJsonAssert Implementation is Correct
+    title: Review of FileAssert Modeling FileAssertJsonAssert unit implementation
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml"
       - "docs/design/file-assert/modeling/file-assert-json-assert.md"
       - "src/**/Modeling/FileAssertJsonAssert.cs"
       - "test/**/Modeling/FileAssertJsonAssertTests.cs"
 
-  # Platform review
+  # FileAssert-Platform Review (one per system)
   - id: FileAssert-Platform
-    title: Review of Platform and Runtime Support Requirements
+    title: Review of FileAssert platform and runtime support requirements
     paths:
       - "docs/reqstream/file-assert/platform-requirements.yaml"
       - "docs/design/file-assert/platform.md"
