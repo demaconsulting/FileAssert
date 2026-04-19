@@ -1,0 +1,15 @@
+---
+# OTS Requirement: WeasyPrint HTML to PDF conversion tool
+id: FileAssert-OTS-WeasyPrint
+title: WeasyPrint converts HTML to PDF correctly
+description: >
+  WeasyPrint is used to convert HTML documentation to PDF. This requirement is satisfied
+  when WeasyPrint successfully generates PDF documents containing the expected content,
+  correct metadata, and a minimum number of pages.
+tests:
+  - WeasyPrint_BuildNotesPdf
+  - WeasyPrint_CodeQualityPdf
+  - WeasyPrint_ReviewPlanPdf
+  - WeasyPrint_ReviewReportPdf
+  - WeasyPrint_DesignPdf
+  - WeasyPrint_UserGuidePdf

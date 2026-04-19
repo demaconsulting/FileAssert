@@ -1,0 +1,10 @@
+---
+# OTS Requirement: FileAssert file property assertion tool (self-referential)
+id: FileAssert-OTS-FileAssert
+title: FileAssert validates file properties correctly
+description: >
+  FileAssert is used to assert file properties. This requirement is satisfied by the
+  FileAssert self-validation tests which confirm the tool is functioning correctly.
+tests:
+  - FileAssert_VersionDisplay
+  - FileAssert_HelpDisplay
