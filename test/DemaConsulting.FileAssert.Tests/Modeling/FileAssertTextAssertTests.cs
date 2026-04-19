@@ -47,7 +47,7 @@ public sealed class FileAssertTextAssertTests
 
         // Assert
         Assert.IsNotNull(textAssert);
-        Assert.AreEqual(1, textAssert.Rules.Count);
+        Assert.HasCount(1, textAssert.Rules);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed class FileAssertTextAssertTests
     public void FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertTextAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertTextAssert.Create(null!));
     }
 
     /// <summary>
@@ -131,5 +131,37 @@ public sealed class FileAssertTextAssertTests
 
         // Assert
         Assert.AreEqual(1, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that Run evaluates all rules and reports multiple errors without
+    ///     short-circuiting on the first failure.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors()
+    {
+        // Arrange - create a temp file whose content satisfies neither rule
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, "no matches here", System.Text.Encoding.UTF8);
+            var data = new List<FileAssertRuleData>
+            {
+                new() { Contains = "first-missing" },
+                new() { Contains = "second-missing" }
+            };
+            var textAssert = FileAssertTextAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            textAssert.Run(context, tempFile);
+
+            // Assert - both rules must have been evaluated
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
     }
 }
