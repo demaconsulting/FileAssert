@@ -62,3 +62,12 @@ sections:
           clear, actionable error at the point of invalid input.
         tests:
           - Validation_Run_NullContext_ThrowsArgumentNullException
+
+      - id: FileAssert-Validation-Depth
+        title: The Validation class shall use the context Depth property to set the heading level.
+        justification: |
+          The self-validation report may be embedded within a larger document at varying
+          heading depths. Using the Depth property from the context allows the heading
+          to be rendered at the correct level for the consuming document.
+        tests:
+          - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth

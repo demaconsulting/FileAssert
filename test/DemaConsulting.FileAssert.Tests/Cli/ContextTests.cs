@@ -438,4 +438,74 @@ public class ContextTests
             Console.SetError(originalError);
         }
     }
+
+    /// <summary>
+    ///     Test creating a context with --depth flag sets the Depth property.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_DepthFlag_SetsDepth()
+    {
+        // Act
+        using var context = Context.Create(["--depth", "3"]);
+
+        // Assert
+        Assert.AreEqual(3, context.Depth);
+    }
+
+    /// <summary>
+    ///     Test creating a context with no arguments defaults Depth to 1.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_NoArguments_DepthDefaultsToOne()
+    {
+        // Act
+        using var context = Context.Create([]);
+
+        // Assert
+        Assert.AreEqual(1, context.Depth);
+    }
+
+    /// <summary>
+    ///     Test creating a context with --depth flag but no value throws exception.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_DepthFlag_WithoutValue_ThrowsArgumentException()
+    {
+        // Act & Assert
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--depth"]));
+        Assert.Contains("--depth", exception.Message);
+    }
+
+    /// <summary>
+    ///     Test creating a context with --depth flag and non-numeric value throws exception.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_DepthFlag_NonNumeric_ThrowsArgumentException()
+    {
+        // Act & Assert
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--depth", "abc"]));
+        Assert.Contains("--depth", exception.Message);
+    }
+
+    /// <summary>
+    ///     Test creating a context with --depth flag and zero value throws exception.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_DepthFlag_Zero_ThrowsArgumentException()
+    {
+        // Act & Assert
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--depth", "0"]));
+        Assert.Contains("--depth", exception.Message);
+    }
+
+    /// <summary>
+    ///     Test creating a context with --depth flag and value above 6 throws exception.
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_DepthFlag_AboveSix_ThrowsArgumentException()
+    {
+        // Act & Assert
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--depth", "7"]));
+        Assert.Contains("--depth", exception.Message);
+    }
 }

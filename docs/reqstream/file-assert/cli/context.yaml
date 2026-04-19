@@ -107,3 +107,18 @@ sections:
           requiring a separate context per test.
         tests:
           - Context_ErrorCount_IncrementsOnEachWriteError
+
+      - id: FileAssert-Context-Depth
+        title: The Context class shall parse a --depth argument between 1 and 6 for markdown heading depth.
+        justification: |
+          The --depth argument allows the self-validation report heading to be rendered at a
+          configurable markdown heading depth (1-6), enabling the output to be embedded at
+          different levels within a larger document. The default value of 1 preserves backward
+          compatibility.
+        tests:
+          - Context_Create_DepthFlag_SetsDepth
+          - Context_Create_NoArguments_DepthDefaultsToOne
+          - Context_Create_DepthFlag_WithoutValue_ThrowsArgumentException
+          - Context_Create_DepthFlag_NonNumeric_ThrowsArgumentException
+          - Context_Create_DepthFlag_Zero_ThrowsArgumentException
+          - Context_Create_DepthFlag_AboveSix_ThrowsArgumentException

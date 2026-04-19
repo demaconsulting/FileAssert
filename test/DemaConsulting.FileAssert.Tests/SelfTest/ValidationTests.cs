@@ -216,6 +216,35 @@ public class ValidationTests
     }
 
     /// <summary>
+    ///     Test that Run uses the specified depth for the markdown heading.
+    /// </summary>
+    [TestMethod]
+    public void Validation_Run_WithDepth_UsesSpecifiedHeadingDepth()
+    {
+        // Arrange
+        var logFile = Path.Combine(Path.GetTempPath(), $"validation_test_{Guid.NewGuid()}.log");
+        try
+        {
+            using (var context = Context.Create(["--silent", "--log", logFile, "--depth", "3"]))
+            {
+                // Act
+                Validation.Run(context);
+            }
+
+            // Assert
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains("### DEMA Consulting FileAssert", logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
+
+    /// <summary>
     ///     Runs <see cref="Validation.Run"/> with a silent context backed by a temporary log file,
     ///     then asserts that <paramref name="expectedText"/> appears in the log.
     /// </summary>
