@@ -51,21 +51,21 @@ sections:
         justification: |
           .NET 8 is an LTS release providing long-term stability for enterprise users.
         tests:
-          - "dotnet8.x@IntegrationTest_VersionFlag_OutputsVersion"
-          - "dotnet8.x@IntegrationTest_HelpFlag_OutputsUsageInformation"
+          - "dotnet8.x@FileAssert_VersionDisplay"
+          - "dotnet8.x@FileAssert_HelpDisplay"
 
       - id: FileAssert-Platform-Net9
         title: The tool shall support .NET 9 runtime.
         justification: |
           .NET 9 support enables users to leverage the latest .NET features.
         tests:
-          - "dotnet9.x@IntegrationTest_VersionFlag_OutputsVersion"
-          - "dotnet9.x@IntegrationTest_HelpFlag_OutputsUsageInformation"
+          - "dotnet9.x@FileAssert_VersionDisplay"
+          - "dotnet9.x@FileAssert_HelpDisplay"
 
       - id: FileAssert-Platform-Net10
         title: The tool shall support .NET 10 runtime.
         justification: |
           .NET 10 support ensures the tool remains compatible with the latest .NET ecosystem.
         tests:
-          - "dotnet10.x@IntegrationTest_VersionFlag_OutputsVersion"
-          - "dotnet10.x@IntegrationTest_HelpFlag_OutputsUsageInformation"
+          - "dotnet10.x@FileAssert_VersionDisplay"
+          - "dotnet10.x@FileAssert_HelpDisplay"
