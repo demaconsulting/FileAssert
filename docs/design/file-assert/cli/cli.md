@@ -15,7 +15,7 @@ and execution decisions.
 ## Subsystem Responsibilities
 
 - Parse all supported flags (`--version`/`-v`, `--help`/`-h`/`-?`, `--silent`, `--validate`, `--log`,
-  `--results`, `--config`) and positional filter arguments.
+  `--results`/`--result`, `--config`) and positional filter arguments.
 - Reject unknown or malformed arguments with a descriptive `ArgumentException`.
 - Open and manage a log file when `--log` is specified.
 - Write output to stdout and the log file; write errors to stderr and the log file.

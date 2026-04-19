@@ -74,7 +74,9 @@ The following sequence describes the normal execution path:
    g. If a `json:` block is defined, attempts to parse the file using `System.Text.Json`; reports
       an immediate error if parsing fails, otherwise applies dot-notation path count assertions.
 8. Rule violations and parse failures are recorded via `context.WriteError`.
-9. After all tests complete, `context.ExitCode` reflects whether any errors occurred.
+9. After all tests complete, if `context.ResultsFile` is set, `FileAssertConfig.Run` writes
+   TRX or JUnit XML results (format determined by the file extension) to the specified path.
+   `context.ExitCode` reflects whether any errors occurred.
 10. When `--validate` is used with `--results`, `Validation.Run` writes TRX or JUnit XML
     results to the file specified by `context.ResultsFile`.
 

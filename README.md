@@ -195,7 +195,9 @@ tests:
 | `pdf.pages.min`                   | Minimum number of pages in the PDF document                  |
 | `pdf.pages.max`                   | Maximum number of pages in the PDF document                  |
 | `pdf.text[].contains`             | PDF body text must contain the specified text                |
+| `pdf.text[].does-not-contain`     | PDF body text must not contain the specified text            |
 | `pdf.text[].matches`              | PDF body text must match the specified regular expression    |
+| `pdf.text[].does-not-contain-regex` | PDF body text must not match the specified regular expression |
 | `xml:`                            | XML document assertions (fails if file is not valid XML)     |
 | `xml[].query`                     | XPath expression selecting nodes                             |
 | `xml[].count`                     | Exact number of matched XML nodes                            |
