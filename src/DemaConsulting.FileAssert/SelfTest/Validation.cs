@@ -51,6 +51,9 @@ internal static class Validation
         // Run core functionality tests
         RunVersionTest(context, testResults);
         RunHelpTest(context, testResults);
+        RunResultsTest(context, testResults);
+        RunExistsTest(context, testResults);
+        RunContainsTest(context, testResults);
 
         // Calculate totals
         var totalTests = testResults.Results.Count;
@@ -225,6 +228,223 @@ internal static class Validation
         catch (Exception ex)
         {
             HandleTestException(test, context, "FileAssert_HelpDisplay", ex);
+        }
+
+        FinalizeTestResult(test, startTime, testResults);
+    }
+
+    /// <summary>
+    ///     Runs a test for results generation functionality with both passing and failing tests.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunResultsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        var startTime = DateTime.UtcNow;
+        var test = CreateTestResult("FileAssert_Results");
+
+        try
+        {
+            using var tempDir = new TemporaryDirectory();
+            var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "results-test.log");
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+            var resultsFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "results.trx");
+
+            // Create a file that will satisfy the passing test
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "present.txt"), "present");
+
+            // Write a config with one passing test (present.txt exists) and one failing test (absent.txt missing)
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Results_Pass
+                    files:
+                      - pattern: "present.txt"
+                        count: 1
+                  - name: FileAssert_Results_Fail
+                    files:
+                      - pattern: "absent.txt"
+                        count: 1
+                """);
+
+            // Build command line arguments
+            var args = new List<string>
+            {
+                "--silent",
+                "--log", logFile,
+                "--config", configFile,
+                "--results", resultsFile
+            };
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create([.. args]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            // Check that a non-zero exit code was produced and a results file was written
+            if (exitCode != 0 && File.Exists(resultsFile))
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
+                context.WriteLine($"✓ FileAssert_Results - Passed");
+            }
+            else if (exitCode == 0)
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
+                test.ErrorMessage = "Expected non-zero exit code for failing test configuration";
+                context.WriteError($"✗ FileAssert_Results - Failed: Expected non-zero exit code");
+            }
+            else
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
+                test.ErrorMessage = "Results file was not created";
+                context.WriteError($"✗ FileAssert_Results - Failed: Results file was not created");
+            }
+        }
+        // Generic catch is justified here as this is a test framework - any exception should be
+        // recorded as a test failure to ensure robust test execution and reporting.
+        catch (Exception ex)
+        {
+            HandleTestException(test, context, "FileAssert_Results", ex);
+        }
+
+        FinalizeTestResult(test, startTime, testResults);
+    }
+
+    /// <summary>
+    ///     Runs a test for file-existence checking via glob pattern.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunExistsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        var startTime = DateTime.UtcNow;
+        var test = CreateTestResult("FileAssert_Exists");
+
+        try
+        {
+            using var tempDir = new TemporaryDirectory();
+            var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "exists-test.log");
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+
+            // Create a text file that the glob pattern should match
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+
+            // Write a config that verifies exactly one .txt file exists in the directory
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Exists_Test
+                    files:
+                      - pattern: "*.txt"
+                        count: 1
+                """);
+
+            // Build command line arguments
+            var args = new List<string>
+            {
+                "--silent",
+                "--log", logFile,
+                "--config", configFile
+            };
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create([.. args]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            // Check if execution succeeded
+            if (exitCode == 0)
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
+                context.WriteLine($"✓ FileAssert_Exists - Passed");
+            }
+            else
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
+                test.ErrorMessage = $"Program exited with code {exitCode}";
+                context.WriteError($"✗ FileAssert_Exists - Failed: Exit code {exitCode}");
+            }
+        }
+        // Generic catch is justified here as this is a test framework - any exception should be
+        // recorded as a test failure to ensure robust test execution and reporting.
+        catch (Exception ex)
+        {
+            HandleTestException(test, context, "FileAssert_Exists", ex);
+        }
+
+        FinalizeTestResult(test, startTime, testResults);
+    }
+
+    /// <summary>
+    ///     Runs a test for file-contains checking.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunContainsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        var startTime = DateTime.UtcNow;
+        var test = CreateTestResult("FileAssert_Contains");
+
+        try
+        {
+            using var tempDir = new TemporaryDirectory();
+            var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "contains-test.log");
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+
+            // Create a text file with known content for the contains assertion
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+
+            // Write a config that verifies the file contains the expected text
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Contains_Test
+                    files:
+                      - pattern: "*.txt"
+                        text:
+                          - contains: "Hello World"
+                """);
+
+            // Build command line arguments
+            var args = new List<string>
+            {
+                "--silent",
+                "--log", logFile,
+                "--config", configFile
+            };
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create([.. args]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            // Check if execution succeeded
+            if (exitCode == 0)
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
+                context.WriteLine($"✓ FileAssert_Contains - Passed");
+            }
+            else
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
+                test.ErrorMessage = $"Program exited with code {exitCode}";
+                context.WriteError($"✗ FileAssert_Contains - Failed: Exit code {exitCode}");
+            }
+        }
+        // Generic catch is justified here as this is a test framework - any exception should be
+        // recorded as a test failure to ensure robust test execution and reporting.
+        catch (Exception ex)
+        {
+            HandleTestException(test, context, "FileAssert_Contains", ex);
         }
 
         FinalizeTestResult(test, startTime, testResults);

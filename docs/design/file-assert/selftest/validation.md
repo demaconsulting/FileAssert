@@ -25,10 +25,13 @@ Entry point for self-validation. Executes the following steps:
 
 ### Built-in Tests
 
-| Test Name                   | Description                                                       |
-| :-------------------------- | :---------------------------------------------------------------- |
-| `FileAssert_VersionDisplay` | Runs `--version`; verifies log contains a version string.         |
-| `FileAssert_HelpDisplay`    | Runs `--help`; verifies log contains `"Usage:"` and `"Options:"`. |
+| Test Name                   | Description                                                                          |
+| :-------------------------- | :----------------------------------------------------------------------------------- |
+| `FileAssert_VersionDisplay` | Runs `--version`; verifies log contains a version string.                            |
+| `FileAssert_HelpDisplay`    | Runs `--help`; verifies log contains `"Usage:"` and `"Options:"`.                    |
+| `FileAssert_Results`        | Runs tests with passes and fails; verifies non-zero exit code and results file.      |
+| `FileAssert_Exists`         | Runs a glob-pattern existence check; verifies zero exit code.                        |
+| `FileAssert_Contains`       | Runs a text-contains check; verifies zero exit code.                                 |
 
 Each test:
 
