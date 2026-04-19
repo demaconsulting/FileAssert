@@ -74,6 +74,7 @@ Writes the collected results to the file specified by `context.ResultsFile`:
 - `.trx` extension → TRX format via `TrxSerializer.Serialize`.
 - `.xml` extension → JUnit XML format via `JUnitSerializer.Serialize`.
 - Other extensions → error written to context.
+- Any I/O or other exception is caught and an error message is written to context.
 
 ### TemporaryDirectory Helper
 

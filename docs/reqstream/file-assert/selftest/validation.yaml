@@ -25,6 +25,7 @@ sections:
         tests:
           - Validation_Run_WithTrxResultsFile_WritesTrxFile
           - Validation_Run_WithXmlResultsFile_WritesXmlFile
+          - Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
 
       - id: FileAssert-Validation-ResultsTest
         title: The Validation class shall include a self-test that verifies results file generation.
@@ -52,3 +53,12 @@ sections:
           is functioning as expected.
         tests:
           - Validation_Run_WithSilentContext_LogContainsFileAssertContains
+
+      - id: FileAssert-Validation-NullContext
+        title: The Validation class shall reject a null context argument.
+        justification: |
+          Null context would cause a NullReferenceException deep in the validation
+          logic. Explicit null validation with ArgumentNullException provides a
+          clear, actionable error at the point of invalid input.
+        tests:
+          - Validation_Run_NullContext_ThrowsArgumentNullException
