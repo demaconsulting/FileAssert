@@ -55,12 +55,6 @@
       "commands": [
         "reviewmark"
       ]
-    },
-    "demaconsulting.fileassert": {
-      "version": "0.2.0",
-      "commands": [
-        "fileassert"
-      ]
     }
   }
 }
