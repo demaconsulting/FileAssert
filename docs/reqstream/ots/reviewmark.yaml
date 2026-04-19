@@ -8,7 +8,7 @@ sections:
     sections:
       - title: ReviewMark Requirements
         requirements:
-          - id: Template-OTS-ReviewMark
+          - id: FileAssert-OTS-ReviewMark
             title: ReviewMark shall generate a review plan and review report from the review configuration.
             justification: |
               DemaConsulting.ReviewMark reads the .reviewmark.yaml configuration and the review
