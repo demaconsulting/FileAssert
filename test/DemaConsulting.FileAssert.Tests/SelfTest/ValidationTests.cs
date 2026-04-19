@@ -229,6 +229,7 @@ public class ValidationTests
         {
             using (var context = Context.Create(["--silent", "--log", logFile]))
             {
+                // Act
                 Validation.Run(context);
             }
 
