@@ -111,7 +111,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run creates a TRX-format file at the requested path.
-            Assert.AreEqual(true, File.Exists(trxFile));
+            Assert.IsTrue(File.Exists(trxFile));
             var content = File.ReadAllText(trxFile);
             Assert.Contains("<TestRun", content);
         }
@@ -141,7 +141,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run creates a JUnit-format XML file at the requested path.
-            Assert.AreEqual(true, File.Exists(xmlFile));
+            Assert.IsTrue(File.Exists(xmlFile));
             var content = File.ReadAllText(xmlFile);
             Assert.Contains("<testsuites", content);
         }
@@ -171,7 +171,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run does not create a file for unsupported formats.
-            Assert.AreEqual(false, File.Exists(jsonFile));
+            Assert.IsFalse(File.Exists(jsonFile));
         }
         finally
         {

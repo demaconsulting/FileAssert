@@ -152,6 +152,6 @@ public class ProgramTests
         var version = Program.Version;
 
         // Assert
-        Assert.AreEqual(false, string.IsNullOrWhiteSpace(version));
+        Assert.IsFalse(string.IsNullOrWhiteSpace(version));
     }
 }
