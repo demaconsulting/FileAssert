@@ -181,4 +181,68 @@ public class ValidationTests
             }
         }
     }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Results result.
+    /// </summary>
+    [TestMethod]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertResults()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Results self-validation test is executed and passes.
+        AssertLogContains("FileAssert_Results");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Exists result.
+    /// </summary>
+    [TestMethod]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertExists()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Exists self-validation test is executed and passes.
+        AssertLogContains("FileAssert_Exists");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Contains result.
+    /// </summary>
+    [TestMethod]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertContains()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Contains self-validation test is executed and passes.
+        AssertLogContains("FileAssert_Contains");
+    }
+
+    /// <summary>
+    ///     Runs <see cref="Validation.Run"/> with a silent context backed by a temporary log file,
+    ///     then asserts that <paramref name="expectedText"/> appears in the log.
+    /// </summary>
+    /// <param name="expectedText">The text that must appear in the log output.</param>
+    private static void AssertLogContains(string expectedText)
+    {
+        // Arrange
+        // A unique log file path is used to capture output from the silent context.
+        var logFile = Path.Combine(Path.GetTempPath(), $"validation_test_{Guid.NewGuid()}.log");
+        try
+        {
+            using (var context = Context.Create(["--silent", "--log", logFile]))
+            {
+                // Act
+                Validation.Run(context);
+            }
+
+            // Assert
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains(expectedText, logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
 }

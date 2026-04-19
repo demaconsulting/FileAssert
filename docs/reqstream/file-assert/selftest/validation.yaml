@@ -25,3 +25,30 @@ sections:
         tests:
           - Validation_Run_WithTrxResultsFile_WritesTrxFile
           - Validation_Run_WithXmlResultsFile_WritesXmlFile
+
+      - id: FileAssert-Validation-ResultsTest
+        title: The Validation class shall include a self-test that verifies results file generation.
+        justification: |
+          Demonstrates that passing and failing test outcomes are produced correctly and that
+          the --results flag causes a results file to be written. This provides evidence that
+          the results generation feature works in the deployment environment.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertResults
+
+      - id: FileAssert-Validation-ExistsTest
+        title: The Validation class shall include a self-test that verifies file-existence checking.
+        justification: |
+          Demonstrates that glob-pattern file-existence assertions work correctly in the
+          deployment environment, providing evidence that the core file-matching feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertExists
+
+      - id: FileAssert-Validation-ContainsTest
+        title: The Validation class shall include a self-test that verifies file-content checking.
+        justification: |
+          Demonstrates that text-contains assertions work correctly in the deployment
+          environment, providing evidence that the file content inspection feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertContains
