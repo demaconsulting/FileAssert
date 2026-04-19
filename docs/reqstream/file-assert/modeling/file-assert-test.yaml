@@ -41,3 +41,14 @@ sections:
           file assertion entry would leave gaps in validation that may go undetected.
         tests:
           - FileAssertTest_Run_RunsAllFiles
+
+      - id: FileAssert-FileAssertTest-RunValidation
+        title: The FileAssertTest class shall throw ArgumentNullException when Run() is called with a null context or null
+          basePath.
+        justification: |
+          Null parameters to Run() would cause a NullReferenceException deep inside execution logic
+          without a clear error message. Explicit null guards at the entry point of Run() produce
+          an actionable ArgumentNullException immediately, making the caller error easy to diagnose.
+        tests:
+          - FileAssertTest_Run_NullContext_ThrowsArgumentNullException
+          - FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException
