@@ -303,7 +303,7 @@ public class FileAssertConfigTests
     ///     Verifies that ReadFromFile correctly parses a YAML configuration containing a PDF assertion block.
     /// </summary>
     [TestMethod]
-    public void FileAssertData_ReadFromFile_PdfAssertConfig_ParsesCorrectly()
+    public void FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly()
     {
         // Arrange - write a config with a pdf: block containing metadata and pages
         var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");

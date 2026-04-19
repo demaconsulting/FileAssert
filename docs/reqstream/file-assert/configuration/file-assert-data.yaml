@@ -19,7 +19,7 @@ sections:
           during deserialization.
         tests:
           - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
-          - FileAssertData_ReadFromFile_PdfAssertConfig_ParsesCorrectly
+          - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
 
       - id: FileAssert-FileAssertData-NoBusinessLogic
         title: |
