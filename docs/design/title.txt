@@ -1,14 +1,13 @@
 ---
-title: FileAssert Design Document
-subtitle: Software Unit Design for the FileAssert Configuration Classes
+title: FileAssert Software Design Document
+subtitle: A .NET CLI Tool for File Property Assertion
 author: DEMA Consulting
-description: Software Unit Design for the FileAssert Configuration Classes
+description: Software Design Document for the FileAssert Tool
 lang: en-US
 keywords:
   - FileAssert
+  - .NET
+  - Command-Line Tool
   - Design
-  - FileAssertConfig
-  - FileAssertTest
-  - FileAssertFile
-  - FileAssertRule
+  - Software Design Document
 ---
