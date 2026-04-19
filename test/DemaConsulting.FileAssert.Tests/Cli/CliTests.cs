@@ -161,8 +161,8 @@ public class CliTests
 
             // Assert - both messages appear in the log file
             var logContent = File.ReadAllText(logPath);
-            StringAssert.Contains(logContent, "informational message");
-            StringAssert.Contains(logContent, "error message");
+            Assert.Contains("informational message", logContent);
+            Assert.Contains("error message", logContent);
         }
         finally
         {
