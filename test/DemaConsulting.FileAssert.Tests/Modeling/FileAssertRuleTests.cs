@@ -74,7 +74,7 @@ public class FileAssertRuleTests
         var data = new FileAssertRuleData();
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertRule.Create(data));
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertRule.Create(data));
         Assert.Contains("contains", exception.Message);
         Assert.Contains("does-not-contain", exception.Message);
         Assert.Contains("matches", exception.Message);
@@ -88,7 +88,7 @@ public class FileAssertRuleTests
     public void FileAssertRule_Create_WithNullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertRule.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertRule.Create(null!));
     }
 
     /// <summary>
