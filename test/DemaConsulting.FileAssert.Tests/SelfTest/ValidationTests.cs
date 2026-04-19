@@ -190,7 +190,7 @@ public class ValidationTests
     {
         // Act & Assert
         // Proves that the FileAssert_Results self-validation test is executed and passes.
-        AssertLogContains("FileAssert_Results");
+        AssertLogContains("✓ FileAssert_Results - Passed");
     }
 
     /// <summary>
@@ -201,7 +201,7 @@ public class ValidationTests
     {
         // Act & Assert
         // Proves that the FileAssert_Exists self-validation test is executed and passes.
-        AssertLogContains("FileAssert_Exists");
+        AssertLogContains("✓ FileAssert_Exists - Passed");
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public class ValidationTests
     {
         // Act & Assert
         // Proves that the FileAssert_Contains self-validation test is executed and passes.
-        AssertLogContains("FileAssert_Contains");
+        AssertLogContains("✓ FileAssert_Contains - Passed");
     }
 
     /// <summary>

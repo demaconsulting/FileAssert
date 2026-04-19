@@ -328,7 +328,7 @@ internal static class Validation
         {
             test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
             test.ErrorMessage = $"Exception: {ex.Message}";
-            context.WriteError($"✗ {testName} - FAILED: {ex.Message}");
+            context.WriteError($"✗ {testName} - Failed: {ex.Message}");
         }
 
         test.Duration = DateTime.UtcNow - startTime;
