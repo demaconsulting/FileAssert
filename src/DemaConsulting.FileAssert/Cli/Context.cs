@@ -61,6 +61,11 @@ internal sealed class Context : IDisposable
     public bool Validate { get; private init; }
 
     /// <summary>
+    ///     Gets the markdown heading depth for validation output (default: 1).
+    /// </summary>
+    public int Depth { get; private init; } = 1;
+
+    /// <summary>
     ///     Gets the validation results file path.
     /// </summary>
     public string? ResultsFile { get; private init; }
@@ -117,6 +122,7 @@ internal sealed class Context : IDisposable
             Help = parser.Help,
             Silent = parser.Silent,
             Validate = parser.Validate,
+            Depth = parser.Depth,
             ResultsFile = parser.ResultsFile,
             ConfigFile = parser.ConfigFile,
             IsConfigFileExplicit = parser.IsConfigFileExplicit,
@@ -177,6 +183,11 @@ internal sealed class Context : IDisposable
         ///     Gets a value indicating whether the validate flag was specified.
         /// </summary>
         public bool Validate { get; private set; }
+
+        /// <summary>
+        ///     Gets the markdown heading depth for validation output (default: 1).
+        /// </summary>
+        public int Depth { get; private set; } = 1;
 
         /// <summary>
         ///     Gets the log file path.
@@ -249,6 +260,16 @@ internal sealed class Context : IDisposable
                 case "--validate":
                     Validate = true;
                     return index;
+
+                case "--depth":
+                    var depthStr = GetRequiredStringArgument(arg, args, index, "a numeric depth argument");
+                    if (!int.TryParse(depthStr, out var depthValue) || depthValue < 1 || depthValue > 6)
+                    {
+                        throw new ArgumentException("--depth requires an integer between 1 and 6", nameof(args));
+                    }
+
+                    Depth = depthValue;
+                    return index + 1;
 
                 case "--log":
                     LogFile = GetRequiredStringArgument(arg, args, index, "a filename argument");

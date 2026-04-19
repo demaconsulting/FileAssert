@@ -83,6 +83,7 @@ fileassert --silent --log output.log
 | `--results <file>`   | Write test results to file (TRX or JUnit format)             |
 | `--log <file>`       | Write output to log file                                     |
 | `--config <file>`    | Path to the tests file (default: `.fileassert.yaml`)         |
+| `--depth <#>`        | Heading depth for validation output (1-6, default: 1)        |
 | `<name-or-tag>`      | Test name or tag to run (any argument not starting with `--`)|
 
 ## FileAssert YAML Format
@@ -249,9 +250,9 @@ Each test in the report proves:
 
 - **`FileAssert_VersionDisplay`** - `--version` outputs a valid version string.
 - **`FileAssert_HelpDisplay`** - `--help` outputs usage and options information.
-- **`FileAssert_Results`** - results can be generated with passes and fails.
-- **`FileAssert_Exists`** - file-existence can be checked via glob pattern.
-- **`FileAssert_Contains`** - file-contains can be checked.
+- **`FileAssert_Results`** - `--results` generates test results with pass and fail outcomes.
+- **`FileAssert_Exists`** - `--config` verifies file-existence via glob pattern.
+- **`FileAssert_Contains`** - `--config` verifies file content with contains assertions.
 
 See the [User Guide][link-guide] for more details on the self-validation tests.
 

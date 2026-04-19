@@ -17,7 +17,8 @@ public static void Run(Context context)
 
 Entry point for self-validation. Executes the following steps:
 
-1. Prints a system information table (tool version, machine name, OS, .NET runtime, timestamp).
+1. Prints a system information table (tool version, machine name, OS, .NET runtime, timestamp)
+   with a markdown heading at the depth specified by `context.Depth`.
 2. Creates a `TestResults` collection.
 3. Runs each built-in test, adding results to the collection.
 4. Prints a pass/fail summary.
