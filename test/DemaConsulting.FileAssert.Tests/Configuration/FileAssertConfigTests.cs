@@ -65,7 +65,7 @@ public class FileAssertConfigTests
             var config = FileAssertConfig.ReadFromFile(configPath);
 
             // Assert
-            Assert.AreEqual(1, config.Tests.Count);
+            Assert.HasCount(1, config.Tests);
             Assert.AreEqual("Sample Test", config.Tests[0].Name);
         }
         finally
@@ -84,7 +84,7 @@ public class FileAssertConfigTests
         var missingPath = Path.Combine(Path.GetTempPath(), $"nonexistent_{Guid.NewGuid()}.yaml");
 
         // Act & Assert
-        Assert.Throws<FileNotFoundException>(() => FileAssertConfig.ReadFromFile(missingPath));
+        Assert.ThrowsExactly<FileNotFoundException>(() => FileAssertConfig.ReadFromFile(missingPath));
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class FileAssertConfigTests
     public void FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertConfig.ReadFromFile(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertConfig.ReadFromFile(null!));
     }
 
     /// <summary>
@@ -296,6 +296,46 @@ public class FileAssertConfigTests
             {
                 File.Delete(xmlFile);
             }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that ReadFromFile correctly parses a YAML configuration containing a PDF assertion block.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertData_ReadFromFile_PdfAssertConfig_ParsesCorrectly()
+    {
+        // Arrange - write a config with a pdf: block containing metadata and pages
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
+        try
+        {
+            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "PDF Check"
+                    files:
+                      - pattern: "report.pdf"
+                        pdf:
+                          metadata:
+                            - field: "Title"
+                              contains: "Annual Report"
+                          pages:
+                            min: 1
+                            max: 100
+                          text:
+                            - contains: "Summary"
+                """);
+
+            // Act
+            var config = FileAssertConfig.ReadFromFile(configPath);
+
+            // Assert - one test was parsed with one file assertion
+            Assert.HasCount(1, config.Tests);
+            Assert.AreEqual("PDF Check", config.Tests[0].Name);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
         }
     }
 }

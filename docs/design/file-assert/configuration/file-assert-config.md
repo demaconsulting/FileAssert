@@ -43,6 +43,8 @@ internal void Run(Context context, IEnumerable<string> filters)
 
 Execution proceeds as follows:
 
+0. Both `context` and `filters` are required parameters. Passing either as `null` throws
+   `ArgumentNullException` before any test execution begins.
 1. The base directory is derived from the absolute path of the configuration file
    using `Path.GetDirectoryName(Path.GetFullPath(_configPath))`. This ensures that
    glob patterns in file assertions are resolved relative to the configuration file

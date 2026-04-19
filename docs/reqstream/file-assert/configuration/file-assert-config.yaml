@@ -33,15 +33,28 @@ sections:
           - FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
           - FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
 
-      - id: FileAssert-FileAssertConfig-Results
+      - id: FileAssert-FileAssertConfig-ResultsTrx
         title: |
-          The FileAssertConfig class shall write per-test pass/fail results to a TRX or JUnit XML
-          file when context.ResultsFile is set.
+          The FileAssertConfig class shall write per-test pass/fail results to a TRX file
+          when context.ResultsFile has a .trx extension.
         justification: |
           CI/CD pipelines and regulated environments require machine-readable test result files
-          to collect evidence of assertion outcomes. Recording per-test pass/fail outcomes allows
-          the results file to identify which individual tests passed and which failed, rather than
-          just reporting an aggregate exit code.
+          to collect evidence of assertion outcomes. The TRX format is consumed by Visual Studio
+          and Azure Pipelines, providing integration with Microsoft tooling. Recording per-test
+          pass/fail outcomes allows the results file to identify which individual tests passed
+          and which failed, rather than just reporting an aggregate exit code.
         tests:
           - FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
+
+      - id: FileAssert-FileAssertConfig-ResultsJUnit
+        title: |
+          The FileAssertConfig class shall write per-test pass/fail results to a JUnit XML
+          file when context.ResultsFile has a .xml extension.
+        justification: |
+          CI/CD pipelines and regulated environments require machine-readable test result files
+          to collect evidence of assertion outcomes. The JUnit XML format is widely supported
+          by CI systems such as GitHub Actions, Jenkins, and GitLab CI. Recording per-test
+          pass/fail outcomes allows the results file to identify which individual tests passed
+          and which failed, rather than just reporting an aggregate exit code.
+        tests:
           - FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
