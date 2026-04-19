@@ -1,8 +1,8 @@
 ---
 title: FileAssert Requirements
-subtitle: Requirements Specification for the FileAssert
+subtitle: Requirements Specification for the FileAssert Tool
 author: DEMA Consulting
-description: Requirements Specification for the FileAssert
+description: Requirements Specification for the FileAssert Tool
 lang: en-US
 keywords:
   - FileAssert

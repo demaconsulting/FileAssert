@@ -1,8 +1,8 @@
 ---
 title: FileAssert Trace Matrix
-subtitle: Requirements Traceability Matrix for the FileAssert
+subtitle: Requirements Traceability Matrix for the FileAssert Tool
 author: DEMA Consulting
-description: Requirements Traceability Matrix for the FileAssert
+description: Requirements Traceability Matrix for the FileAssert Tool
 lang: en-US
 keywords:
   - FileAssert

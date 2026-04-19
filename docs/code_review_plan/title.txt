@@ -1,8 +1,8 @@
 ---
 title: FileAssert Review Plan
-subtitle: File Review Plan for the FileAssert
+subtitle: File Review Plan for the FileAssert Tool
 author: DEMA Consulting
-description: File Review Plan for the FileAssert
+description: File Review Plan for the FileAssert Tool
 lang: en-US
 keywords:
   - FileAssert
