@@ -16,7 +16,7 @@ provides a unified interface for writing output and errors throughout the tool's
 | `Help`                 | `bool`                  | Set when `--help`, `-h`, or `-?` is present.                  |
 | `Silent`               | `bool`                  | Set when `--silent` is present.                               |
 | `Validate`             | `bool`                  | Set when `--validate` is present.                             |
-| `Depth`                | `int`                   | Set via `--depth`; defaults to `1`. Range: 1–6.              |
+| `Depth`                | `int`                   | Set via `--depth`; defaults to `1`. Range: 1–6.               |
 | `ResultsFile`          | `string?`               | Path provided via `--results`, or null.                       |
 | `ConfigFile`           | `string`                | Path provided via `--config`; defaults to `.fileassert.yaml`. |
 | `IsConfigFileExplicit` | `bool`                  | True when `--config` was explicitly specified.                |

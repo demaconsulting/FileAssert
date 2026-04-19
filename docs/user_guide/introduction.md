@@ -313,7 +313,7 @@ The following command-line options are supported:
 | `--results <file>`   | Write test results to file (TRX or JUnit format)             |
 | `--log <file>`       | Write output to log file                                     |
 | `--config <file>`    | Path to the tests file (default: `.fileassert.yaml`)         |
-| `--depth <#>`        | Heading depth for self-validation output (`--validate`) (1-6, default: 1) |
+| `--depth <#>`        | Heading depth for self-validation output (1-6, default: 1)   |
 | `<name-or-tag>`      | Test name or tag to run (any argument not starting with `--`)|
 
 # Examples
