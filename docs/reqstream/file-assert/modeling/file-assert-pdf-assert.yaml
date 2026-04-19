@@ -54,6 +54,7 @@ sections:
         tests:
           - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
           - FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
+          - FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
 
       - id: FileAssert-FileAssertPdfAssert-TextAssertions
         title: |

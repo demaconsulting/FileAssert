@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Text;
 using System.Text.RegularExpressions;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
@@ -257,7 +258,7 @@ internal sealed class FileAssertPdfAssert
             // Apply text rules to the extracted body text when rules are defined
             if (_text.Count > 0)
             {
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder();
                 foreach (var page in pageList)
                 {
                     sb.Append(page.Text);
