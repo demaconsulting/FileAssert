@@ -82,7 +82,8 @@ sections:
           Results are written both from the self-validation path (--validate --results) and from
           the normal file assertion path (--results without --validate).
         children:
-          - FileAssert-FileAssertConfig-Results
+          - FileAssert-FileAssertConfig-ResultsTrx
+          - FileAssert-FileAssertConfig-ResultsJUnit
           - FileAssert-Validation-Results
         tests:
           - IntegrationTest_ValidateWithResults_GeneratesTrxFile

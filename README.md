@@ -176,48 +176,48 @@ tests:
 
 ### Acceptance Criteria Reference
 
-| Criterion                         | Description                                                  |
-| --------------------------------- | ------------------------------------------------------------ |
-| `count`                           | Exact number of files matching the pattern                   |
-| `min`                             | Minimum number of files matching the pattern                 |
-| `max`                             | Maximum number of files matching the pattern                 |
-| `min-size`                        | Minimum file size in bytes                                   |
-| `max-size`                        | Maximum file size in bytes                                   |
-| `text:`                           | Text content assertions block                                |
-| `text[].contains`                 | File must contain the specified text                         |
-| `text[].does-not-contain`         | File must not contain the specified text                     |
-| `text[].matches`                  | File must match the specified regular expression             |
-| `text[].does-not-contain-regex`   | File must not match the specified regular expression         |
-| `pdf:`                            | PDF document assertions (fails if file is not a valid PDF)   |
-| `pdf.metadata[].field`            | PDF metadata field name to assert                            |
-| `pdf.metadata[].contains`         | PDF metadata field must contain the specified text           |
-| `pdf.metadata[].matches`          | PDF metadata field must match the regular expression         |
-| `pdf.pages.min`                   | Minimum number of pages in the PDF document                  |
-| `pdf.pages.max`                   | Maximum number of pages in the PDF document                  |
-| `pdf.text[].contains`             | PDF body text must contain the specified text                |
-| `pdf.text[].does-not-contain`     | PDF body text must not contain the specified text            |
-| `pdf.text[].matches`              | PDF body text must match the specified regular expression    |
+| Criterion                           | Description                                                   |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `count`                             | Exact number of files matching the pattern                    |
+| `min`                               | Minimum number of files matching the pattern                  |
+| `max`                               | Maximum number of files matching the pattern                  |
+| `min-size`                          | Minimum file size in bytes                                    |
+| `max-size`                          | Maximum file size in bytes                                    |
+| `text:`                             | Text content assertions block                                 |
+| `text[].contains`                   | File must contain the specified text                          |
+| `text[].does-not-contain`           | File must not contain the specified text                      |
+| `text[].matches`                    | File must match the specified regular expression              |
+| `text[].does-not-contain-regex`     | File must not match the specified regular expression          |
+| `pdf:`                              | PDF document assertions (fails if file is not a valid PDF)    |
+| `pdf.metadata[].field`              | PDF metadata field name to assert                             |
+| `pdf.metadata[].contains`           | PDF metadata field must contain the specified text            |
+| `pdf.metadata[].matches`            | PDF metadata field must match the regular expression          |
+| `pdf.pages.min`                     | Minimum number of pages in the PDF document                   |
+| `pdf.pages.max`                     | Maximum number of pages in the PDF document                   |
+| `pdf.text[].contains`               | PDF body text must contain the specified text                 |
+| `pdf.text[].does-not-contain`       | PDF body text must not contain the specified text             |
+| `pdf.text[].matches`                | PDF body text must match the specified regular expression     |
 | `pdf.text[].does-not-contain-regex` | PDF body text must not match the specified regular expression |
-| `xml:`                            | XML document assertions (fails if file is not valid XML)     |
-| `xml[].query`                     | XPath expression selecting nodes                             |
-| `xml[].count`                     | Exact number of matched XML nodes                            |
-| `xml[].min`                       | Minimum number of matched XML nodes                          |
-| `xml[].max`                       | Maximum number of matched XML nodes                          |
-| `html:`                           | HTML document assertions (fails if file is not valid HTML)   |
-| `html[].query`                    | XPath expression selecting nodes                             |
-| `html[].count`                    | Exact number of matched HTML nodes                           |
-| `html[].min`                      | Minimum number of matched HTML nodes                         |
-| `html[].max`                      | Maximum number of matched HTML nodes                         |
-| `yaml:`                           | YAML document assertions (fails if file is not valid YAML)   |
-| `yaml[].query`                    | Dot-notation path selecting YAML nodes (e.g. `server.host`)  |
-| `yaml[].count`                    | Exact number of matched YAML nodes                           |
-| `yaml[].min`                      | Minimum number of matched YAML nodes                         |
-| `yaml[].max`                      | Maximum number of matched YAML nodes                         |
-| `json:`                           | JSON document assertions (fails if file is not valid JSON)   |
-| `json[].query`                    | Dot-notation path selecting JSON nodes (e.g. `app.version`)  |
-| `json[].count`                    | Exact number of matched JSON nodes                           |
-| `json[].min`                      | Minimum number of matched JSON nodes                         |
-| `json[].max`                      | Maximum number of matched JSON nodes                         |
+| `xml:`                              | XML document assertions (fails if file is not valid XML)      |
+| `xml[].query`                       | XPath expression selecting nodes                              |
+| `xml[].count`                       | Exact number of matched XML nodes                             |
+| `xml[].min`                         | Minimum number of matched XML nodes                           |
+| `xml[].max`                         | Maximum number of matched XML nodes                           |
+| `html:`                             | HTML document assertions (fails if file is not valid HTML)    |
+| `html[].query`                      | XPath expression selecting nodes                              |
+| `html[].count`                      | Exact number of matched HTML nodes                            |
+| `html[].min`                        | Minimum number of matched HTML nodes                          |
+| `html[].max`                        | Maximum number of matched HTML nodes                          |
+| `yaml:`                             | YAML document assertions (fails if file is not valid YAML)    |
+| `yaml[].query`                      | Dot-notation path selecting YAML nodes (e.g. `server.host`)   |
+| `yaml[].count`                      | Exact number of matched YAML nodes                            |
+| `yaml[].min`                        | Minimum number of matched YAML nodes                          |
+| `yaml[].max`                        | Maximum number of matched YAML nodes                          |
+| `json:`                             | JSON document assertions (fails if file is not valid JSON)    |
+| `json[].query`                      | Dot-notation path selecting JSON nodes (e.g. `app.version`)   |
+| `json[].count`                      | Exact number of matched JSON nodes                            |
+| `json[].min`                        | Minimum number of matched JSON nodes                          |
+| `json[].max`                        | Maximum number of matched JSON nodes                          |
 
 ## Self Validation
 
