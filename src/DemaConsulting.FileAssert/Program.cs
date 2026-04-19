@@ -146,7 +146,7 @@ internal static class Program
         context.WriteLine("  --config <file>            Configuration file (default: .fileassert.yaml)");
         context.WriteLine("  --results <file>           Write validation results to file (.trx or .xml)");
         context.WriteLine("  --log <file>               Write output to log file");
-        context.WriteLine("  --depth <#>                Heading depth for validation output (1-6, default: 1)");
+        context.WriteLine("  --depth <#>                Heading depth for --validate output (1-6, default: 1)");
     }
 
     /// <summary>

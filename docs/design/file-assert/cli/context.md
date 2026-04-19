@@ -51,7 +51,7 @@ The private nested class `ArgumentParser` processes each argument in order:
 - Flag arguments (starting with `--` or `-`) are matched by a `switch` statement.
 - Arguments requiring a value (`--log`, `--results`, `--config`, `--depth`) consume the next element
   from the argument array and throw `ArgumentException` if no value follows.
-- The `--depth` argument additionally validates that the value is a positive integer.
+- The `--depth` argument additionally validates that the value is an integer between 1 and 6.
 - Unknown flag arguments (starting with `-`) throw `ArgumentException`.
 - All other arguments are accumulated in the `Filters` list.
 
