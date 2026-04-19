@@ -51,6 +51,9 @@ internal static class Validation
         // Run core functionality tests
         RunVersionTest(context, testResults);
         RunHelpTest(context, testResults);
+        RunResultsTest(context, testResults);
+        RunExistsTest(context, testResults);
+        RunContainsTest(context, testResults);
 
         // Calculate totals
         var totalTests = testResults.Results.Count;
@@ -102,65 +105,29 @@ internal static class Validation
     /// <param name="testResults">The test results collection.</param>
     private static void RunVersionTest(Context context, DemaConsulting.TestResults.TestResults testResults)
     {
-        var startTime = DateTime.UtcNow;
-        var test = CreateTestResult("FileAssert_VersionDisplay");
-
-        try
+        RunValidationTest(context, testResults, "FileAssert_VersionDisplay", () =>
         {
             using var tempDir = new TemporaryDirectory();
             var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "version-test.log");
 
-            // Build command line arguments
-            var args = new List<string>
-            {
-                "--silent",
-                "--log", logFile,
-                "--version"
-            };
-
-            // Run the program
+            // Run the program capturing output to a log file
             int exitCode;
-            using (var testContext = Context.Create([.. args]))
+            using (var testContext = Context.Create(["--silent", "--log", logFile, "--version"]))
             {
                 Program.Run(testContext);
                 exitCode = testContext.ExitCode;
             }
 
-            // Check if execution succeeded
-            if (exitCode == 0)
+            if (exitCode != 0)
             {
-                // Read log content
-                var logContent = File.ReadAllText(logFile);
-
-                // Verify version string is in log (version contains dots like 0.0.0)
-                if (!string.IsNullOrWhiteSpace(logContent) &&
-                    logContent.Split('.').Length >= 3)
-                {
-                    test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
-                    context.WriteLine($"✓ FileAssert_VersionDisplay - Passed");
-                }
-                else
-                {
-                    test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
-                    test.ErrorMessage = "Version string not found in log";
-                    context.WriteError($"✗ FileAssert_VersionDisplay - Failed: Version string not found in log");
-                }
+                return $"Program exited with code {exitCode}";
             }
-            else
-            {
-                test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
-                test.ErrorMessage = $"Program exited with code {exitCode}";
-                context.WriteError($"✗ FileAssert_VersionDisplay - Failed: Exit code {exitCode}");
-            }
-        }
-        // Generic catch is justified here as this is a test framework - any exception should be
-        // recorded as a test failure to ensure robust test execution and reporting.
-        catch (Exception ex)
-        {
-            HandleTestException(test, context, "FileAssert_VersionDisplay", ex);
-        }
 
-        FinalizeTestResult(test, startTime, testResults);
+            // Verify version string is present in the log (version contains at least two dots)
+            var logContent = File.ReadAllText(logFile);
+            return (!string.IsNullOrWhiteSpace(logContent) && logContent.Split('.').Length >= 3)
+                ? null : "Version string not found in log";
+        });
     }
 
     /// <summary>
@@ -170,64 +137,202 @@ internal static class Validation
     /// <param name="testResults">The test results collection.</param>
     private static void RunHelpTest(Context context, DemaConsulting.TestResults.TestResults testResults)
     {
-        var startTime = DateTime.UtcNow;
-        var test = CreateTestResult("FileAssert_HelpDisplay");
-
-        try
+        RunValidationTest(context, testResults, "FileAssert_HelpDisplay", () =>
         {
             using var tempDir = new TemporaryDirectory();
             var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "help-test.log");
 
-            // Build command line arguments
-            var args = new List<string>
-            {
-                "--silent",
-                "--log", logFile,
-                "--help"
-            };
-
-            // Run the program
+            // Run the program capturing output to a log file
             int exitCode;
-            using (var testContext = Context.Create([.. args]))
+            using (var testContext = Context.Create(["--silent", "--log", logFile, "--help"]))
             {
                 Program.Run(testContext);
                 exitCode = testContext.ExitCode;
             }
 
-            // Check if execution succeeded
+            if (exitCode != 0)
+            {
+                return $"Program exited with code {exitCode}";
+            }
+
+            // Verify expected help headings are present in the log
+            var logContent = File.ReadAllText(logFile);
+            return (logContent.Contains("Usage:") && logContent.Contains("Options:"))
+                ? null : "Help text not found in log";
+        });
+    }
+
+    /// <summary>
+    ///     Runs a test for results generation functionality with both passing and failing tests.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunResultsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        RunValidationTest(context, testResults, "FileAssert_Results", () =>
+        {
+            using var tempDir = new TemporaryDirectory();
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+            var resultsFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "results.trx");
+
+            // Create a file that will satisfy the passing test
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "present.txt"), "present");
+
+            // Write a config with one passing test (present.txt exists) and one failing test (absent.txt missing)
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Results_Pass
+                    files:
+                      - pattern: "present.txt"
+                        count: 1
+                  - name: FileAssert_Results_Fail
+                    files:
+                      - pattern: "absent.txt"
+                        count: 1
+                """);
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create(["--silent", "--config", configFile, "--results", resultsFile]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            // The failing test must produce a non-zero exit code and the --results flag must have
+            // caused a results file to be created
             if (exitCode == 0)
             {
-                // Read log content
-                var logContent = File.ReadAllText(logFile);
+                return "Expected non-zero exit code for failing test configuration";
+            }
 
-                // Verify help text is in log
-                if (logContent.Contains("Usage:") && logContent.Contains("Options:"))
-                {
-                    test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
-                    context.WriteLine($"✓ FileAssert_HelpDisplay - Passed");
-                }
-                else
-                {
-                    test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
-                    test.ErrorMessage = "Help text not found in log";
-                    context.WriteError($"✗ FileAssert_HelpDisplay - Failed: Help text not found in log");
-                }
+            return File.Exists(resultsFile) ? null : "Results file was not created";
+        });
+    }
+
+    /// <summary>
+    ///     Runs a test for file-existence checking via glob pattern.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunExistsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        RunValidationTest(context, testResults, "FileAssert_Exists", () =>
+        {
+            using var tempDir = new TemporaryDirectory();
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+
+            // Create a text file that the glob pattern should match
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+
+            // Write a config that verifies exactly one .txt file exists in the directory
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Exists_Test
+                    files:
+                      - pattern: "*.txt"
+                        count: 1
+                """);
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create(["--silent", "--config", configFile]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            return exitCode == 0 ? null : $"Program exited with code {exitCode}";
+        });
+    }
+
+    /// <summary>
+    ///     Runs a test for file-contains checking.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    private static void RunContainsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
+    {
+        RunValidationTest(context, testResults, "FileAssert_Contains", () =>
+        {
+            using var tempDir = new TemporaryDirectory();
+            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+
+            // Create a text file with known content for the contains assertion
+            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+
+            // Write a config that verifies the file contains the expected text
+            File.WriteAllText(configFile,
+                """
+                tests:
+                  - name: FileAssert_Contains_Test
+                    files:
+                      - pattern: "*.txt"
+                        text:
+                          - contains: "Hello World"
+                """);
+
+            // Run the program
+            int exitCode;
+            using (var testContext = Context.Create(["--silent", "--config", configFile]))
+            {
+                Program.Run(testContext);
+                exitCode = testContext.ExitCode;
+            }
+
+            return exitCode == 0 ? null : $"Program exited with code {exitCode}";
+        });
+    }
+
+    /// <summary>
+    ///     Runs a single validation test, recording the outcome in the test results collection.
+    /// </summary>
+    /// <param name="context">The context for output.</param>
+    /// <param name="testResults">The test results collection.</param>
+    /// <param name="testName">The name of the test.</param>
+    /// <param name="testBody">
+    ///     A function that performs the test logic. Returns <c>null</c> on success, or an error
+    ///     message string on failure.
+    /// </param>
+    private static void RunValidationTest(
+        Context context,
+        DemaConsulting.TestResults.TestResults testResults,
+        string testName,
+        Func<string?> testBody)
+    {
+        // Record when the test started so duration can be calculated at the end
+        var startTime = DateTime.UtcNow;
+        var test = CreateTestResult(testName);
+
+        try
+        {
+            // Execute the test body and interpret null as success, non-null as failure
+            var errorMessage = testBody();
+            if (errorMessage == null)
+            {
+                test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
+                context.WriteLine($"✓ {testName} - Passed");
             }
             else
             {
                 test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
-                test.ErrorMessage = $"Program exited with code {exitCode}";
-                context.WriteError($"✗ FileAssert_HelpDisplay - Failed: Exit code {exitCode}");
+                test.ErrorMessage = errorMessage;
+                context.WriteError($"✗ {testName} - Failed: {errorMessage}");
             }
         }
         // Generic catch is justified here as this is a test framework - any exception should be
         // recorded as a test failure to ensure robust test execution and reporting.
         catch (Exception ex)
         {
-            HandleTestException(test, context, "FileAssert_HelpDisplay", ex);
+            test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
+            test.ErrorMessage = $"Exception: {ex.Message}";
+            context.WriteError($"✗ {testName} - Failed: {ex.Message}");
         }
 
-        FinalizeTestResult(test, startTime, testResults);
+        test.Duration = DateTime.UtcNow - startTime;
+        testResults.Results.Add(test);
     }
 
     /// <summary>
@@ -285,39 +390,6 @@ internal static class Validation
             ClassName = "Validation",
             CodeBase = "FileAssert"
         };
-    }
-
-    /// <summary>
-    ///     Finalizes a test result by setting its duration and adding it to the collection.
-    /// </summary>
-    /// <param name="test">The test result to finalize.</param>
-    /// <param name="startTime">The start time of the test.</param>
-    /// <param name="testResults">The test results collection to add to.</param>
-    private static void FinalizeTestResult(
-        DemaConsulting.TestResults.TestResult test,
-        DateTime startTime,
-        DemaConsulting.TestResults.TestResults testResults)
-    {
-        test.Duration = DateTime.UtcNow - startTime;
-        testResults.Results.Add(test);
-    }
-
-    /// <summary>
-    ///     Handles test exceptions by setting failure information and logging the error.
-    /// </summary>
-    /// <param name="test">The test result to update.</param>
-    /// <param name="context">The context for output.</param>
-    /// <param name="testName">The name of the test for error messages.</param>
-    /// <param name="ex">The exception that occurred.</param>
-    private static void HandleTestException(
-        DemaConsulting.TestResults.TestResult test,
-        Context context,
-        string testName,
-        Exception ex)
-    {
-        test.Outcome = DemaConsulting.TestResults.TestOutcome.Failed;
-        test.ErrorMessage = $"Exception: {ex.Message}";
-        context.WriteError($"✗ {testName} - FAILED: {ex.Message}");
     }
 
     /// <summary>

@@ -234,9 +234,12 @@ Running self-validation produces a report demonstrating that FileAssert is funct
 
 ✓ FileAssert_VersionDisplay - Passed
 ✓ FileAssert_HelpDisplay - Passed
+✓ FileAssert_Results - Passed
+✓ FileAssert_Exists - Passed
+✓ FileAssert_Contains - Passed
 
-Total Tests: 2
-Passed: 2
+Total Tests: 5
+Passed: 5
 Failed: 0
 ```
 
@@ -244,6 +247,9 @@ Each test in the report proves:
 
 - **`FileAssert_VersionDisplay`** - `--version` outputs a valid version string.
 - **`FileAssert_HelpDisplay`** - `--help` outputs usage and options information.
+- **`FileAssert_Results`** - results can be generated with passes and fails.
+- **`FileAssert_Exists`** - file-existence can be checked via glob pattern.
+- **`FileAssert_Contains`** - file-contains can be checked.
 
 See the [User Guide][link-guide] for more details on the self-validation tests.
 

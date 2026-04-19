@@ -25,18 +25,43 @@ Entry point for self-validation. Executes the following steps:
 
 ### Built-in Tests
 
-| Test Name                   | Description                                                       |
-| :-------------------------- | :---------------------------------------------------------------- |
-| `FileAssert_VersionDisplay` | Runs `--version`; verifies log contains a version string.         |
-| `FileAssert_HelpDisplay`    | Runs `--help`; verifies log contains `"Usage:"` and `"Options:"`. |
+| Test Name                   | Description                                                                          |
+| :-------------------------- | :----------------------------------------------------------------------------------- |
+| `FileAssert_VersionDisplay` | Runs `--version`; verifies log contains a version string.                            |
+| `FileAssert_HelpDisplay`    | Runs `--help`; verifies log contains `"Usage:"` and `"Options:"`.                    |
+| `FileAssert_Results`        | Runs tests with passes and fails; verifies non-zero exit code and results file.      |
+| `FileAssert_Exists`         | Runs a glob-pattern existence check; verifies zero exit code.                        |
+| `FileAssert_Contains`       | Runs a text-contains check; verifies zero exit code.                                 |
 
-Each test:
+Each test is dispatched via `RunValidationTest`, which handles the common boilerplate:
 
-1. Creates a temporary directory.
-2. Builds a `Context` with `--silent` and `--log` pointing to a file in that directory.
-3. Calls `Program.Run`.
-4. Reads the log file and asserts its contents.
-5. Records the outcome in the `TestResults` collection.
+1. Creates a `TestResult` and records the start time.
+2. Invokes the test body (`Func<string?>`).
+3. Interprets a `null` return as pass and a non-null string as a failure message.
+4. Records the outcome in the `TestResults` collection.
+5. Catches any unhandled exception and records it as a test failure.
+
+Each test body:
+
+1. Creates a temporary directory via `TemporaryDirectory`.
+2. Writes any required fixture files and a `.fileassert.yaml` configuration.
+3. Builds a `Context` with `--silent` and `--config` (and optionally `--log` or `--results`).
+4. Calls `Program.Run` and checks the exit code and/or output files.
+5. Returns `null` on success or an error message string on failure.
+
+### RunValidationTest Helper
+
+```csharp
+private static void RunValidationTest(
+    Context context,
+    TestResults testResults,
+    string testName,
+    Func<string?> testBody)
+```
+
+Central dispatcher for all built-in tests. Executes `testBody`, maps its return value to
+a pass/fail outcome, logs the result to the context, handles unhandled exceptions, and adds
+the `TestResult` to the collection.
 
 ### Results Serialization
 
@@ -58,9 +83,9 @@ directory path under `Path.GetTempPath()`.
 
 ## Design Decisions
 
-- **Generic exception catch in test methods**: Each built-in test wraps its body in a
-  `try/catch (Exception)` to record any unexpected exception as a test failure rather than
-  crashing the self-validation run.
+- **`RunValidationTest` dispatcher**: All built-in tests share a single helper that owns the
+  try/catch, pass/fail recording, logging, and result finalization. Each test body only needs to
+  return `null` (pass) or an error message string (fail), eliminating repeated boilerplate.
 - **Separation of pass/fail summary**: The pass/fail counts are printed only after all tests
   complete, so the summary reflects the full run.
 - **`Program.Run` as the test target**: Using the public `Run` method rather than the private
