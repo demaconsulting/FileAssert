@@ -484,6 +484,44 @@ public class IntegrationTests
     }
 
     /// <summary>
+    ///     Test that a minimum file count constraint returns a non-zero exit code when too few files are found.
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            // Create no files when the test requires at least one
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "RequiredFileCheck"
+                    files:
+                      - pattern: "*.txt"
+                        min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath,
+                "--silent",
+                "--config",
+                configPath);
+
+            // Assert - non-zero exit code because the min count constraint was not met
+            Assert.AreNotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
     ///     Test that a maximum file count constraint returns a non-zero exit code when exceeded.
     /// </summary>
     [TestMethod]

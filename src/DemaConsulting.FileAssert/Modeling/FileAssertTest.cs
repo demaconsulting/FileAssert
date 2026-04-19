@@ -120,6 +120,8 @@ internal sealed class FileAssertTest
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="basePath">The base directory path against which file patterns are evaluated.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> is null.</exception>
     internal void Run(Context context, string basePath)
     {
         // Validate required parameters

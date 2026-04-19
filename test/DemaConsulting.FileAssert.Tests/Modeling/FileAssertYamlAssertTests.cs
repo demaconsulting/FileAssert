@@ -64,7 +64,7 @@ public sealed class FileAssertYamlAssertTests
     public void FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertYamlAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertYamlAssert.Create(null!));
     }
 
     /// <summary>
@@ -141,6 +141,33 @@ public sealed class FileAssertYamlAssertTests
 
             // Assert
             Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when the sequence count is within min/max bounds.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError()
+    {
+        // Arrange - sample YAML has 3 tools entries; assert min=2, max=5
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleYaml);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 2, Max = 5 } };
+            var yamlAssert = FileAssertYamlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            yamlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(0, context.ExitCode);
         }
         finally
         {

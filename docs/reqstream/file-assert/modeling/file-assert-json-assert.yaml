@@ -39,4 +39,5 @@ sections:
         tests:
           - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
           - FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
+          - FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError
           - FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError

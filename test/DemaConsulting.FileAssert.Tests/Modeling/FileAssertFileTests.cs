@@ -56,7 +56,7 @@ public class FileAssertFileTests
     public void FileAssertFile_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertFile.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertFile.Create(null!));
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class FileAssertFileTests
         var data = new FileAssertFileData { Pattern = null };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertFile.Create(data));
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertFile.Create(data));
         Assert.Contains("pattern", exception.Message);
     }
 
@@ -83,7 +83,7 @@ public class FileAssertFileTests
         var data = new FileAssertFileData { Pattern = "   " };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertFile.Create(data));
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertFile.Create(data));
         Assert.Contains("pattern", exception.Message);
     }
 

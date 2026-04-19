@@ -82,7 +82,8 @@ sections:
           Results are written both from the self-validation path (--validate --results) and from
           the normal file assertion path (--results without --validate).
         children:
-          - FileAssert-FileAssertConfig-Results
+          - FileAssert-FileAssertConfig-ResultsTrx
+          - FileAssert-FileAssertConfig-ResultsJUnit
           - FileAssert-Validation-Results
         tests:
           - IntegrationTest_ValidateWithResults_GeneratesTrxFile
@@ -104,6 +105,19 @@ sections:
         tests:
           - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
 
+      - id: FileAssert-System-MinCountConstraint
+        title: |
+          The FileAssert tool shall return a non-zero exit code when the number of files
+          matching a glob pattern is below the declared minimum count constraint.
+        justification: |
+          Enforcing a minimum file count guards against missing build outputs or required
+          artifacts that should always be present. Users declare the lower bound they expect;
+          the tool reports a violation when fewer files are found.
+        children:
+          - FileAssert-FileAssertFile-CountConstraints
+        tests:
+          - IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero
+
       - id: FileAssert-System-MaxCountConstraint
         title: |
           The FileAssert tool shall return a non-zero exit code when the number of files
@@ -112,6 +126,8 @@ sections:
           Enforcing a maximum file count prevents unexpected duplicate build outputs or
           configuration files from silently passing validation. Users declare the upper
           bound they expect; the tool reports a violation when more files are found.
+        children:
+          - FileAssert-FileAssertFile-CountConstraints
         tests:
           - IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero
 
@@ -124,6 +140,8 @@ sections:
           formats and date patterns that cannot be expressed as a simple substring check.
           Verifying both the passing and failing paths at the system level confirms end-to-end
           integration from the YAML rule definition through to the exit code.
+        children:
+          - FileAssert-FileAssertRule-MatchesRule
         tests:
           - IntegrationTest_RegexRule_MatchingContent_ReturnsZero
           - IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero
@@ -137,6 +155,8 @@ sections:
           must assert that precisely one artifact, configuration file, or report was
           produced. Any deviation from the expected count is a configuration drift
           that should be caught immediately.
+        children:
+          - FileAssert-FileAssertFile-ExactCount
         tests:
           - IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero
 
@@ -150,6 +170,8 @@ sections:
           (max-size). Enforcing these constraints at the system level confirms that the
           YAML configuration, deserialization, and file system inspection all integrate
           correctly.
+        children:
+          - FileAssert-FileAssertFile-SizeConstraints
         tests:
           - IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero
           - IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
@@ -163,6 +185,8 @@ sections:
           assert that sensitive strings such as hard-coded passwords or debug flags are
           absent from committed files. System-level verification confirms the rule
           integrates correctly from YAML configuration through to the exit code.
+        children:
+          - FileAssert-FileAssertRule-DoesNotContainRule
         tests:
           - IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero
 
@@ -176,6 +200,8 @@ sections:
           as asserting that log files contain no FATAL or ERROR entries. System-level
           verification confirms the rule integrates correctly from YAML configuration
           through to the exit code.
+        children:
+          - FileAssert-FileAssertRule-DoesNotContainRegexRule
         tests:
           - IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero
 
@@ -216,6 +242,8 @@ sections:
           Rejecting unknown arguments prevents silent misconfiguration where a typo in a flag
           name causes the tool to run without the intended option. A non-zero exit code ensures
           CI/CD pipelines detect the erroneous invocation.
+        children:
+          - FileAssert-Context-InvalidArgs
         tests:
           - IntegrationTest_UnknownArgument_ReturnsError
 

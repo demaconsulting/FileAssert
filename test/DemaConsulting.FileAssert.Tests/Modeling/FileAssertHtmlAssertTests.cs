@@ -69,7 +69,7 @@ public sealed class FileAssertHtmlAssertTests
     public void FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertHtmlAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertHtmlAssert.Create(null!));
     }
 
     /// <summary>

@@ -48,8 +48,8 @@ public class FileAssertTestTests
 
         // Assert
         Assert.AreEqual("My Test", test.Name);
-        Assert.AreEqual(2, test.Tags.Count);
-        Assert.AreEqual(0, test.Files.Count);
+        Assert.HasCount(2, test.Tags);
+        Assert.HasCount(0, test.Files);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class FileAssertTestTests
     public void FileAssertTest_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertTest.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertTest.Create(null!));
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class FileAssertTestTests
         var data = new FileAssertTestData { Name = null };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertTest.Create(data));
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertTest.Create(data));
         Assert.Contains("name", exception.Message);
     }
 
@@ -86,7 +86,7 @@ public class FileAssertTestTests
         var data = new FileAssertTestData { Name = "   " };
 
         // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertTest.Create(data));
+        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertTest.Create(data));
         Assert.Contains("name", exception.Message);
     }
 
@@ -227,5 +227,33 @@ public class FileAssertTestTests
         {
             tempDir.Delete(recursive: true);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that Run throws <see cref="ArgumentNullException"/> when context is null.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTest_Run_NullContext_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var test = FileAssertTest.Create(new FileAssertTestData { Name = "Test" });
+        var basePath = Directory.GetCurrentDirectory();
+
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(() => test.Run(null!, basePath));
+    }
+
+    /// <summary>
+    ///     Verifies that Run throws <see cref="ArgumentNullException"/> when basePath is null.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var test = FileAssertTest.Create(new FileAssertTestData { Name = "Test" });
+        using var context = Context.Create(["--silent"]);
+
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(() => test.Run(context, null!));
     }
 }

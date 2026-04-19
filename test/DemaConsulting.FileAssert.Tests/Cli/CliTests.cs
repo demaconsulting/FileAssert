@@ -107,7 +107,7 @@ public class CliTests
         using var context = Context.Create(["--silent", "smoke", "regression"]);
 
         // Assert - positional arguments are captured in the Filters collection
-        Assert.AreEqual(2, context.Filters.Count);
+        Assert.HasCount(2, context.Filters);
         Assert.AreEqual("smoke", context.Filters[0]);
         Assert.AreEqual("regression", context.Filters[1]);
     }
@@ -119,7 +119,7 @@ public class CliTests
     public void Cli_CreateContext_UnknownArgument_ThrowsArgumentException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentException>(() => Context.Create(["--unknown-flag"]));
+        Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--unknown-flag"]));
     }
 
     /// <summary>
@@ -161,8 +161,8 @@ public class CliTests
 
             // Assert - both messages appear in the log file
             var logContent = File.ReadAllText(logPath);
-            Assert.IsTrue(logContent.Contains("informational message"));
-            Assert.IsTrue(logContent.Contains("error message"));
+            Assert.Contains("informational message", logContent);
+            Assert.Contains("error message", logContent);
         }
         finally
         {

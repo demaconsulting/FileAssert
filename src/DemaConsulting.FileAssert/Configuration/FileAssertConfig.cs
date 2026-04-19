@@ -98,6 +98,8 @@ internal sealed class FileAssertConfig
     ///     Names or tags used to select which tests to run.
     ///     An empty collection runs all tests.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="filters"/> is null.</exception>
     internal void Run(Context context, IEnumerable<string> filters)
     {
         // Validate required parameters before executing any tests

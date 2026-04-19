@@ -8,11 +8,11 @@ Otherwise it applies metadata field assertions, page count constraints, and body
 
 ## Class Structure
 
-### FileAssertPdfMetadataRule
+### PdfMetadataRule
 
 An inner modeling class that applies a single PDF metadata field assertion.
 
-#### FileAssertPdfMetadataRule Properties
+#### PdfMetadataRule Properties
 
 | Property   | Type      | Description                                        |
 | :--------- | :-------- | :------------------------------------------------- |
@@ -20,13 +20,13 @@ An inner modeling class that applies a single PDF metadata field assertion.
 | `Contains` | `string?` | Metadata value must contain this substring.        |
 | `Matches`  | `string?` | Metadata value must match this regular expression. |
 
-#### FileAssertPdfMetadataRule Factory
+#### PdfMetadataRule Factory
 
 ```csharp
-internal static FileAssertPdfMetadataRule Create(FileAssertPdfMetadataRuleData data)
+internal static PdfMetadataRule FromData(FileAssertPdfMetadataRuleData data)
 ```
 
-#### FileAssertPdfMetadataRule Apply
+#### PdfMetadataRule Apply
 
 ```csharp
 internal void Apply(Context context, string fileName, string? fieldValue)
@@ -34,39 +34,39 @@ internal void Apply(Context context, string fileName, string? fieldValue)
 
 Checks `Contains` substring presence (ordinal) and `Matches` regex against `fieldValue`.
 
-#### FileAssertPdfMetadataRule Error Messages
+#### PdfMetadataRule Error Messages
 
 ```text
 File '<fileName>' PDF metadata '<Field>' does not contain '<Contains>'
 File '<fileName>' PDF metadata '<Field>' does not match '<Matches>'
 ```
 
-### FileAssertPdfPages
+### PdfPages
 
 An inner modeling class that enforces page count constraints.
 
-#### FileAssertPdfPages Properties
+#### PdfPages Properties
 
 | Property | Type   | Description              |
 | :------- | :----- | :----------------------- |
 | `Min`    | `int?` | Minimum number of pages. |
 | `Max`    | `int?` | Maximum number of pages. |
 
-#### FileAssertPdfPages Factory
+#### PdfPages Factory
 
 ```csharp
-internal static FileAssertPdfPages Create(FileAssertPdfPagesData data)
+internal static PdfPages FromData(FileAssertPdfPagesData data)
 ```
 
-#### FileAssertPdfPages Apply
+#### PdfPages Apply
 
 ```csharp
-internal void Apply(Context context, string fileName, int pageCount)
+internal void Apply(Context context, string fileName, int n)
 ```
 
-Reports an error if `pageCount < Min` or `pageCount > Max`.
+Reports an error if `n < Min` or `n > Max`.
 
-#### FileAssertPdfPages Error Messages
+#### PdfPages Error Messages
 
 ```text
 File '<fileName>' PDF has <n> page(s) which is below the minimum of <Min>
@@ -79,11 +79,11 @@ The main class coordinating metadata, page count, and body text assertions for a
 
 #### FileAssertPdfAssert Properties
 
-| Property   | Type                                       | Description                                    |
-| :--------- | :----------------------------------------- | :--------------------------------------------- |
-| `Metadata` | `IReadOnlyList<FileAssertPdfMetadataRule>` | Metadata field assertions.                     |
-| `Pages`    | `FileAssertPdfPages?`                      | Page count constraints (null if not declared). |
-| `Text`     | `IReadOnlyList<FileAssertRule>`            | Body text rules.                               |
+| Field       | Type                              | Description                                    |
+| :---------- | :-------------------------------- | :--------------------------------------------- |
+| `_metadata` | `IReadOnlyList<PdfMetadataRule>`  | Metadata field assertions.                     |
+| `_pages`    | `PdfPages?`                       | Page count constraints (null if not declared). |
+| `_text`     | `IReadOnlyList<FileAssertRule>`   | Body text rules.                               |
 
 #### FileAssertPdfAssert Factory
 
@@ -113,6 +113,28 @@ Execution proceeds in the following steps:
 ```text
 File '<fileName>' could not be parsed as a PDF document
 ```
+
+#### FileAssertPdfAssert GetMetadataField
+
+```csharp
+private static string? GetMetadataField(PdfDocument document, string field)
+```
+
+Maps a field name string to the corresponding `DocumentInformation` property on `PdfDocument`.
+Returns `null` for unrecognized field names or when the property value is not set.
+
+Recognized field names:
+
+| Field Name  | DocumentInformation Property          |
+| :---------- | :------------------------------------ |
+| `Title`     | `document.Information.Title`          |
+| `Author`    | `document.Information.Author`         |
+| `Subject`   | `document.Information.Subject`        |
+| `Keywords`  | `document.Information.Keywords`       |
+| `Creator`   | `document.Information.Creator`        |
+| `Producer`  | `document.Information.Producer`       |
+
+Any other field name returns `null`.
 
 ## YAML Configuration
 

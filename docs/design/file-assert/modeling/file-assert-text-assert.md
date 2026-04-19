@@ -24,6 +24,15 @@ internal static FileAssertTextAssert Create(IEnumerable<FileAssertRuleData> data
 
 Creates a `FileAssertRule` for each entry in the data list via `FileAssertRule.Create`.
 
+| Parameter | Type                               | Description                                          |
+| :-------- | :--------------------------------- | :--------------------------------------------------- |
+| `data`    | `IEnumerable<FileAssertRuleData>`  | List of rule data objects from YAML configuration.   |
+
+| Return / Exception           | Description                                              |
+| :--------------------------- | :------------------------------------------------------- |
+| Returns                      | A new `FileAssertTextAssert` instance.                   |
+| `ArgumentNullException`      | Thrown when `data` is null.                              |
+
 ### Run Method
 
 ```csharp
@@ -32,6 +41,24 @@ internal void Run(Context context, string fileName)
 
 Reads the entire file content as a UTF-8 string and applies each rule via
 `rule.Apply(context, fileName, content)`.
+
+Execution proceeds in the following steps:
+
+1. Reads the entire file as UTF-8 text.
+2. If an `IOException` or `UnauthorizedAccessException` is thrown, writes the error below
+   and returns immediately.
+3. Applies each configured rule to the file content.
+
+#### Run Error Message
+
+```text
+File '<fileName>' could not be read as text
+```
+
+| Parameter    | Type      | Description                              |
+| :----------- | :-------- | :--------------------------------------- |
+| `context`    | `Context` | Reporting sink used to record errors.    |
+| `fileName`   | `string`  | Full path to the file to validate.       |
 
 ## YAML Configuration
 

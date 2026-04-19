@@ -25,8 +25,8 @@ sections:
           DEMA Consulting tools must support Windows as a major development platform.
         tests:
           # Tests link to "windows" to ensure results come from Windows platform
-          - "windows@FileAssert_VersionDisplay"
-          - "windows@FileAssert_HelpDisplay"
+          - "windows@IntegrationTest_VersionFlag_OutputsVersion"
+          - "windows@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Linux
         title: The tool shall build and run on Linux platforms.
@@ -34,8 +34,8 @@ sections:
           DEMA Consulting tools must support Linux for CI/CD and containerized environments.
         tests:
           # Tests link to "ubuntu" to ensure results come from Linux platform
-          - "ubuntu@FileAssert_VersionDisplay"
-          - "ubuntu@FileAssert_HelpDisplay"
+          - "ubuntu@IntegrationTest_VersionFlag_OutputsVersion"
+          - "ubuntu@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-MacOS
         title: The tool shall build and run on macOS platforms.
@@ -43,8 +43,8 @@ sections:
           DEMA Consulting tools must support macOS for developers using Apple platforms.
         tests:
           # Tests link to "macos" to ensure results come from macOS platform
-          - "macos@FileAssert_VersionDisplay"
-          - "macos@FileAssert_HelpDisplay"
+          - "macos@IntegrationTest_VersionFlag_OutputsVersion"
+          - "macos@IntegrationTest_HelpFlag_OutputsUsageInformation"
 
       - id: FileAssert-Platform-Net8
         title: The tool shall support .NET 8 runtime.

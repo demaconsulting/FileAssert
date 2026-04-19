@@ -57,16 +57,16 @@ public class ConfigurationTests
             var config = FileAssertConfig.ReadFromFile(configPath);
 
             // Assert - the full hierarchy is correctly constructed
-            Assert.AreEqual(1, config.Tests.Count);
+            Assert.HasCount(1, config.Tests);
             var test = config.Tests[0];
             Assert.AreEqual("License Check", test.Name);
-            Assert.AreEqual(1, test.Tags.Count);
+            Assert.HasCount(1, test.Tags);
             Assert.AreEqual("license", test.Tags[0]);
-            Assert.AreEqual(1, test.Files.Count);
+            Assert.HasCount(1, test.Files);
             var file = test.Files[0];
             Assert.AreEqual("**/*.txt", file.Pattern);
             Assert.AreEqual(1, file.Min);
-            Assert.AreEqual(1, file.TextAssert!.Rules.Count);
+            Assert.HasCount(1, file.TextAssert!.Rules);
         }
         finally
         {

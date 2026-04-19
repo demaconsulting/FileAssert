@@ -60,7 +60,7 @@ public sealed class FileAssertPdfAssertTests
     public void FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FileAssertPdfAssert.Create(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertPdfAssert.Create(null!));
     }
 
     /// <summary>
@@ -140,6 +140,41 @@ public sealed class FileAssertPdfAssertTests
             var data = new FileAssertPdfData
             {
                 Pages = new FileAssertPdfPagesData { Min = 5 }
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            pdfAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the PDF has more pages than the maximum.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError()
+    {
+        // Arrange - build a three-page PDF but allow at most 2 pages
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            var builder = new PdfDocumentBuilder();
+            builder.AddPage(PageSize.A4);
+            builder.AddPage(PageSize.A4);
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Pages = new FileAssertPdfPagesData { Max = 2 }
             };
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);

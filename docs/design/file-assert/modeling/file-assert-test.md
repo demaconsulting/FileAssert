@@ -25,6 +25,7 @@ internal static FileAssertTest Create(FileAssertTestData data)
 
 The factory validates that `Name` is not null or whitespace. An empty or null
 `Tags` or `Files` list is treated as an empty collection rather than an error.
+Passing a null `data` argument throws `ArgumentNullException`.
 
 ### Filter Method
 
@@ -46,7 +47,8 @@ internal void Run(Context context, string basePath)
 
 Iterates `Files` and calls `Run(context, basePath)` on each entry. Errors reported
 by individual file assertions accumulate in the context and do not stop subsequent
-assertions from running.
+assertions from running. Passing a null `context` or null `basePath` throws
+`ArgumentNullException`.
 
 ## YAML Configuration
 

@@ -29,6 +29,7 @@ sections:
         tests:
           - FileAssertTextAssert_Run_FileContainsText_NoError
           - FileAssertTextAssert_Run_FileMissingText_WritesError
+          - FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
 
       - id: FileAssert-FileAssertTextAssert-IOError
         title: |

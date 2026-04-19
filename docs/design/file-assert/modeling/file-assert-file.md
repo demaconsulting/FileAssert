@@ -57,7 +57,9 @@ Execution proceeds in five phases:
    misleading per-file errors when the count constraint already signals a failure.
 
 5. **Per-file validation** — Each matched file is inspected individually:
-   a. Validates size constraints (`MinSize`, `MaxSize`) using `FileInfo.Length`.
+   a. Validates size constraints (`MinSize`, `MaxSize`) using `FileInfo.Length`. Size
+      violations are recorded via `context.WriteError` but do NOT cause early return;
+      the remaining per-file assertions continue to execute.
    b. If `TextAssert` is defined, delegates to `FileAssertTextAssert` which reads the
       file as text and applies each `FileAssertRule`.
    c. If `PdfAssert` is defined, attempts to parse the file using PdfPig; reports
@@ -75,6 +77,21 @@ Execution proceeds in five phases:
    g. If `JsonAssert` is defined, attempts to parse the file using `System.Text.Json`;
       reports an immediate error if parsing fails, otherwise applies dot-notation path
       count assertions.
+
+### Count Constraint Error Messages
+
+```text
+Pattern '<Pattern>' matched <n> file(s), but expected at least <Min>
+Pattern '<Pattern>' matched <n> file(s), but expected at most <Max>
+Pattern '<Pattern>' matched <n> file(s), but expected exactly <Count>
+```
+
+### Size Constraint Error Messages
+
+```text
+File '<filePath>' is <n> byte(s), which is less than the minimum <MinSize> bytes
+File '<filePath>' is <n> byte(s), which exceeds the maximum <MaxSize> bytes
+```
 
 ## YAML Configuration
 
