@@ -284,7 +284,9 @@ internal static class Validation
                 exitCode = testContext.ExitCode;
             }
 
-            // Check that a non-zero exit code was produced and a results file was written
+            // Check that a non-zero exit code was produced and a results file was written.
+            // Both conditions must be true: the failing test must cause a non-zero exit code,
+            // and the --results flag must have caused a results file to be created.
             if (exitCode != 0 && File.Exists(resultsFile))
             {
                 test.Outcome = DemaConsulting.TestResults.TestOutcome.Passed;
