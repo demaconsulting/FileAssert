@@ -1,14 +1,26 @@
 ---
-# OTS Requirement: Pandoc document conversion tool
-id: FileAssert-OTS-Pandoc
-title: Pandoc converts Markdown to HTML correctly
-description: >
-  Pandoc is used to convert Markdown documentation to HTML. This requirement is satisfied
-  when Pandoc successfully generates HTML documents containing the expected content.
-tests:
-  - Pandoc_BuildNotesHtml
-  - Pandoc_CodeQualityHtml
-  - Pandoc_ReviewPlanHtml
-  - Pandoc_ReviewReportHtml
-  - Pandoc_DesignHtml
-  - Pandoc_UserGuideHtml
+# Pandoc OTS Software Requirements
+#
+# Requirements for the Pandoc document conversion tool functionality.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: Pandoc Requirements
+        requirements:
+          - id: FileAssert-OTS-Pandoc
+            title: Pandoc shall convert Markdown documents to valid HTML.
+            justification: |
+              DemaConsulting.PandocTool converts Markdown source documents to HTML as part of the
+              documentation build pipeline. FileAssert validates that each generated HTML file
+              exists, contains a valid HTML title element, and includes expected document content.
+              Passing FileAssert assertions for each document type proves Pandoc executed correctly
+              and produced meaningful output.
+            tags: [ots]
+            tests:
+              - Pandoc_BuildNotesHtml
+              - Pandoc_CodeQualityHtml
+              - Pandoc_ReviewPlanHtml
+              - Pandoc_ReviewReportHtml
+              - Pandoc_DesignHtml
+              - Pandoc_UserGuideHtml
