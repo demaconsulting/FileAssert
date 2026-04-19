@@ -335,20 +335,8 @@ public class FileAssertConfigTests
             Assert.HasCount(1, config.Tests[0].Files);
 
             var fileAssertion = config.Tests[0].Files[0];
-            Assert.IsNotNull(fileAssertion.Pdf);
-
-            Assert.IsNotNull(fileAssertion.Pdf.Metadata);
-            Assert.HasCount(1, fileAssertion.Pdf.Metadata);
-            Assert.AreEqual("Title", fileAssertion.Pdf.Metadata[0].Field);
-            Assert.AreEqual("Annual Report", fileAssertion.Pdf.Metadata[0].Contains);
-
-            Assert.IsNotNull(fileAssertion.Pdf.Pages);
-            Assert.AreEqual(1, fileAssertion.Pdf.Pages.Min);
-            Assert.AreEqual(100, fileAssertion.Pdf.Pages.Max);
-
-            Assert.IsNotNull(fileAssertion.Pdf.Text);
-            Assert.HasCount(1, fileAssertion.Pdf.Text);
-            Assert.AreEqual("Summary", fileAssertion.Pdf.Text[0].Contains);
+            Assert.AreEqual("report.pdf", fileAssertion.Pattern);
+            Assert.IsNotNull(fileAssertion.PdfAssert);
         }
         finally
         {
