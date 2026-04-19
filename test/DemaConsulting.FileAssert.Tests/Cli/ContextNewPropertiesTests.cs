@@ -51,7 +51,7 @@ public class ContextNewPropertiesTests
         using var context = Context.Create([]);
 
         // Assert
-        Assert.AreEqual(0, context.Filters.Count);
+        Assert.HasCount(0, context.Filters);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class ContextNewPropertiesTests
         using var context = Context.Create(["smoke", "regression"]);
 
         // Assert
-        Assert.AreEqual(2, context.Filters.Count);
+        Assert.HasCount(2, context.Filters);
         Assert.AreEqual("smoke", context.Filters[0]);
         Assert.AreEqual("regression", context.Filters[1]);
     }
@@ -94,7 +94,7 @@ public class ContextNewPropertiesTests
         // Assert
         Assert.IsTrue(context.Silent);
         Assert.AreEqual("cfg.yaml", context.ConfigFile);
-        Assert.AreEqual(1, context.Filters.Count);
+        Assert.HasCount(1, context.Filters);
         Assert.AreEqual("my-filter", context.Filters[0]);
     }
 
@@ -105,7 +105,7 @@ public class ContextNewPropertiesTests
     public void Context_Create_UnknownFlagWithDash_ThrowsArgumentException()
     {
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => Context.Create(["--bogus-flag"]));
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--bogus-flag"]));
         Assert.Contains("Unsupported argument", exception.Message);
     }
 
@@ -116,7 +116,7 @@ public class ContextNewPropertiesTests
     public void Context_Create_ConfigFlag_WithoutValue_ThrowsArgumentException()
     {
         // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => Context.Create(["--config"]));
+        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--config"]));
         Assert.Contains("--config", exception.Message);
     }
 }

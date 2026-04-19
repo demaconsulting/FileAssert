@@ -40,12 +40,12 @@ public class UtilitiesTests
         try
         {
             // Act & Assert - a traversal attempt is rejected with ArgumentException
-            Assert.Throws<ArgumentException>(
+            Assert.ThrowsExactly<ArgumentException>(
                 () => PathHelpers.SafePathCombine(tempDir.FullName, "../escape.txt"));
 
             // Act & Assert - a valid relative path within the base is accepted
             var combined = PathHelpers.SafePathCombine(tempDir.FullName, "nested/file.txt");
-            Assert.IsTrue(combined.StartsWith(tempDir.FullName, StringComparison.OrdinalIgnoreCase));
+            Assert.StartsWith(tempDir.FullName, combined);
         }
         finally
         {

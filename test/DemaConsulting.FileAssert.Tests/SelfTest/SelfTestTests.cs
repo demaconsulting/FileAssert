@@ -56,9 +56,9 @@ public class SelfTestTests
             Assert.AreEqual(0, exitCode);
 
             var logContent = File.ReadAllText(logPath);
-            Assert.IsTrue(logContent.Contains("Total Tests:"), "Log should contain 'Total Tests:'");
-            Assert.IsTrue(logContent.Contains("Passed:"), "Log should contain 'Passed:'");
-            Assert.IsTrue(logContent.Contains("Failed:"), "Log should contain 'Failed:'");
+            Assert.Contains("Total Tests:", logContent);
+            Assert.Contains("Passed:", logContent);
+            Assert.Contains("Failed:", logContent);
         }
         finally
         {
@@ -86,9 +86,9 @@ public class SelfTestTests
 
             // Assert - system information header must appear in the log
             var logContent = File.ReadAllText(logPath);
-            Assert.IsTrue(logContent.Contains("Tool Version"), "Log should contain 'Tool Version'");
-            Assert.IsTrue(logContent.Contains("Machine Name"), "Log should contain 'Machine Name'");
-            Assert.IsTrue(logContent.Contains("OS Version"), "Log should contain 'OS Version'");
+            Assert.Contains("Tool Version", logContent);
+            Assert.Contains("Machine Name", logContent);
+            Assert.Contains("OS Version", logContent);
         }
         finally
         {
@@ -117,7 +117,7 @@ public class SelfTestTests
             // Assert - TRX results file must exist and contain test result content
             Assert.IsTrue(File.Exists(resultsPath), "TRX results file should be created");
             var content = File.ReadAllText(resultsPath);
-            Assert.IsTrue(content.Contains("TestRun"), "TRX file should contain 'TestRun' element");
+            Assert.Contains("TestRun", content);
         }
         finally
         {
