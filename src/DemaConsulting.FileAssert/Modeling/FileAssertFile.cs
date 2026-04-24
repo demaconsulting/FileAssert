@@ -217,10 +217,8 @@ internal sealed class FileAssertFile
 
         if (hasPerFileChecks)
         {
-            foreach (var file in files)
+            foreach (var fullPath in files.Select(file => Path.Combine(basePath, file)))
             {
-                var fullPath = Path.Combine(basePath, file);
-
                 // Enforce size constraints when specified
                 if (MinSize.HasValue || MaxSize.HasValue)
                 {

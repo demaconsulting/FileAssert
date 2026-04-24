@@ -100,7 +100,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
 
@@ -133,7 +133,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
 
@@ -166,7 +166,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.AddPage(PageSize.A4);
             builder.AddPage(PageSize.A4);
             builder.AddPage(PageSize.A4);
@@ -201,7 +201,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
 
@@ -237,7 +237,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
 
@@ -273,7 +273,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.DocumentInformation.Title = "Annual Report 2024";
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
@@ -310,7 +310,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.DocumentInformation.Author = "DEMA Consulting";
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
@@ -347,7 +347,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.DocumentInformation.Title = "Report 2024";
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
@@ -384,7 +384,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.DocumentInformation.Title = "Annual Report";
             builder.AddPage(PageSize.A4);
             File.WriteAllBytes(tempFile, builder.Build());
@@ -421,7 +421,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             var page = builder.AddPage(PageSize.A4);
             var font = builder.AddStandard14Font(Standard14Font.Helvetica);
             page.AddText("Hello World", 12, new PdfPoint(50, 700), font);
@@ -459,7 +459,7 @@ public sealed class FileAssertPdfAssertTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             var page = builder.AddPage(PageSize.A4);
             var font = builder.AddStandard14Font(Standard14Font.Helvetica);
             page.AddText("Hello World 2024", 12, new PdfPoint(50, 700), font);
