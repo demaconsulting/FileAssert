@@ -82,6 +82,10 @@ The following sequence describes the normal execution path:
 
 ## Design Decisions
 
+- **Cross-platform portability**: All file system operations use `Path.Combine`, `Path.GetFullPath`,
+  and `Microsoft.Extensions.FileSystemGlobbing`, which normalize path separators per the host OS.
+  No `OperatingSystem.IsWindows()` or similar guards appear in production code; platform differences
+  are handled entirely by the BCL and the .NET runtime.
 - **Single-assembly tool**: All logic is compiled into one assembly and published as a .NET
   global tool, simplifying installation and avoiding DLL management.
 - **YAML configuration**: YAML is human-readable, widely supported, and natively handled by
