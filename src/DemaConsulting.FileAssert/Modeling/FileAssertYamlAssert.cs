@@ -129,7 +129,8 @@ internal sealed class FileAssertYamlAssert
         var segments = query.Split('.');
         YamlNode? current = root;
 
-        for (var i = 0; i < segments.Length; i++)
+        // Traverse all but the last segment
+        for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current is not YamlMappingNode mapping)
             {
@@ -140,22 +141,27 @@ internal sealed class FileAssertYamlAssert
             {
                 return 0;
             }
-
-            if (i == segments.Length - 1)
-            {
-                // Return sequence length, or 1 for scalar/mapping nodes
-                return current switch
-                {
-                    YamlSequenceNode seq => seq.Children.Count,
-                    YamlScalarNode => 1,
-                    YamlMappingNode => 1,
-                    _ => 0
-                };
-            }
         }
 
-        // Path traversal completed without reaching the final segment (empty segments list)
-        return 0;
+        // Evaluate the final segment
+        if (current is not YamlMappingNode finalMapping)
+        {
+            return 0;
+        }
+
+        if (!finalMapping.Children.TryGetValue(new YamlScalarNode(segments[^1]), out var leaf))
+        {
+            return 0;
+        }
+
+        // Return sequence length, or 1 for scalar/mapping nodes
+        return leaf switch
+        {
+            YamlSequenceNode seq => seq.Children.Count,
+            YamlScalarNode => 1,
+            YamlMappingNode => 1,
+            _ => 0
+        };
     }
 
     /// <summary>

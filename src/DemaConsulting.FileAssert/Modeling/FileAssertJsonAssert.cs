@@ -122,7 +122,8 @@ internal sealed class FileAssertJsonAssert
         var segments = query.Split('.');
         var current = root;
 
-        for (var i = 0; i < segments.Length; i++)
+        // Traverse all but the last segment
+        for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current.ValueKind != JsonValueKind.Object)
             {
@@ -135,18 +136,23 @@ internal sealed class FileAssertJsonAssert
             }
 
             current = next;
-
-            if (i == segments.Length - 1)
-            {
-                // Return array length for arrays, or 1 for any other element
-                return current.ValueKind == JsonValueKind.Array
-                    ? current.GetArrayLength()
-                    : 1;
-            }
         }
 
-        // Path traversal completed without reaching the final segment (empty segments list)
-        return 0;
+        // Evaluate the final segment
+        if (current.ValueKind != JsonValueKind.Object)
+        {
+            return 0;
+        }
+
+        if (!current.TryGetProperty(segments[^1], out var leaf))
+        {
+            return 0;
+        }
+
+        // Return array length for arrays, or 1 for any other element
+        return leaf.ValueKind == JsonValueKind.Array
+            ? leaf.GetArrayLength()
+            : 1;
     }
 
     /// <summary>
