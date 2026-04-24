@@ -56,7 +56,10 @@ internal sealed class FileAssertJsonAssert
     /// <param name="data">The list of query data objects from YAML configuration.</param>
     /// <returns>A new <see cref="FileAssertJsonAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when a query does not specify a query string.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when a query does not specify a query string, or when the query path is malformed
+    ///     (contains leading/trailing dots or consecutive dots).
+    /// </exception>
     internal static FileAssertJsonAssert Create(IEnumerable<FileAssertQueryData> data)
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -66,6 +69,12 @@ internal sealed class FileAssertJsonAssert
             if (string.IsNullOrWhiteSpace(d.Query))
             {
                 throw new InvalidOperationException("JSON query assertion must specify a 'query'");
+            }
+
+            if (d.Query.StartsWith('.') || d.Query.EndsWith('.') || d.Query.Contains(".."))
+            {
+                throw new InvalidOperationException(
+                    $"JSON query assertion has malformed path '{d.Query}'");
             }
 
             return new JsonQuery(d.Query, d.Count, d.Min, d.Max);

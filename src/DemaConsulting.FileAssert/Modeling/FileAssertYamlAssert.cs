@@ -53,7 +53,10 @@ internal sealed class FileAssertYamlAssert
     /// <param name="data">The list of query data objects from YAML configuration.</param>
     /// <returns>A new <see cref="FileAssertYamlAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when a query does not specify a query string.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when a query does not specify a query string, or when the query path is malformed
+    ///     (contains leading/trailing dots or consecutive dots).
+    /// </exception>
     internal static FileAssertYamlAssert Create(IEnumerable<FileAssertQueryData> data)
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -63,6 +66,12 @@ internal sealed class FileAssertYamlAssert
             if (string.IsNullOrWhiteSpace(d.Query))
             {
                 throw new InvalidOperationException("YAML query assertion must specify a 'query'");
+            }
+
+            if (d.Query.StartsWith('.') || d.Query.EndsWith('.') || d.Query.Contains(".."))
+            {
+                throw new InvalidOperationException(
+                    $"YAML query assertion has malformed path '{d.Query}'");
             }
 
             return new YamlQuery(d.Query, d.Count, d.Min, d.Max);

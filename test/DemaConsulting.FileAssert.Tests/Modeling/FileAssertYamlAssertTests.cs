@@ -268,4 +268,43 @@ public sealed class FileAssertYamlAssertTests
         // Act & Assert
         Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
     }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a trailing dot.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "tools." } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a leading dot.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = ".tools" } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has consecutive dots.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "a..b" } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
 }
