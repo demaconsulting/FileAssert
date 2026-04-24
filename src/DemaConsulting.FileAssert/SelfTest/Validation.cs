@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Utilities;
 using DemaConsulting.TestResults.IO;
@@ -28,7 +29,7 @@ namespace DemaConsulting.FileAssert.SelfTest;
 /// <summary>
 ///     Provides self-validation functionality for FileAssert.
 /// </summary>
-internal static class Validation
+internal static partial class Validation
 {
     /// <summary>
     ///     Runs self-validation tests and optionally writes results to a file.
@@ -126,7 +127,7 @@ internal static class Validation
 
             // Verify version string is present in the log (must match N.N.N semantic version format)
             var logContent = File.ReadAllText(logFile);
-            return (!string.IsNullOrWhiteSpace(logContent) && System.Text.RegularExpressions.Regex.IsMatch(logContent, @"\d+\.\d+\.\d+"))
+            return (!string.IsNullOrWhiteSpace(logContent) && VersionRegex().IsMatch(logContent))
                 ? null : "Version string not found in log";
         });
     }
@@ -438,4 +439,10 @@ internal static class Validation
             }
         }
     }
+
+    /// <summary>
+    ///     Source-generated regex for matching semantic version strings (N.N.N format).
+    /// </summary>
+    [GeneratedRegex(@"\d+\.\d+\.\d+")]
+    private static partial Regex VersionRegex();
 }
