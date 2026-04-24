@@ -113,9 +113,12 @@ internal sealed class FileAssertConfig
         // Materialize the filter list to avoid repeated enumeration
         var filterList = filters.ToList();
 
+        // Tool name used consistently in results serialization
+        const string ToolName = "FileAssert";
+
         // Create a results collection when results serialization is requested
         DemaConsulting.TestResults.TestResults? testResults = context.ResultsFile != null
-            ? new DemaConsulting.TestResults.TestResults { Name = "FileAssert" }
+            ? new DemaConsulting.TestResults.TestResults { Name = ToolName }
             : null;
 
         // Execute each test that matches the provided filters
@@ -130,8 +133,8 @@ internal sealed class FileAssertConfig
             testResults?.Results.Add(new DemaConsulting.TestResults.TestResult
             {
                 Name = test.Name,
-                ClassName = "FileAssert",
-                CodeBase = "FileAssert",
+                ClassName = ToolName,
+                CodeBase = ToolName,
                 Outcome = context.ErrorCount > errorsBefore
                     ? DemaConsulting.TestResults.TestOutcome.Failed
                     : DemaConsulting.TestResults.TestOutcome.Passed,

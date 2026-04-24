@@ -21,12 +21,20 @@
 namespace DemaConsulting.FileAssert.Utilities;
 
 /// <summary>
-///     Helper utilities for safe path operations.
+///     Helper utilities for safe path operations that prevent path-traversal attacks.
+///     Path traversal is a security vulnerability where an attacker supplies relative-path
+///     components (such as <c>../</c>) to escape an intended base directory and access or
+///     overwrite arbitrary files. All path operations in this class resolve paths to their
+///     absolute form and verify they remain within the declared base directory before use.
 /// </summary>
 internal static class PathHelpers
 {
     /// <summary>
-    ///     Safely combines two paths, ensuring the resolved combined path stays within the base directory.
+    ///     Safely combines two paths, ensuring the resolved combined path stays within
+    ///     the base directory, preventing path-traversal attacks.
+    ///     Null inputs are rejected immediately. The combined path is then resolved to its
+    ///     absolute form and compared against the resolved base directory to detect escape
+    ///     attempts using <c>../</c> sequences, absolute paths, or other traversal vectors.
     /// </summary>
     /// <param name="basePath">The base path.</param>
     /// <param name="relativePath">The relative path to combine.</param>

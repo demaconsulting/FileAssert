@@ -33,6 +33,10 @@ internal sealed class FileAssertHtmlAssert
     /// <summary>
     ///     Represents a single XPath query assertion with count constraints.
     /// </summary>
+    /// <param name="Query">The XPath expression to evaluate against the parsed HTML document.</param>
+    /// <param name="Count">The exact node count expected, or null for no exact-count constraint.</param>
+    /// <param name="Min">The minimum node count expected, or null for no lower-bound constraint.</param>
+    /// <param name="Max">The maximum node count expected, or null for no upper-bound constraint.</param>
     private sealed record HtmlQuery(string Query, int? Count, int? Min, int? Max);
 
     private readonly IReadOnlyList<HtmlQuery> _queries;

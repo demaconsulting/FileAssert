@@ -35,6 +35,7 @@ internal sealed class FileAssertYamlAssert
     /// </summary>
     private sealed record YamlQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>The list of configured dot-notation path assertions to evaluate against each matched YAML file.</summary>
     private readonly IReadOnlyList<YamlQuery> _queries;
 
     /// <summary>
@@ -153,6 +154,7 @@ internal sealed class FileAssertYamlAssert
             }
         }
 
+        // Path traversal completed without reaching the final segment (empty segments list)
         return 0;
     }
 

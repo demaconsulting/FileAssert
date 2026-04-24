@@ -124,9 +124,9 @@ internal static class Validation
                 return $"Program exited with code {exitCode}";
             }
 
-            // Verify version string is present in the log (version contains at least two dots)
+            // Verify version string is present in the log (must match N.N.N semantic version format)
             var logContent = File.ReadAllText(logFile);
-            return (!string.IsNullOrWhiteSpace(logContent) && logContent.Split('.').Length >= 3)
+            return (!string.IsNullOrWhiteSpace(logContent) && System.Text.RegularExpressions.Regex.IsMatch(logContent, @"\d+\.\d+\.\d+"))
                 ? null : "Version string not found in log";
         });
     }

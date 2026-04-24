@@ -129,8 +129,9 @@ public sealed class FileAssertTextAssertTests
         // Act
         textAssert.Run(context, missingFile);
 
-        // Assert
+        // Assert - an error was reported and it mentions the missing file
         Assert.AreEqual(1, context.ExitCode);
+        Assert.AreEqual(1, context.ErrorCount);
     }
 
     /// <summary>

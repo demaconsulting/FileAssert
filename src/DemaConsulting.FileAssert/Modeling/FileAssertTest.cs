@@ -100,6 +100,9 @@ internal sealed class FileAssertTest
     /// </returns>
     internal bool MatchesFilter(IEnumerable<string> filters)
     {
+        // Validate required parameter
+        ArgumentNullException.ThrowIfNull(filters);
+
         // Materialize to avoid multiple enumeration
         var filterList = filters.ToList();
 

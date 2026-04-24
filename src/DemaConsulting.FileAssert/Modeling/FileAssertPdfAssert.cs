@@ -174,8 +174,13 @@ internal sealed class FileAssertPdfAssert
         }
     }
 
+    /// <summary>Metadata field assertion rules applied to the PDF document information dictionary.</summary>
     private readonly IReadOnlyList<PdfMetadataRule> _metadata;
+
+    /// <summary>Page count constraints applied to the parsed PDF, or null when no page constraints are configured.</summary>
     private readonly PdfPages? _pages;
+
+    /// <summary>Body text content rules applied to the concatenated text extracted from all PDF pages.</summary>
     private readonly IReadOnlyList<FileAssertRule> _text;
 
     /// <summary>
@@ -200,6 +205,9 @@ internal sealed class FileAssertPdfAssert
     /// <param name="data">The PDF data deserialized from YAML configuration.</param>
     /// <returns>A new <see cref="FileAssertPdfAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when a metadata rule does not specify a field name or constraint.
+    /// </exception>
     internal static FileAssertPdfAssert Create(FileAssertPdfData data)
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -251,23 +259,26 @@ internal sealed class FileAssertPdfAssert
                 rule.Apply(context, fileName, value);
             }
 
-            // Apply page count constraints
-            var pageList = document.GetPages().ToList();
-            _pages?.Apply(context, fileName, pageList.Count);
-
-            // Apply text rules to the extracted body text when rules are defined
-            if (_text.Count > 0)
+            // Apply page count constraints and collect pages only when needed
+            if (_pages != null || _text.Count > 0)
             {
-                var sb = new StringBuilder();
-                foreach (var page in pageList)
-                {
-                    sb.Append(page.Text);
-                }
+                var pageList = document.GetPages().ToList();
+                _pages?.Apply(context, fileName, pageList.Count);
 
-                var content = sb.ToString();
-                foreach (var rule in _text)
+                // Apply text rules to the extracted body text when rules are defined
+                if (_text.Count > 0)
                 {
-                    rule.Apply(context, fileName, content);
+                    var sb = new StringBuilder();
+                    foreach (var page in pageList)
+                    {
+                        sb.Append(page.Text);
+                    }
+
+                    var content = sb.ToString();
+                    foreach (var rule in _text)
+                    {
+                        rule.Apply(context, fileName, content);
+                    }
                 }
             }
         }

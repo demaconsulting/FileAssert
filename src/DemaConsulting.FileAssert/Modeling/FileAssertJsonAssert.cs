@@ -32,8 +32,13 @@ internal sealed class FileAssertJsonAssert
     /// <summary>
     ///     Represents a single dot-notation path assertion with count constraints.
     /// </summary>
+    /// <param name="Query">The dot-notation path to traverse within the JSON document.</param>
+    /// <param name="Count">The exact element count expected, or null for no exact-count constraint.</param>
+    /// <param name="Min">The minimum element count expected, or null for no lower-bound constraint.</param>
+    /// <param name="Max">The maximum element count expected, or null for no upper-bound constraint.</param>
     private sealed record JsonQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>The list of configured dot-notation path assertions to evaluate against each matched JSON file.</summary>
     private readonly IReadOnlyList<JsonQuery> _queries;
 
     /// <summary>
@@ -140,6 +145,7 @@ internal sealed class FileAssertJsonAssert
             }
         }
 
+        // Path traversal completed without reaching the final segment (empty segments list)
         return 0;
     }
 

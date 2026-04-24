@@ -70,7 +70,7 @@ public class SelfTestTests
     ///     Verifies that the SelfTest subsystem prints a system information header.
     /// </summary>
     [TestMethod]
-    public void SelfTest_Run_PrintsSystemInfoHeader()
+    public void SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_selftest_");

@@ -204,4 +204,71 @@ public sealed class FileAssertJsonAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the count is below the minimum.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError()
+    {
+        // Arrange - sample JSON has 3 tools; assert min=5 (3 < 5, should fail)
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleJson);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 5 } };
+            var jsonAssert = FileAssertJsonAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            jsonAssert.Run(context, tempFile);
+
+            // Assert - min violation produces an error
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the count exceeds the maximum.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError()
+    {
+        // Arrange - sample JSON has 3 tools; assert max=2 (3 > 2, should fail)
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleJson);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Max = 2 } };
+            var jsonAssert = FileAssertJsonAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            jsonAssert.Run(context, tempFile);
+
+            // Assert - max violation produces an error
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query string is empty.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertJsonAssert_Create_EmptyQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "   " } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
+    }
 }
