@@ -68,7 +68,7 @@ tools:
     command: dotnet tool list
     regex: '(?i)demaconsulting\.reviewmark\s+(?<version>\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)'
 
-  # FileAssert (DemaConsulting.FileAssert - installed globally from built package)
+  # FileAssert (DemaConsulting.FileAssert from dotnet tool list)
   fileassert:
-    command: dotnet tool list --global
+    command: dotnet tool list
     regex: '(?i)demaconsulting\.fileassert\s+(?<version>\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)'
