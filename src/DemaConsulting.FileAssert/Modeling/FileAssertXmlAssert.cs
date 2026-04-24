@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using DemaConsulting.FileAssert.Cli;
@@ -86,7 +87,7 @@ internal sealed class FileAssertXmlAssert
         {
             document = XDocument.Load(fileName);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is XmlException or IOException or UnauthorizedAccessException)
         {
             context.WriteError($"File '{fileName}' could not be parsed as an XML document");
             return;

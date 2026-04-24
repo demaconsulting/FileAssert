@@ -17,5 +17,5 @@ sections:
           output all work together correctly.
         tests:
           - SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary
-          - SelfTest_Run_PrintsSystemInfoHeader
+          - SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader
           - SelfTest_Run_WithResultsFile_WritesTrxResultsFile

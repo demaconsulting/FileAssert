@@ -26,7 +26,6 @@ input-files:
   - docs/design/file-assert/utilities/path-helpers.md
   - docs/design/file-assert/selftest/selftest.md
   - docs/design/file-assert/selftest/validation.md
-  - docs/design/file-assert/platform.md
   - docs/design/file-assert/ots-dependencies.md
 template: template.html
 table-of-contents: true

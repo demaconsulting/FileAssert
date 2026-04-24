@@ -201,4 +201,110 @@ public sealed class FileAssertYamlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the count is below the minimum.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError()
+    {
+        // Arrange - sample YAML has 3 tools; assert min=5 (3 < 5, should fail)
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleYaml);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 5 } };
+            var yamlAssert = FileAssertYamlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            yamlAssert.Run(context, tempFile);
+
+            // Assert - min violation produces an error
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the count exceeds the maximum.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError()
+    {
+        // Arrange - sample YAML has 3 tools; assert max=2 (3 > 2, should fail)
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleYaml);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Max = 2 } };
+            var yamlAssert = FileAssertYamlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            yamlAssert.Run(context, tempFile);
+
+            // Assert - max violation produces an error
+            Assert.AreEqual(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query string is empty.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_EmptyQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "   " } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a trailing dot.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "tools." } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a leading dot.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = ".tools" } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has consecutive dots.
+    /// </summary>
+    [TestMethod]
+    public void FileAssertYamlAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var data = new List<FileAssertQueryData> { new() { Query = "a..b" } };
+
+        // Act & Assert
+        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
 }

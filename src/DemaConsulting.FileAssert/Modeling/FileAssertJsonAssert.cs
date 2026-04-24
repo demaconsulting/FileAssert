@@ -32,8 +32,13 @@ internal sealed class FileAssertJsonAssert
     /// <summary>
     ///     Represents a single dot-notation path assertion with count constraints.
     /// </summary>
+    /// <param name="Query">The dot-notation path to traverse within the JSON document.</param>
+    /// <param name="Count">The exact element count expected, or null for no exact-count constraint.</param>
+    /// <param name="Min">The minimum element count expected, or null for no lower-bound constraint.</param>
+    /// <param name="Max">The maximum element count expected, or null for no upper-bound constraint.</param>
     private sealed record JsonQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>The list of configured dot-notation path assertions to evaluate against each matched JSON file.</summary>
     private readonly IReadOnlyList<JsonQuery> _queries;
 
     /// <summary>
@@ -51,7 +56,10 @@ internal sealed class FileAssertJsonAssert
     /// <param name="data">The list of query data objects from YAML configuration.</param>
     /// <returns>A new <see cref="FileAssertJsonAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when a query does not specify a query string.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when a query does not specify a query string, or when the query path is malformed
+    ///     (contains leading/trailing dots or consecutive dots).
+    /// </exception>
     internal static FileAssertJsonAssert Create(IEnumerable<FileAssertQueryData> data)
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -61,6 +69,12 @@ internal sealed class FileAssertJsonAssert
             if (string.IsNullOrWhiteSpace(d.Query))
             {
                 throw new InvalidOperationException("JSON query assertion must specify a 'query'");
+            }
+
+            if (d.Query.StartsWith('.') || d.Query.EndsWith('.') || d.Query.Contains(".."))
+            {
+                throw new InvalidOperationException(
+                    $"JSON query assertion has malformed path '{d.Query}'");
             }
 
             return new JsonQuery(d.Query, d.Count, d.Min, d.Max);
@@ -114,10 +128,16 @@ internal sealed class FileAssertJsonAssert
     /// </returns>
     private static int CountJsonNodes(JsonElement root, string query)
     {
-        var segments = query.Split('.');
+        var segments = query.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length == 0)
+        {
+            return 0;
+        }
+
         var current = root;
 
-        for (var i = 0; i < segments.Length; i++)
+        for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current.ValueKind != JsonValueKind.Object)
             {
@@ -130,17 +150,21 @@ internal sealed class FileAssertJsonAssert
             }
 
             current = next;
-
-            if (i == segments.Length - 1)
-            {
-                // Return array length for arrays, or 1 for any other element
-                return current.ValueKind == JsonValueKind.Array
-                    ? current.GetArrayLength()
-                    : 1;
-            }
         }
 
-        return 0;
+        if (current.ValueKind != JsonValueKind.Object)
+        {
+            return 0;
+        }
+
+        if (!current.TryGetProperty(segments[^1], out var leaf))
+        {
+            return 0;
+        }
+
+        return leaf.ValueKind == JsonValueKind.Array
+            ? leaf.GetArrayLength()
+            : 1;
     }
 
     /// <summary>

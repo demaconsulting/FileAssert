@@ -25,6 +25,15 @@ using DemaConsulting.FileAssert.Configuration;
 namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
+///     Shared regex evaluation timeout to guard against catastrophic backtracking on adversarial inputs.
+/// </summary>
+internal static class RegexTimeout
+{
+    /// <summary>Regex evaluation will throw <see cref="RegexMatchTimeoutException"/> if it exceeds this duration.</summary>
+    internal static readonly TimeSpan Default = TimeSpan.FromSeconds(10);
+}
+
+/// <summary>
 ///     Abstract base class representing a content validation rule applied to file content.
 /// </summary>
 internal abstract class FileAssertRule
@@ -33,7 +42,10 @@ internal abstract class FileAssertRule
     ///     Creates a concrete <see cref="FileAssertRule"/> from the provided data.
     /// </summary>
     /// <param name="data">The rule data deserialized from YAML configuration.</param>
-    /// <returns>A <see cref="FileAssertContainsRule"/> or <see cref="FileAssertMatchesRule"/> instance.</returns>
+    /// <returns>
+    ///     A <see cref="FileAssertContainsRule"/>, <see cref="FileAssertDoesNotContainRule"/>,
+    ///     <see cref="FileAssertMatchesRule"/>, or <see cref="FileAssertDoesNotMatchRule"/> instance.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when the rule data does not specify a rule type.</exception>
     internal static FileAssertRule Create(FileAssertRuleData data)
@@ -138,7 +150,7 @@ internal sealed class FileAssertMatchesRule : FileAssertRule
         Pattern = pattern;
 
         // Compile the regex with a timeout to guard against catastrophic backtracking
-        _regex = new Regex(pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        _regex = new Regex(pattern, RegexOptions.Compiled, RegexTimeout.Default);
     }
 
     /// <summary>
@@ -224,7 +236,7 @@ internal sealed class FileAssertDoesNotMatchRule : FileAssertRule
         Pattern = pattern;
 
         // Compile the regex with a timeout to guard against catastrophic backtracking
-        _regex = new Regex(pattern, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        _regex = new Regex(pattern, RegexOptions.Compiled, RegexTimeout.Default);
     }
 
     /// <summary>

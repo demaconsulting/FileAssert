@@ -35,6 +35,7 @@ internal sealed class FileAssertYamlAssert
     /// </summary>
     private sealed record YamlQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>The list of configured dot-notation path assertions to evaluate against each matched YAML file.</summary>
     private readonly IReadOnlyList<YamlQuery> _queries;
 
     /// <summary>
@@ -52,7 +53,10 @@ internal sealed class FileAssertYamlAssert
     /// <param name="data">The list of query data objects from YAML configuration.</param>
     /// <returns>A new <see cref="FileAssertYamlAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when a query does not specify a query string.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when a query does not specify a query string, or when the query path is malformed
+    ///     (contains leading/trailing dots or consecutive dots).
+    /// </exception>
     internal static FileAssertYamlAssert Create(IEnumerable<FileAssertQueryData> data)
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -62,6 +66,12 @@ internal sealed class FileAssertYamlAssert
             if (string.IsNullOrWhiteSpace(d.Query))
             {
                 throw new InvalidOperationException("YAML query assertion must specify a 'query'");
+            }
+
+            if (d.Query.StartsWith('.') || d.Query.EndsWith('.') || d.Query.Contains(".."))
+            {
+                throw new InvalidOperationException(
+                    $"YAML query assertion has malformed path '{d.Query}'");
             }
 
             return new YamlQuery(d.Query, d.Count, d.Min, d.Max);
@@ -125,10 +135,16 @@ internal sealed class FileAssertYamlAssert
     /// </returns>
     private static int CountYamlNodes(YamlNode root, string query)
     {
-        var segments = query.Split('.');
+        var segments = query.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length == 0)
+        {
+            return 0;
+        }
+
         YamlNode? current = root;
 
-        for (var i = 0; i < segments.Length; i++)
+        for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current is not YamlMappingNode mapping)
             {
@@ -139,21 +155,25 @@ internal sealed class FileAssertYamlAssert
             {
                 return 0;
             }
-
-            if (i == segments.Length - 1)
-            {
-                // Return sequence length, or 1 for scalar/mapping nodes
-                return current switch
-                {
-                    YamlSequenceNode seq => seq.Children.Count,
-                    YamlScalarNode => 1,
-                    YamlMappingNode => 1,
-                    _ => 0
-                };
-            }
         }
 
-        return 0;
+        if (current is not YamlMappingNode finalMapping)
+        {
+            return 0;
+        }
+
+        if (!finalMapping.Children.TryGetValue(new YamlScalarNode(segments[^1]), out var leaf))
+        {
+            return 0;
+        }
+
+        return leaf switch
+        {
+            YamlSequenceNode seq => seq.Children.Count,
+            YamlScalarNode => 1,
+            YamlMappingNode => 1,
+            _ => 0
+        };
     }
 
     /// <summary>

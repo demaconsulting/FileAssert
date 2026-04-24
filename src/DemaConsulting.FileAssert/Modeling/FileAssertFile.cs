@@ -208,7 +208,8 @@ internal sealed class FileAssertFile
             return;
         }
 
-        // Apply per-file size and file-type assertions when any are defined
+        // Skip the per-file loop entirely when no size or file-type assertions are configured,
+        // avoiding unnecessary file system reads for purely count-constrained patterns.
         var hasPerFileChecks = MinSize.HasValue || MaxSize.HasValue ||
                                TextAssert != null || PdfAssert != null ||
                                XmlAssert != null || HtmlAssert != null ||

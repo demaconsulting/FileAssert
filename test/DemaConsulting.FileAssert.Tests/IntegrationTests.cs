@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Text.RegularExpressions;
+
 using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests;
@@ -26,8 +28,11 @@ namespace DemaConsulting.FileAssert.Tests;
 ///     Integration tests that run the FileAssert application through dotnet.
 /// </summary>
 [TestClass]
-public class IntegrationTests
+public partial class IntegrationTests
 {
+    [GeneratedRegex(@"\d+\.\d+\.\d+")]
+    private static partial Regex SemanticVersionRegex();
+
     private string _dllPath = string.Empty;
 
     /// <summary>
@@ -59,9 +64,7 @@ public class IntegrationTests
 
         // Assert
         Assert.AreEqual(0, exitCode);
-        Assert.IsFalse(string.IsNullOrWhiteSpace(output));
-        Assert.DoesNotContain("Error", output);
-        Assert.DoesNotContain("Copyright", output);
+        Assert.IsTrue(SemanticVersionRegex().IsMatch(output), $"Output did not contain a semantic version: {output}");
     }
 
     /// <summary>
