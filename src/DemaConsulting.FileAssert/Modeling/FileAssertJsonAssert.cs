@@ -119,10 +119,15 @@ internal sealed class FileAssertJsonAssert
     /// </returns>
     private static int CountJsonNodes(JsonElement root, string query)
     {
-        var segments = query.Split('.');
+        var segments = query.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length == 0)
+        {
+            return 0;
+        }
+
         var current = root;
 
-        // Traverse all but the last segment
         for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current.ValueKind != JsonValueKind.Object)
@@ -138,7 +143,6 @@ internal sealed class FileAssertJsonAssert
             current = next;
         }
 
-        // Evaluate the final segment
         if (current.ValueKind != JsonValueKind.Object)
         {
             return 0;
@@ -149,7 +153,6 @@ internal sealed class FileAssertJsonAssert
             return 0;
         }
 
-        // Return array length for arrays, or 1 for any other element
         return leaf.ValueKind == JsonValueKind.Array
             ? leaf.GetArrayLength()
             : 1;

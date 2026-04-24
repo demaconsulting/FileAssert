@@ -126,10 +126,15 @@ internal sealed class FileAssertYamlAssert
     /// </returns>
     private static int CountYamlNodes(YamlNode root, string query)
     {
-        var segments = query.Split('.');
+        var segments = query.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length == 0)
+        {
+            return 0;
+        }
+
         YamlNode? current = root;
 
-        // Traverse all but the last segment
         for (var i = 0; i < segments.Length - 1; i++)
         {
             if (current is not YamlMappingNode mapping)
@@ -143,7 +148,6 @@ internal sealed class FileAssertYamlAssert
             }
         }
 
-        // Evaluate the final segment
         if (current is not YamlMappingNode finalMapping)
         {
             return 0;
@@ -154,7 +158,6 @@ internal sealed class FileAssertYamlAssert
             return 0;
         }
 
-        // Return sequence length, or 1 for scalar/mapping nodes
         return leaf switch
         {
             YamlSequenceNode seq => seq.Children.Count,
