@@ -13,6 +13,7 @@ needs-review:
   - "docs/reqstream/**/*.yaml"
   - "docs/design/**/*.md"
   - "!**/obj/**"
+  - "!**/bin/**"
 
 # Evidence source: review data and index.json are located in the 'reviews' branch
 # of this repository, accessed through the GitHub public HTTPS raw content access.
