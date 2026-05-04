@@ -27,14 +27,14 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Subsystem tests for the Modeling subsystem.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class ModelingTests
 {
     /// <summary>
     ///     Verifies that the Modeling subsystem executes the full test → file → rule
     ///     chain without errors when all constraints are satisfied.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Modeling_ExecuteChain_PassesWhenAllConstraintsMet()
     {
         // Arrange - create a real file with content that satisfies all rules
@@ -67,7 +67,7 @@ public class ModelingTests
             test.Run(context, tempDir.FullName);
 
             // Assert - no errors reported
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -79,7 +79,7 @@ public class ModelingTests
     ///     Verifies that the Modeling subsystem reports failures through the context
     ///     when a content rule is not satisfied.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Modeling_ExecuteChain_ReportsFailuresThroughContext()
     {
         // Arrange - create a file that does NOT contain the required text
@@ -111,7 +111,7 @@ public class ModelingTests
             test.Run(context, tempDir.FullName);
 
             // Assert - an error was reported and the exit code is non-zero
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -123,7 +123,7 @@ public class ModelingTests
     ///     Verifies that the Modeling subsystem reports a parse error when a file-type
     ///     assertion block is declared but the file cannot be parsed as the declared format.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Modeling_FileTypeParsing_InvalidXml_ReportsParseError()
     {
         // Arrange - create a file with invalid XML content
@@ -155,7 +155,7 @@ public class ModelingTests
             test.Run(context, tempDir.FullName);
 
             // Assert - an error was reported because the file could not be parsed as XML
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -167,7 +167,7 @@ public class ModelingTests
     ///     Verifies that the Modeling subsystem evaluates XPath query assertions against
     ///     a valid XML document and reports no error when the count constraint is satisfied.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Modeling_QueryAssertions_XmlQueryMeetsCount_NoError()
     {
         // Arrange - create a valid XML file with elements the query will match
@@ -204,7 +204,7 @@ public class ModelingTests
             test.Run(context, tempDir.FullName);
 
             // Assert - no errors reported because the query matched the expected count
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {

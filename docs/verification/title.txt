@@ -1,0 +1,13 @@
+---
+title: FileAssert Verification Design Document
+subtitle: Document Assertion Tool for Build Pipelines
+author: DEMA Consulting
+description: Verification design document for FileAssert
+lang: en-US
+keywords:
+  - FileAssert
+  - .NET
+  - Command-Line Tool
+  - Verification
+  - Verification Design Document
+---

@@ -23,7 +23,7 @@ includes:
   - docs/reqstream/file-assert/selftest/selftest.yaml
   - docs/reqstream/file-assert/selftest/validation.yaml
   - docs/reqstream/file-assert/platform-requirements.yaml
-  - docs/reqstream/ots/mstest.yaml
+  - docs/reqstream/ots/xunit.yaml
   - docs/reqstream/ots/reqstream.yaml
   - docs/reqstream/ots/buildmark.yaml
   - docs/reqstream/ots/versionmark.yaml

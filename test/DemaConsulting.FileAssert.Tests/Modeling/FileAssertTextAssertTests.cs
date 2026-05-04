@@ -27,13 +27,13 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertTextAssert"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public sealed class FileAssertTextAssertTests
 {
     /// <summary>
     ///     Verifies that Create succeeds given valid data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Create_ValidData_CreatesTextAssert()
     {
         // Arrange
@@ -46,24 +46,24 @@ public sealed class FileAssertTextAssertTests
         var textAssert = FileAssertTextAssert.Create(data);
 
         // Assert
-        Assert.IsNotNull(textAssert);
-        Assert.HasCount(1, textAssert.Rules);
+        Assert.NotNull(textAssert);
+        Assert.Single(textAssert.Rules);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertTextAssert.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertTextAssert.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Run produces no error when the file contains the required text.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Run_FileContainsText_NoError()
     {
         // Arrange - create a temp file with content that satisfies the rule
@@ -79,7 +79,7 @@ public sealed class FileAssertTextAssertTests
             textAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -90,7 +90,7 @@ public sealed class FileAssertTextAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the file does not contain the required text.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Run_FileMissingText_WritesError()
     {
         // Arrange - create a temp file with content that does NOT satisfy the rule
@@ -106,7 +106,7 @@ public sealed class FileAssertTextAssertTests
             textAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -117,7 +117,7 @@ public sealed class FileAssertTextAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the file cannot be read (I/O error).
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Run_NonExistentFile_WritesError()
     {
         // Arrange - use a path that does not exist to trigger an I/O failure
@@ -130,15 +130,15 @@ public sealed class FileAssertTextAssertTests
         textAssert.Run(context, missingFile);
 
         // Assert - an error was reported
-        Assert.AreEqual(1, context.ExitCode);
-        Assert.AreEqual(1, context.ErrorCount);
+        Assert.Equal(1, context.ExitCode);
+        Assert.Equal(1, context.ErrorCount);
     }
 
     /// <summary>
     ///     Verifies that Run evaluates all rules and reports multiple errors without
     ///     short-circuiting on the first failure.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors()
     {
         // Arrange - create a temp file whose content satisfies neither rule
@@ -158,8 +158,8 @@ public sealed class FileAssertTextAssertTests
             textAssert.Run(context, tempFile);
 
             // Assert - both rules must have been evaluated (no short-circuit)
-            Assert.AreEqual(2, context.ErrorCount);
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(2, context.ErrorCount);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
