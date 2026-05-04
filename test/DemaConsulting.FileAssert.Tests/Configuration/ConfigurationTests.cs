@@ -26,14 +26,14 @@ namespace DemaConsulting.FileAssert.Tests.Configuration;
 /// <summary>
 ///     Subsystem tests for the Configuration subsystem.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class ConfigurationTests
 {
     /// <summary>
     ///     Verifies that the Configuration subsystem loads a YAML file and builds the
     ///     complete test hierarchy (tests → files → rules) correctly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Configuration_LoadYaml_BuildsCompleteTestHierarchy()
     {
         // Arrange - write a YAML configuration with nested test, file, and rule entries
@@ -57,16 +57,16 @@ public class ConfigurationTests
             var config = FileAssertConfig.ReadFromFile(configPath);
 
             // Assert - the full hierarchy is correctly constructed
-            Assert.HasCount(1, config.Tests);
+            Assert.Single(config.Tests);
             var test = config.Tests[0];
-            Assert.AreEqual("License Check", test.Name);
-            Assert.HasCount(1, test.Tags);
-            Assert.AreEqual("license", test.Tags[0]);
-            Assert.HasCount(1, test.Files);
+            Assert.Equal("License Check", test.Name);
+            Assert.Single(test.Tags);
+            Assert.Equal("license", test.Tags[0]);
+            Assert.Single(test.Files);
             var file = test.Files[0];
-            Assert.AreEqual("**/*.txt", file.Pattern);
-            Assert.AreEqual(1, file.Min);
-            Assert.HasCount(1, file.TextAssert!.Rules);
+            Assert.Equal("**/*.txt", file.Pattern);
+            Assert.Equal(1, file.Min);
+            Assert.Single(file.TextAssert!.Rules);
         }
         finally
         {
@@ -78,7 +78,7 @@ public class ConfigurationTests
     ///     Verifies that the Configuration subsystem executes only tests that match
     ///     the provided filters when running a configuration with multiple tests.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Configuration_RunWithFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests in config; only one file exists so only that test should pass
@@ -108,7 +108,7 @@ public class ConfigurationTests
             config.Run(context, ["Alpha"]);
 
             // Assert - no errors because only Alpha ran (and alpha.txt exists)
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -120,7 +120,7 @@ public class ConfigurationTests
     ///     Verifies that the Configuration subsystem executes only tests whose tag matches
     ///     the provided filter when running a configuration with multiple tests.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests with different tags; only one file exists so only that test passes
@@ -154,7 +154,7 @@ public class ConfigurationTests
             config.Run(context, ["smoke"]);
 
             // Assert - no errors because only Alpha ran (matching the smoke tag) and alpha.txt exists
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {

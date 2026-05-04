@@ -27,7 +27,7 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertHtmlAssert"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public sealed class FileAssertHtmlAssertTests
 {
     private const string SampleHtml = """
@@ -46,7 +46,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Create succeeds given valid query data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Create_ValidData_CreatesHtmlAssert()
     {
         // Arrange
@@ -59,23 +59,23 @@ public sealed class FileAssertHtmlAssertTests
         var htmlAssert = FileAssertHtmlAssert.Create(data);
 
         // Assert
-        Assert.IsNotNull(htmlAssert);
+        Assert.NotNull(htmlAssert);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertHtmlAssert.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertHtmlAssert.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Run produces no error when the XPath count matches exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_ExactCount_Matches_NoError()
     {
         // Arrange - write sample HTML with 2 paragraph elements
@@ -91,7 +91,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -102,7 +102,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the XPath count does not match exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError()
     {
         // Arrange - sample HTML has 2 paragraphs but we assert count = 5
@@ -118,7 +118,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -129,7 +129,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the XPath count is within min/max bounds.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError()
     {
         // Arrange - sample HTML has 2 paragraphs; assert min=1, max=4
@@ -145,7 +145,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -156,7 +156,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the file does not exist and cannot be parsed.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_NonExistentFile_WritesError()
     {
         // Arrange - use a path that does not exist to trigger a parse failure
@@ -169,13 +169,13 @@ public sealed class FileAssertHtmlAssertTests
         htmlAssert.Run(context, missingFile);
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that Run reports an error when the XPath query has invalid syntax.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError()
     {
         // Arrange - valid HTML but an XPath expression with invalid syntax
@@ -191,7 +191,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -202,7 +202,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when an XPath query selects HTML nodes by exact text.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError()
     {
         // Arrange - sample HTML has a <p> with text "Paragraph one"; query for exact match
@@ -218,7 +218,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -229,7 +229,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError()
     {
         // Arrange - no <p> has text "No such paragraph"; query should return 0 nodes
@@ -245,7 +245,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -256,7 +256,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when an XPath contains() predicate matches an HTML node.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError()
     {
         // Arrange - sample HTML has paragraphs containing "Paragraph"; substring query returns 2
@@ -272,7 +272,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -283,7 +283,7 @@ public sealed class FileAssertHtmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when an XPath contains() predicate finds no matching nodes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertHtmlAssert_Run_XPathContainsText_NoMatch_WritesError()
     {
         // Arrange - no <p> contains "xyz"; contains() query returns 0 nodes
@@ -299,7 +299,7 @@ public sealed class FileAssertHtmlAssertTests
             htmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {

@@ -25,98 +25,98 @@ namespace DemaConsulting.FileAssert.Tests.Cli;
 /// <summary>
 ///     Unit tests for the new <c>ConfigFile</c>, <c>Filters</c>, and <c>--config</c> features of <see cref="Context"/>.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class ContextNewPropertiesTests
 {
     /// <summary>
     ///     Verifies that ConfigFile defaults to <c>.fileassert.yaml</c> when no arguments are provided.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_NoArguments_ConfigFileHasDefaultValue()
     {
         // Act
         using var context = Context.Create([]);
 
         // Assert
-        Assert.AreEqual(".fileassert.yaml", context.ConfigFile);
+        Assert.Equal(".fileassert.yaml", context.ConfigFile);
     }
 
     /// <summary>
     ///     Verifies that Filters is empty when no positional arguments are provided.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_NoArguments_FiltersIsEmpty()
     {
         // Act
         using var context = Context.Create([]);
 
         // Assert
-        Assert.HasCount(0, context.Filters);
+        Assert.Empty(context.Filters);
     }
 
     /// <summary>
     ///     Verifies that <c>--config</c> sets the ConfigFile property.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_ConfigFlag_SetsConfigFile()
     {
         // Act
         using var context = Context.Create(["--config", "my-tests.yaml"]);
 
         // Assert
-        Assert.AreEqual("my-tests.yaml", context.ConfigFile);
+        Assert.Equal("my-tests.yaml", context.ConfigFile);
     }
 
     /// <summary>
     ///     Verifies that positional arguments are collected into the Filters list.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_PositionalArguments_AddedToFilters()
     {
         // Act
         using var context = Context.Create(["smoke", "regression"]);
 
         // Assert
-        Assert.HasCount(2, context.Filters);
-        Assert.AreEqual("smoke", context.Filters[0]);
-        Assert.AreEqual("regression", context.Filters[1]);
+        Assert.Equal(2, context.Filters.Count);
+        Assert.Equal("smoke", context.Filters[0]);
+        Assert.Equal("regression", context.Filters[1]);
     }
 
     /// <summary>
     ///     Verifies that positional arguments may be mixed with flag arguments.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MixedArguments_ParsesCorrectly()
     {
         // Act
         using var context = Context.Create(["--silent", "my-filter", "--config", "cfg.yaml"]);
 
         // Assert
-        Assert.IsTrue(context.Silent);
-        Assert.AreEqual("cfg.yaml", context.ConfigFile);
-        Assert.HasCount(1, context.Filters);
-        Assert.AreEqual("my-filter", context.Filters[0]);
+        Assert.True(context.Silent);
+        Assert.Equal("cfg.yaml", context.ConfigFile);
+        Assert.Single(context.Filters);
+        Assert.Equal("my-filter", context.Filters[0]);
     }
 
     /// <summary>
     ///     Verifies that an unknown flag (starting with <c>-</c>) still throws <see cref="ArgumentException"/>.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_UnknownFlagWithDash_ThrowsArgumentException()
     {
         // Act & Assert
-        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--bogus-flag"]));
+        var exception = Assert.Throws<ArgumentException>(() => Context.Create(["--bogus-flag"]));
         Assert.Contains("Unsupported argument", exception.Message);
     }
 
     /// <summary>
     ///     Verifies that <c>--config</c> without a value throws <see cref="ArgumentException"/>.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_ConfigFlag_WithoutValue_ThrowsArgumentException()
     {
         // Act & Assert
-        var exception = Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--config"]));
+        var exception = Assert.Throws<ArgumentException>(() => Context.Create(["--config"]));
         Assert.Contains("--config", exception.Message);
     }
 }

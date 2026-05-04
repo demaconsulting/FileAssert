@@ -27,7 +27,7 @@ namespace DemaConsulting.FileAssert.Tests.Configuration;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertConfig"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class FileAssertConfigTests
 {
     /// <summary>
@@ -46,7 +46,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that ReadFromFile successfully parses a valid YAML configuration file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig()
     {
         // Arrange - write a minimal config to a temp file
@@ -65,8 +65,8 @@ public class FileAssertConfigTests
             var config = FileAssertConfig.ReadFromFile(configPath);
 
             // Assert
-            Assert.HasCount(1, config.Tests);
-            Assert.AreEqual("Sample Test", config.Tests[0].Name);
+            Assert.Single(config.Tests);
+            Assert.Equal("Sample Test", config.Tests[0].Name);
         }
         finally
         {
@@ -77,30 +77,30 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that ReadFromFile throws <see cref="FileNotFoundException"/> for a missing file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException()
     {
         // Arrange - construct a path that does not exist
         var missingPath = Path.Combine(Path.GetTempPath(), $"nonexistent_{Guid.NewGuid()}.yaml");
 
         // Act & Assert
-        Assert.ThrowsExactly<FileNotFoundException>(() => FileAssertConfig.ReadFromFile(missingPath));
+        Assert.Throws<FileNotFoundException>(() => FileAssertConfig.ReadFromFile(missingPath));
     }
 
     /// <summary>
     ///     Verifies that ReadFromFile throws <see cref="ArgumentNullException"/> when path is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertConfig.ReadFromFile(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertConfig.ReadFromFile(null!));
     }
 
     /// <summary>
     ///     Verifies that Run with no filter executes all tests.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_Run_WithNoFilter_RunsAllTests()
     {
         // Arrange - create temp directory with files that satisfy both test patterns
@@ -120,7 +120,7 @@ public class FileAssertConfigTests
             config.Run(context, []);
 
             // Assert - both tests ran and found their files with no errors
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -131,7 +131,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that Run with a matching filter only executes the matching test.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest()
     {
         // Arrange - only create alpha.txt; beta.txt missing would cause an error if Test Beta ran
@@ -160,7 +160,7 @@ public class FileAssertConfigTests
             config.Run(context, ["Test Alpha"]);
 
             // Assert - no error because Test Beta was skipped
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -171,7 +171,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that Run with a non-matching filter skips all tests.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests()
     {
         // Arrange - both patterns would fail if executed (files are absent with min=1)
@@ -198,7 +198,7 @@ public class FileAssertConfigTests
             config.Run(context, ["No Match"]);
 
             // Assert - no error because all tests were skipped by the filter
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -209,7 +209,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that Run writes a TRX results file with Passed outcome when all tests pass.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome()
     {
         // Arrange
@@ -236,8 +236,8 @@ public class FileAssertConfigTests
             config.Run(context, []);
 
             // Assert - TRX file contains the test name with Passed outcome
-            Assert.AreEqual(0, context.ExitCode);
-            Assert.IsTrue(File.Exists(trxFile));
+            Assert.Equal(0, context.ExitCode);
+            Assert.True(File.Exists(trxFile));
             var trxContent = File.ReadAllText(trxFile);
             Assert.Contains("LicenseCheck", trxContent);
             Assert.Contains("outcome=\"Passed\"", trxContent);
@@ -255,7 +255,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that Run writes a JUnit XML results file with failure entries when tests fail.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome()
     {
         // Arrange
@@ -283,8 +283,8 @@ public class FileAssertConfigTests
             config.Run(context, []);
 
             // Assert - JUnit file contains the test name with a failure entry
-            Assert.AreNotEqual(0, context.ExitCode);
-            Assert.IsTrue(File.Exists(xmlFile));
+            Assert.NotEqual(0, context.ExitCode);
+            Assert.True(File.Exists(xmlFile));
             var xmlContent = File.ReadAllText(xmlFile);
             Assert.Contains("LicenseCheck", xmlContent);
             Assert.Contains("failures=\"1\"", xmlContent);
@@ -302,7 +302,7 @@ public class FileAssertConfigTests
     /// <summary>
     ///     Verifies that ReadFromFile correctly parses a YAML configuration containing a PDF assertion block.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly()
     {
         // Arrange - write a config with a pdf: block containing metadata and pages
@@ -330,13 +330,13 @@ public class FileAssertConfigTests
             var config = FileAssertConfig.ReadFromFile(configPath);
 
             // Assert - one test was parsed with one file assertion and populated PDF settings
-            Assert.HasCount(1, config.Tests);
-            Assert.AreEqual("PDF Check", config.Tests[0].Name);
-            Assert.HasCount(1, config.Tests[0].Files);
+            Assert.Single(config.Tests);
+            Assert.Equal("PDF Check", config.Tests[0].Name);
+            Assert.Single(config.Tests[0].Files);
 
             var fileAssertion = config.Tests[0].Files[0];
-            Assert.AreEqual("report.pdf", fileAssertion.Pattern);
-            Assert.IsNotNull(fileAssertion.PdfAssert);
+            Assert.Equal("report.pdf", fileAssertion.Pattern);
+            Assert.NotNull(fileAssertion.PdfAssert);
         }
         finally
         {

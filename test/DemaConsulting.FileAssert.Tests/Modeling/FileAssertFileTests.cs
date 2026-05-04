@@ -27,13 +27,13 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertFile"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class FileAssertFileTests
 {
     /// <summary>
     ///     Verifies that Create succeeds given valid data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Create_ValidData_CreatesFile()
     {
         // Arrange
@@ -43,54 +43,54 @@ public class FileAssertFileTests
         var file = FileAssertFile.Create(data);
 
         // Assert
-        Assert.AreEqual("**/*.txt", file.Pattern);
-        Assert.AreEqual(1, file.Min);
-        Assert.AreEqual(10, file.Max);
-        Assert.IsNull(file.TextAssert);
+        Assert.Equal("**/*.txt", file.Pattern);
+        Assert.Equal(1, file.Min);
+        Assert.Equal(10, file.Max);
+        Assert.Null(file.TextAssert);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertFile.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertFile.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Pattern is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new FileAssertFileData { Pattern = null };
 
         // Act & Assert
-        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertFile.Create(data));
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertFile.Create(data));
         Assert.Contains("pattern", exception.Message);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Pattern is blank.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new FileAssertFileData { Pattern = "   " };
 
         // Act & Assert
-        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertFile.Create(data));
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertFile.Create(data));
         Assert.Contains("pattern", exception.Message);
     }
 
     /// <summary>
     ///     Verifies that Run produces no error when there are no matching files and no constraints.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError()
     {
         // Arrange - use an empty temp directory so the pattern matches nothing
@@ -105,7 +105,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -116,7 +116,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run produces no error when files are found and no constraints are set.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError()
     {
         // Arrange - create a temp file for the pattern to match
@@ -132,7 +132,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -143,7 +143,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when fewer files are found than the minimum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_TooFewFiles_WritesError()
     {
         // Arrange - empty directory so zero files match, but min requires at least 1
@@ -158,7 +158,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -169,7 +169,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when more files are found than the maximum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_TooManyFiles_WritesError()
     {
         // Arrange - create two files but constrain max to 1
@@ -186,7 +186,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -197,7 +197,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run produces no error when a content rule is satisfied by the matching file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError()
     {
         // Arrange - create a file that satisfies the contains rule
@@ -217,7 +217,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -228,7 +228,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when a content rule is not satisfied by the matching file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError()
     {
         // Arrange - create a file that does NOT satisfy the contains rule
@@ -248,7 +248,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -259,7 +259,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when the file count does not match the exact count constraint.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_WrongCount_WritesError()
     {
         // Arrange - create two files but constrain count to exactly 1
@@ -276,7 +276,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -287,7 +287,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when a file is smaller than the minimum size.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_TooSmall_WritesError()
     {
         // Arrange - create an empty file and require at least 10 bytes
@@ -303,7 +303,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -314,7 +314,7 @@ public class FileAssertFileTests
     /// <summary>
     ///     Verifies that Run reports an error when a file exceeds the maximum size.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_TooLarge_WritesError()
     {
         // Arrange - create a file with content larger than 5 bytes
@@ -330,7 +330,7 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -342,7 +342,7 @@ public class FileAssertFileTests
     ///     Verifies that Run checks size constraints against every matched file, not just the first,
     ///     by confirming one error is reported per violating file regardless of enumeration order.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation()
     {
         // Arrange - three files: one within bounds, one too small, one too large
@@ -360,8 +360,8 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert - both invalid files should trigger errors regardless of enumeration order
-            Assert.AreEqual(1, context.ExitCode);
-            Assert.AreEqual(2, context.ErrorCount);
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(2, context.ErrorCount);
         }
         finally
         {
@@ -373,7 +373,7 @@ public class FileAssertFileTests
     ///     Verifies that Run applies content rules to every matched file, not just the first,
     ///     by confirming one error is reported per violating file regardless of enumeration order.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation()
     {
         // Arrange - three files: one with the required content, two without
@@ -395,8 +395,8 @@ public class FileAssertFileTests
             file.Run(context, tempDir.FullName);
 
             // Assert - both bad files should trigger errors regardless of enumeration order
-            Assert.AreEqual(1, context.ExitCode);
-            Assert.AreEqual(2, context.ErrorCount);
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(2, context.ErrorCount);
         }
         finally
         {

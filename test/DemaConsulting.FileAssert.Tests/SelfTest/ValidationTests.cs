@@ -26,13 +26,13 @@ namespace DemaConsulting.FileAssert.Tests.SelfTest;
 /// <summary>
 ///     Unit tests for the Validation class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class ValidationTests
 {
     /// <summary>
     ///     Test that Run throws ArgumentNullException when context is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_NullContext_ThrowsArgumentNullException()
     {
         // Arrange
@@ -40,13 +40,13 @@ public class ValidationTests
 
         // Act & Assert
         // Proves that Run guards against null context with ArgumentNullException.
-        Assert.ThrowsExactly<ArgumentNullException>(() => Validation.Run(null!));
+        Assert.Throws<ArgumentNullException>(() => Validation.Run(null!));
     }
 
     /// <summary>
     ///     Test that Run prints a summary containing total, passed, and failed counts.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithSilentContext_PrintsSummary()
     {
         // Arrange
@@ -80,7 +80,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run exits with code zero when all self-validation tests pass.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithSilentContext_ExitCodeIsZero()
     {
         // Arrange
@@ -91,13 +91,13 @@ public class ValidationTests
 
         // Assert
         // Proves that a successful validation run leaves the exit code at 0.
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     ///     Test that Run writes a valid TRX file when the results path ends with .trx.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithTrxResultsFile_WritesTrxFile()
     {
         // Arrange
@@ -111,7 +111,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run creates a TRX-format file at the requested path.
-            Assert.IsTrue(File.Exists(trxFile));
+            Assert.True(File.Exists(trxFile));
             var content = File.ReadAllText(trxFile);
             Assert.Contains("<TestRun", content);
         }
@@ -127,7 +127,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run writes a valid JUnit XML file when the results path ends with .xml.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithXmlResultsFile_WritesXmlFile()
     {
         // Arrange
@@ -141,7 +141,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run creates a JUnit-format XML file at the requested path.
-            Assert.IsTrue(File.Exists(xmlFile));
+            Assert.True(File.Exists(xmlFile));
             var content = File.ReadAllText(xmlFile);
             Assert.Contains("<testsuites", content);
         }
@@ -157,7 +157,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run does not write a results file when the extension is unsupported.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile()
     {
         // Arrange
@@ -171,7 +171,7 @@ public class ValidationTests
 
             // Assert
             // Proves that Run does not create a file for unsupported formats.
-            Assert.IsFalse(File.Exists(jsonFile));
+            Assert.False(File.Exists(jsonFile));
         }
         finally
         {
@@ -185,7 +185,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run logs a passing FileAssert_Results result.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithSilentContext_LogContainsFileAssertResults()
     {
         // Act & Assert
@@ -196,7 +196,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run logs a passing FileAssert_Exists result.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithSilentContext_LogContainsFileAssertExists()
     {
         // Act & Assert
@@ -207,7 +207,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run logs a passing FileAssert_Contains result.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithSilentContext_LogContainsFileAssertContains()
     {
         // Act & Assert
@@ -218,7 +218,7 @@ public class ValidationTests
     /// <summary>
     ///     Test that Run uses the specified depth for the markdown heading.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Validation_Run_WithDepth_UsesSpecifiedHeadingDepth()
     {
         // Arrange

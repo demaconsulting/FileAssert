@@ -27,13 +27,13 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertTest"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class FileAssertTestTests
 {
     /// <summary>
     ///     Verifies that Create succeeds given valid data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Create_ValidData_CreatesTest()
     {
         // Arrange
@@ -47,53 +47,53 @@ public class FileAssertTestTests
         var test = FileAssertTest.Create(data);
 
         // Assert
-        Assert.AreEqual("My Test", test.Name);
-        Assert.HasCount(2, test.Tags);
-        Assert.HasCount(0, test.Files);
+        Assert.Equal("My Test", test.Name);
+        Assert.Equal(2, test.Tags.Count);
+        Assert.Empty(test.Files);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertTest.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertTest.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Name is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Create_NullName_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new FileAssertTestData { Name = null };
 
         // Act & Assert
-        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertTest.Create(data));
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertTest.Create(data));
         Assert.Contains("name", exception.Message);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Name is whitespace.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new FileAssertTestData { Name = "   " };
 
         // Act & Assert
-        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertTest.Create(data));
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertTest.Create(data));
         Assert.Contains("name", exception.Message);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter returns true when the filter list is empty.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_EmptyFilters_ReturnsTrue()
     {
         // Arrange
@@ -103,13 +103,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter([]);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter returns true when a filter matches the test name.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue()
     {
         // Arrange
@@ -119,13 +119,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter(["Alpha"]);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter returns true when a filter matches one of the test's tags.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue()
     {
         // Arrange
@@ -139,13 +139,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter(["smoke"]);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter returns false when no filter matches the name or tags.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse()
     {
         // Arrange
@@ -159,13 +159,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter(["Beta"]);
 
         // Assert
-        Assert.IsFalse(result);
+        Assert.False(result);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter name comparison is case-insensitive.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue()
     {
         // Arrange
@@ -175,13 +175,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter(["ALPHA TEST"]);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 
     /// <summary>
     ///     Verifies that MatchesFilter tag comparison is case-insensitive.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue()
     {
         // Arrange
@@ -195,13 +195,13 @@ public class FileAssertTestTests
         var result = test.MatchesFilter(["SMOKE"]);
 
         // Assert
-        Assert.IsTrue(result);
+        Assert.True(result);
     }
 
     /// <summary>
     ///     Verifies that Run executes all file assertions in the test.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Run_RunsAllFiles()
     {
         // Arrange - create a temp directory with a file matching the pattern
@@ -221,7 +221,7 @@ public class FileAssertTestTests
             test.Run(context, tempDir.FullName);
 
             // Assert - min=1 would have produced an error if the file had not been found
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -232,7 +232,7 @@ public class FileAssertTestTests
     /// <summary>
     ///     Verifies that Run throws <see cref="ArgumentNullException"/> when context is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Run_NullContext_ThrowsArgumentNullException()
     {
         // Arrange
@@ -240,13 +240,13 @@ public class FileAssertTestTests
         var basePath = Directory.GetCurrentDirectory();
 
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => test.Run(null!, basePath));
+        Assert.Throws<ArgumentNullException>(() => test.Run(null!, basePath));
     }
 
     /// <summary>
     ///     Verifies that Run throws <see cref="ArgumentNullException"/> when basePath is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException()
     {
         // Arrange
@@ -254,6 +254,6 @@ public class FileAssertTestTests
         using var context = Context.Create(["--silent"]);
 
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => test.Run(context, null!));
+        Assert.Throws<ArgumentNullException>(() => test.Run(context, null!));
     }
 }
