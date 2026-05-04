@@ -25,13 +25,13 @@ namespace DemaConsulting.FileAssert.Tests.Cli;
 /// <summary>
 ///     Subsystem tests for the Cli subsystem.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class CliTests
 {
     /// <summary>
     ///     Verifies that the Cli subsystem correctly parses the --silent, --validate, and --log flags.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_CreateContext_ParsesSilentValidateAndLogFlags()
     {
         // Arrange
@@ -49,12 +49,12 @@ public class CliTests
             ]))
             {
                 // Assert - all flags are reflected in the context properties
-                Assert.IsTrue(context.Silent);
-                Assert.IsTrue(context.Validate);
-                Assert.IsFalse(context.Version);
-                Assert.IsFalse(context.Help);
-                Assert.AreEqual(".fileassert.yaml", context.ConfigFile);
-                Assert.AreEqual(0, context.ExitCode);
+                Assert.True(context.Silent);
+                Assert.True(context.Validate);
+                Assert.False(context.Version);
+                Assert.False(context.Help);
+                Assert.Equal(".fileassert.yaml", context.ConfigFile);
+                Assert.Equal(0, context.ExitCode);
             }
         }
         finally
@@ -66,7 +66,7 @@ public class CliTests
     /// <summary>
     ///     Verifies that the Cli subsystem correctly parses --version, --help, --config, and --results flags.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_CreateContext_ParsesVersionHelpConfigResultsFlags()
     {
         // Arrange
@@ -86,10 +86,10 @@ public class CliTests
             ]);
 
             // Assert - all flags are reflected in the context properties
-            Assert.IsTrue(context.Version);
-            Assert.IsTrue(context.Help);
-            Assert.AreEqual(configPath, context.ConfigFile);
-            Assert.AreEqual(resultsPath, context.ResultsFile);
+            Assert.True(context.Version);
+            Assert.True(context.Help);
+            Assert.Equal(configPath, context.ConfigFile);
+            Assert.Equal(resultsPath, context.ResultsFile);
         }
         finally
         {
@@ -100,50 +100,50 @@ public class CliTests
     /// <summary>
     ///     Verifies that the Cli subsystem captures positional arguments as test name/tag filters.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_CreateContext_WithFilters_ParsesPositionalArguments()
     {
         // Arrange & Act
         using var context = Context.Create(["--silent", "smoke", "regression"]);
 
         // Assert - positional arguments are captured in the Filters collection
-        Assert.HasCount(2, context.Filters);
-        Assert.AreEqual("smoke", context.Filters[0]);
-        Assert.AreEqual("regression", context.Filters[1]);
+        Assert.Equal(2, context.Filters.Count);
+        Assert.Equal("smoke", context.Filters[0]);
+        Assert.Equal("regression", context.Filters[1]);
     }
 
     /// <summary>
     ///     Verifies that the Cli subsystem throws ArgumentException for unknown flags.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_CreateContext_UnknownArgument_ThrowsArgumentException()
     {
         // Arrange & Act & Assert
-        Assert.ThrowsExactly<ArgumentException>(() => Context.Create(["--unknown-flag"]));
+        Assert.Throws<ArgumentException>(() => Context.Create(["--unknown-flag"]));
     }
 
     /// <summary>
     ///     Verifies that WriteError changes the context exit code from 0 to 1.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_WriteError_ChangesExitCodeToOne()
     {
         // Arrange
         using var context = Context.Create(["--silent"]);
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
 
         // Act
         context.WriteError("something went wrong");
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that the Cli subsystem routes both informational and error messages
     ///     through the log file when a log path is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Cli_OutputPipeline_WritesMessagesToLogFile()
     {
         // Arrange

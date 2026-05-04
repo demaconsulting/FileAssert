@@ -25,13 +25,13 @@ namespace DemaConsulting.FileAssert.Tests;
 /// <summary>
 ///     Unit tests for the Program class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class ProgramTests
 {
     /// <summary>
     ///     Test that Run with version flag displays version only.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithVersionFlag_DisplaysVersionOnly()
     {
         // Arrange
@@ -60,7 +60,7 @@ public class ProgramTests
     /// <summary>
     ///     Test that Run with help flag displays usage information.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithHelpFlag_DisplaysUsageInformation()
     {
         // Arrange
@@ -90,7 +90,7 @@ public class ProgramTests
     /// <summary>
     ///     Test that Run with validate flag runs validation.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithValidateFlag_RunsValidation()
     {
         // Arrange
@@ -117,7 +117,7 @@ public class ProgramTests
     /// <summary>
     ///     Test that Run with no arguments displays default behavior.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_NoArguments_DisplaysDefaultBehavior()
     {
         // Arrange
@@ -145,13 +145,13 @@ public class ProgramTests
     /// <summary>
     ///     Test that version property returns non-empty version string.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Version_ReturnsNonEmptyString()
     {
         // Act
         var version = Program.Version;
 
         // Assert
-        Assert.IsFalse(string.IsNullOrWhiteSpace(version));
+        Assert.False(string.IsNullOrWhiteSpace(version));
     }
 }

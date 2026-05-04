@@ -26,14 +26,14 @@ namespace DemaConsulting.FileAssert.Tests.SelfTest;
 /// <summary>
 ///     Subsystem tests for the SelfTest subsystem.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class SelfTestTests
 {
     /// <summary>
     ///     Verifies that the SelfTest subsystem runs all built-in tests and produces
     ///     a summary that includes pass and fail counts.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary()
     {
         // Arrange
@@ -53,7 +53,7 @@ public class SelfTestTests
             }
 
             // Assert - context is disposed above so the log file is fully flushed and closed
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
 
             var logContent = File.ReadAllText(logPath);
             Assert.Contains("Total Tests:", logContent);
@@ -69,7 +69,7 @@ public class SelfTestTests
     /// <summary>
     ///     Verifies that the SelfTest subsystem prints a system information header.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader()
     {
         // Arrange
@@ -99,7 +99,7 @@ public class SelfTestTests
     /// <summary>
     ///     Verifies that the SelfTest subsystem writes a TRX results file when --results is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SelfTest_Run_WithResultsFile_WritesTrxResultsFile()
     {
         // Arrange
@@ -115,7 +115,7 @@ public class SelfTestTests
             }
 
             // Assert - TRX results file must exist and contain test result content
-            Assert.IsTrue(File.Exists(resultsPath), "TRX results file should be created");
+            Assert.True(File.Exists(resultsPath), "TRX results file should be created");
             var content = File.ReadAllText(resultsPath);
             Assert.Contains("TestRun", content);
         }

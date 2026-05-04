@@ -27,32 +27,28 @@ namespace DemaConsulting.FileAssert.Tests;
 /// <summary>
 ///     Integration tests that run the FileAssert application through dotnet.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public partial class IntegrationTests
 {
     [GeneratedRegex(@"\d+\.\d+\.\d+")]
     private static partial Regex SemanticVersionRegex();
 
-    private string _dllPath = string.Empty;
+    private readonly string _dllPath;
 
     /// <summary>
     ///     Initialize test by locating the FileAssert DLL.
     /// </summary>
-    [TestInitialize]
-    public void TestInitialize()
+    public IntegrationTests()
     {
-        // The DLL should be in the same directory as the test assembly
-        // because the test project references the main project
         var baseDir = AppContext.BaseDirectory;
         _dllPath = PathHelpers.SafePathCombine(baseDir, "DemaConsulting.FileAssert.dll");
-
-        Assert.IsTrue(File.Exists(_dllPath), $"Could not find FileAssert DLL at {_dllPath}");
+        Assert.True(File.Exists(_dllPath), $"Could not find FileAssert DLL at {_dllPath}");
     }
 
     /// <summary>
     ///     Test that version flag outputs version information.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_VersionFlag_OutputsVersion()
     {
         // Act
@@ -63,14 +59,14 @@ public partial class IntegrationTests
             "--version");
 
         // Assert
-        Assert.AreEqual(0, exitCode);
-        Assert.IsTrue(SemanticVersionRegex().IsMatch(output), $"Output did not contain a semantic version: {output}");
+        Assert.Equal(0, exitCode);
+        Assert.True(SemanticVersionRegex().IsMatch(output), $"Output did not contain a semantic version: {output}");
     }
 
     /// <summary>
     ///     Test that help flag outputs usage information.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_HelpFlag_OutputsUsageInformation()
     {
         // Act
@@ -81,7 +77,7 @@ public partial class IntegrationTests
             "--help");
 
         // Assert
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
         Assert.Contains("Usage:", output);
         Assert.Contains("Options:", output);
         Assert.Contains("--version", output);
@@ -90,7 +86,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that validate flag runs self-validation.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateFlag_RunsValidation()
     {
         // Act
@@ -101,7 +97,7 @@ public partial class IntegrationTests
             "--validate");
 
         // Assert
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
         Assert.Contains("Total Tests:", output);
         Assert.Contains("Passed:", output);
     }
@@ -109,7 +105,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that validate with results flag generates TRX file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateWithResults_GeneratesTrxFile()
     {
         // Arrange
@@ -127,8 +123,8 @@ public partial class IntegrationTests
                 resultsFile);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
-            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(resultsFile), "Results file was not created");
 
             var trxContent = File.ReadAllText(resultsFile);
             Assert.Contains("<TestRun", trxContent);
@@ -146,7 +142,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that silent flag suppresses output.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_SilentFlag_SuppressesOutput()
     {
         // Act
@@ -157,14 +153,14 @@ public partial class IntegrationTests
             "--silent");
 
         // Assert
-        Assert.AreEqual(0, exitCode);
-        Assert.AreEqual(string.Empty, output);
+        Assert.Equal(0, exitCode);
+        Assert.Equal(string.Empty, output);
     }
 
     /// <summary>
     ///     Test that log flag writes output to file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_LogFlag_WritesOutputToFile()
     {
         // Arrange
@@ -181,8 +177,8 @@ public partial class IntegrationTests
                 logFile);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
-            Assert.IsTrue(File.Exists(logFile), "Log file was not created");
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(logFile), "Log file was not created");
 
             var logContent = File.ReadAllText(logFile);
             Assert.Contains("FileAssert version", logContent);
@@ -199,7 +195,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that validate with results flag generates JUnit XML file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateWithResults_GeneratesJUnitFile()
     {
         // Arrange
@@ -217,8 +213,8 @@ public partial class IntegrationTests
                 resultsFile);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
-            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(resultsFile), "Results file was not created");
 
             var xmlContent = File.ReadAllText(resultsFile);
             Assert.Contains("<testsuites", xmlContent);
@@ -235,7 +231,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that unknown argument returns error.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_UnknownArgument_ReturnsError()
     {
         // Act
@@ -246,14 +242,14 @@ public partial class IntegrationTests
             "--unknown");
 
         // Assert
-        Assert.AreNotEqual(0, exitCode);
+        Assert.NotEqual(0, exitCode);
         Assert.Contains("Error", output);
     }
 
     /// <summary>
     ///     Test that positional name/tag filter arguments cause only matching tests to run.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_TestFiltering_OnlyRunsMatchingTests()
     {
         // Arrange
@@ -290,7 +286,7 @@ public partial class IntegrationTests
                 "smoke");
 
             // Assert - exit code 0 because the failing regression test was skipped by the filter
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -301,7 +297,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a valid configuration file causes the tool to run assertions and succeed.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero()
     {
         // Arrange
@@ -332,7 +328,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -343,7 +339,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a configuration file with a failing assertion causes the tool to return non-zero.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero()
     {
         // Arrange
@@ -374,7 +370,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code indicates assertion failure
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -385,7 +381,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that passing file assertions write a TRX results file with Passed outcomes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_PassingAssertions_WritesTrxWithPassedResults()
     {
         // Arrange
@@ -418,8 +414,8 @@ public partial class IntegrationTests
                 resultsFile);
 
             // Assert - exit code 0 and TRX file contains LicenseCheck with Passed outcome
-            Assert.AreEqual(0, exitCode);
-            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(resultsFile), "Results file was not created");
             var trxContent = File.ReadAllText(resultsFile);
             Assert.Contains("LicenseCheck", trxContent);
             Assert.Contains("outcome=\"Passed\"", trxContent);
@@ -437,7 +433,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that failing file assertions write a JUnit results file with failure entries.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults()
     {
         // Arrange
@@ -470,8 +466,8 @@ public partial class IntegrationTests
                 resultsFile);
 
             // Assert - non-zero exit code and JUnit file contains LicenseCheck with a failure entry
-            Assert.AreNotEqual(0, exitCode);
-            Assert.IsTrue(File.Exists(resultsFile), "Results file was not created");
+            Assert.NotEqual(0, exitCode);
+            Assert.True(File.Exists(resultsFile), "Results file was not created");
             var xmlContent = File.ReadAllText(resultsFile);
             Assert.Contains("LicenseCheck", xmlContent);
             Assert.Contains("failures=\"1\"", xmlContent);
@@ -489,7 +485,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a minimum file count constraint returns a non-zero exit code when too few files are found.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero()
     {
         // Arrange
@@ -516,7 +512,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the min count constraint was not met
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -527,7 +523,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a maximum file count constraint returns a non-zero exit code when exceeded.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero()
     {
         // Arrange
@@ -557,7 +553,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the max count constraint was exceeded
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -568,7 +564,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a regex rule returns a zero exit code when file content matches the pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_RegexRule_MatchingContent_ReturnsZero()
     {
         // Arrange
@@ -597,7 +593,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -608,7 +604,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a regex rule returns a non-zero exit code when file content does not match the pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero()
     {
         // Arrange
@@ -638,7 +634,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero because the file does not match the version pattern
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -649,7 +645,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that an exact count constraint returns a non-zero exit code when file count is wrong.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero()
     {
         // Arrange
@@ -679,7 +675,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the exact count constraint was not met
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -690,7 +686,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a min-size constraint returns a non-zero exit code when file is too small.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero()
     {
         // Arrange
@@ -719,7 +715,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the file is smaller than the minimum size
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -730,7 +726,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a max-size constraint returns a non-zero exit code when file is too large.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero()
     {
         // Arrange
@@ -759,7 +755,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the file exceeds the maximum size
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -770,7 +766,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a does-not-contain rule returns a non-zero exit code when forbidden text is present.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero()
     {
         // Arrange
@@ -800,7 +796,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the forbidden text is present
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -811,7 +807,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a does-not-contain-regex rule returns a non-zero exit code when the forbidden pattern matches.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero()
     {
         // Arrange
@@ -841,7 +837,7 @@ public partial class IntegrationTests
                 configPath);
 
             // Assert - non-zero exit code because the forbidden pattern matched
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -852,7 +848,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that an XML assert with a passing query returns a zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_XmlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
@@ -880,7 +876,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -891,7 +887,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that an XML assert with an invalid XML file returns a non-zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
@@ -915,7 +911,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -926,7 +922,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that an HTML assert with a passing query returns a zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
@@ -955,7 +951,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -966,7 +962,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a YAML assert with a passing dot-notation query returns a zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_YamlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
@@ -994,7 +990,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -1005,7 +1001,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a JSON assert with a passing dot-notation query returns a zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_JsonAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
@@ -1035,7 +1031,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -1046,7 +1042,7 @@ public partial class IntegrationTests
     /// <summary>
     ///     Test that a PDF assert with an invalid file returns a non-zero exit code.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
@@ -1070,7 +1066,7 @@ public partial class IntegrationTests
             var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
             // Assert
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {

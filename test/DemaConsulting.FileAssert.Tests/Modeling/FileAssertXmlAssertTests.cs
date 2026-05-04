@@ -27,7 +27,7 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertXmlAssert"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public sealed class FileAssertXmlAssertTests
 {
     private const string SampleXml = """
@@ -42,7 +42,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Create succeeds given valid query data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Create_ValidData_CreatesXmlAssert()
     {
         // Arrange
@@ -55,23 +55,23 @@ public sealed class FileAssertXmlAssertTests
         var xmlAssert = FileAssertXmlAssert.Create(data);
 
         // Assert
-        Assert.IsNotNull(xmlAssert);
+        Assert.NotNull(xmlAssert);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertXmlAssert.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertXmlAssert.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Run reports an error when the file cannot be parsed as XML.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_InvalidFile_WritesError()
     {
         // Arrange - create a non-XML file
@@ -87,7 +87,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -98,7 +98,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the XPath count matches exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_ExactCount_Matches_NoError()
     {
         // Arrange - write sample XML with 3 item elements
@@ -114,7 +114,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -125,7 +125,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the XPath count does not match exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_ExactCount_Mismatch_WritesError()
     {
         // Arrange - sample XML has 3 items but we assert count = 5
@@ -141,7 +141,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -152,7 +152,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the XPath count is within min/max bounds.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError()
     {
         // Arrange - sample XML has 3 items; assert min=2, max=5
@@ -168,7 +168,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -179,7 +179,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the XPath query is invalid syntax.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError()
     {
         // Arrange - valid XML but an XPath expression with invalid syntax
@@ -195,7 +195,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -206,7 +206,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when an XPath query selects nodes by exact text content.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_XPathExactTextMatch_Matches_NoError()
     {
         // Arrange - sample XML has an item with text "two"; query for exact match should return 1
@@ -222,7 +222,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -233,7 +233,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError()
     {
         // Arrange - no item has text "four"; exact match query should return 0 nodes
@@ -249,7 +249,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -260,7 +260,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when an XPath contains() predicate matches a node.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_XPathContainsText_Matches_NoError()
     {
         // Arrange - sample XML has an item with text "three"; substring "hre" matches
@@ -276,7 +276,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -287,7 +287,7 @@ public sealed class FileAssertXmlAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when an XPath contains() predicate finds no matching nodes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertXmlAssert_Run_XPathContainsText_NoMatch_WritesError()
     {
         // Arrange - no item contains "xyz"; contains() query returns 0 nodes
@@ -303,7 +303,7 @@ public sealed class FileAssertXmlAssertTests
             xmlAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {

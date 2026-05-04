@@ -31,13 +31,13 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertPdfAssert"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public sealed class FileAssertPdfAssertTests
 {
     /// <summary>
     ///     Verifies that Create succeeds given valid data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert()
     {
         // Arrange
@@ -50,23 +50,23 @@ public sealed class FileAssertPdfAssertTests
         var pdfAssert = FileAssertPdfAssert.Create(data);
 
         // Assert
-        Assert.IsNotNull(pdfAssert);
+        Assert.NotNull(pdfAssert);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertPdfAssert.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertPdfAssert.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Run reports an error when the file cannot be parsed as PDF.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_InvalidFile_WritesError()
     {
         // Arrange - create a temp file with non-PDF content
@@ -82,7 +82,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -93,7 +93,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the PDF satisfies all page count constraints.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError()
     {
         // Arrange - build a single-page PDF and assert min=1, max=5
@@ -115,7 +115,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -126,7 +126,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the PDF has fewer pages than the minimum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError()
     {
         // Arrange - build a single-page PDF but require at least 5 pages
@@ -148,7 +148,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -159,7 +159,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the PDF has more pages than the maximum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError()
     {
         // Arrange - build a three-page PDF but allow at most 2 pages
@@ -183,7 +183,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -194,7 +194,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when a metadata contains assertion fails.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError()
     {
         // Arrange - build a PDF without metadata; assert Title contains "Test"
@@ -219,7 +219,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -230,7 +230,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when a text contains rule fails.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError()
     {
         // Arrange - build a PDF with no text content; assert text contains "Hello"
@@ -255,7 +255,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -266,7 +266,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the PDF metadata Title contains the required string.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError()
     {
         // Arrange - build a PDF with Title metadata set and assert it contains "Annual"
@@ -292,7 +292,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -303,7 +303,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the PDF metadata Author field is checked.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError()
     {
         // Arrange - build a PDF with Author metadata and assert that field contains expected text
@@ -329,7 +329,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -340,7 +340,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when a PDF metadata matches regex rule succeeds.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError()
     {
         // Arrange - build a PDF with Title set; assert it matches regex pattern
@@ -366,7 +366,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -377,7 +377,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when a PDF metadata matches regex rule does not match.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError()
     {
         // Arrange - build a PDF with Title set; assert it matches a pattern it does not satisfy
@@ -403,7 +403,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -414,7 +414,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the PDF text contains the required string.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError()
     {
         // Arrange - build a PDF with text "Hello World" and assert text contains "Hello"
@@ -441,7 +441,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -452,7 +452,7 @@ public sealed class FileAssertPdfAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the PDF text matches a regex pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError()
     {
         // Arrange - build a PDF with text "Hello World 2024" and assert it matches a regex
@@ -479,7 +479,7 @@ public sealed class FileAssertPdfAssertTests
             pdfAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {

@@ -12,6 +12,7 @@ needs-review:
   - "requirements.yaml"
   - "docs/reqstream/**/*.yaml"
   - "docs/design/**/*.md"
+  - "docs/verification/**/*.md"
   - "!**/obj/**"
   - "!**/bin/**"
 
@@ -42,6 +43,7 @@ reviews:
       - "docs/reqstream/file-assert/file-assert.yaml"                # system requirements
       - "docs/design/introduction.md"                                # design introduction
       - "docs/design/file-assert/file-assert.md"                     # system design
+      - "docs/verification/file-assert/file-assert.md"               # system verification
       - "test/**/IntegrationTests.cs"                                # integration tests
       - "test/**/AssemblyInfo.cs"                                    # test infrastructure
       - "test/**/Runner.cs"                                          # test infrastructure
@@ -54,6 +56,8 @@ reviews:
       - "docs/reqstream/file-assert/platform-requirements.yaml"      # platform requirements
       - "docs/design/introduction.md"                                # design introduction
       - "docs/design/file-assert/**/*.md"                            # all system design documents
+      - "docs/verification/introduction.md"                          # verification introduction
+      - "docs/verification/file-assert/**/*.md"                      # all verification documents
 
   # FileAssert-AllRequirements Review (one per system)
   - id: FileAssert-AllRequirements
@@ -68,6 +72,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/cli/cli.yaml"                    # subsystem requirements
       - "docs/design/file-assert/cli/cli.md"                         # subsystem design
+      - "docs/verification/file-assert/cli/cli.md"                   # subsystem verification
       - "test/**/Cli/CliTests.cs"                                    # subsystem tests
 
   # FileAssert-Configuration Review (one per subsystem)
@@ -76,6 +81,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/configuration/configuration.yaml"  # subsystem requirements
       - "docs/design/file-assert/configuration/configuration.md"       # subsystem design
+      - "docs/verification/file-assert/configuration/configuration.md"  # subsystem verification
       - "test/**/Configuration/ConfigurationTests.cs"                  # subsystem tests
 
   # FileAssert-Modeling Review (one per subsystem)
@@ -84,6 +90,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/modeling/modeling.yaml"           # subsystem requirements
       - "docs/design/file-assert/modeling/modeling.md"                # subsystem design
+      - "docs/verification/file-assert/modeling/modeling.md"          # subsystem verification
       - "test/**/Modeling/ModelingTests.cs"                           # subsystem tests
 
   # FileAssert-Utilities Review (one per subsystem)
@@ -92,6 +99,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/utilities/utilities.yaml"         # subsystem requirements
       - "docs/design/file-assert/utilities/utilities.md"              # subsystem design
+      - "docs/verification/file-assert/utilities/utilities.md"        # subsystem verification
       - "test/**/Utilities/UtilitiesTests.cs"                        # subsystem tests
 
   # FileAssert-SelfTest Review (one per subsystem)
@@ -100,6 +108,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/selftest/selftest.yaml"           # subsystem requirements
       - "docs/design/file-assert/selftest/selftest.md"                # subsystem design
+      - "docs/verification/file-assert/selftest/selftest.md"          # subsystem verification
       - "test/**/SelfTest/SelfTestTests.cs"                           # subsystem tests
 
   # FileAssert-Cli-Context Review (one per unit)
@@ -108,6 +117,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/cli/context.yaml"                # requirements
       - "docs/design/file-assert/cli/context.md"                     # design
+      - "docs/verification/file-assert/cli/context.md"               # verification
       - "src/**/Cli/Context.cs"                                      # implementation
       - "test/**/Cli/ContextTests.cs"                                # unit tests
       - "test/**/Cli/ContextNewPropertiesTests.cs"                   # unit tests
@@ -118,6 +128,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/program.yaml"                    # requirements
       - "docs/design/file-assert/program.md"                         # design
+      - "docs/verification/file-assert/program.md"                   # verification
       - "src/**/Program.cs"                                          # implementation
       - "test/**/ProgramTests.cs"                                    # unit tests
 
@@ -127,6 +138,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/selftest/validation.yaml"        # requirements
       - "docs/design/file-assert/selftest/validation.md"             # design
+      - "docs/verification/file-assert/selftest/validation.md"       # verification
       - "src/**/SelfTest/Validation.cs"                              # implementation
       - "test/**/SelfTest/ValidationTests.cs"                        # unit tests
 
@@ -136,6 +148,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/utilities/path-helpers.yaml"     # requirements
       - "docs/design/file-assert/utilities/path-helpers.md"          # design
+      - "docs/verification/file-assert/utilities/path-helpers.md"    # verification
       - "src/**/Utilities/PathHelpers.cs"                            # implementation
       - "test/**/Utilities/PathHelpersTests.cs"                      # unit tests
 
@@ -145,6 +158,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-rule.yaml"  # requirements
       - "docs/design/file-assert/modeling/file-assert-rule.md"       # design
+      - "docs/verification/file-assert/modeling/file-assert-rule.md"  # verification
       - "src/**/Modeling/FileAssertRule.cs"                          # implementation
       - "test/**/Modeling/FileAssertRuleTests.cs"                    # unit tests
 
@@ -154,6 +168,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-file.yaml"  # requirements
       - "docs/design/file-assert/modeling/file-assert-file.md"       # design
+      - "docs/verification/file-assert/modeling/file-assert-file.md"  # verification
       - "src/**/Modeling/FileAssertFile.cs"                          # implementation
       - "test/**/Modeling/FileAssertFileTests.cs"                    # unit tests
 
@@ -163,6 +178,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/modeling/file-assert-test.yaml"  # requirements
       - "docs/design/file-assert/modeling/file-assert-test.md"       # design
+      - "docs/verification/file-assert/modeling/file-assert-test.md"  # verification
       - "src/**/Modeling/FileAssertTest.cs"                          # implementation
       - "test/**/Modeling/FileAssertTestTests.cs"                    # unit tests
 
@@ -172,6 +188,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-config.yaml"  # requirements
       - "docs/design/file-assert/configuration/file-assert-config.md"       # design
+      - "docs/verification/file-assert/configuration/file-assert-config.md"  # verification
       - "src/**/Configuration/FileAssertConfig.cs"                          # implementation
       - "test/**/Configuration/FileAssertConfigTests.cs"                    # unit tests
 
@@ -181,6 +198,7 @@ reviews:
     paths:
       - "docs/reqstream/file-assert/configuration/file-assert-data.yaml"    # requirements
       - "docs/design/file-assert/configuration/file-assert-data.md"         # design
+      - "docs/verification/file-assert/configuration/file-assert-data.md"   # verification
       - "src/**/Configuration/FileAssertData.cs"                            # implementation
       - "test/**/Configuration/FileAssertConfigTests.cs"                    # unit tests
 
@@ -188,52 +206,128 @@ reviews:
   - id: FileAssert-Modeling-FileAssertTextAssert
     title: Review that FileAssert Modeling FileAssertTextAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-text-assert.yaml"  # requirements
-      - "docs/design/file-assert/modeling/file-assert-text-assert.md"       # design
-      - "src/**/Modeling/FileAssertTextAssert.cs"                           # implementation
-      - "test/**/Modeling/FileAssertTextAssertTests.cs"                     # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-text-assert.yaml"       # requirements
+      - "docs/design/file-assert/modeling/file-assert-text-assert.md"            # design
+      - "docs/verification/file-assert/modeling/file-assert-text-assert.md"      # verification
+      - "src/**/Modeling/FileAssertTextAssert.cs"                                # implementation
+      - "test/**/Modeling/FileAssertTextAssertTests.cs"                          # unit tests
 
   # FileAssert-Modeling-FileAssertPdfAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertPdfAssert
     title: Review that FileAssert Modeling FileAssertPdfAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-pdf-assert.yaml"   # requirements
-      - "docs/design/file-assert/modeling/file-assert-pdf-assert.md"        # design
-      - "src/**/Modeling/FileAssertPdfAssert.cs"                            # implementation
-      - "test/**/Modeling/FileAssertPdfAssertTests.cs"                      # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-pdf-assert.yaml"        # requirements
+      - "docs/design/file-assert/modeling/file-assert-pdf-assert.md"             # design
+      - "docs/verification/file-assert/modeling/file-assert-pdf-assert.md"       # verification
+      - "src/**/Modeling/FileAssertPdfAssert.cs"                                 # implementation
+      - "test/**/Modeling/FileAssertPdfAssertTests.cs"                           # unit tests
 
   # FileAssert-Modeling-FileAssertXmlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertXmlAssert
     title: Review that FileAssert Modeling FileAssertXmlAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml"   # requirements
-      - "docs/design/file-assert/modeling/file-assert-xml-assert.md"        # design
-      - "src/**/Modeling/FileAssertXmlAssert.cs"                            # implementation
-      - "test/**/Modeling/FileAssertXmlAssertTests.cs"                      # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml"        # requirements
+      - "docs/design/file-assert/modeling/file-assert-xml-assert.md"             # design
+      - "docs/verification/file-assert/modeling/file-assert-xml-assert.md"       # verification
+      - "src/**/Modeling/FileAssertXmlAssert.cs"                                 # implementation
+      - "test/**/Modeling/FileAssertXmlAssertTests.cs"                           # unit tests
 
   # FileAssert-Modeling-FileAssertHtmlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertHtmlAssert
     title: Review that FileAssert Modeling FileAssertHtmlAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml"  # requirements
-      - "docs/design/file-assert/modeling/file-assert-html-assert.md"       # design
-      - "src/**/Modeling/FileAssertHtmlAssert.cs"                           # implementation
-      - "test/**/Modeling/FileAssertHtmlAssertTests.cs"                     # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml"       # requirements
+      - "docs/design/file-assert/modeling/file-assert-html-assert.md"            # design
+      - "docs/verification/file-assert/modeling/file-assert-html-assert.md"      # verification
+      - "src/**/Modeling/FileAssertHtmlAssert.cs"                                # implementation
+      - "test/**/Modeling/FileAssertHtmlAssertTests.cs"                          # unit tests
 
   # FileAssert-Modeling-FileAssertYamlAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertYamlAssert
     title: Review that FileAssert Modeling FileAssertYamlAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml"  # requirements
-      - "docs/design/file-assert/modeling/file-assert-yaml-assert.md"       # design
-      - "src/**/Modeling/FileAssertYamlAssert.cs"                           # implementation
-      - "test/**/Modeling/FileAssertYamlAssertTests.cs"                     # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml"       # requirements
+      - "docs/design/file-assert/modeling/file-assert-yaml-assert.md"            # design
+      - "docs/verification/file-assert/modeling/file-assert-yaml-assert.md"      # verification
+      - "src/**/Modeling/FileAssertYamlAssert.cs"                                # implementation
+      - "test/**/Modeling/FileAssertYamlAssertTests.cs"                          # unit tests
 
   # FileAssert-Modeling-FileAssertJsonAssert Review (one per unit)
   - id: FileAssert-Modeling-FileAssertJsonAssert
     title: Review that FileAssert Modeling FileAssertJsonAssert Implementation is Correct
     paths:
-      - "docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml"  # requirements
-      - "docs/design/file-assert/modeling/file-assert-json-assert.md"       # design
-      - "src/**/Modeling/FileAssertJsonAssert.cs"                           # implementation
-      - "test/**/Modeling/FileAssertJsonAssertTests.cs"                     # unit tests
+      - "docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml"       # requirements
+      - "docs/design/file-assert/modeling/file-assert-json-assert.md"            # design
+      - "docs/verification/file-assert/modeling/file-assert-json-assert.md"      # verification
+      - "src/**/Modeling/FileAssertJsonAssert.cs"                                # implementation
+      - "test/**/Modeling/FileAssertJsonAssertTests.cs"                          # unit tests
+
+  # FileAssert-OTS-BuildMark Review
+  - id: FileAssert-OTS-BuildMark
+    title: Review FileAssert OTS BuildMark Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/buildmark.yaml"                          # OTS requirements
+      - "docs/verification/ots/buildmark.md"                         # OTS verification
+
+  # FileAssert-OTS-FileAssert Review
+  - id: FileAssert-OTS-FileAssert
+    title: Review FileAssert OTS FileAssert Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/fileassert.yaml"                         # OTS requirements
+      - "docs/verification/ots/fileassert.md"                        # OTS verification
+
+  # FileAssert-OTS-Pandoc Review
+  - id: FileAssert-OTS-Pandoc
+    title: Review FileAssert OTS Pandoc Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/pandoc.yaml"                             # OTS requirements
+      - "docs/verification/ots/pandoc.md"                            # OTS verification
+
+  # FileAssert-OTS-ReqStream Review
+  - id: FileAssert-OTS-ReqStream
+    title: Review FileAssert OTS ReqStream Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/reqstream.yaml"                          # OTS requirements
+      - "docs/verification/ots/reqstream.md"                         # OTS verification
+
+  # FileAssert-OTS-ReviewMark Review
+  - id: FileAssert-OTS-ReviewMark
+    title: Review FileAssert OTS ReviewMark Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/reviewmark.yaml"                         # OTS requirements
+      - "docs/verification/ots/reviewmark.md"                        # OTS verification
+
+  # FileAssert-OTS-SarifMark Review
+  - id: FileAssert-OTS-SarifMark
+    title: Review FileAssert OTS SarifMark Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/sarifmark.yaml"                          # OTS requirements
+      - "docs/verification/ots/sarifmark.md"                         # OTS verification
+
+  # FileAssert-OTS-SonarMark Review
+  - id: FileAssert-OTS-SonarMark
+    title: Review FileAssert OTS SonarMark Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/sonarmark.yaml"                          # OTS requirements
+      - "docs/verification/ots/sonarmark.md"                         # OTS verification
+
+  # FileAssert-OTS-VersionMark Review
+  - id: FileAssert-OTS-VersionMark
+    title: Review FileAssert OTS VersionMark Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/versionmark.yaml"                        # OTS requirements
+      - "docs/verification/ots/versionmark.md"                       # OTS verification
+
+  # FileAssert-OTS-WeasyPrint Review
+  - id: FileAssert-OTS-WeasyPrint
+    title: Review FileAssert OTS WeasyPrint Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/weasyprint.yaml"                         # OTS requirements
+      - "docs/verification/ots/weasyprint.md"                        # OTS verification
+
+  # FileAssert-OTS-xUnit Review
+  - id: FileAssert-OTS-xUnit
+    title: Review FileAssert OTS xUnit Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/xunit.yaml"                              # OTS requirements
+      - "docs/verification/ots/xunit.md"                             # OTS verification

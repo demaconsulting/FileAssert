@@ -27,13 +27,13 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for <see cref="FileAssertRule"/> and its derived rule classes.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class FileAssertRuleTests
 {
     /// <summary>
     ///     Verifies that the factory creates a <see cref="FileAssertContainsRule"/> when 'contains' is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithContains_ReturnsContainsRule()
     {
         // Arrange
@@ -43,14 +43,14 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsInstanceOfType<FileAssertContainsRule>(rule);
-        Assert.AreEqual("expected text", ((FileAssertContainsRule)rule).Value);
+        Assert.IsType<FileAssertContainsRule>(rule);
+        Assert.Equal("expected text", ((FileAssertContainsRule)rule).Value);
     }
 
     /// <summary>
     ///     Verifies that the factory creates a <see cref="FileAssertMatchesRule"/> when 'matches' is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithMatches_ReturnsMatchesRule()
     {
         // Arrange
@@ -60,21 +60,21 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsInstanceOfType<FileAssertMatchesRule>(rule);
-        Assert.AreEqual(@"\d+", ((FileAssertMatchesRule)rule).Pattern);
+        Assert.IsType<FileAssertMatchesRule>(rule);
+        Assert.Equal(@"\d+", ((FileAssertMatchesRule)rule).Pattern);
     }
 
     /// <summary>
     ///     Verifies that the factory throws <see cref="InvalidOperationException"/> when no rule type is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithNoType_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new FileAssertRuleData();
 
         // Act & Assert
-        var exception = Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertRule.Create(data));
+        var exception = Assert.Throws<InvalidOperationException>(() => FileAssertRule.Create(data));
         Assert.Contains("contains", exception.Message);
         Assert.Contains("does-not-contain", exception.Message);
         Assert.Contains("matches", exception.Message);
@@ -84,17 +84,17 @@ public class FileAssertRuleTests
     /// <summary>
     ///     Verifies that the factory throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithNullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertRule.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertRule.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertContainsRule.Apply"/> produces no error when content contains the value.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertContainsRule_Apply_ContentContainsValue_NoError()
     {
         // Arrange
@@ -105,13 +105,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "say hello world");
 
         // Assert
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertContainsRule.Apply"/> reports an error when content is missing the value.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertContainsRule_Apply_ContentMissingValue_WritesError()
     {
         // Arrange
@@ -122,13 +122,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "nothing relevant here");
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertMatchesRule.Apply"/> produces no error when content matches the pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertMatchesRule_Apply_ContentMatchesPattern_NoError()
     {
         // Arrange
@@ -139,13 +139,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "version 42 is here");
 
         // Assert
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertMatchesRule.Apply"/> reports an error when content does not match.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertMatchesRule_Apply_ContentDoesNotMatchPattern_WritesError()
     {
         // Arrange
@@ -156,13 +156,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "no numbers here at all");
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that the factory creates a <see cref="FileAssertDoesNotContainRule"/> when 'does-not-contain' is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithDoesNotContain_ReturnsDoesNotContainRule()
     {
         // Arrange
@@ -172,14 +172,14 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsInstanceOfType<FileAssertDoesNotContainRule>(rule);
-        Assert.AreEqual("forbidden text", ((FileAssertDoesNotContainRule)rule).Value);
+        Assert.IsType<FileAssertDoesNotContainRule>(rule);
+        Assert.Equal("forbidden text", ((FileAssertDoesNotContainRule)rule).Value);
     }
 
     /// <summary>
     ///     Verifies that the factory creates a <see cref="FileAssertDoesNotMatchRule"/> when 'does-not-contain-regex' is specified.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertRule_Create_WithDoesNotContainRegex_ReturnsDoesNotMatchRule()
     {
         // Arrange
@@ -189,14 +189,14 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsInstanceOfType<FileAssertDoesNotMatchRule>(rule);
-        Assert.AreEqual(@"FATAL|ERROR", ((FileAssertDoesNotMatchRule)rule).Pattern);
+        Assert.IsType<FileAssertDoesNotMatchRule>(rule);
+        Assert.Equal(@"FATAL|ERROR", ((FileAssertDoesNotMatchRule)rule).Pattern);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertDoesNotContainRule.Apply"/> reports an error when content contains the forbidden value.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertDoesNotContainRule_Apply_ContentContainsValue_WritesError()
     {
         // Arrange
@@ -207,13 +207,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "the password123 is here");
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertDoesNotContainRule.Apply"/> produces no error when content does not contain the forbidden value.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertDoesNotContainRule_Apply_ContentMissingValue_NoError()
     {
         // Arrange
@@ -224,13 +224,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "no secrets here");
 
         // Assert
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertDoesNotMatchRule.Apply"/> reports an error when content matches the forbidden pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertDoesNotMatchRule_Apply_ContentMatchesPattern_WritesError()
     {
         // Arrange
@@ -241,13 +241,13 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "FATAL: something went wrong");
 
         // Assert
-        Assert.AreEqual(1, context.ExitCode);
+        Assert.Equal(1, context.ExitCode);
     }
 
     /// <summary>
     ///     Verifies that <see cref="FileAssertDoesNotMatchRule.Apply"/> produces no error when content does not match the forbidden pattern.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertDoesNotMatchRule_Apply_ContentDoesNotMatchPattern_NoError()
     {
         // Arrange
@@ -258,6 +258,6 @@ public class FileAssertRuleTests
         rule.Apply(context, "test.txt", "everything is fine");
 
         // Assert
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 }

@@ -19,7 +19,7 @@ words:
   - Dema
   - fileassert
   - Linq
-  - mstest
+  - xunit
   - Pandoc
   - reqstream
   - reviewmark

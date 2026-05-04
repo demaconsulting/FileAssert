@@ -80,7 +80,7 @@ VersionMark reads the version from a central configuration file and propagates i
 all artifacts produced by the build. This eliminates manual version updates and ensures
 consistency between the NuGet package version, assembly version, and release tag.
 
-### MSTest
+### xUnit
 
 | Attribute    | Value                                                                                |
 | :----------- | :----------------------------------------------------------------------------------- |
@@ -88,7 +88,7 @@ consistency between the NuGet package version, assembly version, and release tag
 | Role         | Provides the test runner, assertion library, and TRX result output used by all tests |
 | Verification | All tests must pass; TRX files are consumed by ReqStream for traceability            |
 
-MSTest (version 4) is the unit test framework for all C# tests in this repository.
-It provides `[TestClass]`, `[TestMethod]`, and the assertion methods used throughout
+xUnit (version 3) is the unit test framework for all C# tests in this repository.
+It provides `[Fact]`, `[Collection]`, and the assertion methods used throughout
 the test suite. TRX output format is enabled so that ReqStream can parse test results
 and verify requirements coverage.

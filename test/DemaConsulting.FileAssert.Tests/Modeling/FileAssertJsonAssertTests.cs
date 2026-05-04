@@ -27,7 +27,7 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 /// <summary>
 ///     Unit tests for the <see cref="FileAssertJsonAssert"/> class.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public sealed class FileAssertJsonAssertTests
 {
     private const string SampleJson = """
@@ -44,7 +44,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Create succeeds given valid query data.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_ValidData_CreatesJsonAssert()
     {
         // Arrange
@@ -57,23 +57,23 @@ public sealed class FileAssertJsonAssertTests
         var jsonAssert = FileAssertJsonAssert.Create(data);
 
         // Assert
-        Assert.IsNotNull(jsonAssert);
+        Assert.NotNull(jsonAssert);
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.ThrowsExactly<ArgumentNullException>(() => FileAssertJsonAssert.Create(null!));
+        Assert.Throws<ArgumentNullException>(() => FileAssertJsonAssert.Create(null!));
     }
 
     /// <summary>
     ///     Verifies that Run reports an error when the file cannot be parsed as JSON.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_InvalidFile_WritesError()
     {
         // Arrange - create a non-JSON file
@@ -89,7 +89,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -100,7 +100,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the array count matches exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_ArrayCount_Matches_NoError()
     {
         // Arrange - sample JSON has 3 tools entries; assert count = 3
@@ -116,7 +116,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -127,7 +127,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the array count does not match exactly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError()
     {
         // Arrange - sample JSON has 3 tools but we assert count = 5
@@ -143,7 +143,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -154,7 +154,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Run produces no error when the array count is within min/max bounds.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError()
     {
         // Arrange - sample JSON has 3 tools entries; assert min=2, max=5
@@ -170,7 +170,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -181,7 +181,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that a scalar value counts as 1.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError()
     {
         // Arrange - sample JSON has a scalar "version" key; assert count = 1
@@ -197,7 +197,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert
-            Assert.AreEqual(0, context.ExitCode);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -208,7 +208,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the count is below the minimum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError()
     {
         // Arrange - sample JSON has 3 tools; assert min=5 (3 < 5, should fail)
@@ -224,7 +224,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert - min violation produces an error
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -235,7 +235,7 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Run reports an error when the count exceeds the maximum.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError()
     {
         // Arrange - sample JSON has 3 tools; assert max=2 (3 > 2, should fail)
@@ -251,7 +251,7 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, tempFile);
 
             // Assert - max violation produces an error
-            Assert.AreEqual(1, context.ExitCode);
+            Assert.Equal(1, context.ExitCode);
         }
         finally
         {
@@ -262,52 +262,52 @@ public sealed class FileAssertJsonAssertTests
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query string is empty.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_EmptyQuery_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new List<FileAssertQueryData> { new() { Query = "   " } };
 
         // Act & Assert
-        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
+        Assert.Throws<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a trailing dot.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new List<FileAssertQueryData> { new() { Query = "tools." } };
 
         // Act & Assert
-        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
+        Assert.Throws<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has a leading dot.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new List<FileAssertQueryData> { new() { Query = ".tools" } };
 
         // Act & Assert
-        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
+        Assert.Throws<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
     }
 
     /// <summary>
     ///     Verifies that Create throws <see cref="InvalidOperationException"/> when query has consecutive dots.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void FileAssertJsonAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException()
     {
         // Arrange
         var data = new List<FileAssertQueryData> { new() { Query = "a..b" } };
 
         // Act & Assert
-        Assert.ThrowsExactly<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
+        Assert.Throws<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
     }
 }

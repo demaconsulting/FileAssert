@@ -25,14 +25,14 @@ namespace DemaConsulting.FileAssert.Tests.Utilities;
 /// <summary>
 ///     Subsystem tests for the Utilities subsystem.
 /// </summary>
-[TestClass]
+[Collection("Sequential")]
 public class UtilitiesTests
 {
     /// <summary>
     ///     Verifies that the Utilities subsystem's safe path combination prevents
     ///     path traversal when used against the real file system.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Utilities_SafePathCombine_PreventsPathTraversalToFileSystem()
     {
         // Arrange
@@ -40,7 +40,7 @@ public class UtilitiesTests
         try
         {
             // Act & Assert - a traversal attempt is rejected with ArgumentException
-            Assert.ThrowsExactly<ArgumentException>(
+            Assert.Throws<ArgumentException>(
                 () => PathHelpers.SafePathCombine(tempDir.FullName, "../escape.txt"));
 
             // Act & Assert - a valid relative path within the base is accepted
