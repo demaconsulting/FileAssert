@@ -1,6 +1,6 @@
-# FileAssertTextAssert Design
+### FileAssertTextAssert Design
 
-## Overview
+#### Overview
 
 The `FileAssertTextAssert` class applies a collection of `FileAssertRule` instances to the
 text content of a matched file. It is created from a list of `FileAssertRuleData` DTOs and
@@ -8,15 +8,15 @@ delegates rule application to `FileAssertRule.Apply`. Wrapping text rules in a d
 unit keeps `FileAssertFile` free of rule-application logic and makes the text assertion
 pattern consistent with all other file-type assert units.
 
-## Class Structure
+#### Class Structure
 
-### Properties
+##### Properties
 
 | Property | Type                            | Description                             |
 | :------- | :------------------------------ | :-------------------------------------- |
 | `Rules`  | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file text. |
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 internal static FileAssertTextAssert Create(IEnumerable<FileAssertRuleData> data)
@@ -33,7 +33,7 @@ Creates a `FileAssertRule` for each entry in the data list via `FileAssertRule.C
 | Returns                      | A new `FileAssertTextAssert` instance.                   |
 | `ArgumentNullException`      | Thrown when `data` is null.                              |
 
-### Run Method
+##### Run Method
 
 ```csharp
 internal void Run(Context context, string fileName)
@@ -49,7 +49,7 @@ Execution proceeds in the following steps:
    and returns immediately.
 3. Applies each configured rule to the file content.
 
-#### Run Error Message
+###### Run Error Message
 
 ```text
 File '<fileName>' could not be read as text
@@ -60,7 +60,7 @@ File '<fileName>' could not be read as text
 | `context`    | `Context` | Reporting sink used to record errors.    |
 | `fileName`   | `string`  | Full path to the file to validate.       |
 
-## YAML Configuration
+#### YAML Configuration
 
 Text rules are declared under the `text:` key of a file entry:
 
@@ -74,7 +74,7 @@ files:
       - does-not-contain-regex: "FATAL|ERROR"
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **Dedicated unit for text rules**: Wrapping text rules in `FileAssertTextAssert` keeps
   `FileAssertFile` free of rule-application logic and makes the text assertion pattern

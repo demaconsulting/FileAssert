@@ -1,19 +1,19 @@
-# FileAssertXmlAssert Design
+### FileAssertXmlAssert Design
 
-## Overview
+#### Overview
 
 The `FileAssertXmlAssert` class attempts to parse a matched file as an XML document using
 `System.Xml.Linq` (`XDocument.Load`). If parsing fails, an error is reported and no further
 assertions are evaluated. Otherwise it evaluates each XPath query against the document and
 applies min, max, and exact count constraints to the number of matching nodes.
 
-## Class Structure
+#### Class Structure
 
-### FileAssertXmlAssert
+##### FileAssertXmlAssert
 
 The main class coordinating XPath-based node count assertions for an XML file.
 
-#### FileAssertXmlAssert Properties
+###### FileAssertXmlAssert Properties
 
 | Property  | Type                                | Description             |
 | :-------- | :---------------------------------- | :---------------------- |
@@ -28,13 +28,13 @@ Each `FileAssertXmlQuery` entry holds:
 | `Min`    | `int?`   | Minimum number of matched nodes. |
 | `Max`    | `int?`   | Maximum number of matched nodes. |
 
-#### FileAssertXmlAssert Factory
+###### FileAssertXmlAssert Factory
 
 ```csharp
 internal static FileAssertXmlAssert Create(IEnumerable<FileAssertQueryData> data)
 ```
 
-#### FileAssertXmlAssert Run
+###### FileAssertXmlAssert Run
 
 ```csharp
 internal void Run(Context context, string fileName)
@@ -48,13 +48,13 @@ Execution proceeds in the following steps:
    `System.Xml.XPath` extension methods, counts the matching nodes, and applies
    `Count`, `Min`, and `Max` constraints against the match count.
 
-#### FileAssertXmlAssert Parse Error Message
+###### FileAssertXmlAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as an XML document
 ```
 
-#### FileAssertXmlAssert Query Error Messages
+###### FileAssertXmlAssert Query Error Messages
 
 ```text
 File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
@@ -62,7 +62,7 @@ File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maxim
 File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 files:
@@ -74,7 +74,7 @@ files:
         count: 1
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **No additional dependencies**: `System.Xml.Linq` and `System.Xml.XPath` are part of the
   .NET BCL, so XML assertions require no additional NuGet packages.

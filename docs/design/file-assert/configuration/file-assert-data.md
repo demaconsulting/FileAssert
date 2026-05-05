@@ -1,15 +1,15 @@
-# FileAssertData Design
+### FileAssertData Design
 
-## Overview
+#### Overview
 
 `FileAssertData` is the set of YAML data transfer objects (DTOs) used by YamlDotNet to
 deserialize the FileAssert configuration file. Each class maps directly to a YAML structure
 and is intentionally free of business logic. Domain objects are constructed from these DTOs
 by the Modeling subsystem.
 
-## Class Structure
+#### Class Structure
 
-### FileAssertRuleData
+##### FileAssertRuleData
 
 Represents a single content validation rule within a file assertion.
 
@@ -22,7 +22,7 @@ Represents a single content validation rule within a file assertion.
 
 Exactly one property shall be set per rule. The `FileAssertRule.Create` factory enforces this.
 
-### FileAssertFileData
+##### FileAssertFileData
 
 Represents a file pattern assertion within a test.
 
@@ -41,7 +41,7 @@ Represents a file pattern assertion within a test.
 | `Yaml`     | `yaml`     | `List<FileAssertQueryData>?`| YAML node count assertions using dot-notation.               |
 | `Json`     | `json`     | `List<FileAssertQueryData>?`| JSON node count assertions using dot-notation.               |
 
-### FileAssertTestData
+##### FileAssertTestData
 
 Represents a named test within the configuration.
 
@@ -51,7 +51,7 @@ Represents a named test within the configuration.
 | `Tags`   | `tags`     | `List<string>?`             | Tags used for command-line filter selection. |
 | `Files`  | `files`    | `List<FileAssertFileData>?` | File assertions belonging to this test.      |
 
-### FileAssertConfigData
+##### FileAssertConfigData
 
 Represents the top-level configuration document.
 
@@ -59,7 +59,7 @@ Represents the top-level configuration document.
 | :------- | :--------- | :-------------------------- | :---------------------------------------- |
 | `Tests`  | `tests`    | `List<FileAssertTestData>?` | Tests defined in this configuration file. |
 
-### FileAssertPdfMetadataRuleData
+##### FileAssertPdfMetadataRuleData
 
 Represents a single PDF metadata field assertion.
 
@@ -69,7 +69,7 @@ Represents a single PDF metadata field assertion.
 | `Contains` | `contains` | `string?` | Metadata value must contain this substring.         |
 | `Matches`  | `matches`  | `string?` | Metadata value must match this regular expression.  |
 
-### FileAssertPdfPagesData
+##### FileAssertPdfPagesData
 
 Represents PDF page count constraints.
 
@@ -78,7 +78,7 @@ Represents PDF page count constraints.
 | `Min`    | `min`      | `int?` | Minimum number of pages.      |
 | `Max`    | `max`      | `int?` | Maximum number of pages.      |
 
-### FileAssertPdfData
+##### FileAssertPdfData
 
 Represents the `pdf:` assertion block for a file entry.
 
@@ -88,7 +88,7 @@ Represents the `pdf:` assertion block for a file entry.
 | `Pages`    | `pages`    | `FileAssertPdfPagesData?`               | Page count constraints.                  |
 | `Text`     | `text`     | `List<FileAssertRuleData>?`             | Body text assertions (contains/matches). |
 
-### FileAssertQueryData
+##### FileAssertQueryData
 
 Represents a single structured-document query assertion, shared by XML, HTML, YAML, and JSON
 assertion blocks.
@@ -100,7 +100,7 @@ assertion blocks.
 | `Min`    | `min`      | `int?`    | Minimum number of matched nodes.          |
 | `Max`    | `max`      | `int?`    | Maximum number of matched nodes.          |
 
-## Design Decisions
+#### Design Decisions
 
 - **Nullable reference type properties**: All properties are nullable to correctly represent
   absent YAML keys without throwing during deserialization.

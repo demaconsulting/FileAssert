@@ -1,14 +1,14 @@
-# Context Design
+### Context Design
 
-## Overview
+#### Overview
 
 `Context` is the command-line argument parser and I/O owner for FileAssert. It translates the
 raw `string[]` argument array into named properties, manages the optional log file stream, and
 provides a unified interface for writing output and errors throughout the tool's execution.
 
-## Class Structure
+#### Class Structure
 
-### Properties
+##### Properties
 
 | Property               | Type                    | Description                                                   |
 | :--------------------- | :---------------------- | :------------------------------------------------------------ |
@@ -24,7 +24,7 @@ provides a unified interface for writing output and errors throughout the tool's
 | `ExitCode`             | `int`                   | Returns `1` if any errors have been reported; otherwise `0`.  |
 | `ErrorCount`           | `int`                   | Monotonically increasing count of `WriteError` calls.         |
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 public static Context Create(string[] args)
@@ -33,7 +33,7 @@ public static Context Create(string[] args)
 Delegates argument parsing to the private `ArgumentParser` nested class. Opens a log file if
 `--log` was specified. Returns the fully initialized `Context` instance.
 
-### Output Methods
+##### Output Methods
 
 ```csharp
 public void WriteLine(string message)
@@ -44,7 +44,7 @@ public void WriteError(string message)
 `WriteError` sets the internal error flag, writes to stderr in red (unless silent), and writes
 to the log file.
 
-### Argument Parsing
+##### Argument Parsing
 
 The private nested class `ArgumentParser` processes each argument in order:
 
@@ -55,7 +55,7 @@ The private nested class `ArgumentParser` processes each argument in order:
 - Unknown flag arguments (starting with `-`) throw `ArgumentException`.
 - All other arguments are accumulated in the `Filters` list.
 
-## Design Decisions
+#### Design Decisions
 
 - **Sealed with IDisposable**: The class is sealed to prevent inheritance of internal state, and
   implements `IDisposable` to ensure the log file stream is always closed.

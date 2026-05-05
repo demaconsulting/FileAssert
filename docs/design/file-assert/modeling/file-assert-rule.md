@@ -1,21 +1,21 @@
-# FileAssertRule Design
+### FileAssertRule Design
 
-## Overview
+#### Overview
 
 The `FileAssertRule` class hierarchy provides the content validation rules used by
 `FileAssertTextAssert` to assert the textual content of matched files. Rules are created
 from YAML configuration data using a factory method and are applied to file content
 during test execution.
 
-## Class Structure
+#### Class Structure
 
-### FileAssertRule (Abstract Base Class)
+##### FileAssertRule (Abstract Base Class)
 
 `FileAssertRule` is an abstract class that defines the common interface for all
 content validation rules. It provides a static factory method that selects the
 correct concrete implementation based on the deserialized YAML data.
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 internal static FileAssertRule Create(FileAssertRuleData data)
@@ -27,7 +27,7 @@ property determines the concrete type returned. If no property is set the factor
 throws `InvalidOperationException` with a descriptive message listing all four
 supported rule types.
 
-### Abstract Method
+##### Abstract Method
 
 ```csharp
 internal abstract void Apply(Context context, string fileName, string content)
@@ -37,56 +37,56 @@ Each derived class implements `Apply` to perform its specific check against
 `content`. When the check fails the rule calls `context.WriteError` to record the
 failure; no exception is thrown, allowing all rules to be evaluated independently.
 
-### FileAssertContainsRule
+##### FileAssertContainsRule
 
 Checks whether the file content contains a required substring using an ordinal
 (byte-exact) string comparison. This is appropriate for license header checks,
 copyright notices, and other exact-text requirements.
 
-#### ContainsRule Error Message Format
+###### ContainsRule Error Message Format
 
 ```text
 File '<fileName>' does not contain expected text '<Value>'
 ```
 
-### FileAssertDoesNotContainRule
+##### FileAssertDoesNotContainRule
 
 Checks whether the file content does NOT contain a forbidden substring using an
 ordinal (byte-exact) string comparison. This is appropriate for asserting that
 sensitive strings such as hard-coded passwords or debug flags are absent.
 
-#### DoesNotContainRule Error Message Format
+###### DoesNotContainRule Error Message Format
 
 ```text
 File '<fileName>' contains forbidden text '<Value>'
 ```
 
-### FileAssertMatchesRule
+##### FileAssertMatchesRule
 
 Checks whether the file content matches a regular expression. The regex is compiled
 at construction time with a ten-second evaluation timeout to guard against
 catastrophic backtracking on adversarial or malformed content.
 
-#### MatchesRule Error Message Format
+###### MatchesRule Error Message Format
 
 ```text
 File '<fileName>' does not match pattern '<Pattern>'
 ```
 
-### FileAssertDoesNotMatchRule
+##### FileAssertDoesNotMatchRule
 
 Checks whether the file content does NOT match a forbidden regular expression. The
 regex is compiled at construction time with a ten-second evaluation timeout. This is
 appropriate for asserting that log files contain no fatal errors or that source files
 contain no debug-only patterns.
 
-#### DoesNotMatchRule Error Message Format
+###### DoesNotMatchRule Error Message Format
 
 ```text
 File '<fileName>' matches forbidden pattern '<Pattern>'
 ```
 
-## YAML Configuration
+#### YAML Configuration
 
 Rules are declared under the `text` key of a file entry. Each rule item specifies
 exactly one of the supported rule types:
@@ -102,7 +102,7 @@ text:
 The `FileAssertRuleData` data transfer object is deserialized by YamlDotNet and
 passed to `FileAssertRule.Create` to produce the concrete rule instance.
 
-## Design Decisions
+#### Design Decisions
 
 - **Abstract base class over interface**: The base class provides the factory
   method alongside the abstract `Apply` method, keeping rule creation and

@@ -1,15 +1,15 @@
-# FileAssertTest Design
+### FileAssertTest Design
 
-## Overview
+#### Overview
 
 The `FileAssertTest` class represents a named, tagged test within a FileAssert
 configuration. It groups a collection of `FileAssertFile` assertions and supports
 filter-based selection so that users can run targeted subsets of the test suite
 from the command line.
 
-## Class Structure
+#### Class Structure
 
-### Properties
+##### Properties
 
 | Property | Type                            | Description                                |
 | :------- | :------------------------------ | :----------------------------------------- |
@@ -17,7 +17,7 @@ from the command line.
 | `Tags`   | `IReadOnlyList<string>`         | Tags used for filter-based test selection. |
 | `Files`  | `IReadOnlyList<FileAssertFile>` | File assertions belonging to this test.    |
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 internal static FileAssertTest Create(FileAssertTestData data)
@@ -27,7 +27,7 @@ The factory validates that `Name` is not null or whitespace. An empty or null
 `Tags` or `Files` list is treated as an empty collection rather than an error.
 Passing a null `data` argument throws `ArgumentNullException`.
 
-### Filter Method
+##### Filter Method
 
 ```csharp
 internal bool MatchesFilter(IEnumerable<string> filters)
@@ -39,7 +39,7 @@ Returns `true` when:
 - Any filter string matches `Name` using `OrdinalIgnoreCase` comparison, or
 - Any filter string matches any element of `Tags` using `OrdinalIgnoreCase` comparison.
 
-### Execution Method
+##### Execution Method
 
 ```csharp
 internal void Run(Context context, string basePath)
@@ -50,7 +50,7 @@ by individual file assertions accumulate in the context and do not stop subseque
 assertions from running. Passing a null `context` or null `basePath` throws
 `ArgumentNullException`.
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 tests:
@@ -65,7 +65,7 @@ tests:
           - contains: "Copyright (c) DEMA Consulting"
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **Non-empty name required**: A name is required so that errors and run logs
   identify which test failed without ambiguity.

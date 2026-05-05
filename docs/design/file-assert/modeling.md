@@ -1,12 +1,12 @@
-# Modeling Subsystem Design
+## Modeling Subsystem Design
 
-## Overview
+### Overview
 
 The Modeling subsystem contains the domain objects that represent a FileAssert test suite at
 runtime. It transforms the data transfer objects produced by the Configuration subsystem into
 executable domain objects and drives the assertion logic.
 
-## Subsystem Contents
+### Subsystem Contents
 
 | Unit                    | File                        | Responsibility                                         |
 | :---------------------- | :-------------------------- | :----------------------------------------------------- |
@@ -20,7 +20,7 @@ executable domain objects and drives the assertion logic.
 | `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
 | `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
 
-## Subsystem Responsibilities
+### Subsystem Responsibilities
 
 - Construct domain objects from Configuration DTOs via static factory methods.
 - Validate required fields (test name, file pattern, rule type) during construction.
@@ -32,7 +32,7 @@ executable domain objects and drives the assertion logic.
 - Apply structured-document query assertions (XPath or dot-notation) to parsed document nodes.
 - Report assertion failures via the `Context` from the Cli subsystem.
 
-## Object Hierarchy
+### Object Hierarchy
 
 ```text
 FileAssertTest
@@ -50,14 +50,14 @@ FileAssertTest
     └── FileAssertJsonAssert? (zero or one)
 ```
 
-## Interactions with Other Subsystems
+### Interactions with Other Subsystems
 
 | Dependency    | Usage                                                    |
 | :------------ | :------------------------------------------------------- |
 | Cli           | Receives `Context` to report assertion failures.         |
 | Configuration | Accepts DTO types for test, file, and rule construction. |
 
-## Design Decisions
+### Design Decisions
 
 - **Factory methods over constructors**: Each domain class provides an `internal static Create`
   method that validates the DTO and constructs the domain object, keeping constructors private.

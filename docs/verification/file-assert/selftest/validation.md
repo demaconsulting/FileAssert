@@ -1,16 +1,16 @@
-# Validation Verification
+### Validation Verification
 
 This document describes the unit-level verification design for the `Validation` unit. It defines
 the test scenarios, dependency usage, and requirement coverage for `SelfTest/Validation.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `Validation` is verified with unit tests defined in `ValidationTests.cs`. Tests supply a real
 `Context` object (not mocked) with a controlled argument set and assert on exit codes, output
 content, and result files. Temporary directories are used for result file paths to keep tests
 isolated.
 
-## Dependencies
+#### Dependencies
 
 | Dependency    | Usage in Tests                                                            |
 |---------------|---------------------------------------------------------------------------|
@@ -19,9 +19,9 @@ isolated.
 
 No test doubles are introduced at the `Validation` unit level.
 
-## Test Scenarios
+#### Test Scenarios
 
-### Validation_Run_NullContext_ThrowsArgumentNullException
+##### Validation_Run_NullContext_ThrowsArgumentNullException
 
 **Scenario**: `Validation.Run` is called with a `null` context argument.
 
@@ -31,7 +31,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Coverage type**: Defensive/boundary test — no formal requirement.
 
-### Validation_Run_WithSilentContext_PrintsSummary
+##### Validation_Run_WithSilentContext_PrintsSummary
 
 **Scenario**: `Validation.Run` is called with a silent context (output captured separately).
 
@@ -39,7 +39,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Requirement coverage**: Summary output requirement.
 
-### Validation_Run_WithSilentContext_ExitCodeIsZero
+##### Validation_Run_WithSilentContext_ExitCodeIsZero
 
 **Scenario**: `Validation.Run` is called with a silent context.
 
@@ -47,7 +47,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Requirement coverage**: Successful exit code requirement.
 
-### Validation_Run_WithTrxResultsFile_WritesTrxFile
+##### Validation_Run_WithTrxResultsFile_WritesTrxFile
 
 **Scenario**: `Validation.Run` is called with a context whose `ResultsFile` points to a temporary
 `.trx` path.
@@ -56,7 +56,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Requirement coverage**: TRX results output requirement.
 
-### Validation_Run_WithXmlResultsFile_WritesXmlFile
+##### Validation_Run_WithXmlResultsFile_WritesXmlFile
 
 **Scenario**: `Validation.Run` is called with a context whose `ResultsFile` points to a temporary
 `.xml` path.
@@ -65,7 +65,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Requirement coverage**: JUnit results output requirement.
 
-### Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
+##### Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
 
 **Scenario**: `Validation.Run` is called with a context whose `ResultsFile` has a `.json`
 extension (an unsupported format).
@@ -77,7 +77,7 @@ is written to `context` indicating the unsupported format.
 
 **Coverage type**: Defensive/boundary test — no formal requirement.
 
-### Validation_Run_WithSilentContext_LogContainsFileAssertResults
+##### Validation_Run_WithSilentContext_LogContainsFileAssertResults
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
@@ -85,7 +85,7 @@ is written to `context` indicating the unsupported format.
 
 **Requirement coverage**: Logging requirement.
 
-### Validation_Run_WithSilentContext_LogContainsFileAssertExists
+##### Validation_Run_WithSilentContext_LogContainsFileAssertExists
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
@@ -93,7 +93,7 @@ is written to `context` indicating the unsupported format.
 
 **Requirement coverage**: Self-validation content requirement.
 
-### Validation_Run_WithSilentContext_LogContainsFileAssertContains
+##### Validation_Run_WithSilentContext_LogContainsFileAssertContains
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
@@ -101,7 +101,7 @@ is written to `context` indicating the unsupported format.
 
 **Requirement coverage**: Self-validation content requirement.
 
-### Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
+##### Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 
 **Scenario**: `Validation.Run` is called with a context created with `["--depth", "2"]`.
 
@@ -109,7 +109,7 @@ is written to `context` indicating the unsupported format.
 
 **Requirement coverage**: Heading depth requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 | Requirement                          | Test Scenario                                                   |
 |--------------------------------------|-----------------------------------------------------------------|

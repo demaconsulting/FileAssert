@@ -1,23 +1,23 @@
-# PathHelpers Verification
+### PathHelpers Verification
 
 This document describes the unit-level verification design for the `PathHelpers` unit. It defines
 the test scenarios, dependency usage, and requirement coverage for `Utilities/PathHelpers.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `PathHelpers` is verified with unit tests defined in `PathHelpersTests.cs`. Because `PathHelpers`
 performs pure path manipulation using only .NET BCL types, no mocking or test doubles are needed.
 Tests call `PathHelpers.SafePathCombine` directly with controlled base and relative path arguments
 and assert on the returned string or the thrown exception.
 
-## Dependencies
+#### Dependencies
 
 `PathHelpers` has no dependencies on other tool units. All path operations use .NET BCL types
 (`Path`, `string`); no mocking is needed at this level.
 
-## Test Scenarios
+#### Test Scenarios
 
-### PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
+##### PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
 
 **Scenario**: A relative path (e.g., `"subfolder/file.txt"`) is combined with a base path.
 
@@ -25,7 +25,7 @@ and assert on the returned string or the thrown exception.
 
 **Requirement coverage**: Valid path combination requirement.
 
-### PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
+##### PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
 
 **Scenario**: A relative path starting with `"../"` is passed to `SafePathCombine`.
 
@@ -35,7 +35,7 @@ and assert on the returned string or the thrown exception.
 
 **Requirement coverage**: Traversal rejection requirement.
 
-### PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
+##### PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
 
 **Scenario**: A relative path containing `"subfolder/../../../etc/passwd"` is passed to
 `SafePathCombine`.
@@ -46,7 +46,7 @@ and assert on the returned string or the thrown exception.
 
 **Requirement coverage**: Embedded traversal rejection requirement.
 
-### PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
+##### PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
 
 **Scenario**: An absolute path is passed as the relative argument to `SafePathCombine`.
 Sub-cases:
@@ -60,7 +60,7 @@ Sub-cases:
 
 **Requirement coverage**: Absolute path rejection requirement.
 
-### PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
+##### PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
 
 **Scenario**: A relative path starting with `"./"` (e.g., `"./subfolder/file.txt"`) is combined
 with a base path.
@@ -69,7 +69,7 @@ with a base path.
 
 **Requirement coverage**: Current-directory prefix requirement.
 
-### PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
+##### PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
 
 **Scenario**: A deeply nested relative path (e.g., `"a/b/c/d/file.txt"`) is combined with a
 base path.
@@ -78,7 +78,7 @@ base path.
 
 **Requirement coverage**: Nested path combination requirement.
 
-### PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
+##### PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
 
 **Scenario**: An empty string is passed as the relative path argument.
 
@@ -88,7 +88,7 @@ base path.
 
 **Requirement coverage**: Empty relative path requirement.
 
-### PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
+##### PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
 
 **Scenario**: A relative path whose filename starts with `".."` but is not a traversal sequence
 (e.g., `"..data/file.txt"`) is combined with a base path.
@@ -99,7 +99,7 @@ base path.
 
 **Requirement coverage**: Dot-dot-prefixed filename requirement.
 
-### PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
+##### PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
 
 **Scenario**: `null` is passed as the `basePath` argument to `SafePathCombine`.
 
@@ -109,7 +109,7 @@ base path.
 
 **Requirement coverage**: Null input rejection requirement.
 
-### PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
+##### PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
 
 **Scenario**: `null` is passed as the `relativePath` argument to `SafePathCombine`.
 
@@ -119,7 +119,7 @@ base path.
 
 **Requirement coverage**: Null input rejection requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 - (valid path combination): PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
 - (leading traversal rejection): PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException

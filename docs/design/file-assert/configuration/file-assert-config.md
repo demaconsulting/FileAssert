@@ -1,21 +1,21 @@
-# FileAssertConfig Design
+### FileAssertConfig Design
 
-## Overview
+#### Overview
 
 The `FileAssertConfig` class is the top-level entry point for the FileAssert tool's
 main execution path. It loads a YAML configuration file, builds the full hierarchy
 of tests, files, and rules, and drives test execution with optional name or tag
 filtering.
 
-## Class Structure
+#### Class Structure
 
-### Properties
+##### Properties
 
 | Property | Type                            | Description                              |
 | :------- | :------------------------------ | :--------------------------------------- |
 | `Tests`  | `IReadOnlyList<FileAssertTest>` | Tests defined in the configuration file. |
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 internal static FileAssertConfig ReadFromFile(string path)
@@ -35,7 +35,7 @@ The factory:
 5. Stores the config file path internally so the base directory can be resolved
    at run time.
 
-### Execution Method
+##### Execution Method
 
 ```csharp
 internal void Run(Context context, IEnumerable<string> filters)
@@ -60,7 +60,7 @@ Execution proceeds as follows:
 5. When results serialization is active, the results file is written in TRX format
    (`.trx` extension) or JUnit XML format (`.xml` extension) after all tests complete.
 
-### Results Serialization
+##### Results Serialization
 
 When `context.ResultsFile` is non-null, `Run` collects one `TestResult` per executed
 test (tests skipped by the filter are not recorded) and calls `WriteResultsFile` after
@@ -68,7 +68,7 @@ the test loop. `WriteResultsFile` serializes using `TrxSerializer.Serialize` or
 `JUnitSerializer.Serialize` from `DemaConsulting.TestResults.IO`, selecting the format
 from the file extension.
 
-## YAML Configuration Format
+#### YAML Configuration Format
 
 The top-level YAML structure is:
 
@@ -85,7 +85,7 @@ tests:
           - contains: "Copyright"
 ```
 
-## Integration with Program
+#### Integration with Program
 
 `Program.RunToolLogic` loads the configuration from the path stored in
 `context.ConfigFile` (defaulting to `.fileassert.yaml`) and passes
@@ -93,7 +93,7 @@ tests:
 the tool prints usage guidance rather than an error. When an explicitly specified
 file is absent, the tool reports an error and exits with a non-zero code.
 
-## Design Decisions
+#### Design Decisions
 
 - **Static factory with stored path**: Storing the configuration file path in the
   object avoids threading the path through every method signature while still

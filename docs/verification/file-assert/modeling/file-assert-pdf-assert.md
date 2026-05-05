@@ -1,24 +1,24 @@
-# FileAssertPdfAssert Verification
+### FileAssertPdfAssert Verification
 
 This document describes the unit-level verification design for the `FileAssertPdfAssert` unit. It
 defines the test scenarios, dependency usage, and requirement coverage for
 `Modeling/FileAssertPdfAssert.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `FileAssertPdfAssert` is verified with unit tests defined in `FileAssertPdfAssertTests.cs`. Tests
 use PDF files in test fixtures and assert on page-count constraints, metadata field assertions,
 and text content assertions.
 
-## Dependencies
+#### Dependencies
 
 | Dependency | Usage in Tests                                              |
 |------------|-------------------------------------------------------------|
 | `Context`  | Used directly (not mocked) — created with controlled flags. |
 
-## Test Scenarios
+#### Test Scenarios
 
-### FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
+##### FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
 
 **Scenario**: `FileAssertPdfAssert.Create` is called with valid data.
 
@@ -26,7 +26,7 @@ and text content assertions.
 
 **Requirement coverage**: PDF assert creation requirement.
 
-### FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
+##### FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertPdfAssert.Create` is called with `null` data.
 
@@ -34,7 +34,7 @@ and text content assertions.
 
 **Boundary / error path**: Null data guard.
 
-### FileAssertPdfAssert_Run_InvalidFile_WritesError
+##### FileAssertPdfAssert_Run_InvalidFile_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a path that is not a valid PDF file.
 
@@ -42,7 +42,7 @@ and text content assertions.
 
 **Boundary / error path**: Invalid PDF file error path.
 
-### FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+##### FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called on a valid PDF that meets the page count
 constraints.
@@ -51,7 +51,7 @@ constraints.
 
 **Requirement coverage**: Page count constraint pass requirement.
 
-### FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
+##### FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called on a valid PDF with fewer pages than the minimum.
 
@@ -59,7 +59,7 @@ constraints.
 
 **Requirement coverage**: Minimum page count constraint requirement.
 
-### FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
+##### FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called on a valid PDF with more pages than the maximum.
 
@@ -67,7 +67,7 @@ constraints.
 
 **Requirement coverage**: Maximum page count constraint requirement.
 
-### FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
+##### FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `contains` rule on a field that
 does not exist in the PDF metadata.
@@ -76,7 +76,7 @@ does not exist in the PDF metadata.
 
 **Requirement coverage**: Metadata field missing error requirement.
 
-### FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
+##### FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `contains` rule on the Title
 field, and the Title contains the expected value.
@@ -85,7 +85,7 @@ field, and the Title contains the expected value.
 
 **Requirement coverage**: Metadata title match requirement.
 
-### FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
+##### FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `contains` rule on the Author
 field, and the Author contains the expected value.
@@ -94,7 +94,7 @@ field, and the Author contains the expected value.
 
 **Requirement coverage**: Metadata author match requirement.
 
-### FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
+##### FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `matches` regex rule that
 matches the field value.
@@ -103,7 +103,7 @@ matches the field value.
 
 **Requirement coverage**: Metadata regex match pass requirement.
 
-### FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
+##### FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `matches` regex rule that does
 not match the field value.
@@ -112,7 +112,7 @@ not match the field value.
 
 **Requirement coverage**: Metadata regex match fail requirement.
 
-### FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
+##### FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a text `contains` rule and the PDF text
 contains the expected value.
@@ -121,7 +121,7 @@ contains the expected value.
 
 **Requirement coverage**: PDF text content assertion pass requirement.
 
-### FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
+##### FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a text rule and the PDF text does not
 satisfy the rule.
@@ -130,7 +130,7 @@ satisfy the rule.
 
 **Requirement coverage**: PDF text content assertion fail requirement.
 
-### FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
+##### FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a text `matches` regex rule and the PDF
 text matches the pattern.
@@ -139,7 +139,7 @@ text matches the pattern.
 
 **Requirement coverage**: PDF text regex match requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 - **PDF assert creation**: FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
 - **Null guard**: FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException

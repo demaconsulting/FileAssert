@@ -1,9 +1,9 @@
-﻿# Context Verification
+### Context Verification
 
 This document describes the unit-level verification design for the `Context` unit. It defines the
 test scenarios, dependency usage, and requirement coverage for `Cli/Context.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `Context` is verified with unit tests defined in `ContextTests.cs` and
 `ContextNewPropertiesTests.cs`. Because `Context` depends only on .NET base class library types
@@ -11,14 +11,14 @@ test scenarios, dependency usage, and requirement coverage for `Cli/Context.cs`.
 `Context.Create` with controlled argument arrays, inspect the resulting properties and exit codes,
 and verify output written to captured streams.
 
-## Dependencies
+#### Dependencies
 
 `Context` has no dependencies on other tool units. All dependencies are real .NET BCL types;
 no mocking is needed at this level.
 
-## Test Scenarios
+#### Test Scenarios
 
-### Context_Create_NoArguments_ReturnsDefaultContext
+##### Context_Create_NoArguments_ReturnsDefaultContext
 
 **Scenario**: `Context.Create` is called with an empty argument array.
 
@@ -26,7 +26,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Default context creation requirement.
 
-### Context_Create_VersionFlag_SetsVersionTrue
+##### Context_Create_VersionFlag_SetsVersionTrue
 
 **Scenario**: `Context.Create` is called with `["--version"]`.
 
@@ -34,7 +34,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Version flag parsing requirement.
 
-### Context_Create_ShortVersionFlag_SetsVersionTrue
+##### Context_Create_ShortVersionFlag_SetsVersionTrue
 
 **Scenario**: `Context.Create` is called with `["-v"]`.
 
@@ -42,7 +42,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Short version flag parsing requirement.
 
-### Context_Create_HelpFlag_SetsHelpTrue
+##### Context_Create_HelpFlag_SetsHelpTrue
 
 **Scenario**: `Context.Create` is called with `["--help"]`.
 
@@ -50,7 +50,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Help flag (long form) parsing requirement.
 
-### Context_Create_ShortHelpFlag_H_SetsHelpTrue
+##### Context_Create_ShortHelpFlag_H_SetsHelpTrue
 
 **Scenario**: `Context.Create` is called with `["-h"]`.
 
@@ -58,7 +58,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Help flag (-h) parsing requirement.
 
-### Context_Create_ShortHelpFlag_Question_SetsHelpTrue
+##### Context_Create_ShortHelpFlag_Question_SetsHelpTrue
 
 **Scenario**: `Context.Create` is called with `["-?"]`.
 
@@ -66,7 +66,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Help flag (-?) parsing requirement.
 
-### Context_Create_SilentFlag_SetsSilentTrue
+##### Context_Create_SilentFlag_SetsSilentTrue
 
 **Scenario**: `Context.Create` is called with `["--silent"]`.
 
@@ -74,7 +74,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Silent flag parsing requirement.
 
-### Context_Create_ValidateFlag_SetsValidateTrue
+##### Context_Create_ValidateFlag_SetsValidateTrue
 
 **Scenario**: `Context.Create` is called with `["--validate"]`.
 
@@ -82,7 +82,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Validate flag parsing requirement.
 
-### Context_Create_ResultsFlag_SetsResultsFile
+##### Context_Create_ResultsFlag_SetsResultsFile
 
 **Scenario**: `Context.Create` is called with `["--results", "output.trx"]`.
 
@@ -90,7 +90,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Results file path parsing requirement.
 
-### Context_Create_ResultAliasFlag_SetsResultsFile
+##### Context_Create_ResultAliasFlag_SetsResultsFile
 
 **Scenario**: `Context.Create` is called with `["--result", "output.trx"]` (legacy alias).
 
@@ -98,7 +98,7 @@ no mocking is needed at this level.
 
 **Requirement coverage**: Results alias flag parsing requirement.
 
-### Context_Create_LogFlag_OpensLogFile
+##### Context_Create_LogFlag_OpensLogFile
 
 **Scenario**: `Context.Create` is called with `["--log", "<tmp>.log"]`; `WriteLine` is then called
 with a test message.
@@ -107,7 +107,7 @@ with a test message.
 
 **Requirement coverage**: Log file opening and writing requirement.
 
-### Context_Create_UnknownArgument_ThrowsArgumentException
+##### Context_Create_UnknownArgument_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with an unrecognized argument (e.g., `["--unknown"]`).
 
@@ -115,7 +115,7 @@ with a test message.
 
 **Requirement coverage**: Unknown argument rejection requirement.
 
-### Context_Create_LogFlag_WithoutValue_ThrowsArgumentException
+##### Context_Create_LogFlag_WithoutValue_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--log"]` (value missing).
 
@@ -123,7 +123,7 @@ with a test message.
 
 **Requirement coverage**: Log flag missing-value validation requirement.
 
-### Context_Create_ResultsFlag_WithoutValue_ThrowsArgumentException
+##### Context_Create_ResultsFlag_WithoutValue_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--results"]` (value missing).
 
@@ -131,7 +131,7 @@ with a test message.
 
 **Requirement coverage**: Results flag missing-value validation requirement.
 
-### Context_WriteLine_NotSilent_WritesToConsole
+##### Context_WriteLine_NotSilent_WritesToConsole
 
 **Scenario**: A non-silent `Context` is created and `WriteLine` is called with a test message.
 
@@ -139,7 +139,7 @@ with a test message.
 
 **Requirement coverage**: Normal output writing requirement.
 
-### Context_WriteLine_Silent_DoesNotWriteToConsole
+##### Context_WriteLine_Silent_DoesNotWriteToConsole
 
 **Scenario**: A silent `Context` (created with `["--silent"]`) calls `WriteLine`.
 
@@ -147,7 +147,7 @@ with a test message.
 
 **Requirement coverage**: Silent mode suppression requirement.
 
-### Context_WriteError_Silent_DoesNotWriteToConsole
+##### Context_WriteError_Silent_DoesNotWriteToConsole
 
 **Scenario**: A silent `Context` calls `WriteError`.
 
@@ -155,7 +155,7 @@ with a test message.
 
 **Requirement coverage**: Silent mode error suppression requirement.
 
-### Context_WriteError_SetsErrorExitCode
+##### Context_WriteError_SetsErrorExitCode
 
 **Scenario**: A `Context` calls `WriteError`.
 
@@ -163,7 +163,7 @@ with a test message.
 
 **Requirement coverage**: Error exit code setting requirement.
 
-### Context_WriteError_NotSilent_WritesToConsole
+##### Context_WriteError_NotSilent_WritesToConsole
 
 **Scenario**: A non-silent `Context` calls `WriteError` with a test message.
 
@@ -171,7 +171,7 @@ with a test message.
 
 **Requirement coverage**: Error output writing requirement.
 
-### Context_WriteError_WritesToLogFile
+##### Context_WriteError_WritesToLogFile
 
 **Scenario**: A `Context` created with `["--silent", "--log", "<tmp>.log"]` calls `WriteError`
 with a test message.
@@ -180,7 +180,7 @@ with a test message.
 
 **Requirement coverage**: Error log writing requirement.
 
-### Context_ErrorCount_IncrementsOnEachWriteError
+##### Context_ErrorCount_IncrementsOnEachWriteError
 
 **Scenario**: `WriteError` is called multiple times on the same `Context`.
 
@@ -188,7 +188,7 @@ with a test message.
 
 **Requirement coverage**: Error count tracking requirement.
 
-### Context_Create_DepthFlag_SetsDepth
+##### Context_Create_DepthFlag_SetsDepth
 
 **Scenario**: `Context.Create` is called with `["--depth", "3"]`.
 
@@ -196,7 +196,7 @@ with a test message.
 
 **Requirement coverage**: Depth flag parsing requirement.
 
-### Context_Create_NoArguments_DepthDefaultsToOne
+##### Context_Create_NoArguments_DepthDefaultsToOne
 
 **Scenario**: `Context.Create` is called with an empty argument array.
 
@@ -204,7 +204,7 @@ with a test message.
 
 **Requirement coverage**: Default heading depth requirement.
 
-### Context_Create_DepthFlag_WithoutValue_ThrowsArgumentException
+##### Context_Create_DepthFlag_WithoutValue_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--depth"]` (value missing).
 
@@ -212,7 +212,7 @@ with a test message.
 
 **Requirement coverage**: Depth flag missing-value validation requirement.
 
-### Context_Create_DepthFlag_NonNumeric_ThrowsArgumentException
+##### Context_Create_DepthFlag_NonNumeric_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--depth", "abc"]`.
 
@@ -220,7 +220,7 @@ with a test message.
 
 **Requirement coverage**: Depth flag non-integer validation requirement.
 
-### Context_Create_DepthFlag_Zero_ThrowsArgumentException
+##### Context_Create_DepthFlag_Zero_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--depth", "0"]` (below minimum of 1).
 
@@ -228,7 +228,7 @@ with a test message.
 
 **Requirement coverage**: Depth flag minimum-value validation requirement.
 
-### Context_Create_DepthFlag_AboveSix_ThrowsArgumentException
+##### Context_Create_DepthFlag_AboveSix_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--depth", "7"]` (above maximum of 6).
 
@@ -236,7 +236,7 @@ with a test message.
 
 **Requirement coverage**: Depth flag maximum-value validation requirement.
 
-### Context_Create_NoArguments_ConfigFileHasDefaultValue
+##### Context_Create_NoArguments_ConfigFileHasDefaultValue
 
 **Scenario**: `Context.Create` is called with an empty argument array.
 
@@ -244,7 +244,7 @@ with a test message.
 
 **Requirement coverage**: Default config file path requirement.
 
-### Context_Create_NoArguments_FiltersIsEmpty
+##### Context_Create_NoArguments_FiltersIsEmpty
 
 **Scenario**: `Context.Create` is called with an empty argument array.
 
@@ -252,7 +252,7 @@ with a test message.
 
 **Requirement coverage**: Default filters requirement.
 
-### Context_Create_ConfigFlag_SetsConfigFile
+##### Context_Create_ConfigFlag_SetsConfigFile
 
 **Scenario**: `Context.Create` is called with `["--config", "my.yaml"]`.
 
@@ -260,7 +260,7 @@ with a test message.
 
 **Requirement coverage**: Config file flag parsing requirement.
 
-### Context_Create_PositionalArguments_AddedToFilters
+##### Context_Create_PositionalArguments_AddedToFilters
 
 **Scenario**: `Context.Create` is called with positional arguments (e.g., `["TestA", "TestB"]`).
 
@@ -268,7 +268,7 @@ with a test message.
 
 **Requirement coverage**: Test filter parsing requirement.
 
-### Context_Create_MixedArguments_ParsesCorrectly
+##### Context_Create_MixedArguments_ParsesCorrectly
 
 **Scenario**: `Context.Create` is called with a mix of flags and positional arguments.
 
@@ -276,7 +276,7 @@ with a test message.
 
 **Requirement coverage**: Mixed argument parsing requirement.
 
-### Context_Create_UnknownFlagWithDash_ThrowsArgumentException
+##### Context_Create_UnknownFlagWithDash_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with an unrecognized flag starting with `--`.
 
@@ -284,7 +284,7 @@ with a test message.
 
 **Requirement coverage**: Unknown flag rejection requirement.
 
-### Context_Create_ConfigFlag_WithoutValue_ThrowsArgumentException
+##### Context_Create_ConfigFlag_WithoutValue_ThrowsArgumentException
 
 **Scenario**: `Context.Create` is called with `["--config"]` (value missing).
 
@@ -292,7 +292,7 @@ with a test message.
 
 **Requirement coverage**: Config flag missing-value validation requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 | Requirement                    | Test Scenario                                                   |
 |--------------------------------|-----------------------------------------------------------------|
