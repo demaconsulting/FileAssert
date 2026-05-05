@@ -1,6 +1,6 @@
-# FileAssertJsonAssert Design
+### FileAssertJsonAssert Design
 
-## Overview
+#### Overview
 
 The `FileAssertJsonAssert` class attempts to parse a matched file as a JSON document using
 `System.Text.Json.JsonDocument.Parse`. If parsing fails, an error is reported and no further
@@ -8,13 +8,13 @@ assertions are evaluated. Otherwise it evaluates each dot-notation path against 
 element tree and applies min, max, and exact count constraints to the number of matching
 elements.
 
-## Class Structure
+#### Class Structure
 
-### FileAssertJsonAssert
+##### FileAssertJsonAssert
 
 The main class coordinating dot-notation path assertions for a JSON file.
 
-#### FileAssertJsonAssert Properties
+###### FileAssertJsonAssert Properties
 
 | Property  | Type                                 | Description                         |
 | :-------- | :----------------------------------- | :---------------------------------- |
@@ -29,13 +29,13 @@ Each `FileAssertJsonQuery` entry holds:
 | `Min`    | `int?`   | Minimum number of matched nodes. |
 | `Max`    | `int?`   | Maximum number of matched nodes. |
 
-#### FileAssertJsonAssert Factory
+###### FileAssertJsonAssert Factory
 
 ```csharp
 internal static FileAssertJsonAssert Create(IEnumerable<FileAssertQueryData> data)
 ```
 
-#### FileAssertJsonAssert Run
+###### FileAssertJsonAssert Run
 
 ```csharp
 internal void Run(Context context, string fileName)
@@ -49,13 +49,13 @@ Execution proceeds in the following steps:
    segments, counts the matched properties or array elements, and applies `Count`, `Min`,
    and `Max` constraints against the match count.
 
-#### FileAssertJsonAssert Parse Error Message
+###### FileAssertJsonAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as a JSON document
 ```
 
-#### FileAssertJsonAssert Query Error Messages
+###### FileAssertJsonAssert Query Error Messages
 
 ```text
 File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
@@ -63,7 +63,7 @@ File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maxim
 File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 files:
@@ -77,7 +77,7 @@ files:
         count: 1
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **No additional dependencies**: `System.Text.Json` is part of the .NET BCL, so JSON
   assertions require no additional NuGet packages.

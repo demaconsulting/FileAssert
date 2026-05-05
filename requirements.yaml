@@ -1,14 +1,14 @@
 ---
 # Root requirements file - includes all subsystem, platform, and OTS requirements
 includes:
-  - docs/reqstream/file-assert/file-assert.yaml
+  - docs/reqstream/file-assert.yaml
   - docs/reqstream/file-assert/program.yaml
-  - docs/reqstream/file-assert/cli/cli.yaml
+  - docs/reqstream/file-assert/cli.yaml
   - docs/reqstream/file-assert/cli/context.yaml
-  - docs/reqstream/file-assert/configuration/configuration.yaml
+  - docs/reqstream/file-assert/configuration.yaml
   - docs/reqstream/file-assert/configuration/file-assert-config.yaml
   - docs/reqstream/file-assert/configuration/file-assert-data.yaml
-  - docs/reqstream/file-assert/modeling/modeling.yaml
+  - docs/reqstream/file-assert/modeling.yaml
   - docs/reqstream/file-assert/modeling/file-assert-test.yaml
   - docs/reqstream/file-assert/modeling/file-assert-file.yaml
   - docs/reqstream/file-assert/modeling/file-assert-rule.yaml
@@ -18,9 +18,9 @@ includes:
   - docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml
   - docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml
   - docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml
-  - docs/reqstream/file-assert/utilities/utilities.yaml
+  - docs/reqstream/file-assert/utilities.yaml
   - docs/reqstream/file-assert/utilities/path-helpers.yaml
-  - docs/reqstream/file-assert/selftest/selftest.yaml
+  - docs/reqstream/file-assert/selftest.yaml
   - docs/reqstream/file-assert/selftest/validation.yaml
   - docs/reqstream/file-assert/platform-requirements.yaml
   - docs/reqstream/ots/xunit.yaml

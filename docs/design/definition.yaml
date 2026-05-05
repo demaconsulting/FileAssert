@@ -5,14 +5,14 @@ resource-path:
 input-files:
   - docs/design/title.txt
   - docs/design/introduction.md
-  - docs/design/file-assert/file-assert.md
+  - docs/design/file-assert.md
   - docs/design/file-assert/program.md
-  - docs/design/file-assert/cli/cli.md
+  - docs/design/file-assert/cli.md
   - docs/design/file-assert/cli/context.md
-  - docs/design/file-assert/configuration/configuration.md
+  - docs/design/file-assert/configuration.md
   - docs/design/file-assert/configuration/file-assert-config.md
   - docs/design/file-assert/configuration/file-assert-data.md
-  - docs/design/file-assert/modeling/modeling.md
+  - docs/design/file-assert/modeling.md
   - docs/design/file-assert/modeling/file-assert-test.md
   - docs/design/file-assert/modeling/file-assert-file.md
   - docs/design/file-assert/modeling/file-assert-rule.md
@@ -22,9 +22,9 @@ input-files:
   - docs/design/file-assert/modeling/file-assert-html-assert.md
   - docs/design/file-assert/modeling/file-assert-yaml-assert.md
   - docs/design/file-assert/modeling/file-assert-json-assert.md
-  - docs/design/file-assert/utilities/utilities.md
+  - docs/design/file-assert/utilities.md
   - docs/design/file-assert/utilities/path-helpers.md
-  - docs/design/file-assert/selftest/selftest.md
+  - docs/design/file-assert/selftest.md
   - docs/design/file-assert/selftest/validation.md
   - docs/design/file-assert/ots-dependencies.md
 template: template.html

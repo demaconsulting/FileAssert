@@ -1,14 +1,14 @@
-# FileAssertFile Design
+### FileAssertFile Design
 
-## Overview
+#### Overview
 
 The `FileAssertFile` class locates files on disk using a glob pattern, enforces
 optional minimum and maximum count constraints, and delegates per-file assertions to
 file-type-specific assert units.
 
-## Class Structure
+#### Class Structure
 
-### Properties
+##### Properties
 
 | Property     | Type                             | Description                                       |
 | :----------- | :------------------------------- | :------------------------------------------------ |
@@ -25,7 +25,7 @@ file-type-specific assert units.
 | `YamlAssert` | `FileAssertYamlAssert?`          | YAML node assertions (null if not declared).      |
 | `JsonAssert` | `FileAssertJsonAssert?`          | JSON node assertions (null if not declared).      |
 
-### Factory Method
+##### Factory Method
 
 ```csharp
 internal static FileAssertFile Create(FileAssertFileData data)
@@ -35,7 +35,7 @@ The factory validates that `Pattern` is not null or whitespace before constructi
 the instance. Each file-type assert is created from the corresponding data block when
 that block is present.
 
-### Execution Method
+##### Execution Method
 
 ```csharp
 internal void Run(Context context, string basePath)
@@ -78,7 +78,7 @@ Execution proceeds in five phases:
       reports an immediate error if parsing fails, otherwise applies dot-notation path
       count assertions.
 
-### Count Constraint Error Messages
+##### Count Constraint Error Messages
 
 ```text
 Pattern '<Pattern>' matched <n> file(s), but expected at least <Min>
@@ -86,14 +86,14 @@ Pattern '<Pattern>' matched <n> file(s), but expected at most <Max>
 Pattern '<Pattern>' matched <n> file(s), but expected exactly <Count>
 ```
 
-### Size Constraint Error Messages
+##### Size Constraint Error Messages
 
 ```text
 File '<filePath>' is <n> byte(s), which is less than the minimum <MinSize> bytes
 File '<filePath>' is <n> byte(s), which exceeds the maximum <MaxSize> bytes
 ```
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 files:
@@ -109,7 +109,7 @@ files:
 
 All properties except `pattern` are optional.
 
-## Design Decisions
+#### Design Decisions
 
 - **Glob via FileSystemGlobbing**: The `Microsoft.Extensions.FileSystemGlobbing`
   library is already a project dependency and provides cross-platform glob support

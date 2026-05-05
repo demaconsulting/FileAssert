@@ -1,25 +1,25 @@
-# FileAssertTest Verification
+### FileAssertTest Verification
 
 This document describes the unit-level verification design for the `FileAssertTest` unit. It
 defines the test scenarios, dependency usage, and requirement coverage for
 `Modeling/FileAssertTest.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `FileAssertTest` is verified with unit tests defined in `FileAssertTestTests.cs`. Tests supply
 controlled `FileAssertTestData` instances and assert on filter matching behavior, creation
 validation, and execution delegation.
 
-## Dependencies
+#### Dependencies
 
 | Dependency        | Usage in Tests                                                       |
 |-------------------|----------------------------------------------------------------------|
 | `Context`         | Used directly (not mocked) — created with controlled flags.          |
 | `FileAssertFile`  | Used directly (not mocked) — called through `FileAssertTest.Run`.    |
 
-## Test Scenarios
+#### Test Scenarios
 
-### FileAssertTest_Create_ValidData_CreatesTest
+##### FileAssertTest_Create_ValidData_CreatesTest
 
 **Scenario**: `FileAssertTest.Create` is called with valid data containing a name and files list.
 
@@ -27,7 +27,7 @@ validation, and execution delegation.
 
 **Requirement coverage**: Test creation requirement.
 
-### FileAssertTest_Create_NullData_ThrowsArgumentNullException
+##### FileAssertTest_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertTest.Create` is called with `null` data.
 
@@ -35,7 +35,7 @@ validation, and execution delegation.
 
 **Boundary / error path**: Null guard on data.
 
-### FileAssertTest_Create_NullName_ThrowsInvalidOperationException
+##### FileAssertTest_Create_NullName_ThrowsInvalidOperationException
 
 **Scenario**: `FileAssertTest.Create` is called with data whose `Name` property is `null`.
 
@@ -43,7 +43,7 @@ validation, and execution delegation.
 
 **Boundary / error path**: Null name validation.
 
-### FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException
+##### FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException
 
 **Scenario**: `FileAssertTest.Create` is called with data whose `Name` property is whitespace.
 
@@ -51,7 +51,7 @@ validation, and execution delegation.
 
 **Boundary / error path**: Whitespace name validation.
 
-### FileAssertTest_MatchesFilter_EmptyFilters_ReturnsTrue
+##### FileAssertTest_MatchesFilter_EmptyFilters_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with an empty filter list.
 
@@ -59,7 +59,7 @@ validation, and execution delegation.
 
 **Requirement coverage**: Empty filter match requirement.
 
-### FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue
+##### FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter list containing the test name.
 
@@ -67,7 +67,7 @@ validation, and execution delegation.
 
 **Requirement coverage**: Name-based filter match requirement.
 
-### FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue
+##### FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter list containing one of the
 test's tags.
@@ -76,7 +76,7 @@ test's tags.
 
 **Requirement coverage**: Tag-based filter match requirement.
 
-### FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
+##### FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter list containing neither the
 test name nor any of its tags.
@@ -85,7 +85,7 @@ test name nor any of its tags.
 
 **Requirement coverage**: Non-matching filter requirement.
 
-### FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
+##### FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter that differs only in case
 from the test name.
@@ -94,7 +94,7 @@ from the test name.
 
 **Requirement coverage**: Case-insensitive name matching requirement.
 
-### FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
+##### FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter that differs only in case
 from a test tag.
@@ -103,7 +103,7 @@ from a test tag.
 
 **Requirement coverage**: Case-insensitive tag matching requirement.
 
-### FileAssertTest_Run_RunsAllFiles
+##### FileAssertTest_Run_RunsAllFiles
 
 **Scenario**: `FileAssertTest.Run` is called on a test with multiple file entries.
 
@@ -111,7 +111,7 @@ from a test tag.
 
 **Requirement coverage**: Run-all-files requirement.
 
-### FileAssertTest_Run_NullContext_ThrowsArgumentNullException
+##### FileAssertTest_Run_NullContext_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertTest.Run` is called with a `null` context.
 
@@ -119,7 +119,7 @@ from a test tag.
 
 **Boundary / error path**: Null context guard.
 
-### FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException
+##### FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertTest.Run` is called with a `null` base path.
 
@@ -127,7 +127,7 @@ from a test tag.
 
 **Boundary / error path**: Null base path guard.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 - **Test creation**: FileAssertTest_Create_ValidData_CreatesTest
 - **Null data guard**: FileAssertTest_Create_NullData_ThrowsArgumentNullException

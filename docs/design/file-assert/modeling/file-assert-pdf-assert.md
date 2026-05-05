@@ -1,18 +1,18 @@
-# FileAssertPdfAssert Design
+### FileAssertPdfAssert Design
 
-## Overview
+#### Overview
 
 The `FileAssertPdfAssert` class attempts to parse a matched file as a PDF document using
 PdfPig. If parsing fails, an error is reported and no further assertions are evaluated.
 Otherwise it applies metadata field assertions, page count constraints, and body text rules.
 
-## Class Structure
+#### Class Structure
 
-### PdfMetadataRule
+##### PdfMetadataRule
 
 An inner modeling class that applies a single PDF metadata field assertion.
 
-#### PdfMetadataRule Properties
+###### PdfMetadataRule Properties
 
 | Property   | Type      | Description                                        |
 | :--------- | :-------- | :------------------------------------------------- |
@@ -20,13 +20,13 @@ An inner modeling class that applies a single PDF metadata field assertion.
 | `Contains` | `string?` | Metadata value must contain this substring.        |
 | `Matches`  | `string?` | Metadata value must match this regular expression. |
 
-#### PdfMetadataRule Factory
+###### PdfMetadataRule Factory
 
 ```csharp
 internal static PdfMetadataRule FromData(FileAssertPdfMetadataRuleData data)
 ```
 
-#### PdfMetadataRule Apply
+###### PdfMetadataRule Apply
 
 ```csharp
 internal void Apply(Context context, string fileName, string? fieldValue)
@@ -34,31 +34,31 @@ internal void Apply(Context context, string fileName, string? fieldValue)
 
 Checks `Contains` substring presence (ordinal) and `Matches` regex against `fieldValue`.
 
-#### PdfMetadataRule Error Messages
+###### PdfMetadataRule Error Messages
 
 ```text
 File '<fileName>' PDF metadata '<Field>' does not contain '<Contains>'
 File '<fileName>' PDF metadata '<Field>' does not match '<Matches>'
 ```
 
-### PdfPages
+##### PdfPages
 
 An inner modeling class that enforces page count constraints.
 
-#### PdfPages Properties
+###### PdfPages Properties
 
 | Property | Type   | Description              |
 | :------- | :----- | :----------------------- |
 | `Min`    | `int?` | Minimum number of pages. |
 | `Max`    | `int?` | Maximum number of pages. |
 
-#### PdfPages Factory
+###### PdfPages Factory
 
 ```csharp
 internal static PdfPages FromData(FileAssertPdfPagesData data)
 ```
 
-#### PdfPages Apply
+###### PdfPages Apply
 
 ```csharp
 internal void Apply(Context context, string fileName, int n)
@@ -66,18 +66,18 @@ internal void Apply(Context context, string fileName, int n)
 
 Reports an error if `n < Min` or `n > Max`.
 
-#### PdfPages Error Messages
+###### PdfPages Error Messages
 
 ```text
 File '<fileName>' PDF has <n> page(s) which is below the minimum of <Min>
 File '<fileName>' PDF has <n> page(s) which exceeds the maximum of <Max>
 ```
 
-### FileAssertPdfAssert
+##### FileAssertPdfAssert
 
 The main class coordinating metadata, page count, and body text assertions for a PDF file.
 
-#### FileAssertPdfAssert Properties
+###### FileAssertPdfAssert Properties
 
 | Field       | Type                              | Description                                    |
 | :---------- | :-------------------------------- | :--------------------------------------------- |
@@ -85,7 +85,7 @@ The main class coordinating metadata, page count, and body text assertions for a
 | `_pages`    | `PdfPages?`                       | Page count constraints (null if not declared). |
 | `_text`     | `IReadOnlyList<FileAssertRule>`   | Body text rules.                               |
 
-#### FileAssertPdfAssert Factory
+###### FileAssertPdfAssert Factory
 
 ```csharp
 internal static FileAssertPdfAssert Create(FileAssertPdfData data)
@@ -93,7 +93,7 @@ internal static FileAssertPdfAssert Create(FileAssertPdfData data)
 
 Creates metadata rules, page constraints, and text rules from the DTO.
 
-#### FileAssertPdfAssert Run
+###### FileAssertPdfAssert Run
 
 ```csharp
 internal void Run(Context context, string fileName)
@@ -108,13 +108,13 @@ Execution proceeds in the following steps:
 5. If `Text` rules are defined, extracts page text via PdfPig, concatenates, and applies
    each rule.
 
-#### FileAssertPdfAssert Parse Error Message
+###### FileAssertPdfAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as a PDF document
 ```
 
-#### FileAssertPdfAssert GetMetadataField
+###### FileAssertPdfAssert GetMetadataField
 
 ```csharp
 private static string? GetMetadataField(PdfDocument document, string field)
@@ -136,7 +136,7 @@ Recognized field names:
 
 Any other field name returns `null`.
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 files:
@@ -155,7 +155,7 @@ files:
         - does-not-contain: "DRAFT"
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **Immediate failure on parse error**: Attempting to apply metadata, page, or text
   assertions against a file that is not a valid PDF would produce meaningless partial

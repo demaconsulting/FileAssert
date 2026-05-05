@@ -1,18 +1,18 @@
-# Cli Subsystem Design
+## Cli Subsystem Design
 
-## Overview
+### Overview
 
 The Cli subsystem is responsible for translating the raw command-line argument array into a
 structured, immutable context object that the rest of the tool uses for output, configuration,
 and execution decisions.
 
-## Subsystem Contents
+### Subsystem Contents
 
 | Unit      | File          | Responsibility                                            |
 | :-------- | :------------ | :-------------------------------------------------------- |
 | `Context` | `Context.cs`  | Parses arguments and owns all I/O operations.             |
 
-## Subsystem Responsibilities
+### Subsystem Responsibilities
 
 - Parse all supported flags (`--version`/`-v`, `--help`/`-h`/`-?`, `--silent`, `--validate`, `--log`,
   `--results`/`--result`, `--config`, `--depth`) and positional filter arguments.
@@ -21,7 +21,7 @@ and execution decisions.
 - Write output to stdout and the log file; write errors to stderr and the log file.
 - Expose an exit code that reflects whether any errors have been reported.
 
-## Interactions with Other Subsystems
+### Interactions with Other Subsystems
 
 | Consumer          | Usage                                                                |
 | :---------------- | :------------------------------------------------------------------- |
@@ -30,7 +30,7 @@ and execution decisions.
 | Modeling          | Receives a `Context` to write error messages for assertion failures. |
 | SelfTest          | Receives a `Context` to write validation results and errors.         |
 
-## Design Decisions
+### Design Decisions
 
 - **Immutable context object**: Properties are set once via `private init` accessors, preventing
   accidental mutation after the context is created.

@@ -113,6 +113,23 @@ Throughout this document:
   methods/algorithms, and interactions with other units.
 - Text tables are used in preference to diagrams, which may not render in all PDF viewers.
 
+## Companion Artifact Structure
+
+Each in-house software item has corresponding artifacts in parallel directory trees:
+
+- Requirements: `docs/reqstream/{system-name}.yaml`, `docs/reqstream/{system-name}/.../{item}.yaml`
+- Design docs: `docs/design/{system-name}.md`, `docs/design/{system-name}/.../{item}.md`
+- Verification: `docs/verification/{system-name}.md`, `docs/verification/{system-name}/.../{item}.md`
+- Source code: `src/{SystemName}/.../{Item}.cs` (PascalCase for C#)
+- Tests: `test/{SystemName}.Tests/.../{Item}Tests.cs` (PascalCase for C#)
+
+OTS items have no design documentation; their artifacts sit parallel to system folders:
+
+- Requirements: `docs/reqstream/ots/{ots-name}.yaml`
+- Verification: `docs/verification/ots/{ots-name}.md`
+
+Review-sets: defined in `.reviewmark.yaml`
+
 ## References
 
 - [FileAssert User Guide][guide]

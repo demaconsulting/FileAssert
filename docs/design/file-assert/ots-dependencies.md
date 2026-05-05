@@ -1,14 +1,14 @@
-# OTS Dependencies Design
+## OTS Dependencies Design
 
-## Overview
+### Overview
 
 FileAssert relies on several off-the-shelf (OTS) tools and libraries that are integrated
 into the build, quality, and traceability pipeline. This document describes each OTS
 dependency, its purpose, and how its correct operation is verified.
 
-## OTS Tools
+### OTS Tools
 
-### ReqStream
+#### ReqStream
 
 | Attribute    | Value                                                              |
 | :----------- | :----------------------------------------------------------------- |
@@ -20,7 +20,7 @@ ReqStream reads requirements from `docs/reqstream/**/*.yaml` and cross-reference
 against TRX test result files. It enforces that every requirement listed is traceable to a
 passing test, providing continuous compliance evidence for formal reviews.
 
-### ReviewMark
+#### ReviewMark
 
 | Attribute    | Value                                                               |
 | :----------- | :------------------------------------------------------------------ |
@@ -32,7 +32,7 @@ ReviewMark reads review records from the repository and validates that every fil
 included in a review-set has a recorded review. This provides a continuous audit trail
 for compliance with formal code review requirements.
 
-### SonarMark
+#### SonarMark
 
 | Attribute    | Value                                                      |
 | :----------- | :--------------------------------------------------------- |
@@ -44,7 +44,7 @@ SonarMark queries the SonarCloud API and surfaces the quality gate result as a b
 step. Failures in code quality metrics (coverage, duplications, maintainability) are
 caught before merging.
 
-### SarifMark
+#### SarifMark
 
 | Attribute    | Value                                                            |
 | :----------- | :--------------------------------------------------------------- |
@@ -56,7 +56,7 @@ SarifMark processes the SARIF files produced by CodeQL and generates a Markdown
 summary report. Any open high-severity alerts cause the build to fail, enforcing
 zero-tolerance for unaddressed security findings.
 
-### BuildMark
+#### BuildMark
 
 | Attribute    | Value                                                                       |
 | :----------- | :-------------------------------------------------------------------------- |
@@ -68,7 +68,7 @@ BuildMark interrogates installed tool versions and writes a version manifest to 
 build output. This ensures that the exact tool versions used to produce a release are
 permanently recorded and reproducible.
 
-### VersionMark
+#### VersionMark
 
 | Attribute    | Value                                                               |
 | :----------- | :------------------------------------------------------------------ |
@@ -80,7 +80,7 @@ VersionMark reads the version from a central configuration file and propagates i
 all artifacts produced by the build. This eliminates manual version updates and ensures
 consistency between the NuGet package version, assembly version, and release tag.
 
-### xUnit
+#### xUnit
 
 | Attribute    | Value                                                                                |
 | :----------- | :----------------------------------------------------------------------------------- |

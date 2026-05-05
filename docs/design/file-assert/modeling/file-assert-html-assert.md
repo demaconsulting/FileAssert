@@ -1,19 +1,19 @@
-# FileAssertHtmlAssert Design
+### FileAssertHtmlAssert Design
 
-## Overview
+#### Overview
 
 The `FileAssertHtmlAssert` class attempts to parse a matched file as an HTML document using
 `HtmlAgilityPack`. If parsing produces critical errors, an error is reported and no further
 assertions are evaluated. Otherwise it evaluates each XPath query against the document and
 applies min, max, and exact count constraints to the number of matching nodes.
 
-## Class Structure
+#### Class Structure
 
-### FileAssertHtmlAssert
+##### FileAssertHtmlAssert
 
 The main class coordinating XPath-based node count assertions for an HTML file.
 
-#### FileAssertHtmlAssert Properties
+###### FileAssertHtmlAssert Properties
 
 | Property  | Type                                 | Description             |
 | :-------- | :----------------------------------- | :---------------------- |
@@ -28,13 +28,13 @@ Each `FileAssertHtmlQuery` entry holds:
 | `Min`    | `int?`   | Minimum number of matched nodes. |
 | `Max`    | `int?`   | Maximum number of matched nodes. |
 
-#### FileAssertHtmlAssert Factory
+###### FileAssertHtmlAssert Factory
 
 ```csharp
 internal static FileAssertHtmlAssert Create(IEnumerable<FileAssertQueryData> data)
 ```
 
-#### FileAssertHtmlAssert Run
+###### FileAssertHtmlAssert Run
 
 ```csharp
 internal void Run(Context context, string fileName)
@@ -49,13 +49,13 @@ Execution proceeds in the following steps:
    `HtmlDocument.DocumentNode.SelectNodes(xpathQuery)`, counts the result, and applies
    `Count`, `Min`, and `Max` constraints against the match count.
 
-#### FileAssertHtmlAssert Parse Error Message
+###### FileAssertHtmlAssert Parse Error Message
 
 ```text
 File '<fileName>' could not be parsed as an HTML document
 ```
 
-#### FileAssertHtmlAssert Query Error Messages
+###### FileAssertHtmlAssert Query Error Messages
 
 ```text
 File '<fileName>' query '<query>' returned <n> result(s) which is below the minimum of <Min>
@@ -63,7 +63,7 @@ File '<fileName>' query '<query>' returned <n> result(s) which exceeds the maxim
 File '<fileName>' query '<query>' returned <n> result(s) but expected exactly <Count>
 ```
 
-## YAML Configuration
+#### YAML Configuration
 
 ```yaml
 files:
@@ -77,7 +77,7 @@ files:
         min: 1
 ```
 
-## Design Decisions
+#### Design Decisions
 
 - **HtmlAgilityPack chosen**: HtmlAgilityPack is the de-facto standard for lenient HTML
   parsing in .NET. It handles malformed HTML gracefully, making it appropriate for

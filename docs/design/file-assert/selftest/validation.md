@@ -1,15 +1,15 @@
-# Validation Design
+### Validation Design
 
-## Overview
+#### Overview
 
 `Validation` is a static class that implements the self-validation test runner for FileAssert.
 It runs a series of built-in tests that exercise the tool's core functionality, prints a
 structured report to the context output, and optionally writes results to a TRX or JUnit XML
 file.
 
-## Class Structure
+#### Class Structure
 
-### Run Method
+##### Run Method
 
 ```csharp
 public static void Run(Context context)
@@ -24,7 +24,7 @@ Entry point for self-validation. Executes the following steps:
 4. Prints a pass/fail summary.
 5. Writes the results file if `context.ResultsFile` is set.
 
-### Built-in Tests
+##### Built-in Tests
 
 | Test Name                   | Description                                                                          |
 | :-------------------------- | :----------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ Each test body:
 4. Calls `Program.Run` and checks the exit code and/or output files.
 5. Returns `null` on success or an error message string on failure.
 
-### RunValidationTest Helper
+##### RunValidationTest Helper
 
 ```csharp
 private static void RunValidationTest(
@@ -64,7 +64,7 @@ Central dispatcher for all built-in tests. Executes `testBody`, maps its return 
 a pass/fail outcome, logs the result to the context, handles unhandled exceptions, and adds
 the `TestResult` to the collection.
 
-### Results Serialization
+##### Results Serialization
 
 ```csharp
 private static void WriteResultsFile(Context context, TestResults testResults)
@@ -77,13 +77,13 @@ Writes the collected results to the file specified by `context.ResultsFile`:
 - Other extensions → error written to context.
 - Any I/O or other exception is caught and an error message is written to context.
 
-### TemporaryDirectory Helper
+##### TemporaryDirectory Helper
 
 A private nested `IDisposable` class that creates a unique temporary directory on construction
 and deletes it recursively on disposal. Uses `PathHelpers.SafePathCombine` to build the
 directory path under `Path.GetTempPath()`.
 
-## Design Decisions
+#### Design Decisions
 
 - **`RunValidationTest` dispatcher**: All built-in tests share a single helper that owns the
   try/catch, pass/fail recording, logging, and result finalization. Each test body only needs to

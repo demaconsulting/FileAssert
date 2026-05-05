@@ -32,18 +32,18 @@ reviews:
     paths:
       - "README.md"                                                  # project readme
       - "docs/user_guide/**/*.md"                                    # user guide
-      - "docs/reqstream/file-assert/file-assert.yaml"                # system requirements
+      - "docs/reqstream/file-assert.yaml"                            # system requirements
       - "docs/design/introduction.md"                                # design introduction
-      - "docs/design/file-assert/file-assert.md"                     # system design
+      - "docs/design/file-assert.md"                                 # system design
 
   # FileAssert-Architecture Review (one per system)
   - id: FileAssert-Architecture
     title: Review that FileAssert Architecture Satisfies Requirements
     paths:
-      - "docs/reqstream/file-assert/file-assert.yaml"                # system requirements
+      - "docs/reqstream/file-assert.yaml"                            # system requirements
       - "docs/design/introduction.md"                                # design introduction
-      - "docs/design/file-assert/file-assert.md"                     # system design
-      - "docs/verification/file-assert/file-assert.md"               # system verification
+      - "docs/design/file-assert.md"                                 # system design
+      - "docs/verification/file-assert.md"                           # system verification
       - "test/**/IntegrationTests.cs"                                # integration tests
       - "test/**/AssemblyInfo.cs"                                    # test infrastructure
       - "test/**/Runner.cs"                                          # test infrastructure
@@ -52,12 +52,15 @@ reviews:
   - id: FileAssert-Design
     title: Review that FileAssert Design is Consistent and Complete
     paths:
-      - "docs/reqstream/file-assert/file-assert.yaml"                # system requirements
+      - "docs/reqstream/file-assert.yaml"                            # system requirements
       - "docs/reqstream/file-assert/platform-requirements.yaml"      # platform requirements
       - "docs/design/introduction.md"                                # design introduction
+      - "docs/design/file-assert.md"                                 # system design overview
       - "docs/design/file-assert/**/*.md"                            # all system design documents
       - "docs/verification/introduction.md"                          # verification introduction
+      - "docs/verification/file-assert.md"                           # system verification overview
       - "docs/verification/file-assert/**/*.md"                      # all verification documents
+      - "docs/verification/ots.md"                                   # OTS verification overview
 
   # FileAssert-AllRequirements Review (one per system)
   - id: FileAssert-AllRequirements
@@ -70,45 +73,45 @@ reviews:
   - id: FileAssert-Cli
     title: Review that FileAssert Cli Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/file-assert/cli/cli.yaml"                    # subsystem requirements
-      - "docs/design/file-assert/cli/cli.md"                         # subsystem design
-      - "docs/verification/file-assert/cli/cli.md"                   # subsystem verification
+      - "docs/reqstream/file-assert/cli.yaml"                    # subsystem requirements
+      - "docs/design/file-assert/cli.md"                         # subsystem design
+      - "docs/verification/file-assert/cli.md"                   # subsystem verification
       - "test/**/Cli/CliTests.cs"                                    # subsystem tests
 
   # FileAssert-Configuration Review (one per subsystem)
   - id: FileAssert-Configuration
     title: Review that FileAssert Configuration Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/file-assert/configuration/configuration.yaml"  # subsystem requirements
-      - "docs/design/file-assert/configuration/configuration.md"       # subsystem design
-      - "docs/verification/file-assert/configuration/configuration.md"  # subsystem verification
+      - "docs/reqstream/file-assert/configuration.yaml"  # subsystem requirements
+      - "docs/design/file-assert/configuration.md"       # subsystem design
+      - "docs/verification/file-assert/configuration.md"  # subsystem verification
       - "test/**/Configuration/ConfigurationTests.cs"                  # subsystem tests
 
   # FileAssert-Modeling Review (one per subsystem)
   - id: FileAssert-Modeling
     title: Review that FileAssert Modeling Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/file-assert/modeling/modeling.yaml"           # subsystem requirements
-      - "docs/design/file-assert/modeling/modeling.md"                # subsystem design
-      - "docs/verification/file-assert/modeling/modeling.md"          # subsystem verification
+      - "docs/reqstream/file-assert/modeling.yaml"           # subsystem requirements
+      - "docs/design/file-assert/modeling.md"                # subsystem design
+      - "docs/verification/file-assert/modeling.md"          # subsystem verification
       - "test/**/Modeling/ModelingTests.cs"                           # subsystem tests
 
   # FileAssert-Utilities Review (one per subsystem)
   - id: FileAssert-Utilities
     title: Review that FileAssert Utilities Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/file-assert/utilities/utilities.yaml"         # subsystem requirements
-      - "docs/design/file-assert/utilities/utilities.md"              # subsystem design
-      - "docs/verification/file-assert/utilities/utilities.md"        # subsystem verification
+      - "docs/reqstream/file-assert/utilities.yaml"         # subsystem requirements
+      - "docs/design/file-assert/utilities.md"              # subsystem design
+      - "docs/verification/file-assert/utilities.md"        # subsystem verification
       - "test/**/Utilities/UtilitiesTests.cs"                        # subsystem tests
 
   # FileAssert-SelfTest Review (one per subsystem)
   - id: FileAssert-SelfTest
     title: Review that FileAssert SelfTest Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/file-assert/selftest/selftest.yaml"           # subsystem requirements
-      - "docs/design/file-assert/selftest/selftest.md"                # subsystem design
-      - "docs/verification/file-assert/selftest/selftest.md"          # subsystem verification
+      - "docs/reqstream/file-assert/selftest.yaml"           # subsystem requirements
+      - "docs/design/file-assert/selftest.md"                # subsystem design
+      - "docs/verification/file-assert/selftest.md"          # subsystem verification
       - "test/**/SelfTest/SelfTestTests.cs"                           # subsystem tests
 
   # FileAssert-Cli-Context Review (one per unit)

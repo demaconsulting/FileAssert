@@ -1,24 +1,24 @@
-# FileAssertHtmlAssert Verification
+### FileAssertHtmlAssert Verification
 
 This document describes the unit-level verification design for the `FileAssertHtmlAssert` unit. It
 defines the test scenarios, dependency usage, and requirement coverage for
 `Modeling/FileAssertHtmlAssert.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `FileAssertHtmlAssert` is verified with unit tests defined in `FileAssertHtmlAssertTests.cs`. Tests
 create temporary HTML files with controlled content and assert on XPath query results, count
 constraints, and text matching.
 
-## Dependencies
+#### Dependencies
 
 | Dependency | Usage in Tests                                              |
 |------------|-------------------------------------------------------------|
 | `Context`  | Used directly (not mocked) — created with controlled flags. |
 
-## Test Scenarios
+#### Test Scenarios
 
-### FileAssertHtmlAssert_Create_ValidData_CreatesHtmlAssert
+##### FileAssertHtmlAssert_Create_ValidData_CreatesHtmlAssert
 
 **Scenario**: `FileAssertHtmlAssert.Create` is called with valid data.
 
@@ -26,7 +26,7 @@ constraints, and text matching.
 
 **Requirement coverage**: HTML assert creation requirement.
 
-### FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException
+##### FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertHtmlAssert.Create` is called with `null` data.
 
@@ -34,7 +34,7 @@ constraints, and text matching.
 
 **Boundary / error path**: Null data guard.
 
-### FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+##### FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with an exact count assertion and the XPath
 query returns exactly the expected number of elements.
@@ -43,7 +43,7 @@ query returns exactly the expected number of elements.
 
 **Requirement coverage**: Exact count match requirement.
 
-### FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError
+##### FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with an exact count assertion and the XPath
 query returns a different number of elements.
@@ -52,7 +52,7 @@ query returns a different number of elements.
 
 **Requirement coverage**: Exact count mismatch requirement.
 
-### FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
+##### FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with min/max count constraints and the XPath
 query result count is within bounds.
@@ -61,7 +61,7 @@ query result count is within bounds.
 
 **Requirement coverage**: Min/max count constraint pass requirement.
 
-### FileAssertHtmlAssert_Run_NonExistentFile_WritesError
+##### FileAssertHtmlAssert_Run_NonExistentFile_WritesError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with a path that does not exist.
 
@@ -69,7 +69,7 @@ query result count is within bounds.
 
 **Boundary / error path**: Missing file error path.
 
-### FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError
+##### FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with a malformed XPath query string.
 
@@ -77,7 +77,7 @@ query result count is within bounds.
 
 **Boundary / error path**: Invalid XPath query error path.
 
-### FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError
+##### FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with an exact-text assertion and the XPath
 result matches exactly.
@@ -86,7 +86,7 @@ result matches exactly.
 
 **Requirement coverage**: XPath exact text match pass requirement.
 
-### FileAssertHtmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError
+##### FileAssertHtmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with an exact-text assertion but the XPath
 result does not match.
@@ -95,7 +95,7 @@ result does not match.
 
 **Requirement coverage**: XPath exact text match fail requirement.
 
-### FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError
+##### FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with a `contains` text assertion and the XPath
 result contains the expected value.
@@ -104,7 +104,7 @@ result contains the expected value.
 
 **Requirement coverage**: XPath contains text pass requirement.
 
-### FileAssertHtmlAssert_Run_XPathContainsText_NoMatch_WritesError
+##### FileAssertHtmlAssert_Run_XPathContainsText_NoMatch_WritesError
 
 **Scenario**: `FileAssertHtmlAssert.Run` is called with a `contains` text assertion but the XPath
 result does not contain the expected value.
@@ -113,7 +113,7 @@ result does not contain the expected value.
 
 **Requirement coverage**: XPath contains text fail requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 - **HTML assert creation**: FileAssertHtmlAssert_Create_ValidData_CreatesHtmlAssert
 - **Null guard**: FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException

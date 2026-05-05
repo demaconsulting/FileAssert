@@ -1,24 +1,24 @@
-# FileAssertTextAssert Verification
+### FileAssertTextAssert Verification
 
 This document describes the unit-level verification design for the `FileAssertTextAssert` unit. It
 defines the test scenarios, dependency usage, and requirement coverage for
 `Modeling/FileAssertTextAssert.cs`.
 
-## Verification Approach
+#### Verification Approach
 
 `FileAssertTextAssert` is verified with unit tests defined in `FileAssertTextAssertTests.cs`. Tests
 create temporary files with controlled content and assert on rule evaluation and error reporting.
 
-## Dependencies
+#### Dependencies
 
 | Dependency       | Usage in Tests                                              |
 |------------------|-------------------------------------------------------------|
 | `Context`        | Used directly (not mocked) — created with controlled flags. |
 | `FileAssertRule` | Used directly (not mocked).                                 |
 
-## Test Scenarios
+#### Test Scenarios
 
-### FileAssertTextAssert_Create_ValidData_CreatesTextAssert
+##### FileAssertTextAssert_Create_ValidData_CreatesTextAssert
 
 **Scenario**: `FileAssertTextAssert.Create` is called with valid data containing at least one rule.
 
@@ -26,7 +26,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Requirement coverage**: Text assert creation requirement.
 
-### FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
+##### FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertTextAssert.Create` is called with `null` data.
 
@@ -34,7 +34,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Boundary / error path**: Null data guard.
 
-### FileAssertTextAssert_Run_FileContainsText_NoError
+##### FileAssertTextAssert_Run_FileContainsText_NoError
 
 **Scenario**: `FileAssertTextAssert.Run` is called on a file whose content satisfies all rules.
 
@@ -42,7 +42,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Requirement coverage**: Text assertion pass requirement.
 
-### FileAssertTextAssert_Run_FileMissingText_WritesError
+##### FileAssertTextAssert_Run_FileMissingText_WritesError
 
 **Scenario**: `FileAssertTextAssert.Run` is called on a file whose content does not satisfy a
 `contains` rule.
@@ -51,7 +51,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Requirement coverage**: Text assertion fail requirement.
 
-### FileAssertTextAssert_Run_NonExistentFile_WritesError
+##### FileAssertTextAssert_Run_NonExistentFile_WritesError
 
 **Scenario**: `FileAssertTextAssert.Run` is called with a path that does not exist.
 
@@ -59,7 +59,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Boundary / error path**: Missing file error path.
 
-### FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
+##### FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
 
 **Scenario**: `FileAssertTextAssert.Run` is called on a file that violates multiple rules.
 
@@ -67,7 +67,7 @@ create temporary files with controlled content and assert on rule evaluation and
 
 **Requirement coverage**: Multiple-rule violation reporting requirement.
 
-## Requirements Coverage
+#### Requirements Coverage
 
 - **Text assert creation**: FileAssertTextAssert_Create_ValidData_CreatesTextAssert
 - **Null guard**: FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
