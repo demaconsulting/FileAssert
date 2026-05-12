@@ -53,3 +53,5 @@ satisfying the query and count constraints is provided.
   Modeling_ExecuteChain_ReportsFailuresThroughContext
 - **XML parsing error reporting**: Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 - **XML query assertion**: Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+- **Zip assert creation and parse error**: FileAssertZipAssert_Create_ValidData_CreatesZipAssert,
+  FileAssertZipAssert_Run_InvalidZipFile_WritesError

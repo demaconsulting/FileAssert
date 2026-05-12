@@ -128,6 +128,12 @@ internal sealed class FileAssertFileData
     /// </summary>
     [YamlMember(Alias = "json")]
     public List<FileAssertQueryData>? Json { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the zip archive entry assertion block for this file pattern.
+    /// </summary>
+    [YamlMember(Alias = "zip")]
+    public FileAssertZipData? Zip { get; set; }
 }
 
 /// <summary>
@@ -194,6 +200,42 @@ internal sealed class FileAssertPdfData
     /// </summary>
     [YamlMember(Alias = "text")]
     public List<FileAssertRuleData>? Text { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object representing a single zip archive entry pattern with count constraints.
+/// </summary>
+internal sealed class FileAssertZipEntryData
+{
+    /// <summary>
+    ///     Gets or sets the glob pattern used to match zip archive entry names.
+    /// </summary>
+    [YamlMember(Alias = "pattern")]
+    public string? Pattern { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the minimum number of entries that must match the pattern.
+    /// </summary>
+    [YamlMember(Alias = "min")]
+    public int? Min { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the maximum number of entries that may match the pattern.
+    /// </summary>
+    [YamlMember(Alias = "max")]
+    public int? Max { get; set; }
+}
+
+/// <summary>
+///     YAML data transfer object for the zip archive assertion block.
+/// </summary>
+internal sealed class FileAssertZipData
+{
+    /// <summary>
+    ///     Gets or sets the list of entry pattern constraints to validate against the zip archive.
+    /// </summary>
+    [YamlMember(Alias = "entries")]
+    public List<FileAssertZipEntryData>? Entries { get; set; }
 }
 
 /// <summary>

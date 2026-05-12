@@ -27,6 +27,7 @@ This document covers the detailed design of the following software units:
 - **FileAssertHtmlAssert** — HTML document assertions (`FileAssertHtmlAssert.cs`)
 - **FileAssertYamlAssert** — YAML document assertions (`FileAssertYamlAssert.cs`)
 - **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
+- **FileAssertZipAssert** — zip archive entry assertions (`FileAssertZipAssert.cs`)
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
 
@@ -63,7 +64,8 @@ FileAssert (System)
 │   ├── FileAssertXmlAssert (Unit)
 │   ├── FileAssertHtmlAssert (Unit)
 │   ├── FileAssertYamlAssert (Unit)
-│   └── FileAssertJsonAssert (Unit)
+│   ├── FileAssertJsonAssert (Unit)
+│   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
 │   └── PathHelpers (Unit)
 └── SelfTest (Subsystem)
@@ -94,7 +96,8 @@ src/DemaConsulting.FileAssert/
 │   ├── FileAssertXmlAssert.cs      — XML document assertions (System.Xml.Linq/XPath)
 │   ├── FileAssertHtmlAssert.cs     — HTML document assertions (HtmlAgilityPack)
 │   ├── FileAssertYamlAssert.cs     — YAML document assertions (YamlDotNet)
-│   └── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
+│   ├── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
+│   └── FileAssertZipAssert.cs      — zip archive entry assertions (System.IO.Compression)
 ├── Utilities/
 │   └── PathHelpers.cs              — safe path-combination utility
 └── SelfTest/

@@ -19,6 +19,7 @@ executable domain objects and drives the assertion logic.
 | `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
 | `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
 | `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
+| `FileAssertZipAssert`   | `FileAssertZipAssert.cs`    | Opens zip archive; applies entry glob count checks.    |
 
 ### Subsystem Responsibilities
 
@@ -30,6 +31,7 @@ executable domain objects and drives the assertion logic.
 - Parse matched files as PDF, XML, HTML, YAML, or JSON documents when the corresponding assertion block is declared.
 - Report an immediate error when a file cannot be parsed as the declared format.
 - Apply structured-document query assertions (XPath or dot-notation) to parsed document nodes.
+- Open zip archives and match entry names against glob patterns, enforcing count constraints.
 - Report assertion failures via the `Context` from the Cli subsystem.
 
 ### Object Hierarchy
@@ -47,7 +49,8 @@ FileAssertTest
     ├── FileAssertXmlAssert? (zero or one)
     ├── FileAssertHtmlAssert? (zero or one)
     ├── FileAssertYamlAssert? (zero or one)
-    └── FileAssertJsonAssert? (zero or one)
+    ├── FileAssertJsonAssert? (zero or one)
+    └── FileAssertZipAssert? (zero or one)
 ```
 
 ### Interactions with Other Subsystems

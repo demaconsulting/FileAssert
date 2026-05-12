@@ -36,7 +36,8 @@ one or more units:
 | Configuration | Subsystem | FileAssertConfig, FileAssertData                                              |
 | Modeling      | Subsystem | FileAssertTest, FileAssertFile, FileAssertRule,                               |
 |               |           | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,               |
-|               |           | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert              |
+|               |           | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert,             |
+|               |           | FileAssertZipAssert                                                           |
 | Utilities     | Subsystem | PathHelpers                                                                   |
 | SelfTest      | Subsystem | Validation                                                                    |
 
@@ -73,6 +74,10 @@ The following sequence describes the normal execution path:
       immediate error if parsing fails, otherwise applies dot-notation path count assertions.
    g. If a `json:` block is defined, attempts to parse the file using `System.Text.Json`; reports
       an immediate error if parsing fails, otherwise applies dot-notation path count assertions.
+    h. If a `zip:` block is defined, attempts to open the file as a zip archive using
+       `System.IO.Compression.ZipFile`; reports an immediate error if the archive cannot be
+       opened, otherwise matches entry names against each configured glob pattern and enforces
+       the declared count constraints.
 8. Rule violations and parse failures are recorded via `context.WriteError`.
 9. After all tests complete, if `context.ResultsFile` is set, `FileAssertConfig.Run` writes
    TRX or JUnit XML results (format determined by the file extension) to the specified path.
@@ -107,3 +112,5 @@ The following sequence describes the normal execution path:
   HtmlAgilityPack is chosen for HTML because it is the de-facto standard for lenient HTML parsing
   in .NET. YamlDotNet is already a project dependency and is reused for YAML parsing.
   `System.Text.Json` is part of the .NET BCL and is used for JSON parsing.
+- **Zip archive inspection**: `System.IO.Compression.ZipFile` is part of the .NET BCL and is used
+  to open zip archives and enumerate their entries, requiring no additional dependencies.

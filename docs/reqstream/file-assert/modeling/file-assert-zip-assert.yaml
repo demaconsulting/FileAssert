@@ -1,0 +1,50 @@
+---
+# Software Unit Requirements for the FileAssertZipAssert Class
+#
+# The FileAssertZipAssert class validates zip archive contents by matching entry names against
+# glob patterns and enforcing count constraints. It is invoked by FileAssertFile when a
+# `zip:` assertion block is declared.
+
+sections:
+  - title: FileAssertZipAssert Unit Requirements
+    requirements:
+      - id: FileAssert-FileAssertZipAssert-Creation
+        title: |
+          The FileAssertZipAssert class shall be constructed from a zip assertion data object
+          containing a list of entry pattern constraints.
+        justification: |
+          Constructing entry constraints at creation time rather than at evaluation time avoids
+          repeated per-file construction overhead and allows validation errors (such as missing
+          patterns) to be reported before any file system operations are attempted.
+        tests:
+          - FileAssertZipAssert_Create_ValidData_CreatesZipAssert
+          - FileAssertZipAssert_Create_NullData_ThrowsArgumentNullException
+          - FileAssertZipAssert_Create_EntryMissingPattern_ThrowsInvalidOperationException
+
+      - id: FileAssert-FileAssertZipAssert-EntryMatching
+        title: |
+          The FileAssertZipAssert class shall match zip archive entry names against each
+          configured glob pattern and report an error when the match count violates the
+          declared minimum or maximum constraint.
+        justification: |
+          Count constraints on zip entry patterns allow users to assert that required
+          artifacts are present in a package archive (minimum) or that unexpected extra
+          entries have not been included (maximum). Both bounds must be checked and reported
+          independently so that all violations are visible in a single pass.
+        tests:
+          - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
+          - FileAssertZipAssert_Run_GlobPatternMatchesMultipleEntries_NoError
+          - FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
+          - FileAssertZipAssert_Run_TooManyMatchingEntries_WritesError
+
+      - id: FileAssert-FileAssertZipAssert-ParseError
+        title: |
+          The FileAssertZipAssert class shall report an immediate error when the target file
+          cannot be opened as a valid zip archive.
+        justification: |
+          I/O failures (file not found, access denied) and format errors (invalid zip data)
+          should be reported as clean assertion errors rather than unhandled exceptions,
+          consistent with the behavior of all other file-type assert units.
+        tests:
+          - FileAssertZipAssert_Run_InvalidZipFile_WritesError
+          - FileAssertZipAssert_Run_NonExistentFile_WritesError
