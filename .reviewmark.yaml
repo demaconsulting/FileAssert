@@ -265,6 +265,16 @@ reviews:
       - "src/**/Modeling/FileAssertJsonAssert.cs"                                # implementation
       - "test/**/Modeling/FileAssertJsonAssertTests.cs"                          # unit tests
 
+  # FileAssert-Modeling-FileAssertZipAssert Review (one per unit)
+  - id: FileAssert-Modeling-FileAssertZipAssert
+    title: Review that FileAssert Modeling FileAssertZipAssert Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/modeling/file-assert-zip-assert.yaml"       # requirements
+      - "docs/design/file-assert/modeling/file-assert-zip-assert.md"            # design
+      - "docs/verification/file-assert/modeling/file-assert-zip-assert.md"      # verification
+      - "src/**/Modeling/FileAssertZipAssert.cs"                                # implementation
+      - "test/**/Modeling/FileAssertZipAssertTests.cs"                          # unit tests
+
   # FileAssert-OTS-BuildMark Review
   - id: FileAssert-OTS-BuildMark
     title: Review FileAssert OTS BuildMark Requirements and Verification

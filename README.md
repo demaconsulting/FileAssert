@@ -232,7 +232,7 @@ tests:
 | `json[].count`                      | Exact number of matched JSON nodes                            |
 | `json[].min`                        | Minimum number of matched JSON nodes                          |
 | `json[].max`                        | Maximum number of matched JSON nodes                          |
-| `zip:`                              | Zip archive entry assertions (fails if file is not a valid zip archive) |
+| `zip:`                              | Zip archive entry assertions (fails if not a valid zip)       |
 | `zip.entries[].pattern`             | Glob pattern selecting zip archive entry names                |
 | `zip.entries[].min`                 | Minimum number of matching zip entries                        |
 | `zip.entries[].max`                 | Maximum number of matching zip entries                        |

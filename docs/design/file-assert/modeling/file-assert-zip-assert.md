@@ -61,7 +61,7 @@ Execution proceeds in the following steps:
    writes the error below and returns immediately.
 3. Enumerates all archive entries, normalizing separators to forward slashes and excluding
    directory entries (names ending with `/`).
-4. For each configured `Entry`, uses `Matcher.Match(string.Empty, allEntries)` from
+4. For each configured `Entry`, uses `Matcher.Match(".", allEntries)` from
    `Microsoft.Extensions.FileSystemGlobbing` to count matched entries.
 5. Writes an error if the match count is below `Min` or above `Max`.
 
