@@ -223,6 +223,20 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
+### FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
+
+**Scenario**: A zip assertion is configured and the archive contains entries that satisfy
+the declared minimum and maximum count constraints.
+
+**Expected**: Exit code 0.
+
+### FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
+
+**Scenario**: A zip assertion is configured with a minimum count but the archive contains
+fewer matching entries than required.
+
+**Expected**: Exit code non-zero.
+
 ## Requirements Coverage
 
 - **Version display**: IntegrationTest_VersionFlag_OutputsVersion
@@ -253,3 +267,5 @@ a positional filter argument.
   IntegrationTest_YamlAssert_PassingQuery_ReturnsZero,
   IntegrationTest_JsonAssert_PassingQuery_ReturnsZero,
   IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
+- **Zip archive assertions**: FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError,
+  FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError

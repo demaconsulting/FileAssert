@@ -45,6 +45,7 @@ internal sealed class FileAssertFile
     /// <param name="htmlAssert">The HTML assert unit, or null when no html: block is declared.</param>
     /// <param name="yamlAssert">The YAML assert unit, or null when no yaml: block is declared.</param>
     /// <param name="jsonAssert">The JSON assert unit, or null when no json: block is declared.</param>
+    /// <param name="zipAssert">The zip assert unit, or null when no zip: block is declared.</param>
     private FileAssertFile(
         string pattern,
         int? min,
@@ -57,7 +58,8 @@ internal sealed class FileAssertFile
         FileAssertXmlAssert? xmlAssert,
         FileAssertHtmlAssert? htmlAssert,
         FileAssertYamlAssert? yamlAssert,
-        FileAssertJsonAssert? jsonAssert)
+        FileAssertJsonAssert? jsonAssert,
+        FileAssertZipAssert? zipAssert)
     {
         // Store all validated properties for use during execution
         Pattern = pattern;
@@ -72,6 +74,7 @@ internal sealed class FileAssertFile
         HtmlAssert = htmlAssert;
         YamlAssert = yamlAssert;
         JsonAssert = jsonAssert;
+        ZipAssert = zipAssert;
     }
 
     /// <summary>
@@ -135,6 +138,11 @@ internal sealed class FileAssertFile
     internal FileAssertJsonAssert? JsonAssert { get; }
 
     /// <summary>
+    ///     Gets the zip assert unit, or null when no zip: block is declared.
+    /// </summary>
+    internal FileAssertZipAssert? ZipAssert { get; }
+
+    /// <summary>
     ///     Creates a new <see cref="FileAssertFile"/> from the provided YAML data.
     /// </summary>
     /// <param name="data">The file data deserialized from YAML configuration.</param>
@@ -159,11 +167,12 @@ internal sealed class FileAssertFile
         var htmlAssert = data.Html != null ? FileAssertHtmlAssert.Create(data.Html) : null;
         var yamlAssert = data.Yaml != null ? FileAssertYamlAssert.Create(data.Yaml) : null;
         var jsonAssert = data.Json != null ? FileAssertJsonAssert.Create(data.Json) : null;
+        var zipAssert = data.Zip != null ? FileAssertZipAssert.Create(data.Zip) : null;
 
         // Return the fully constructed file assertion
         return new FileAssertFile(
             data.Pattern, data.Min, data.Max, data.Count, data.MinSize, data.MaxSize,
-            textAssert, pdfAssert, xmlAssert, htmlAssert, yamlAssert, jsonAssert);
+            textAssert, pdfAssert, xmlAssert, htmlAssert, yamlAssert, jsonAssert, zipAssert);
     }
 
     /// <summary>
@@ -213,7 +222,8 @@ internal sealed class FileAssertFile
         var hasPerFileChecks = MinSize.HasValue || MaxSize.HasValue ||
                                TextAssert != null || PdfAssert != null ||
                                XmlAssert != null || HtmlAssert != null ||
-                               YamlAssert != null || JsonAssert != null;
+                               YamlAssert != null || JsonAssert != null ||
+                               ZipAssert != null;
 
         if (hasPerFileChecks)
         {
@@ -244,6 +254,7 @@ internal sealed class FileAssertFile
                 HtmlAssert?.Run(context, fullPath);
                 YamlAssert?.Run(context, fullPath);
                 JsonAssert?.Run(context, fullPath);
+                ZipAssert?.Run(context, fullPath);
             }
         }
     }

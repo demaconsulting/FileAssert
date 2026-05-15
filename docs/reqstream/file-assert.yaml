@@ -341,3 +341,20 @@ sections:
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_JsonAssert_PassingQuery_ReturnsZero
+
+      - id: FileAssert-System-ZipAssertions
+        title: |
+          The FileAssert tool shall evaluate zip archive entry assertions declared in a `zip:` block
+          and return a non-zero exit code when any entry count constraint fails or when the file
+          cannot be opened as a valid zip archive.
+        justification: |
+          Zip archives are a common packaging format for build outputs, distribution packages, and
+          compliance artifacts. Entry count constraints allow users to assert that required files
+          are present in the archive without unpacking it. An immediate failure on an invalid zip
+          archive prevents misleading partial results.
+        children:
+          - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-FileAssertZipAssert-EntryMatching
+        tests:
+          - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
+          - FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError

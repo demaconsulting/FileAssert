@@ -18,6 +18,7 @@ includes:
   - docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml
   - docs/reqstream/file-assert/modeling/file-assert-yaml-assert.yaml
   - docs/reqstream/file-assert/modeling/file-assert-json-assert.yaml
+  - docs/reqstream/file-assert/modeling/file-assert-zip-assert.yaml
   - docs/reqstream/file-assert/utilities.yaml
   - docs/reqstream/file-assert/utilities/path-helpers.yaml
   - docs/reqstream/file-assert/selftest.yaml

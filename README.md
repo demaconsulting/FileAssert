@@ -173,6 +173,19 @@ tests:
         json:
           - query: "ConnectionStrings"
             count: 1
+
+  - name: TestProject_PackageValid
+    # Distribution zip contains required entries
+    tags: [package]
+    files:
+      - pattern: "output/package.zip"
+        zip:
+          entries:
+            - pattern: 'lib/net8.0/MyLib.dll'
+              min: 1
+              max: 1
+            - pattern: 'lib/**/*.dll'
+              min: 1
 ```
 
 ### Acceptance Criteria Reference
@@ -219,6 +232,10 @@ tests:
 | `json[].count`                      | Exact number of matched JSON nodes                            |
 | `json[].min`                        | Minimum number of matched JSON nodes                          |
 | `json[].max`                        | Maximum number of matched JSON nodes                          |
+| `zip:`                              | Zip archive entry assertions (fails if not a valid zip)       |
+| `zip.entries[].pattern`             | Glob pattern selecting zip archive entry names                |
+| `zip.entries[].min`                 | Minimum number of matching zip entries                        |
+| `zip.entries[].max`                 | Maximum number of matching zip entries                        |
 
 ## Self Validation
 

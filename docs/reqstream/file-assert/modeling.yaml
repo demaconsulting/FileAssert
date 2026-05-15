@@ -51,6 +51,8 @@ sections:
           - FileAssert-FileAssertYamlAssert-ParseError
           - FileAssert-FileAssertJsonAssert-Creation
           - FileAssert-FileAssertJsonAssert-ParseError
+          - FileAssert-FileAssertZipAssert-Creation
+          - FileAssert-FileAssertZipAssert-ParseError
         tests:
           - Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 
