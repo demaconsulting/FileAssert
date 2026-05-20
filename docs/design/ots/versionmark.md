@@ -29,8 +29,6 @@ in two modes in the CI pipeline:
 - **Self-validation**: invoked with `--validate --results <trx-file>` to run the built-in
   validation suite and write TRX evidence for ReqStream consumption.
 
-Version constraint: `1.3.0` (pinned in `.config/dotnet-tools.json`).
-
 ### Configuration
 
 VersionMark is configured entirely through command-line arguments. In capture mode, `--job-id`

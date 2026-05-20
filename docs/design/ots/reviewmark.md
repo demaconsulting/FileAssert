@@ -26,8 +26,6 @@ pipeline invokes ReviewMark in two separate steps:
 - `dotnet reviewmark --report docs/code_review_report/generated/report.md` — generates the review
   report
 
-Version constraint: `1.2.0` (pinned in `.config/dotnet-tools.json`).
-
 ### Configuration
 
 ReviewMark reads its configuration from `.reviewmark.yaml` at the repository root. This file

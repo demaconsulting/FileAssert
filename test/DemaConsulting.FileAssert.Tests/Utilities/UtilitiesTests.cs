@@ -43,7 +43,7 @@ public class UtilitiesTests
 
         // Act & Assert - a valid relative path within the base is accepted
         var combined = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "nested/file.txt");
-        Assert.StartsWith(tempDir.DirectoryPath, combined);
-
+        var relativePath = Path.GetRelativePath(tempDir.DirectoryPath, combined);
+        Assert.Equal(Path.Combine("nested", "file.txt"), relativePath);
     }
 }

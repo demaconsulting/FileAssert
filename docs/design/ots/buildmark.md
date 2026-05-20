@@ -23,7 +23,7 @@ package name `demaconsulting.buildmark` and restored with `dotnet tool restore`.
 invoked in the CI pipeline's build-docs job with the `--output` argument pointing to the
 generated Markdown path. The generated file is placed in
 `docs/build_notes/generated/build_notes.md`, which Pandoc incorporates into the Build Notes
-HTML document. Version constraint: `1.1.0` (pinned in `.config/dotnet-tools.json`).
+HTML document.
 
 ### Configuration
 

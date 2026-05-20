@@ -21,7 +21,6 @@ Pandoc is installed as a .NET local tool via the package `demaconsulting.pandoct
 `.config/dotnet-tools.json` and restored with `dotnet tool restore`. The tool is invoked as
 `dotnet pandoc` with a `definition.yaml` argument that lists the input Markdown files, template,
 and output path. Each document collection provides its own `definition.yaml`.
-Version constraint: `3.9.0.2` (pinned in `.config/dotnet-tools.json`).
 
 ### Configuration
 

@@ -375,7 +375,7 @@ sections:
         children:
           - FileAssert-Program-DefaultBehavior
         tests:
-          - IntegrationTest_ValidateFlag_RunsValidation
+          - Program_Run_NoArguments_DisplaysDefaultBehavior
 
       - id: FileAssert-System-DepthFlag
         title: |
@@ -388,7 +388,7 @@ sections:
         children:
           - FileAssert-Context-Depth
         tests:
-          - IntegrationTest_ValidateFlag_RunsValidation
+          - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 
       - id: FileAssert-System-MultiPlatform
         title: |

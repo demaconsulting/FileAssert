@@ -19,10 +19,10 @@ xUnit v3 is chosen because it provides a modern, self-contained test runner with
 xUnit is integrated via NuGet package references in the test project
 (`DemaConsulting.FileAssert.Tests.csproj`):
 
-- `xunit.v3` version `3.2.2` — the core test framework providing `[Fact]`, assertions, and
-  test runner infrastructure for .NET 8, 9, and 10.
-- `xunit.runner.visualstudio` version `3.1.5` — the Visual Studio and `dotnet test` adapter
-  that enables TRX result file output.
+- `xunit.v3` — the core test framework providing `[Fact]`, assertions, and test runner
+  infrastructure for .NET 8, 9, and 10.
+- `xunit.runner.visualstudio` — the Visual Studio and `dotnet test` adapter that enables
+  TRX result file output.
 
 Tests are executed by `dotnet test` with the `--logger trx;LogFileName=<name>.trx` argument to
 produce TRX files for ReqStream. The test project targets `net8.0`, `net9.0`, and `net10.0`
@@ -38,7 +38,7 @@ is configured with:
 - `TreatWarningsAsErrors: true` — enforces code quality at compile time.
 
 No `xunit.runner.json` file is required; default discovery and execution settings are used.
-`Microsoft.NET.Test.Sdk` version `18.5.1` provides the test SDK integration layer.
+`Microsoft.NET.Test.Sdk` provides the test SDK integration layer.
 
 ### Interfaces
 
@@ -58,7 +58,7 @@ xUnit brings the following dependencies into the test project:
 - `xunit.v3.core` — the test execution engine and assertion library.
 - `xunit.v3.common` — shared abstractions used by the xUnit framework.
 - `xunit.runner.visualstudio` — the `dotnet test` integration adapter.
-- `Microsoft.NET.Test.Sdk` version `18.5.1` — the test SDK integration layer.
+- `Microsoft.NET.Test.Sdk` — the test SDK integration layer.
 
 All xUnit and runner dependencies are scoped to the test project via `PrivateAssets` settings
 and do not propagate to the main `DemaConsulting.FileAssert` project or its NuGet package

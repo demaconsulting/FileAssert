@@ -20,8 +20,7 @@ output into the document format.
 SarifMark is installed as a .NET local tool defined in `.config/dotnet-tools.json` under the
 package name `demaconsulting.sarifmark` and restored with `dotnet tool restore`. The CI pipeline
 invokes SarifMark in the build-docs job after the CodeQL scanning step has completed and the
-SARIF file has been downloaded as a workflow artifact. Version constraint: `1.3.2` (pinned in
-`.config/dotnet-tools.json`).
+SARIF file has been downloaded as a workflow artifact.
 
 ### Configuration
 

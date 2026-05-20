@@ -22,8 +22,7 @@ requiring a separate CI plugin or external service.
 ReqStream is installed as a .NET local tool defined in `.config/dotnet-tools.json` under the
 package name `demaconsulting.reqstream` and restored with `dotnet tool restore`. The CI pipeline
 invokes it in the build-docs job after all test and self-validation TRX files have been
-accumulated as workflow artifacts. Version constraint: `1.9.0` (pinned in
-`.config/dotnet-tools.json`).
+accumulated as workflow artifacts.
 
 ### Configuration
 

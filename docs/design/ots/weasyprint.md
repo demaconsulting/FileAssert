@@ -22,8 +22,7 @@ WeasyPrint is installed as a .NET local tool via the package `demaconsulting.wea
 `.config/dotnet-tools.json` and restored with `dotnet tool restore`. The tool is invoked as
 `dotnet weasyprint` with the input HTML path and the output PDF path for each document
 collection. The CI workflow installs Python via `actions/setup-python` to satisfy the
-WeasyPrintTool's internal Python dependency. Version constraint: `68.1.0` (pinned in
-`.config/dotnet-tools.json`).
+WeasyPrintTool's internal Python dependency.
 
 ### Configuration
 

@@ -26,8 +26,6 @@ pipeline uses it in two ways:
 - **Document assertion**: `fileassert --config <file> --results <trx-file>` validates specific
   generated HTML and PDF files throughout the pipeline using YAML configuration files.
 
-Version constraint: `0.3.0` (pinned in `.config/dotnet-tools.json`).
-
 ### Configuration
 
 When used for document validation, FileAssert reads `.fileassert.yaml` configuration files that

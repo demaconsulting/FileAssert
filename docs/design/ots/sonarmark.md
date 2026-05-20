@@ -20,8 +20,7 @@ compatible with the Pandoc pipeline.
 SonarMark is installed as a .NET local tool defined in `.config/dotnet-tools.json` under the
 package name `demaconsulting.sonarmark` and restored with `dotnet tool restore`. The CI pipeline
 invokes SonarMark in the build-docs job after the SonarCloud analysis has completed. A
-`SONAR_TOKEN` secret is provided to the job for authenticated API access. Version constraint:
-`1.5.0` (pinned in `.config/dotnet-tools.json`).
+`SONAR_TOKEN` secret is provided to the job for authenticated API access.
 
 ### Configuration
 

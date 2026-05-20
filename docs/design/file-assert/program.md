@@ -47,12 +47,12 @@ public static void Run(Context context)
 
 Inspects context flags in the following priority order:
 
-| Priority |
-| :------- |
-| 1        |
-| 2        |
-| 3        |
-| 4        |
+| Priority | Condition          | Action                           |
+| :------- | :----------------- | :------------------------------- |
+| 1        | `context.Version`  | Write `Version` and return.      |
+| 2        | `context.Help`     | Print banner, print help, return.|
+| 3        | `context.Validate` | Print banner, run validation.    |
+| 4        | Otherwise          | Print banner, run tool logic.    |
 
 #### RunToolLogic Method
 
@@ -69,11 +69,11 @@ arguments) to `config.Run` so that only matching tests are executed.
 
 ### Interactions with Other Units
 
-| Dependency         |
-| :----------------- |
-| `Context`          |
-| `Validation`       |
-| `FileAssertConfig` |
+- `Context` provides the parsed flags, config path, filters, and output methods used by every
+  execution path.
+- `Validation` runs the built-in self-validation flow when `context.Validate` is set.
+- `FileAssertConfig` loads the YAML configuration and executes matching assertions during normal
+  tool runs.
 
 ### Design Decisions
 
