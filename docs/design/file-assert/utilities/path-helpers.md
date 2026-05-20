@@ -82,9 +82,10 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
 #### Interactions
 
 - **Callers**:
-  - `Validation.TemporaryDirectory` — uses `SafePathCombine(Path.GetTempPath(), guid-name)` to
-    create a temp directory path.
-  - `Validation` built-in tests — uses `SafePathCombine(tempDir.DirectoryPath, fileName)` to
-    build fixture file paths.
+  - `TemporaryDirectory` — uses `SafePathCombine(Environment.CurrentDirectory, guid-name)` to
+    create a temp directory path, and `SafePathCombine(DirectoryPath, relativePath)` inside
+    `GetFilePath`.
+  - `Validation` built-in tests — uses `tempDir.GetFilePath(fileName)` (which internally calls
+    `SafePathCombine`) to build fixture file paths.
 - **No internal FileAssert dependencies**: `PathHelpers` is a self-contained utility with no
   references to other units in the system.

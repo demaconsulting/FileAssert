@@ -256,45 +256,39 @@ public partial class IntegrationTests
     public void IntegrationTest_TestFiltering_OnlyRunsMatchingTests()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file that the smoke test will assert against
-            File.WriteAllText(Path.Combine(tempDir.FullName, "smoke.txt"), "smoke content");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that the smoke test will assert against
+        File.WriteAllText(tempDir.GetFilePath("smoke.txt"), "smoke content");
 
-            // Write a config with a passing "smoke" test and a failing "regression" test
-            // (regression test references a file that does not exist with min: 1)
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "SmokeTest"
-                    tags: [smoke]
-                    files:
-                      - pattern: "smoke.txt"
-                        min: 1
-                  - name: "RegressionTest"
-                    tags: [regression]
-                    files:
-                      - pattern: "missing.txt"
-                        min: 1
-                """);
+        // Write a config with a passing "smoke" test and a failing "regression" test
+        // (regression test references a file that does not exist with min: 1)
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "SmokeTest"
+                tags: [smoke]
+                files:
+                  - pattern: "smoke.txt"
+                    min: 1
+              - name: "RegressionTest"
+                tags: [regression]
+                files:
+                  - pattern: "missing.txt"
+                    min: 1
+            """);
 
-            // Act - filter to only the "smoke" tag; the regression test should not run
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--config",
-                configPath,
-                "smoke");
+        // Act - filter to only the "smoke" tag; the regression test should not run
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--config",
+            configPath,
+            "smoke");
 
-            // Assert - exit code 0 because the failing regression test was skipped by the filter
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - exit code 0 because the failing regression test was skipped by the filter
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -304,39 +298,33 @@ public partial class IntegrationTests
     public void IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file that satisfies the assertion
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "Copyright (c) DEMA Consulting");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that satisfies the assertion
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "Copyright (c) DEMA Consulting");
 
-            // Write a config that asserts the file exists and contains the expected text
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "License Check"
-                    files:
-                      - pattern: "*.txt"
-                        min: 1
-                        text:
-                          - contains: "Copyright"
-                """);
+        // Write a config that asserts the file exists and contains the expected text
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "License Check"
+                files:
+                  - pattern: "*.txt"
+                    min: 1
+                    text:
+                      - contains: "Copyright"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--config",
+            configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -346,39 +334,33 @@ public partial class IntegrationTests
     public void IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file that does NOT satisfy the assertion
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "no license here");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that does NOT satisfy the assertion
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "no license here");
 
-            // Write a config that asserts the file contains text it does not contain
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "License Check"
-                    files:
-                      - pattern: "*.txt"
-                        text:
-                          - contains: "Copyright"
-                """);
+        // Write a config that asserts the file contains text it does not contain
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "License Check"
+                files:
+                  - pattern: "*.txt"
+                    text:
+                      - contains: "Copyright"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code indicates assertion failure
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code indicates assertion failure
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -388,49 +370,39 @@ public partial class IntegrationTests
     public void IntegrationTest_PassingAssertions_WritesTrxWithPassedResults()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        var resultsFile = Path.Combine(Path.GetTempPath(), $"integration_test_{Guid.NewGuid()}.trx");
-        try
-        {
-            // Create a file that satisfies the assertion
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "Copyright (c) DEMA Consulting");
+        using var tempDir = new TemporaryDirectory();
+        var resultsFile = tempDir.GetFilePath("results.trx");
+        // Create a file that satisfies the assertion
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "Copyright (c) DEMA Consulting");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "LicenseCheck"
-                    files:
-                      - pattern: "*.txt"
-                        min: 1
-                        text:
-                          - contains: "Copyright"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "LicenseCheck"
+                files:
+                  - pattern: "*.txt"
+                    min: 1
+                    text:
+                      - contains: "Copyright"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--config",
-                configPath,
-                "--results",
-                resultsFile);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--config",
+            configPath,
+            "--results",
+            resultsFile);
 
-            // Assert - exit code 0 and TRX file contains LicenseCheck with Passed outcome
-            Assert.Equal(0, exitCode);
-            Assert.True(File.Exists(resultsFile), "Results file was not created");
-            var trxContent = File.ReadAllText(resultsFile);
-            Assert.Contains("LicenseCheck", trxContent);
-            Assert.Contains("outcome=\"Passed\"", trxContent);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-            if (File.Exists(resultsFile))
-            {
-                File.Delete(resultsFile);
-            }
-        }
+        // Assert - exit code 0 and TRX file contains LicenseCheck with Passed outcome
+        Assert.Equal(0, exitCode);
+        Assert.True(File.Exists(resultsFile), "Results file was not created");
+        var trxContent = File.ReadAllText(resultsFile);
+        Assert.Contains("LicenseCheck", trxContent);
+        Assert.Contains("outcome=\"Passed\"", trxContent);
+
     }
 
     /// <summary>
@@ -440,49 +412,39 @@ public partial class IntegrationTests
     public void IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        var resultsFile = Path.Combine(Path.GetTempPath(), $"integration_test_{Guid.NewGuid()}.xml");
-        try
-        {
-            // Create a file that does NOT satisfy the assertion
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "no license here");
+        using var tempDir = new TemporaryDirectory();
+        var resultsFile = tempDir.GetFilePath("results.xml");
+        // Create a file that does NOT satisfy the assertion
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "no license here");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "LicenseCheck"
-                    files:
-                      - pattern: "*.txt"
-                        text:
-                          - contains: "Copyright"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "LicenseCheck"
+                files:
+                  - pattern: "*.txt"
+                    text:
+                      - contains: "Copyright"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath,
-                "--results",
-                resultsFile);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath,
+            "--results",
+            resultsFile);
 
-            // Assert - non-zero exit code and JUnit file contains LicenseCheck with a failure entry
-            Assert.NotEqual(0, exitCode);
-            Assert.True(File.Exists(resultsFile), "Results file was not created");
-            var xmlContent = File.ReadAllText(resultsFile);
-            Assert.Contains("LicenseCheck", xmlContent);
-            Assert.Contains("failures=\"1\"", xmlContent);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-            if (File.Exists(resultsFile))
-            {
-                File.Delete(resultsFile);
-            }
-        }
+        // Assert - non-zero exit code and JUnit file contains LicenseCheck with a failure entry
+        Assert.NotEqual(0, exitCode);
+        Assert.True(File.Exists(resultsFile), "Results file was not created");
+        var xmlContent = File.ReadAllText(resultsFile);
+        Assert.Contains("LicenseCheck", xmlContent);
+        Assert.Contains("failures=\"1\"", xmlContent);
+
     }
 
     /// <summary>
@@ -492,35 +454,29 @@ public partial class IntegrationTests
     public void IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create no files when the test requires at least one
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "RequiredFileCheck"
-                    files:
-                      - pattern: "*.txt"
-                        min: 1
-                """);
+        using var tempDir = new TemporaryDirectory();
+        // Create no files when the test requires at least one
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "RequiredFileCheck"
+                files:
+                  - pattern: "*.txt"
+                    min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the min count constraint was not met
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the min count constraint was not met
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -530,38 +486,32 @@ public partial class IntegrationTests
     public void IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create two files when the test asserts at most one
-            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
+        using var tempDir = new TemporaryDirectory();
+        // Create two files when the test asserts at most one
+        File.WriteAllText(tempDir.GetFilePath("a.txt"), "content a");
+        File.WriteAllText(tempDir.GetFilePath("b.txt"), "content b");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "UniqueFileCheck"
-                    files:
-                      - pattern: "*.txt"
-                        max: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "UniqueFileCheck"
+                files:
+                  - pattern: "*.txt"
+                    max: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the max count constraint was exceeded
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the max count constraint was exceeded
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -571,37 +521,31 @@ public partial class IntegrationTests
     public void IntegrationTest_RegexRule_MatchingContent_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file whose content matches the regex pattern
-            File.WriteAllText(Path.Combine(tempDir.FullName, "version.txt"), "Version: 1.2.3");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file whose content matches the regex pattern
+        File.WriteAllText(tempDir.GetFilePath("version.txt"), "Version: 1.2.3");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "VersionFormatCheck"
-                    files:
-                      - pattern: "version.txt"
-                        text:
-                          - matches: "\\d+\\.\\d+\\.\\d+"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "VersionFormatCheck"
+                files:
+                  - pattern: "version.txt"
+                    text:
+                      - matches: "\\d+\\.\\d+\\.\\d+"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--config",
+            configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -611,38 +555,32 @@ public partial class IntegrationTests
     public void IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file whose content does NOT match the version regex
-            File.WriteAllText(Path.Combine(tempDir.FullName, "version.txt"), "no version here");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file whose content does NOT match the version regex
+        File.WriteAllText(tempDir.GetFilePath("version.txt"), "no version here");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "VersionFormatCheck"
-                    files:
-                      - pattern: "version.txt"
-                        text:
-                          - matches: "\\d+\\.\\d+\\.\\d+"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "VersionFormatCheck"
+                files:
+                  - pattern: "version.txt"
+                    text:
+                      - matches: "\\d+\\.\\d+\\.\\d+"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero because the file does not match the version pattern
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero because the file does not match the version pattern
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -652,38 +590,32 @@ public partial class IntegrationTests
     public void IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create two files when the test asserts exactly one
-            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
+        using var tempDir = new TemporaryDirectory();
+        // Create two files when the test asserts exactly one
+        File.WriteAllText(tempDir.GetFilePath("a.txt"), "content a");
+        File.WriteAllText(tempDir.GetFilePath("b.txt"), "content b");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "ExactCountCheck"
-                    files:
-                      - pattern: "*.txt"
-                        count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "ExactCountCheck"
+                files:
+                  - pattern: "*.txt"
+                    count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the exact count constraint was not met
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the exact count constraint was not met
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -693,37 +625,31 @@ public partial class IntegrationTests
     public void IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create an empty file when the test requires at least 10 bytes
-            File.WriteAllText(Path.Combine(tempDir.FullName, "empty.txt"), string.Empty);
+        using var tempDir = new TemporaryDirectory();
+        // Create an empty file when the test requires at least 10 bytes
+        File.WriteAllText(tempDir.GetFilePath("empty.txt"), string.Empty);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "MinSizeCheck"
-                    files:
-                      - pattern: "*.txt"
-                        min-size: 10
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "MinSizeCheck"
+                files:
+                  - pattern: "*.txt"
+                    min-size: 10
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the file is smaller than the minimum size
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the file is smaller than the minimum size
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -733,37 +659,31 @@ public partial class IntegrationTests
     public void IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file with content larger than 5 bytes
-            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this content is more than five bytes");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file with content larger than 5 bytes
+        File.WriteAllText(tempDir.GetFilePath("large.txt"), "this content is more than five bytes");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "MaxSizeCheck"
-                    files:
-                      - pattern: "*.txt"
-                        max-size: 5
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "MaxSizeCheck"
+                files:
+                  - pattern: "*.txt"
+                    max-size: 5
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the file exceeds the maximum size
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the file exceeds the maximum size
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -773,38 +693,32 @@ public partial class IntegrationTests
     public void IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file that contains the forbidden text
-            File.WriteAllText(Path.Combine(tempDir.FullName, "config.txt"), "password123=secret");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that contains the forbidden text
+        File.WriteAllText(tempDir.GetFilePath("config.txt"), "password123=secret");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "NoSecretsCheck"
-                    files:
-                      - pattern: "*.txt"
-                        text:
-                          - does-not-contain: "password123"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "NoSecretsCheck"
+                files:
+                  - pattern: "*.txt"
+                    text:
+                      - does-not-contain: "password123"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the forbidden text is present
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the forbidden text is present
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -814,38 +728,32 @@ public partial class IntegrationTests
     public void IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            // Create a file that matches the forbidden pattern
-            File.WriteAllText(Path.Combine(tempDir.FullName, "app.log"), "FATAL: unexpected error occurred");
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that matches the forbidden pattern
+        File.WriteAllText(tempDir.GetFilePath("app.log"), "FATAL: unexpected error occurred");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "NoFatalErrorsCheck"
-                    files:
-                      - pattern: "*.log"
-                        text:
-                          - does-not-contain-regex: "FATAL|ERROR"
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "NoFatalErrorsCheck"
+                files:
+                  - pattern: "*.log"
+                    text:
+                      - does-not-contain-regex: "FATAL|ERROR"
+            """);
 
-            // Act
-            var exitCode = Runner.Run(
-                out var _,
-                "dotnet",
-                _dllPath,
-                "--silent",
-                "--config",
-                configPath);
+        // Act
+        var exitCode = Runner.Run(
+            out var _,
+            "dotnet",
+            _dllPath,
+            "--silent",
+            "--config",
+            configPath);
 
-            // Assert - non-zero exit code because the forbidden pattern matched
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - non-zero exit code because the forbidden pattern matched
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -855,36 +763,30 @@ public partial class IntegrationTests
     public void IntegrationTest_XmlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), """
-                <configuration>
-                  <setting key="env">production</setting>
-                </configuration>
-                """);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.xml"), """
+            <configuration>
+              <setting key="env">production</setting>
+            </configuration>
+            """);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "XmlCheck"
-                    files:
-                      - pattern: "*.xml"
-                        xml:
-                          - query: "//configuration/setting"
-                            min: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "XmlCheck"
+                files:
+                  - pattern: "*.xml"
+                    xml:
+                      - query: "//configuration/setting"
+                        min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -894,32 +796,26 @@ public partial class IntegrationTests
     public void IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "config.xml"), "this is not xml <<>>");
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.xml"), "this is not xml <<>>");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "XmlCheck"
-                    files:
-                      - pattern: "*.xml"
-                        xml:
-                          - query: "//configuration"
-                            min: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "XmlCheck"
+                files:
+                  - pattern: "*.xml"
+                    xml:
+                      - query: "//configuration"
+                        min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -929,37 +825,31 @@ public partial class IntegrationTests
     public void IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "index.html"), """
-                <html>
-                  <head><title>Test Page</title></head>
-                  <body><p>Hello</p></body>
-                </html>
-                """);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("index.html"), """
+            <html>
+              <head><title>Test Page</title></head>
+              <body><p>Hello</p></body>
+            </html>
+            """);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "HtmlCheck"
-                    files:
-                      - pattern: "*.html"
-                        html:
-                          - query: "//head/title"
-                            count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "HtmlCheck"
+                files:
+                  - pattern: "*.html"
+                    html:
+                      - query: "//head/title"
+                        count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -969,36 +859,30 @@ public partial class IntegrationTests
     public void IntegrationTest_YamlAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "appsettings.yaml"), """
-                server:
-                  host: localhost
-                  port: 8080
-                """);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("appsettings.yaml"), """
+            server:
+              host: localhost
+              port: 8080
+            """);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "YamlCheck"
-                    files:
-                      - pattern: "appsettings.yaml"
-                        yaml:
-                          - query: "server.host"
-                            count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "YamlCheck"
+                files:
+                  - pattern: "appsettings.yaml"
+                    yaml:
+                      - query: "server.host"
+                        count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -1008,38 +892,32 @@ public partial class IntegrationTests
     public void IntegrationTest_JsonAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "appsettings.json"), """
-                {
-                  "ConnectionStrings": {
-                    "DefaultConnection": "Server=localhost"
-                  }
-                }
-                """);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("appsettings.json"), """
+            {
+              "ConnectionStrings": {
+                "DefaultConnection": "Server=localhost"
+              }
+            }
+            """);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "JsonCheck"
-                    files:
-                      - pattern: "appsettings.json"
-                        json:
-                          - query: "ConnectionStrings"
-                            count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "JsonCheck"
+                files:
+                  - pattern: "appsettings.json"
+                    json:
+                      - query: "ConnectionStrings"
+                        count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.Equal(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -1049,37 +927,31 @@ public partial class IntegrationTests
     public void IntegrationTest_ZipAssert_PassingQuery_ReturnsZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
         {
-            var zipPath = Path.Combine(tempDir.FullName, "archive.zip");
-            using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
-            {
-                zip.CreateEntry("readme.txt");
-            }
-
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: ZipCheck
-                    files:
-                      - pattern: "*.zip"
-                        zip:
-                          entries:
-                            - pattern: "*.txt"
-                              min: 1
-                """);
-
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
-
-            // Assert
-            Assert.Equal(0, exitCode);
+            zip.CreateEntry("readme.txt");
         }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipCheck
+                files:
+                  - pattern: "*.zip"
+                    zip:
+                      entries:
+                        - pattern: "*.txt"
+                          min: 1
+            """);
+
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+        // Assert
+        Assert.Equal(0, exitCode);
+
     }
 
     /// <summary>
@@ -1089,34 +961,28 @@ public partial class IntegrationTests
     public void IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            var invalidZipPath = Path.Combine(tempDir.FullName, "invalid.zip");
-            File.WriteAllText(invalidZipPath, "this is not a zip file");
+        using var tempDir = new TemporaryDirectory();
+        var invalidZipPath = tempDir.GetFilePath("invalid.zip");
+        File.WriteAllText(invalidZipPath, "this is not a zip file");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: ZipInvalidCheck
-                    files:
-                      - pattern: "*.zip"
-                        zip:
-                          entries:
-                            - pattern: "*.txt"
-                              min: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipInvalidCheck
+                files:
+                  - pattern: "*.zip"
+                    zip:
+                      entries:
+                        - pattern: "*.txt"
+                          min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -1126,37 +992,31 @@ public partial class IntegrationTests
     public void IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "index.html"), """
-                <html>
-                  <head><title>Test Page</title></head>
-                  <body><p>Hello</p></body>
-                </html>
-                """);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("index.html"), """
+            <html>
+              <head><title>Test Page</title></head>
+              <body><p>Hello</p></body>
+            </html>
+            """);
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "HtmlInvalidCheck"
-                    files:
-                      - pattern: "*.html"
-                        html:
-                          - query: "//nonexistentElement"
-                            min: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "HtmlInvalidCheck"
+                files:
+                  - pattern: "*.html"
+                    html:
+                      - query: "//nonexistentElement"
+                        min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -1166,32 +1026,26 @@ public partial class IntegrationTests
     public void IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "invalid.yaml"), ": invalid yaml\n  - bad");
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("invalid.yaml"), ": invalid yaml\n  - bad");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "YamlInvalidCheck"
-                    files:
-                      - pattern: "invalid.yaml"
-                        yaml:
-                          - query: "server.host"
-                            count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "YamlInvalidCheck"
+                files:
+                  - pattern: "invalid.yaml"
+                    yaml:
+                      - query: "server.host"
+                        count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -1201,32 +1055,26 @@ public partial class IntegrationTests
     public void IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "invalid.json"), "{invalid json");
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("invalid.json"), "{invalid json");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "JsonInvalidCheck"
-                    files:
-                      - pattern: "invalid.json"
-                        json:
-                          - query: "ConnectionStrings"
-                            count: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "JsonInvalidCheck"
+                files:
+                  - pattern: "invalid.json"
+                    json:
+                      - query: "ConnectionStrings"
+                        count: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -1236,35 +1084,29 @@ public partial class IntegrationTests
     public void IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero()
     {
         // Arrange - build a valid single-page PDF and assert a minimum of 2 pages (will fail)
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            var pdfPath = Path.Combine(tempDir.FullName, "report.pdf");
-            using var builder = new PdfDocumentBuilder();
-            builder.AddPage(PageSize.A4);
-            File.WriteAllBytes(pdfPath, builder.Build());
+        using var tempDir = new TemporaryDirectory();
+        var pdfPath = tempDir.GetFilePath("report.pdf");
+        using var builder = new PdfDocumentBuilder();
+        builder.AddPage(PageSize.A4);
+        File.WriteAllBytes(pdfPath, builder.Build());
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "PdfCheck"
-                    files:
-                      - pattern: "*.pdf"
-                        pdf:
-                          pages:
-                            min: 2
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "PdfCheck"
+                files:
+                  - pattern: "*.pdf"
+                    pdf:
+                      pages:
+                        min: 2
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 
     /// <summary>
@@ -1274,31 +1116,25 @@ public partial class IntegrationTests
     public void IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "report.pdf"), "not a real pdf");
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("report.pdf"), "not a real pdf");
 
-            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "PdfCheck"
-                    files:
-                      - pattern: "*.pdf"
-                        pdf:
-                          pages:
-                            min: 1
-                """);
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "PdfCheck"
+                files:
+                  - pattern: "*.pdf"
+                    pdf:
+                      pages:
+                        min: 1
+            """);
 
-            // Act
-            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
 
-            // Assert
-            Assert.NotEqual(0, exitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
     }
 }

@@ -42,3 +42,25 @@ The following integration test scenarios are defined in `UtilitiesTests.cs`.
 ### Requirements Coverage
 
 - **Path traversal prevention**: Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
+
+### TemporaryDirectory Verification
+
+The `TemporaryDirectory` unit is verified by the unit tests defined in `TemporaryDirectoryTests.cs`.
+Each test exercises construction, path resolution, and disposal against the real file system.
+
+#### TemporaryDirectory Test Scenarios
+
+- **TemporaryDirectory_Constructor_CreatesDirectory** – confirms the directory exists on disk
+  immediately after construction.
+- **TemporaryDirectory_Constructor_CreatesUniqueDirectories** – confirms two instances produce
+  distinct directory paths.
+- **TemporaryDirectory_GetFilePath_SimpleFile_ReturnsPathUnderDirectory** – confirms that a simple
+  relative filename resolves to a path under the temporary directory.
+- **TemporaryDirectory_GetFilePath_NestedPath_CreatesIntermediateDirectories** – confirms that
+  intermediate subdirectories are created automatically for nested relative paths.
+- **TemporaryDirectory_GetFilePath_TraversalAttempt_ThrowsArgumentException** – confirms that a
+  path-traversal attempt (e.g., `"../escaped.txt"`) is rejected with `ArgumentException`.
+- **TemporaryDirectory_Dispose_DeletesDirectory** – confirms the directory and its contents are
+  deleted when the instance is disposed.
+- **TemporaryDirectory_Dispose_AlreadyDeleted_DoesNotThrow** – confirms that disposal does not
+  throw when the directory has already been removed externally.

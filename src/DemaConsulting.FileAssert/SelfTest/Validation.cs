@@ -110,7 +110,7 @@ internal static partial class Validation
         RunValidationTest(context, testResults, "FileAssert_VersionDisplay", () =>
         {
             using var tempDir = new TemporaryDirectory();
-            var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "version-test.log");
+            var logFile = tempDir.GetFilePath("version-test.log");
 
             // Run the program capturing output to a log file
             int exitCode;
@@ -142,7 +142,7 @@ internal static partial class Validation
         RunValidationTest(context, testResults, "FileAssert_HelpDisplay", () =>
         {
             using var tempDir = new TemporaryDirectory();
-            var logFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "help-test.log");
+            var logFile = tempDir.GetFilePath("help-test.log");
 
             // Run the program capturing output to a log file
             int exitCode;
@@ -174,11 +174,11 @@ internal static partial class Validation
         RunValidationTest(context, testResults, "FileAssert_Results", () =>
         {
             using var tempDir = new TemporaryDirectory();
-            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
-            var resultsFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "results.trx");
+            var configFile = tempDir.GetFilePath(".fileassert.yaml");
+            var resultsFile = tempDir.GetFilePath("results.trx");
 
             // Create a file that will satisfy the passing test
-            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "present.txt"), "present");
+            File.WriteAllText(tempDir.GetFilePath("present.txt"), "present");
 
             // Write a config with one passing test (present.txt exists) and one failing test (absent.txt missing)
             File.WriteAllText(configFile,
@@ -223,10 +223,10 @@ internal static partial class Validation
         RunValidationTest(context, testResults, "FileAssert_Exists", () =>
         {
             using var tempDir = new TemporaryDirectory();
-            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+            var configFile = tempDir.GetFilePath(".fileassert.yaml");
 
             // Create a text file that the glob pattern should match
-            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+            File.WriteAllText(tempDir.GetFilePath("hello.txt"), "Hello World");
 
             // Write a config that verifies exactly one .txt file exists in the directory
             File.WriteAllText(configFile,
@@ -260,10 +260,10 @@ internal static partial class Validation
         RunValidationTest(context, testResults, "FileAssert_Contains", () =>
         {
             using var tempDir = new TemporaryDirectory();
-            var configFile = PathHelpers.SafePathCombine(tempDir.DirectoryPath, ".fileassert.yaml");
+            var configFile = tempDir.GetFilePath(".fileassert.yaml");
 
             // Create a text file with known content for the contains assertion
-            File.WriteAllText(PathHelpers.SafePathCombine(tempDir.DirectoryPath, "hello.txt"), "Hello World");
+            File.WriteAllText(tempDir.GetFilePath("hello.txt"), "Hello World");
 
             // Write a config that verifies the file contains the expected text
             File.WriteAllText(configFile,
@@ -394,51 +394,6 @@ internal static partial class Validation
         };
     }
 
-    /// <summary>
-    ///     Represents a temporary directory that is automatically deleted when disposed.
-    /// </summary>
-    private sealed class TemporaryDirectory : IDisposable
-    {
-        /// <summary>
-        ///     Gets the path to the temporary directory.
-        /// </summary>
-        public string DirectoryPath { get; }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TemporaryDirectory"/> class.
-        /// </summary>
-        public TemporaryDirectory()
-        {
-            DirectoryPath = PathHelpers.SafePathCombine(Path.GetTempPath(), $"fileassert_validation_{Guid.NewGuid()}");
-
-            try
-            {
-                Directory.CreateDirectory(DirectoryPath);
-            }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
-            {
-                throw new InvalidOperationException($"Failed to create temporary directory: {ex.Message}", ex);
-            }
-        }
-
-        /// <summary>
-        ///     Deletes the temporary directory and all its contents.
-        /// </summary>
-        public void Dispose()
-        {
-            try
-            {
-                if (Directory.Exists(DirectoryPath))
-                {
-                    Directory.Delete(DirectoryPath, true);
-                }
-            }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-            {
-                // Ignore cleanup errors during disposal
-            }
-        }
-    }
 
     /// <summary>
     ///     Source-generated regex for matching semantic version strings (N.N.N format).

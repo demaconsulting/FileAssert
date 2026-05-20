@@ -22,6 +22,7 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
+using DemaConsulting.FileAssert.Utilities;
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
@@ -205,28 +206,22 @@ public class FileAssertTestTests
     public void FileAssertTest_Run_RunsAllFiles()
     {
         // Arrange - create a temp directory with a file matching the pattern
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "content");
+        var data = new FileAssertTestData
         {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "content");
-            var data = new FileAssertTestData
-            {
-                Name = "Run Test",
-                Files = [new FileAssertFileData { Pattern = "*.txt", Min = 1 }]
-            };
-            var test = FileAssertTest.Create(data);
-            using var context = Context.Create(["--silent"]);
+            Name = "Run Test",
+            Files = [new FileAssertFileData { Pattern = "*.txt", Min = 1 }]
+        };
+        var test = FileAssertTest.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            test.Run(context, tempDir.FullName);
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
 
-            // Assert - min=1 would have produced an error if the file had not been found
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - min=1 would have produced an error if the file had not been found
+        Assert.Equal(0, context.ExitCode);
+
     }
 
     /// <summary>

@@ -36,20 +36,14 @@ public class UtilitiesTests
     public void Utilities_SafePathCombine_PreventsPathTraversalToFileSystem()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_util_");
-        try
-        {
-            // Act & Assert - a traversal attempt is rejected with ArgumentException
-            Assert.Throws<ArgumentException>(
-                () => PathHelpers.SafePathCombine(tempDir.FullName, "../escape.txt"));
+        using var tempDir = new TemporaryDirectory();
+        // Act & Assert - a traversal attempt is rejected with ArgumentException
+        Assert.Throws<ArgumentException>(
+            () => PathHelpers.SafePathCombine(tempDir.DirectoryPath, "../escape.txt"));
 
-            // Act & Assert - a valid relative path within the base is accepted
-            var combined = PathHelpers.SafePathCombine(tempDir.FullName, "nested/file.txt");
-            Assert.StartsWith(tempDir.FullName, combined);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Act & Assert - a valid relative path within the base is accepted
+        var combined = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "nested/file.txt");
+        Assert.StartsWith(tempDir.DirectoryPath, combined);
+
     }
 }

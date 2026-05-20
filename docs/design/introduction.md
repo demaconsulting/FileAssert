@@ -29,6 +29,7 @@ This document covers the detailed design of the following software units:
 - **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
 - **FileAssertZipAssert** — zip archive entry assertions (`FileAssertZipAssert.cs`)
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
+- **TemporaryDirectory** — disposable temporary directory utility (`TemporaryDirectory.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
 
 The following cross-cutting design topics are also covered:
@@ -67,7 +68,8 @@ FileAssert (System)
 │   ├── FileAssertJsonAssert (Unit)
 │   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
-│   └── PathHelpers (Unit)
+│   ├── PathHelpers (Unit)
+│   └── TemporaryDirectory (Unit)
 └── SelfTest (Subsystem)
     └── Validation (Unit)
 ```
@@ -99,7 +101,8 @@ src/DemaConsulting.FileAssert/
 │   ├── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
 │   └── FileAssertZipAssert.cs      — zip archive entry assertions (System.IO.Compression)
 ├── Utilities/
-│   └── PathHelpers.cs              — safe path-combination utility
+│   ├── PathHelpers.cs              — safe path-combination utility
+│   └── TemporaryDirectory.cs       — disposable temporary directory utility
 └── SelfTest/
     └── Validation.cs               — self-validation test runner
 ```

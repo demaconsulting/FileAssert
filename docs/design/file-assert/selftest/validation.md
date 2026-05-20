@@ -77,12 +77,6 @@ Writes the collected results to the file specified by `context.ResultsFile`:
 - Other extensions → error written to context.
 - Any I/O or other exception is caught and an error message is written to context.
 
-##### TemporaryDirectory Helper
-
-A private nested `IDisposable` class that creates a unique temporary directory on construction
-and deletes it recursively on disposal. Uses `PathHelpers.SafePathCombine` to build the
-directory path under `Path.GetTempPath()`.
-
 #### Design Decisions
 
 - **`RunValidationTest` dispatcher**: All built-in tests share a single helper that owns the
@@ -102,11 +96,8 @@ pass/fail report, and optionally serialize the results to a TRX or JUnit XML fil
 #### Data Model
 
 N/A — `Validation` is a `static` class with no instance fields. All state is local to the
-`Run` method call. The private nested `TemporaryDirectory` class holds a single field:
-
-| Field           |
-| :-------------- |
-| `DirectoryPath` |
+`Run` method call. Temporary directory management is delegated to the standalone
+`TemporaryDirectory` utility class.
 
 #### Key Methods
 
@@ -138,7 +129,7 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 - **Calls internally**:
   - `Program.Run(Context)` to execute each built-in test scenario in-process.
   - `Context.Create(string[])` to construct per-test contexts with `--silent` and `--config`.
-  - `PathHelpers.SafePathCombine` to build all fixture and log file paths safely.
+  - `TemporaryDirectory.GetFilePath` to build all fixture and log file paths safely.
   - `DemaConsulting.TestResults.IO.TrxSerializer.Serialize` and `JUnitSerializer.Serialize` for
     results serialization.
 - **OTS dependencies**: `System.Runtime.InteropServices.RuntimeInformation` for system info
