@@ -83,3 +83,48 @@ files:
   failure immediately gives users a clear, actionable error message.
 - **Independent query model**: `FileAssertXmlQuery` is private to this unit so that XML
   assertion behavior can evolve independently of the other structured-document assert units.
+
+#### Purpose
+
+`FileAssertXmlAssert` is responsible for validating one XML file against a list of XPath
+queries. It parses the file with `System.Xml.Linq.XDocument` and enforces min, max, and
+exact node-count constraints per query.
+
+#### Data Model
+
+| Field / Property | Type                                | Description                             |
+| :--------------- | :---------------------------------- | :-------------------------------------- |
+| `Queries`        | `IReadOnlyList<FileAssertXmlQuery>` | Ordered list of XPath query assertions. |
+
+Each `FileAssertXmlQuery` (private nested record) holds:
+
+| Property | Type     | Description                              |
+| :------- | :------- | :--------------------------------------- |
+| `Query`  | `string` | XPath expression to evaluate.            |
+| `Count`  | `int?`   | Expected exact node count; `null` = N/A. |
+| `Min`    | `int?`   | Minimum node count; `null` = no bound.   |
+| `Max`    | `int?`   | Maximum node count; `null` = no bound.   |
+
+#### Key Methods
+
+| Method                                          | Purpose                                                       |
+| :---------------------------------------------- | :------------------------------------------------------------ |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `FileAssertXmlQuery` instances.        |
+| `Run(Context context, string fileName)`         | Loads the XML file and evaluates each XPath query against it. |
+
+#### Error Handling
+
+| Scenario                                    | Handling                                                              |
+| :------------------------------------------ | :-------------------------------------------------------------------- |
+| `XDocument.Load` throws on parse failure    | Error written via `context.WriteError`; `Run` returns immediately.    |
+| Query result below `Min`                    | Error written via `context.WriteError`; subsequent queries continue.  |
+| Query result above `Max`                    | Error written via `context.WriteError`; subsequent queries continue.  |
+| Query result not equal to `Count`           | Error written via `context.WriteError`; subsequent queries continue.  |
+
+#### Interactions
+
+- **Caller**: `FileAssertFile.Run` calls `XmlAssert.Run(context, fileName)` when the `xml:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertXmlAssert.Create`.
+- **OTS dependency**: `System.Xml.Linq.XDocument` and `System.Xml.XPath` extension methods (BCL).
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

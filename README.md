@@ -9,6 +9,8 @@
 [![Security][badge-security]][link-security]
 [![NuGet][badge-nuget]][link-nuget]
 
+## Overview
+
 FileAssert is a .NET CLI tool for asserting file properties using YAML-defined test suites. It validates
 files against acceptance criteria such as size constraints, content requirements, and pattern matching,
 making it ideal for CI/CD pipelines and compliance workflows.
@@ -71,6 +73,17 @@ fileassert --validate
 # Silent mode with logging
 fileassert --silent --log output.log
 ```
+
+## Building
+
+```pwsh
+pwsh ./build.ps1
+```
+
+## User Guide
+
+The DemaConsulting.FileAssert User Guide is available on the
+[DemaConsulting.FileAssert releases page](https://github.com/demaconsulting/FileAssert/releases).
 
 ## Command-Line Options
 
@@ -285,6 +298,16 @@ Generated documentation includes:
 - **Requirements**: Functional and non-functional requirements
 - **Requirements Justifications**: Detailed requirement rationale
 - **Trace Matrix**: Requirements to test traceability
+
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/demaconsulting/FileAssert/blob/main/CONTRIBUTING.md) for
+guidelines on reporting bugs, suggesting features, and submitting pull requests.
+
+## Support
+
+- [Report a bug or request a feature](https://github.com/demaconsulting/FileAssert/issues)
+- [Ask a question or start a discussion](https://github.com/demaconsulting/FileAssert/discussions)
 
 ## License
 

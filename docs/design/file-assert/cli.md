@@ -21,6 +21,63 @@ and execution decisions.
 - Write output to stdout and the log file; write errors to stderr and the log file.
 - Expose an exit code that reflects whether any errors have been reported.
 
+### Interfaces
+
+The `Context` unit exposes the following public interface:
+
+#### Properties
+
+| Property       | Type                    | Description                                                     |
+| :------------- | :---------------------- | :-------------------------------------------------------------- |
+| `Silent`       | `bool`                  | `true` when `--silent` was given; suppresses console output.    |
+| `Validate`     | `bool`                  | `true` when `--validate` was specified.                         |
+| `Version`      | `bool`                  | `true` when `--version`/`-v` was specified.                     |
+| `Help`         | `bool`                  | `true` when `--help`/`-h`/`-?` was specified.                   |
+| `Depth`        | `int`                   | Heading depth for validation output (1–6, default 1).           |
+| `ConfigFile`   | `string`                | Configuration file path (default `.fileassert.yaml`).           |
+| `ResultsFile`  | `string?`               | Results file path; `null` if `--results` was not specified.     |
+| `Filters`      | `IReadOnlyList<string>` | Positional name-or-tag filter arguments.                        |
+| `ExitCode`     | `int`                   | `0` when no errors have been reported; `1` otherwise.           |
+
+#### Methods
+
+| Method       | Signature                              | Description                                                  |
+| :----------- | :------------------------------------- | :----------------------------------------------------------- |
+| `Create`     | `static Context Create(string[] args)` | Parses args; opens log file when `--log` is specified.       |
+| `WriteLine`  | `void WriteLine(string message)`       | Writes to stdout (unless silent) and to the log file.        |
+| `WriteError` | `void WriteError(string message)`      | Sets `_hasErrors`; writes to stderr (unless silent) and log. |
+| `Dispose`    | `void Dispose()`                       | Closes the log file writer.                                  |
+
+#### Environmental Resources
+
+| Resource              | Direction | Description                                                           |
+| :-------------------- | :-------- | :-------------------------------------------------------------------- |
+| Standard output       | Output    | Receives all `WriteLine` messages when `--silent` is not set.         |
+| Standard error        | Output    | Receives all `WriteError` messages when `--silent` is not set.        |
+| Command-line arguments| Input     | Parsed by the internal `ArgumentParser` nested class.                 |
+| File system (log)     | Output    | Log file opened for writing when `--log <path>` is specified.         |
+| File system (config)  | Input     | Configuration file path resolved from `--config` or default.          |
+| File system (results) | Output    | Results file path; written by the Configuration subsystem.            |
+
+### Design
+
+The `Context` class uses the following collaboration flow:
+
+1. `Context.Create` is called with the raw `string[]` argument array.
+2. An internal `ArgumentParser` instance iterates the array, setting boolean flags
+   (`Silent`, `Validate`, `Version`, `Help`) and collecting string values (`ConfigFile`,
+   `ResultsFile`, `LogFile`) and positional filter arguments.
+3. All recognized values are transferred to the immutable `Context` instance via
+   `private init` property accessors; unrecognized flags starting with `-` throw
+   an `ArgumentException`.
+4. If a log file path was provided, `OpenLogFile` opens a `StreamWriter` with
+   `AutoFlush = true` on the specified path.
+5. All subsequent output dispatches through `WriteLine` and `WriteError`:
+   - If `Silent` is `false`, messages are written to `Console.Out` / `Console.Error`.
+   - If a log writer is open, messages are always written to it regardless of `Silent`.
+6. `WriteError` additionally sets the internal `_hasErrors` flag, causing `ExitCode`
+   to return `1` for the remainder of the context's lifetime.
+
 ### Interactions with Other Subsystems
 
 | Consumer          | Usage                                                                |

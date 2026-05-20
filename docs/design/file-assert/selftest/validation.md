@@ -26,13 +26,13 @@ Entry point for self-validation. Executes the following steps:
 
 ##### Built-in Tests
 
-| Test Name                   | Description                                                                          |
-| :-------------------------- | :----------------------------------------------------------------------------------- |
-| `FileAssert_VersionDisplay` | Runs `--version`; verifies log contains a version string.                            |
-| `FileAssert_HelpDisplay`    | Runs `--help`; verifies log contains `"Usage:"` and `"Options:"`.                    |
-| `FileAssert_Results`        | Runs tests with passes and fails; verifies non-zero exit code and results file.      |
-| `FileAssert_Exists`         | Runs a glob-pattern existence check; verifies zero exit code.                        |
-| `FileAssert_Contains`       | Runs a text-contains check; verifies zero exit code.                                 |
+| Test Name                   |
+| :-------------------------- |
+| `FileAssert_VersionDisplay` |
+| `FileAssert_HelpDisplay`    |
+| `FileAssert_Results`        |
+| `FileAssert_Exists`         |
+| `FileAssert_Contains`       |
 
 Each test is dispatched via `RunValidationTest`, which handles the common boilerplate:
 
@@ -92,3 +92,54 @@ directory path under `Path.GetTempPath()`.
   complete, so the summary reflects the full run.
 - **`Program.Run` as the test target**: Using the public `Run` method rather than the private
   `Main` method allows tests to capture the log output without spawning a subprocess.
+
+#### Purpose
+
+`Validation` is the self-validation test runner for FileAssert. Its single responsibility is
+to exercise the tool's core functionality using built-in test scenarios, print a structured
+pass/fail report, and optionally serialize the results to a TRX or JUnit XML file.
+
+#### Data Model
+
+N/A — `Validation` is a `static` class with no instance fields. All state is local to the
+`Run` method call. The private nested `TemporaryDirectory` class holds a single field:
+
+| Field           |
+| :-------------- |
+| `DirectoryPath` |
+
+#### Key Methods
+
+| Method                                                                       |
+| :--------------------------------------------------------------------------- |
+| `Run(Context context)` *(public)*                                            |
+| `RunVersionTest(Context, TestResults)` *(private)*                           |
+| `RunHelpTest(Context, TestResults)` *(private)*                              |
+| `RunResultsTest(Context, TestResults)` *(private)*                           |
+| `RunExistsTest(Context, TestResults)` *(private)*                            |
+| `RunContainsTest(Context, TestResults)` *(private)*                          |
+| `RunValidationTest(Context, TestResults, string, Func<string?>)` *(private)* |
+| `WriteResultsFile(Context, TestResults)` *(private)*                         |
+
+#### Error Handling
+
+| Scenario                                |
+| :-------------------------------------- |
+| Null `context` passed to `Run`          |
+| Test body throws an unhandled exception |
+| Unsupported results file extension      |
+| Results file write failure              |
+| Temporary directory creation failure    |
+| Temporary directory deletion failure    |
+
+#### Interactions
+
+- **Caller**: `Program.Run` calls `Validation.Run(context)` when `context.Validate` is `true`.
+- **Calls internally**:
+  - `Program.Run(Context)` to execute each built-in test scenario in-process.
+  - `Context.Create(string[])` to construct per-test contexts with `--silent` and `--config`.
+  - `PathHelpers.SafePathCombine` to build all fixture and log file paths safely.
+  - `DemaConsulting.TestResults.IO.TrxSerializer.Serialize` and `JUnitSerializer.Serialize` for
+    results serialization.
+- **OTS dependencies**: `System.Runtime.InteropServices.RuntimeInformation` for system info
+  output; `System.Text.RegularExpressions.Regex` (source-generated) for version string matching.

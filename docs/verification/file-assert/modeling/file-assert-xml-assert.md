@@ -10,6 +10,17 @@ defines the test scenarios, dependency usage, and requirement coverage for
 create temporary XML files with controlled content and assert on XPath query results, count
 constraints, and text matching.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 | Dependency | Usage in Tests                                              |

@@ -17,12 +17,12 @@ sections:
           - FileAssertHtmlAssert_Create_NullData_ThrowsArgumentNullException
 
       - id: FileAssert-FileAssertHtmlAssert-ParseError
-        title: |
+        title: >-
           The FileAssertHtmlAssert class shall report an immediate error and skip remaining
-          assertions when a matched file cannot be parsed as a valid HTML document.
+          assertions when a matched file cannot be read (e.g., file does not exist or is inaccessible).
         justification: |
-          Attempting to evaluate XPath queries against a file that cannot be parsed as HTML
-          would produce meaningless or misleading results. Reporting the parse failure
+          HtmlAgilityPack parses HTML leniently without throwing exceptions. The primary error
+          condition handled is a missing or inaccessible file. Reporting the I/O failure
           immediately gives users a clear, actionable error message.
         tests:
           - FileAssertHtmlAssert_Run_NonExistentFile_WritesError

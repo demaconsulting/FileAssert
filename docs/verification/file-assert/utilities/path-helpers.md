@@ -10,6 +10,17 @@ performs pure path manipulation using only .NET BCL types, no mocking or test do
 Tests call `PathHelpers.SafePathCombine` directly with controlled base and relative path arguments
 and assert on the returned string or the thrown exception.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 `PathHelpers` has no dependencies on other tool units. All path operations use .NET BCL types

@@ -16,6 +16,19 @@ At the subsystem boundary, `Context` (from the `Cli` subsystem) and `PathHelpers
 `Utilities` subsystem) are used with their real implementations. No mocking is applied. Temporary
 directories are used for result file output so that tests remain isolated.
 
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The Selftest subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
+
 ### Integration Test Scenarios
 
 The following integration test scenarios are defined in `SelfTestTests.cs`.

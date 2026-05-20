@@ -114,3 +114,47 @@ passed to `FileAssertRule.Create` to produce the concrete rule instance.
 - **No exception on failure**: Rules report failures via `context.WriteError` rather
   than throwing, so all rules are applied to all files and all failures are reported
   in a single run.
+
+#### Purpose
+
+`FileAssertRule` defines the abstract rule interface and provides the static factory that
+creates the correct concrete implementation from a YAML DTO. Concrete subclasses perform
+specific content checks (substring presence/absence and regex match/non-match) against
+a file's text content.
+
+#### Data Model
+
+| Class                          | Field      | Type    | Description                                     |
+| :----------------------------- | :--------- | :------ | :---------------------------------------------- |
+| `FileAssertContainsRule`       | `Value`    | `string`| Substring the file content must contain.        |
+| `FileAssertDoesNotContainRule` | `Value`    | `string`| Substring the file content must NOT contain.    |
+| `FileAssertMatchesRule`        | `Pattern`  | `Regex` | Compiled regex the file content must match.     |
+| `FileAssertDoesNotMatchRule`   | `Pattern`  | `Regex` | Compiled regex the file content must NOT match. |
+
+Regex objects are compiled at construction with a ten-second evaluation timeout.
+
+#### Key Methods
+
+| Method                                                                 | Purpose                                    |
+| :--------------------------------------------------------------------- | :----------------------------------------- |
+| `Create(FileAssertRuleData data)` *(static on base)*                   | Returns concrete rule subclass for `data`. |
+| `Apply(Context context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
+
+#### Error Handling
+
+| Scenario                                      | Handling                                                             |
+| :-------------------------------------------- | :------------------------------------------------------------------- |
+| No rule type set in `FileAssertRuleData`      | `InvalidOperationException` thrown by `Create`.                      |
+| Invalid regex pattern in `FileAssertRuleData` | `ArgumentException` from `Regex` constructor in `Create`.            |
+| Regex evaluation timeout (>10 seconds)        | `RegexMatchTimeoutException` propagated to `Apply` caller.           |
+| Rule check fails at `Apply` time              | Error written via `context.WriteError`; no exception thrown.         |
+
+#### Interactions
+
+- **Created by**:
+  - `FileAssertTextAssert.Create` for text content rules.
+  - `FileAssertPdfAssert.Create` for PDF body text rules.
+- **Called by**:
+  - `FileAssertTextAssert.Run` — iterates rules and calls `Apply(context, fileName, content)`.
+  - `FileAssertPdfAssert.Run` — iterates `_text` rules and calls `Apply(context, fileName, pdfText)`.
+- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.

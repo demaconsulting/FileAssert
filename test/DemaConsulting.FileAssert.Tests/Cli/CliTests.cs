@@ -123,10 +123,10 @@ public class CliTests
     }
 
     /// <summary>
-    ///     Verifies that WriteError changes the context exit code from 0 to 1.
+    ///     Verifies that WriteError changes the context exit code from 0 to 1 after a successful Create.
     /// </summary>
     [Fact]
-    public void Cli_WriteError_ChangesExitCodeToOne()
+    public void Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne()
     {
         // Arrange
         using var context = Context.Create(["--silent"]);
@@ -140,11 +140,46 @@ public class CliTests
     }
 
     /// <summary>
+    ///     Verifies that WriteLine and WriteError messages reach the console when --silent is absent.
+    /// </summary>
+    [Fact]
+    public void Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole()
+    {
+        // Arrange
+        var originalOut = Console.Out;
+        var originalError = Console.Error;
+        var outWriter = new System.IO.StringWriter();
+        var errorWriter = new System.IO.StringWriter();
+
+        try
+        {
+            Console.SetOut(outWriter);
+            Console.SetError(errorWriter);
+
+            // Act - create a context WITHOUT --silent, write messages
+            using (var context = Context.Create(Array.Empty<string>()))
+            {
+                context.WriteLine("informational message");
+                context.WriteError("error message");
+            }
+
+            // Assert - messages appear on the respective streams
+            Assert.Contains("informational message", outWriter.ToString());
+            Assert.Contains("error message", errorWriter.ToString());
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Console.SetError(originalError);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that the Cli subsystem routes both informational and error messages
     ///     through the log file when a log path is specified.
     /// </summary>
     [Fact]
-    public void Cli_OutputPipeline_WritesMessagesToLogFile()
+    public void Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile()
     {
         // Arrange
         var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");

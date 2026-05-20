@@ -38,6 +38,19 @@ multi-platform requirements:
 All integration test scenarios are expected to produce identical results on all supported runtime
 and platform combinations.
 
+## Acceptance Criteria
+
+The system-level verification is considered complete and passing when:
+
+1. All integration test scenarios defined in `IntegrationTests.cs` execute and report
+   a passing result in the CI pipeline across all supported runtime and platform combinations
+   listed in the Test Environments table.
+2. No integration test exits with an unexpected exit code or fails an assertion.
+3. The `--validate` flag integration test passes, confirming that the installed tool
+   is self-consistent.
+
+Failure of any single integration test scenario constitutes a system-level acceptance failure.
+
 ## External Interface Simulation
 
 At the system level, no interfaces are mocked. All external interfaces are exercised with real
@@ -237,6 +250,37 @@ fewer matching entries than required.
 
 **Expected**: Exit code non-zero.
 
+### IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
+
+**Scenario**: A zip assertion is configured and the archive contains entries that satisfy
+the declared constraints.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+
+**Scenario**: A zip assertion is configured but the target file is not a valid zip archive.
+
+**Expected**: Exit code non-zero.
+
+### IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
+
+**Scenario**: An HTML assertion is configured but the target file is not valid HTML.
+
+**Expected**: Exit code non-zero.
+
+### IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero
+
+**Scenario**: A YAML assertion is configured but the target file is not valid YAML.
+
+**Expected**: Exit code non-zero.
+
+### IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero
+
+**Scenario**: A JSON assertion is configured but the target file is not valid JSON.
+
+**Expected**: Exit code non-zero.
+
 ## Requirements Coverage
 
 - **Version display**: IntegrationTest_VersionFlag_OutputsVersion
@@ -264,8 +308,13 @@ fewer matching entries than required.
 - **Structured file assertions**: IntegrationTest_XmlAssert_PassingQuery_ReturnsZero,
   IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero,
+  IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_YamlAssert_PassingQuery_ReturnsZero,
+  IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_JsonAssert_PassingQuery_ReturnsZero,
+  IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
 - **Zip archive assertions**: FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError,
-  FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
+  FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError,
+  IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
+  IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero

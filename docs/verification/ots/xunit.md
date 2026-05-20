@@ -101,3 +101,9 @@ summary even when the context is configured for silent operation.
   Context_Create_LogFlag_OpensLogFile, Context_Create_UnknownArgument_ThrowsArgumentException,
   PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly,
   Program_Run_WithVersionFlag_DisplaysVersionOnly, Validation_Run_WithSilentContext_PrintsSummary
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.

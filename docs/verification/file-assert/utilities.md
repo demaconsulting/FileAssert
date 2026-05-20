@@ -15,6 +15,19 @@ valid paths are resolved correctly and traversal attacks are rejected.
 `PathHelpers` depends only on .NET BCL types for path manipulation. No external dependencies
 require mocking at the subsystem level.
 
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The Utilities subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
+
 ### Integration Test Scenarios
 
 The following integration test scenarios are defined in `UtilitiesTests.cs`.

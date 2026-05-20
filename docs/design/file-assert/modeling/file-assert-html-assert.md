@@ -15,18 +15,18 @@ The main class coordinating XPath-based node count assertions for an HTML file.
 
 ###### FileAssertHtmlAssert Properties
 
-| Property  | Type                                 | Description             |
-| :-------- | :----------------------------------- | :---------------------- |
-| `Queries` | `IReadOnlyList<FileAssertHtmlQuery>` | XPath query assertions. |
+| Property  |
+| :-------- |
+| `Queries` |
 
 Each `FileAssertHtmlQuery` entry holds:
 
-| Property | Type     | Description                      |
-| :------- | :------- | :------------------------------- |
-| `Query`  | `string` | XPath expression to evaluate.    |
-| `Count`  | `int?`   | Exact number of matched nodes.   |
-| `Min`    | `int?`   | Minimum number of matched nodes. |
-| `Max`    | `int?`   | Maximum number of matched nodes. |
+| Property |
+| :------- |
+| `Query`  |
+| `Count`  |
+| `Min`    |
+| `Max`    |
 
 ###### FileAssertHtmlAssert Factory
 
@@ -87,3 +87,49 @@ files:
   parse failure immediately gives users a clear, actionable error message.
 - **Independent query model**: `FileAssertHtmlQuery` is private to this unit so that HTML
   assertion behavior can evolve independently of the other structured-document assert units.
+
+#### Purpose
+
+`FileAssertHtmlAssert` is responsible for validating one HTML file against a list of XPath
+queries. It parses the file with HtmlAgilityPack and enforces min, max, and exact node-count
+constraints per query.
+
+#### Data Model
+
+| Field / Property |
+| :--------------- |
+| `Queries`        |
+
+Each `FileAssertHtmlQuery` (private nested record) holds:
+
+| Property |
+| :------- |
+| `Query`  |
+| `Count`  |
+| `Min`    |
+| `Max`    |
+
+#### Key Methods
+
+| Method                                          |
+| :---------------------------------------------- |
+| `Create(IEnumerable<FileAssertQueryData> data)` |
+| `Run(Context context, string fileName)`         |
+
+#### Error Handling
+
+| Scenario                                      |
+| :-------------------------------------------- |
+| HtmlAgilityPack reports critical parse errors |
+| Query result below `Min`                      |
+| Query result above `Max`                      |
+| Query result not equal to `Count`             |
+
+#### Interactions
+
+- **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, fileName)` when the `html:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertHtmlAssert.Create`.
+- **OTS dependency**: `HtmlAgilityPack.HtmlDocument` for lenient HTML parsing and
+  `HtmlDocument.DocumentNode.SelectNodes` for XPath evaluation.
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

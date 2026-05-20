@@ -138,5 +138,5 @@ Review-sets: defined in `.reviewmark.yaml`
 - [FileAssert User Guide][guide]
 - [FileAssert Repository][repo]
 
-[guide]: ../../README.md
+[guide]: https://github.com/demaconsulting/FileAssert/blob/main/README.md
 [repo]: https://github.com/demaconsulting/FileAssert

@@ -15,5 +15,8 @@ sections:
           that they can be verified in isolation and reused across the codebase without
           duplicating path-safety logic. Testing at the subsystem level confirms that the
           utility functions are accessible to and correctly used by dependent subsystems.
+        children:
+          - FileAssert-PathHelpers-SafeCombine
+          - FileAssert-PathHelpers-NullValidation
         tests:
           - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem

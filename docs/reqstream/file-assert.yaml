@@ -255,6 +255,8 @@ sections:
           Text content assertions allow users to verify that files contain required strings,
           do not contain forbidden strings, or match regular expression patterns. These
           assertions are the primary mechanism for content validation in CI/CD pipelines.
+          The supported assertion types are: `contains`, `does-not-contain`, `matches`
+          (regex), and `does-not-match` (regex).
         children:
           - FileAssert-Modeling-FileTypeParsing
         tests:
@@ -276,6 +278,7 @@ sections:
           - FileAssert-Modeling-FileTypeParsing
         tests:
           - IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
+          - IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
 
       - id: FileAssert-System-XmlAssertions
         title: |
@@ -309,6 +312,7 @@ sections:
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
+          - IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
 
       - id: FileAssert-System-YamlAssertions
         title: |
@@ -325,6 +329,7 @@ sections:
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_YamlAssert_PassingQuery_ReturnsZero
+          - IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero
 
       - id: FileAssert-System-JsonAssertions
         title: |
@@ -341,6 +346,7 @@ sections:
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_JsonAssert_PassingQuery_ReturnsZero
+          - IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero
 
       - id: FileAssert-System-ZipAssertions
         title: |
@@ -356,5 +362,48 @@ sections:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-FileAssertZipAssert-EntryMatching
         tests:
-          - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
-          - FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
+          - IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
+          - IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+
+      - id: FileAssert-System-DefaultBehavior
+        title: |
+          The FileAssert tool shall display version and copyright information when invoked
+          with no recognized flags.
+        justification: |
+          Displaying the application banner on default invocation follows standard CLI conventions
+          and confirms to users that the tool is installed and running correctly.
+        children:
+          - FileAssert-Program-DefaultBehavior
+        tests:
+          - IntegrationTest_ValidateFlag_RunsValidation
+
+      - id: FileAssert-System-DepthFlag
+        title: |
+          The FileAssert tool shall accept a --depth argument in the range 1-6 that controls
+          the heading level of self-validation output, defaulting to 1.
+        justification: |
+          The --depth flag allows users to embed self-validation output at an appropriate
+          heading level within existing Markdown documents. A default of 1 ensures top-level
+          output without explicit configuration.
+        children:
+          - FileAssert-Context-Depth
+        tests:
+          - IntegrationTest_ValidateFlag_RunsValidation
+
+      - id: FileAssert-System-MultiPlatform
+        title: |
+          The FileAssert tool shall run correctly on Windows, Linux, and macOS operating systems.
+        justification: |
+          CI/CD pipelines operate across heterogeneous environments. Supporting all three major
+          platforms ensures the tool can be used consistently regardless of the build agent OS.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+
+      - id: FileAssert-System-MultiRuntime
+        title: |
+          The FileAssert tool shall run correctly on .NET 8, .NET 9, and .NET 10 runtimes.
+        justification: |
+          Supporting multiple .NET runtimes allows projects targeting different LTS and current
+          versions to adopt FileAssert without being forced to upgrade their runtime.
+        tests:
+          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero

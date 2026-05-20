@@ -11,6 +11,17 @@ test scenarios, dependency usage, and requirement coverage for `Cli/Context.cs`.
 `Context.Create` with controlled argument arrays, inspect the resulting properties and exit codes,
 and verify output written to captured streams.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 `Context` has no dependencies on other tool units. All dependencies are real .NET BCL types;

@@ -88,3 +88,48 @@ files:
   the presence and cardinality of sequence keys.
 - **Independent query model**: `FileAssertYamlQuery` is private to this unit so that YAML
   assertion behavior can evolve independently of the other structured-document assert units.
+
+#### Purpose
+
+`FileAssertYamlAssert` is responsible for validating one YAML file against a list of
+dot-notation path queries. It parses the file with YamlDotNet's `YamlStream` and enforces
+min, max, and exact node-count constraints per path.
+
+#### Data Model
+
+| Field / Property | Type                                 | Description                                   |
+| :--------------- | :----------------------------------- | :-------------------------------------------- |
+| `Queries`        | `IReadOnlyList<FileAssertYamlQuery>` | Ordered list of dot-notation path assertions. |
+
+Each `FileAssertYamlQuery` (private nested record) holds:
+
+| Property | Type     | Description                               |
+| :------- | :------- | :---------------------------------------- |
+| `Query`  | `string` | Dot-notation path to traverse.            |
+| `Count`  | `int?`   | Expected exact node count; `null` = N/A.  |
+| `Min`    | `int?`   | Minimum node count; `null` = no bound.    |
+| `Max`    | `int?`   | Maximum node count; `null` = no bound.    |
+
+#### Key Methods
+
+| Method                                          | Purpose                                                          |
+| :---------------------------------------------- | :--------------------------------------------------------------- |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `FileAssertYamlQuery` instances.          |
+| `Run(Context context, string fileName)`         | Parses the YAML file and evaluates each dot-notation path query. |
+
+#### Error Handling
+
+| Scenario                                    | Handling                                                              |
+| :------------------------------------------ | :-------------------------------------------------------------------- |
+| `YamlException` during `YamlStream.Load`    | Error written via `context.WriteError`; `Run` returns immediately.    |
+| Query result below `Min`                    | Error written via `context.WriteError`; subsequent queries continue.  |
+| Query result above `Max`                    | Error written via `context.WriteError`; subsequent queries continue.  |
+| Query result not equal to `Count`           | Error written via `context.WriteError`; subsequent queries continue.  |
+
+#### Interactions
+
+- **Caller**: `FileAssertFile.Run` calls `YamlAssert.Run(context, fileName)` when the `yaml:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertYamlAssert.Create`.
+- **OTS dependency**: `YamlDotNet.RepresentationModel.YamlStream` for parsing and traversal.
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

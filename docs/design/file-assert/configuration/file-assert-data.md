@@ -102,9 +102,67 @@ assertion blocks.
 
 #### Design Decisions
 
+#### Design Constraints
+
+The `FileAssertData` classes contain no validation or business logic, delegating all
+validation to the factory methods in the Modeling subsystem. This maintains a clean
+separation between deserialization and domain object construction.
+
 - **Nullable reference type properties**: All properties are nullable to correctly represent
   absent YAML keys without throwing during deserialization.
 - **No validation logic in DTOs**: Validation and construction of domain objects is the
   responsibility of the factory methods in the Modeling subsystem, keeping DTOs simple.
 - **YamlMember aliases**: Explicit `[YamlMember(Alias = "...")]` attributes tie each property
   to its YAML key, decoupling C# naming conventions from the YAML schema.
+
+#### Purpose
+
+The `FileAssertData` file defines the complete set of YAML data transfer objects (DTOs) used
+by `FileAssertConfig.ReadFromFile` to deserialize the `.fileassert.yaml` configuration. Each
+class carries no business logic and serves exclusively as a container for raw values produced
+by YamlDotNet.
+
+#### Data Model
+
+| DTO Class                       | Fields                                                                      |
+| :------------------------------ | :-------------------------------------------------------------------------- |
+| `FileAssertConfigData`          | `Tests: List<FileAssertTestData>?`                                          |
+| `FileAssertTestData`            | `Name?, Tags (list)?, Files (list)?`                                        |
+| `FileAssertFileData`            | Pattern, Min, Max, Count, MinSize, MaxSize; Text/Pdf/Xml/Html/Yaml/Json/Zip |
+| `FileAssertRuleData`            | `Contains?, DoesNotContain?, Matches?, DoesNotContainRegex?`                |
+| `FileAssertPdfData`             | `Metadata (list)?, Pages?, Text (list)?`                                    |
+| `FileAssertPdfMetadataRuleData` | `Field?, Contains?, Matches?`                                               |
+| `FileAssertPdfPagesData`        | `Min: int?`, `Max: int?`                                                    |
+| `FileAssertQueryData`           | `Query?, Count?, Min?, Max?`                                                |
+| `FileAssertZipData`             | `Entries: List<FileAssertZipEntryData>?`                                    |
+| `FileAssertZipEntryData`        | `Pattern?, Min?, Max?`                                                      |
+
+All properties are nullable so that absent YAML keys deserialize cleanly to `null`.
+
+#### Key Methods
+
+N/A — DTOs are pure data containers. All properties are public `get`/`set`. No methods
+are defined.
+
+#### Error Handling
+
+N/A — DTOs contain no validation logic. Any malformed YAML causes `YamlDotNet` to throw
+a `YamlException` that propagates directly to `FileAssertConfig.ReadFromFile`. Constraint
+validation (e.g. exactly one rule type per `FileAssertRuleData`) is the responsibility of
+the Modeling subsystem factory methods.
+
+#### Interactions
+
+- **Populated by**: `YamlDotNet.Serialization.Deserializer` inside `FileAssertConfig.ReadFromFile`
+  via `DeserializerBuilder().IgnoreUnmatchedProperties().Build()`.
+- **Consumed by**:
+  - `FileAssertTest.Create(FileAssertTestData)` in the Modeling subsystem.
+  - `FileAssertFile.Create(FileAssertFileData)` in the Modeling subsystem.
+  - `FileAssertRule.Create(FileAssertRuleData)` in the Modeling subsystem.
+  - `FileAssertTextAssert.Create(IEnumerable<FileAssertRuleData>)` in the Modeling subsystem.
+  - `FileAssertPdfAssert.Create(FileAssertPdfData)` in the Modeling subsystem.
+  - `FileAssertHtmlAssert.Create(IEnumerable<FileAssertQueryData>)` in the Modeling subsystem.
+  - `FileAssertJsonAssert.Create(IEnumerable<FileAssertQueryData>)` in the Modeling subsystem.
+  - `FileAssertXmlAssert.Create(IEnumerable<FileAssertQueryData>)` in the Modeling subsystem.
+  - `FileAssertYamlAssert.Create(IEnumerable<FileAssertQueryData>)` in the Modeling subsystem.
+  - `FileAssertZipAssert.Create(FileAssertZipData)` in the Modeling subsystem.

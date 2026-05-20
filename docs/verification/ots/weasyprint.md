@@ -87,3 +87,9 @@ at least one page, and includes expected document content.
 - **`FileAssert-OTS-WeasyPrint`**: WeasyPrint_BuildNotesPdf, WeasyPrint_CodeQualityPdf,
   WeasyPrint_ReviewPlanPdf, WeasyPrint_ReviewReportPdf, WeasyPrint_DesignPdf,
   WeasyPrint_VerificationPdf, WeasyPrint_UserGuidePdf
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.

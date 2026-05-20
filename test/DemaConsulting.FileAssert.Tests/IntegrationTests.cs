@@ -18,9 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 
 using DemaConsulting.FileAssert.Utilities;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests;
 
@@ -1032,6 +1035,231 @@ public partial class IntegrationTests
 
             // Assert
             Assert.Equal(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a ZIP assert with a passing entry query returns a zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_PassingQuery_ReturnsZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            var zipPath = Path.Combine(tempDir.FullName, "archive.zip");
+            using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+            {
+                zip.CreateEntry("readme.txt");
+            }
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: ZipCheck
+                    files:
+                      - pattern: "*.zip"
+                        zip:
+                          entries:
+                            - pattern: "*.txt"
+                              min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.Equal(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a ZIP assert with an invalid zip file returns a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            var invalidZipPath = Path.Combine(tempDir.FullName, "invalid.zip");
+            File.WriteAllText(invalidZipPath, "this is not a zip file");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: ZipInvalidCheck
+                    files:
+                      - pattern: "*.zip"
+                        zip:
+                          entries:
+                            - pattern: "*.txt"
+                              min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.NotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that an HTML assert with a non-existent XPath query and min:1 returns a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "index.html"), """
+                <html>
+                  <head><title>Test Page</title></head>
+                  <body><p>Hello</p></body>
+                </html>
+                """);
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "HtmlInvalidCheck"
+                    files:
+                      - pattern: "*.html"
+                        html:
+                          - query: "//nonexistentElement"
+                            min: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.NotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a YAML assert with an invalid YAML file returns a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "invalid.yaml"), ": invalid yaml\n  - bad");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "YamlInvalidCheck"
+                    files:
+                      - pattern: "invalid.yaml"
+                        yaml:
+                          - query: "server.host"
+                            count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.NotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a JSON assert with an invalid JSON file returns a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero()
+    {
+        // Arrange
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir.FullName, "invalid.json"), "{invalid json");
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "JsonInvalidCheck"
+                    files:
+                      - pattern: "invalid.json"
+                        json:
+                          - query: "ConnectionStrings"
+                            count: 1
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.NotEqual(0, exitCode);
+        }
+        finally
+        {
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that a PDF assert with a failing page-count assertion returns a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero()
+    {
+        // Arrange - build a valid single-page PDF and assert a minimum of 2 pages (will fail)
+        var tempDir = Directory.CreateTempSubdirectory("fileassert_integration_");
+        try
+        {
+            var pdfPath = Path.Combine(tempDir.FullName, "report.pdf");
+            using var builder = new PdfDocumentBuilder();
+            builder.AddPage(PageSize.A4);
+            File.WriteAllBytes(pdfPath, builder.Build());
+
+            var configPath = Path.Combine(tempDir.FullName, ".fileassert.yaml");
+            File.WriteAllText(configPath, """
+                tests:
+                  - name: "PdfCheck"
+                    files:
+                      - pattern: "*.pdf"
+                        pdf:
+                          pages:
+                            min: 2
+                """);
+
+            // Act
+            var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+            // Assert
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {

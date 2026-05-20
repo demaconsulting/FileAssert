@@ -24,6 +24,7 @@ file-type-specific assert units.
 | `HtmlAssert` | `FileAssertHtmlAssert?`          | HTML node assertions (null if not declared).      |
 | `YamlAssert` | `FileAssertYamlAssert?`          | YAML node assertions (null if not declared).      |
 | `JsonAssert` | `FileAssertJsonAssert?`          | JSON node assertions (null if not declared).      |
+| `ZipAssert`  | `FileAssertZipAssert?`           | Zip archive entry assertions; `null` if absent.   |
 
 ##### Factory Method
 
@@ -122,3 +123,59 @@ All properties except `pattern` are optional.
   least one text rule is defined. File-type parsing (PDF, XML, HTML, YAML, JSON) is
   attempted only when the corresponding assertion block is declared, avoiding
   unnecessary I/O and third-party library invocations.
+
+#### Purpose
+
+`FileAssertFile` is responsible for a single file-pattern assertion within a test. It
+discovers files on disk via a glob pattern, enforces count and size constraints, and
+delegates per-file content validation to file-type-specific assert units.
+
+#### Data Model
+
+| Property     | Type                    | Description                                          |
+| :----------- | :---------------------- | :--------------------------------------------------- |
+| `Pattern`    | `string`                | Glob pattern used to discover files (required).      |
+| `Min`        | `int?`                  | Minimum number of matching files; `null` = no bound. |
+| `Max`        | `int?`                  | Maximum number of matching files; `null` = no bound. |
+| `Count`      | `int?`                  | Exact number of matching files; `null` = no bound.   |
+| `MinSize`    | `long?`                 | Minimum file size in bytes; `null` = no bound.       |
+| `MaxSize`    | `long?`                 | Maximum file size in bytes; `null` = no bound.       |
+| `TextAssert` | `FileAssertTextAssert?` | Text content assert unit; `null` if not declared.    |
+| `PdfAssert`  | `FileAssertPdfAssert?`  | PDF assert unit; `null` if not declared.             |
+| `XmlAssert`  | `FileAssertXmlAssert?`  | XML assert unit; `null` if not declared.             |
+| `HtmlAssert` | `FileAssertHtmlAssert?` | HTML assert unit; `null` if not declared.            |
+| `YamlAssert` | `FileAssertYamlAssert?` | YAML assert unit; `null` if not declared.            |
+| `JsonAssert` | `FileAssertJsonAssert?` | JSON assert unit; `null` if not declared.            |
+| `ZipAssert`  | `FileAssertZipAssert?`  | Zip archive assert unit; `null` if not declared.     |
+
+#### Key Methods
+
+| Method                                   | Purpose                                                            |
+| :--------------------------------------- | :----------------------------------------------------------------- |
+| `Create(FileAssertFileData data)`        | Factory: validates pattern, builds assert units, returns instance. |
+| `Run(Context context, string basePath)`  | Discovers files, checks count/size, delegates to assert units.     |
+
+#### Error Handling
+
+| Scenario                               | Handling                                                              |
+| :------------------------------------- | :-------------------------------------------------------------------- |
+| Null or whitespace `Pattern` in data   | `InvalidOperationException` thrown by `Create`.                       |
+| Count below `Min`                      | Error written via `context.WriteError`; `Run` returns immediately.    |
+| Count above `Max`                      | Error written via `context.WriteError`; `Run` returns immediately.    |
+| Count not equal to `Count` constraint  | Error written via `context.WriteError`; `Run` returns immediately.    |
+| File size outside `MinSize`/`MaxSize`  | Error written via `context.WriteError`; per-file assertions continue. |
+| Parse errors in assert units           | Assert units catch parse exceptions and call `context.WriteError`.    |
+
+#### Interactions
+
+- **Caller**: `FileAssertTest.Run` iterates the `Files` collection and calls `Run` on each instance.
+- **Created by**: `FileAssertTest.Create` via `FileAssertFile.Create`.
+- **Delegates to**:
+  - `FileAssertTextAssert.Run` for text content rules.
+  - `FileAssertPdfAssert.Run` for PDF document rules.
+  - `FileAssertXmlAssert.Run` for XML XPath rules.
+  - `FileAssertHtmlAssert.Run` for HTML XPath rules.
+  - `FileAssertYamlAssert.Run` for YAML path rules.
+  - `FileAssertJsonAssert.Run` for JSON path rules.
+  - `FileAssertZipAssert.Run` for zip archive entry rules.
+- **OTS dependency**: `Microsoft.Extensions.FileSystemGlobbing.Matcher` for file discovery.

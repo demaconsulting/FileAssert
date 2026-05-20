@@ -56,3 +56,9 @@ failure at any step is evidence that SonarMark did not retrieve and render quali
 
 - **`FileAssert-OTS-SonarMark`**: SonarMark_QualityGateRetrieval, SonarMark_IssuesRetrieval,
   SonarMark_HotSpotsRetrieval, SonarMark_MarkdownReportGeneration
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.

@@ -42,3 +42,9 @@ evidence that ReviewMark did not produce the required review documents.
 ### Requirements Coverage
 
 - **`FileAssert-OTS-ReviewMark`**: ReviewMark_ReviewPlanGeneration, ReviewMark_ReviewReportGeneration
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.

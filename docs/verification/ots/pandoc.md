@@ -85,3 +85,9 @@ a valid HTML title element, and includes expected document content.
 - **`FileAssert-OTS-Pandoc`**: Pandoc_BuildNotesHtml, Pandoc_CodeQualityHtml,
   Pandoc_ReviewPlanHtml, Pandoc_ReviewReportHtml, Pandoc_DesignHtml, Pandoc_VerificationHtml,
   Pandoc_UserGuideHtml
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.

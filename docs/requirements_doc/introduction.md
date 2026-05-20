@@ -20,6 +20,10 @@ This requirements document covers:
 - Documentation generation
 - CI/CD integration
 
+## References
+
+- [DemaConsulting.FileAssert releases](https://github.com/demaconsulting/FileAssert/releases)
+
 ## Audience
 
 This document is intended for:

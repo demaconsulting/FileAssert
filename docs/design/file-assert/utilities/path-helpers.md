@@ -44,3 +44,47 @@ the base directory.
   identifying `relativePath` as the problematic parameter, making debugging straightforward.
 - **No logging or error accumulation**: `SafePathCombine` is a pure utility method that throws
   on invalid input; it does not interact with the `Context` or any output mechanism.
+
+#### Purpose
+
+`PathHelpers` provides a single safe path-combination utility. Its responsibility is to
+prevent path-traversal attacks by verifying that the resolved combined path remains within
+the specified base directory before returning it.
+
+#### Data Model
+
+N/A — `PathHelpers` is a `static` class with no instance state or fields.
+
+#### Key Methods
+
+| Method                                                  |
+| :------------------------------------------------------ |
+| `SafePathCombine(string basePath, string relativePath)` |
+
+**Algorithm:**
+
+1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
+2. Produce `combinedPath = Path.Combine(basePath, relativePath)`.
+3. Resolve both `basePath` and `combinedPath` to absolute form with `Path.GetFullPath`.
+4. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)`.
+5. Throw `ArgumentException` if the relative result equals `".."`, starts with `"../"` or
+   `"..\\"`, or is itself rooted.
+
+#### Error Handling
+
+| Scenario                                                 |
+| :------------------------------------------------------- |
+| Null `basePath` or `relativePath`                        |
+| Combined path escapes base directory via `../` traversal |
+| Path contains unsupported format                         |
+| Combined or resolved path exceeds system maximum length  |
+
+#### Interactions
+
+- **Callers**:
+  - `Validation.TemporaryDirectory` — uses `SafePathCombine(Path.GetTempPath(), guid-name)` to
+    create a temp directory path.
+  - `Validation` built-in tests — uses `SafePathCombine(tempDir.DirectoryPath, fileName)` to
+    build fixture file paths.
+- **No internal FileAssert dependencies**: `PathHelpers` is a self-contained utility with no
+  references to other units in the system.

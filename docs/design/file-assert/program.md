@@ -1,5 +1,15 @@
 ## Program Design
 
+### Purpose
+
+`Program` is the static entry-point class for the FileAssert tool. It constructs the execution
+`Context` from command-line arguments, dispatches to the appropriate handler (version display,
+help, self-validation, or main tool logic), and returns the final process exit code.
+
+### Data Model
+
+N/A – `Program` is a static entry-point class with no instance state.
+
 ### Overview
 
 `Program` is the entry point for the FileAssert tool. It owns the `Main` method, constructs a
@@ -37,12 +47,12 @@ public static void Run(Context context)
 
 Inspects context flags in the following priority order:
 
-| Priority | Condition             | Action                                      |
-| :------- | :-------------------- | :------------------------------------------ |
-| 1        | `context.Version`     | Print version string; return.               |
-| 2        | `context.Help`        | Print banner and usage; return.             |
-| 3        | `context.Validate`    | Print banner; delegate to `Validation.Run`. |
-| 4        | Default               | Print banner; delegate to `RunToolLogic`.   |
+| Priority |
+| :------- |
+| 1        |
+| 2        |
+| 3        |
+| 4        |
 
 #### RunToolLogic Method
 
@@ -59,11 +69,11 @@ arguments) to `config.Run` so that only matching tests are executed.
 
 ### Interactions with Other Units
 
-| Dependency          | Usage                                                         |
-| :------------------ | :------------------------------------------------------------ |
-| `Context`           | Created by `Context.Create`; owns all I/O and exit code.      |
-| `Validation`        | Invoked by `Run` when `--validate` is set.                    |
-| `FileAssertConfig`  | Loaded from file and executed by `RunToolLogic`.              |
+| Dependency         |
+| :----------------- |
+| `Context`          |
+| `Validation`       |
+| `FileAssertConfig` |
 
 ### Design Decisions
 
@@ -73,3 +83,21 @@ arguments) to `config.Run` so that only matching tests are executed.
   expected error conditions; all other exceptions propagate to generate crash reports.
 - **Version from assembly attribute**: Using `AssemblyInformationalVersionAttribute` allows the
   CI pipeline to inject the exact package version (including pre-release labels) at build time.
+
+### Key Methods
+
+| Method         |
+| :------------- |
+| `Main`         |
+| `Run`          |
+| `PrintBanner`  |
+| `PrintHelp`    |
+| `RunToolLogic` |
+
+### Error Handling
+
+| Exception                   |
+| :-------------------------- |
+| `ArgumentException`         |
+| `InvalidOperationException` |
+| All other exceptions        |

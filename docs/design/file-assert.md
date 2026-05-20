@@ -85,6 +85,125 @@ The following sequence describes the normal execution path:
 10. When `--validate` is used with `--results`, `Validation.Run` writes TRX or JUnit XML
     results to the file specified by `context.ResultsFile`.
 
+## Architecture
+
+The FileAssert system contains one top-level unit and five subsystems. There is no
+system-level code; the system boundary is defined by the combination of its parts.
+
+| Item          | Level     | Responsibility                                                             |
+| :------------ | :-------- | :------------------------------------------------------------------------- |
+| Program       | Unit      | Entry point; creates `Context`; dispatches to validation or config logic.  |
+| Cli           | Subsystem | Contains `Context`; owns arg parsing, I/O references, filter list, exit.   |
+| Configuration | Subsystem | Contains `FileAssertConfig`/`FileAssertData`; YAML deserialization, tests. |
+| Modeling      | Subsystem | Contains assertion classes; pure domain objects evaluating file rules.     |
+| Utilities     | Subsystem | Contains `PathHelpers`; stateless path helper used by Modeling subsystem.  |
+| SelfTest      | Subsystem | Contains `Validation`; runs built-in assertions when `--validate` passed.  |
+
+All subsystems receive a `Context` instance (created by `Program`) rather than reading
+command-line arguments directly. This removes argument-parsing concerns from every
+subsystem and makes error recording consistent — all violations flow through `Context.WriteError`.
+
+## External Interfaces
+
+| Interface                    | Direction | Description                                                              |
+| :--------------------------- | :-------- | :----------------------------------------------------------------------- |
+| Command-line arguments       | Input     | POSIX flags and positional filters; unrecognized flags produce an error. |
+| YAML configuration file      | Input     | YAML matching `FileAssertData` schema; default `.fileassert.yaml`.       |
+| File system (asserted files) | Input     | Any file type; glob patterns relative to config file. Read-only.         |
+| Results file                 | Output    | TRX or JUnit XML; written only when `--results` is specified.            |
+| Standard output              | Output    | UTF-8 text; one line per test pass or summary.                           |
+| Standard error               | Output    | UTF-8 text; one line per rule violation or parse failure.                |
+| Log file                     | Output    | Plain text mirroring stdout/stderr; written when `--log` is specified.   |
+
+## Dependencies
+
+Runtime library dependencies used by the FileAssert system:
+
+- **YamlDotNet**: YAML configuration file deserialization and YAML-document content assertions.
+- **PdfPig**: PDF document parsing for metadata, page count, and body text extraction.
+- **HtmlAgilityPack**: lenient HTML document parsing for XPath node-count assertions.
+- **Microsoft.Extensions.FileSystemGlobbing**: cross-platform glob pattern evaluation for file discovery.
+- **DemaConsulting.TestResults**: serialization of test results to TRX and JUnit XML formats.
+- **System.Xml.Linq / System.Xml.XPath** (.NET BCL): XML document parsing and XPath node-count assertions.
+- **System.Text.Json** (.NET BCL): JSON document parsing for dot-notation path assertions.
+- **System.IO.Compression** (.NET BCL): zip archive entry enumeration and glob-based count assertions.
+
+Test-project dependency:
+
+- **xUnit**: unit test discovery, execution, and TRX reporting — see _xUnit Integration Design_.
+
+## Risk Control Measures
+
+N/A — FileAssert is a development and CI tool. It carries no safety-critical function
+and has no requirement for hardware or software item segregation for risk control
+purposes. The tool runs with standard user-level operating-system permissions and
+imposes no memory or process isolation boundaries beyond standard .NET process containment.
+
+## Data Flow
+
+```text
+Command-line arguments
+  └─► Context (parsed flags, filter list, ResultsFile path)
+        │
+        ├─► --version / --help ──────────────────────────────► stdout → exit 0
+        │
+        ├─► --validate ──────────────────────────────────────► Validation.Run
+        │                                                           │
+        │                                                           └─► (same assertion pipeline below)
+        │
+        └─► RunToolLogic
+              │
+              ├─► config file path (from Context.ConfigFile)
+              │
+              └─► FileAssertConfig.ReadFromFile
+                    │   YAML file ──────────────────────────► FileAssertData deserialization
+                    │                                              │
+                    │                              FileAssertTest[] hierarchy
+                    │
+                    └─► FileAssertConfig.Run (filtered by Context.Filters)
+                          │
+                          └─► per test: FileAssertTest.Run
+                                │
+                                └─► per file pattern: FileAssertFile.Run
+                                      │
+                                      ├─► glob match ──────► file system (read-only)
+                                      │                           │
+                                      │                       matched file paths
+                                      │
+                                      ├─► size check ──────► Context.WriteError (on violation)
+                                      └─► content assertion (text / pdf / xml / html / yaml /
+                                          json / zip) ──────► Context.WriteError (on violation)
+
+Outputs:
+  Context.WriteError ─────────────────────────────────────► stderr (per violation)
+  pass/fail lines ─────────────────────────────────────────► stdout
+  Context.ResultsFile (optional) ──────────────────────────► TRX or JUnit XML file
+  Context.ExitCode ────────────────────────────────────────► process exit code (0 = pass, 1 = fail)
+```
+
+## Design Constraints
+
+- **Platform**: .NET (cross-platform); supported on Windows, macOS, and Linux via the .NET runtime. No
+  platform-specific code paths; all file system operations use `Path.Combine` and
+  `Microsoft.Extensions.FileSystemGlobbing` to normalize path separators per the host OS.
+- **Distribution**: packaged as a .NET global tool; installed with `dotnet tool install` and invoked
+  as `fileassert` on the `PATH`.
+- **Assembly scope**: all production logic is compiled into a single assembly. No external native DLLs
+  beyond those shipped with the .NET runtime.
+- **Permissions**: runs with standard user-level operating-system permissions. Does not require
+  elevated privileges.
+- **File system access**: read-only for the configuration file and all asserted files. Write access is
+  required only for the optional results file and optional log file.
+- **Memory**: no explicit memory limit is defined. PDF, XML, HTML, YAML, and JSON files are parsed
+  in-process; very large files may exhaust available heap, which is an accepted limitation of the
+  current design.
+- **Exit code contract**: `0` when all assertions pass or `--help`/`--version` is used; `1` when at
+  least one assertion violation or self-validation failure is recorded.
+- **Missing default configuration file**: When no `--config` flag is provided and the
+  default `.fileassert.yaml` file does not exist, the tool prints guidance and exits with
+  code 0 (not an error condition). When an explicit `--config` path is missing, the tool
+  reports an error and exits with code 1.
+
 ## Design Decisions
 
 - **Cross-platform portability**: All file system operations use `Path.Combine`, `Path.GetFullPath`,

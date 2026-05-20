@@ -15,17 +15,17 @@ assert units.
 
 The `Entry` nested class holds the compiled state for a single entry constraint:
 
-| Property  | Type     | Description                                                         |
-| :-------- | :------- | :------------------------------------------------------------------ |
-| `Pattern` | `string` | Glob pattern used to match zip entry names.                         |
-| `Min`     | `int?`   | Minimum number of entries that must match, or null for no bound.    |
-| `Max`     | `int?`   | Maximum number of entries that may match, or null for no bound.     |
+| Property  |
+| :-------- |
+| `Pattern` |
+| `Min`     |
+| `Max`     |
 
 ##### Properties
 
-| Property  | Type                        | Description                                           |
-| :-------- | :-------------------------- | :---------------------------------------------------- |
-| `Entries` | `IReadOnlyList<Entry>`      | Entry constraints applied to the zip archive.         |
+| Property  |
+| :-------- |
+| `Entries` |
 
 ##### Factory Method
 
@@ -36,15 +36,15 @@ internal static FileAssertZipAssert Create(FileAssertZipData data)
 Converts each `FileAssertZipEntryData` DTO into an `Entry` instance after validating that a
 pattern is specified.
 
-| Parameter | Type                  | Description                                              |
-| :-------- | :-------------------- | :------------------------------------------------------- |
-| `data`    | `FileAssertZipData`   | Zip assertion block data from YAML configuration.        |
+| Parameter |
+| :-------- |
+| `data`    |
 
-| Return / Exception           | Description                                                 |
-| :--------------------------- | :---------------------------------------------------------- |
-| Returns                      | A new `FileAssertZipAssert` instance.                       |
-| `ArgumentNullException`      | Thrown when `data` is null.                                 |
-| `InvalidOperationException`  | Thrown when any entry does not specify a pattern.           |
+| Return / Exception          |
+| :-------------------------- |
+| Returns                     |
+| `ArgumentNullException`     |
+| `InvalidOperationException` |
 
 ##### Run Method
 
@@ -81,10 +81,10 @@ Zip '<fileName>' entry pattern '<pattern>' matched <count> entry(s),
 but expected at most <max>
 ```
 
-| Parameter  | Type      | Description                            |
-| :--------- | :-------- | :------------------------------------- |
-| `context`  | `Context` | Reporting sink used to record errors.  |
-| `fileName` | `string`  | Full path to the zip file to validate. |
+| Parameter  |
+| :--------- |
+| `context`  |
+| `fileName` |
 
 #### YAML Configuration
 
@@ -118,3 +118,51 @@ files:
 - **Immediate failure on parse error**: If the file cannot be opened as a zip archive, an error
   is written immediately and no entry constraints are evaluated, consistent with the behavior of
   all other file-type assert units.
+
+#### Purpose
+
+`FileAssertZipAssert` is responsible for validating the contents of a zip archive. It enumerates
+the archive's file entries, matches them against glob patterns, and enforces min and max
+count constraints per pattern.
+
+#### Data Model
+
+| Property  |
+| :-------- |
+| `Entries` |
+
+The `Entry` nested class holds:
+
+| Property  |
+| :-------- |
+| `Pattern` |
+| `Min`     |
+| `Max`     |
+
+#### Key Methods
+
+| Method                                  |
+| :-------------------------------------- |
+| `Create(FileAssertZipData data)`        |
+| `Run(Context context, string fileName)` |
+
+#### Error Handling
+
+| Scenario                                                                                      |
+| :-------------------------------------------------------------------------------------------- |
+| Null `data` passed to `Create`                                                                |
+| Entry with null or whitespace pattern in `Create`                                             |
+| `IOException`, `InvalidDataException`, or `UnauthorizedAccessException` on `ZipFile.OpenRead` |
+| Entry match count below `Min`                                                                 |
+| Entry match count above `Max`                                                                 |
+
+#### Interactions
+
+- **Caller**: `FileAssertFile.Run` calls `ZipAssert.Run(context, fileName)` when the `zip:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertZipAssert.Create`.
+- **OTS dependencies**:
+  - `System.IO.Compression.ZipFile` (BCL) for opening the archive.
+  - `Microsoft.Extensions.FileSystemGlobbing.Matcher` for matching entry names against glob patterns.
+- **Configuration dependency**: `FileAssertZipData` and `FileAssertZipEntryData` DTOs from the
+  Configuration subsystem.

@@ -43,3 +43,9 @@ pipeline.
 ### Requirements Coverage
 
 - **`FileAssert-OTS-FileAssert`**: FileAssert_VersionDisplay, FileAssert_HelpDisplay
+
+### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+considered verified when the integration test scenarios that exercise its functionality
+pass in the CI pipeline.
