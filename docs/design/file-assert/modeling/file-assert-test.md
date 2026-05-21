@@ -98,12 +98,13 @@ filter criteria for selective execution, and drive execution of its assertions.
 
 #### Error Handling
 
-| Scenario                              | Handling                                             |
-| :------------------------------------ | :--------------------------------------------------- |
-| Null `data` passed to `Create`        | `ArgumentNullException` thrown.                      |
-| Null or whitespace `Name` in data     | `InvalidOperationException` thrown by `Create`.      |
-| Null `context` or `basePath` in `Run` | `ArgumentNullException` thrown.                      |
-| Individual file assertion failures    | Accumulated in `context`; subsequent files continue. |
+| Scenario                                 | Handling                                             |
+| :--------------------------------------- | :--------------------------------------------------- |
+| Null `data` passed to `Create`           | `ArgumentNullException` thrown.                      |
+| Null or whitespace `Name` in data        | `InvalidOperationException` thrown by `Create`.      |
+| Null `filters` passed to `MatchesFilter` | `ArgumentNullException` thrown.                      |
+| Null `context` or `basePath` in `Run`    | `ArgumentNullException` thrown.                      |
+| Individual file assertion failures       | Accumulated in `context`; subsequent files continue. |
 
 #### Interactions
 

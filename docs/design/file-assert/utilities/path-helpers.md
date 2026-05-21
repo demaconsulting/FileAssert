@@ -72,12 +72,15 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
 
 #### Error Handling
 
-| Scenario                                                 |
-| :------------------------------------------------------- |
-| Null `basePath` or `relativePath`                        |
-| Combined path escapes base directory via `../` traversal |
-| Path contains unsupported format                         |
-| Combined or resolved path exceeds system maximum length  |
+- **Null `basePath` or `relativePath`**: `ArgumentNullException` thrown immediately by
+  `ArgumentNullException.ThrowIfNull`; not propagated further.
+- **Combined path escapes base directory via `../` traversal**: `ArgumentException` thrown
+  with message `"Invalid path component: {relativePath}"`; `relativePath` is named as the
+  offending parameter so callers can identify the cause.
+- **Path contains unsupported format**: `NotSupportedException` propagated from
+  `Path.GetFullPath` or `Path.Combine`; not caught by this method.
+- **Combined or resolved path exceeds system maximum length**: `PathTooLongException`
+  propagated from `Path.GetFullPath`; not caught by this method.
 
 #### Interactions
 

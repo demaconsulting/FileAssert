@@ -256,7 +256,7 @@ sections:
           do not contain forbidden strings, or match regular expression patterns. These
           assertions are the primary mechanism for content validation in CI/CD pipelines.
           The supported assertion types are: `contains`, `does-not-contain`, `matches`
-          (regex), and `does-not-match` (regex).
+          (regex), and `does-not-contain-regex` (regex).
         children:
           - FileAssert-Modeling-FileTypeParsing
         tests:
@@ -396,6 +396,10 @@ sections:
         justification: |
           CI/CD pipelines operate across heterogeneous environments. Supporting all three major
           platforms ensures the tool can be used consistently regardless of the build agent OS.
+        children:
+          - FileAssert-Platform-Windows
+          - FileAssert-Platform-Linux
+          - FileAssert-Platform-MacOS
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
 
@@ -405,5 +409,9 @@ sections:
         justification: |
           Supporting multiple .NET runtimes allows projects targeting different LTS and current
           versions to adopt FileAssert without being forced to upgrade their runtime.
+        children:
+          - FileAssert-Platform-Net8
+          - FileAssert-Platform-Net9
+          - FileAssert-Platform-Net10
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero

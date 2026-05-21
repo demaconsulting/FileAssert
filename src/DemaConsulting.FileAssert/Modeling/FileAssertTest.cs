@@ -98,6 +98,7 @@ internal sealed class FileAssertTest
     ///     <c>true</c> if <paramref name="filters"/> is empty or contains the test name or any tag
     ///     (case-insensitive); otherwise <c>false</c>.
     /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="filters"/> is null.</exception>
     internal bool MatchesFilter(IEnumerable<string> filters)
     {
         // Validate required parameter

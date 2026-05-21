@@ -26,20 +26,21 @@ Exactly one property shall be set per rule. The `FileAssertRule.Create` factory 
 
 Represents a file pattern assertion within a test.
 
-| Property   | YAML alias | Type                        | Description                                                  |
-| :--------- | :--------- | :-------------------------- | :----------------------------------------------------------- |
-| `Pattern`  | `pattern`  | `string?`                   | Glob pattern used to locate files.                           |
-| `Min`      | `min`      | `int?`                      | Minimum number of matching files; null means no lower bound. |
-| `Max`      | `max`      | `int?`                      | Maximum number of matching files; null means no upper bound. |
-| `Count`    | `count`    | `int?`                      | Exact number of matching files; null means no exact bound.   |
-| `MinSize`  | `min-size` | `long?`                     | Minimum file size in bytes; null means no lower bound.       |
-| `MaxSize`  | `max-size` | `long?`                     | Maximum file size in bytes; null means no upper bound.       |
-| `Text`     | `text`     | `List<FileAssertRuleData>?` | Text content rules (used by `FileAssertTextAssert`).         |
-| `Pdf`      | `pdf`      | `FileAssertPdfData?`        | PDF document assertions.                                     |
-| `Xml`      | `xml`      | `List<FileAssertQueryData>?`| XML node count assertions using XPath.                       |
-| `Html`     | `html`     | `List<FileAssertQueryData>?`| HTML node count assertions using XPath.                      |
-| `Yaml`     | `yaml`     | `List<FileAssertQueryData>?`| YAML node count assertions using dot-notation.               |
-| `Json`     | `json`     | `List<FileAssertQueryData>?`| JSON node count assertions using dot-notation.               |
+| Property   | YAML alias | Type                         | Description                                                  |
+| :--------- | :--------- | :--------------------------  | :----------------------------------------------------------- |
+| `Pattern`  | `pattern`  | `string?`                    | Glob pattern used to locate files.                           |
+| `Min`      | `min`      | `int?`                       | Minimum number of matching files; null means no lower bound. |
+| `Max`      | `max`      | `int?`                       | Maximum number of matching files; null means no upper bound. |
+| `Count`    | `count`    | `int?`                       | Exact number of matching files; null means no exact bound.   |
+| `MinSize`  | `min-size` | `long?`                      | Minimum file size in bytes; null means no lower bound.       |
+| `MaxSize`  | `max-size` | `long?`                      | Maximum file size in bytes; null means no upper bound.       |
+| `Text`     | `text`     | `List<FileAssertRuleData>?`  | Text content rules (used by `FileAssertTextAssert`).         |
+| `Pdf`      | `pdf`      | `FileAssertPdfData?`         | PDF document assertions.                                     |
+| `Xml`      | `xml`      | `List<FileAssertQueryData>?` | XML node count assertions using XPath.                       |
+| `Html`     | `html`     | `List<FileAssertQueryData>?` | HTML node count assertions using XPath.                      |
+| `Yaml`     | `yaml`     | `List<FileAssertQueryData>?` | YAML node count assertions using dot-notation.               |
+| `Json`     | `json`     | `List<FileAssertQueryData>?` | JSON node count assertions using dot-notation.               |
+| `Zip`      | `zip`      | `FileAssertZipData?`         | Zip archive entry count assertions.                          |
 
 ##### FileAssertTestData
 
@@ -100,13 +101,27 @@ assertion blocks.
 | `Min`    | `min`      | `int?`    | Minimum number of matched nodes.          |
 | `Max`    | `max`      | `int?`    | Maximum number of matched nodes.          |
 
+##### FileAssertZipData
+
+Represents the `zip:` assertion block for a file entry.
+
+| Property   | YAML alias  | Type                               | Description                            |
+| :--------- | :---------- | :--------------------------------- | :------------------------------------- |
+| `Entries`  | `entries`   | `List<FileAssertZipEntryData>?`    | Entry glob pattern constraints.        |
+
+##### FileAssertZipEntryData
+
+Represents a single zip archive entry count constraint.
+
+| Property  | YAML alias | Type      | Description                                              |
+| :-------- | :--------- | :-------- | :------------------------------------------------------  |
+| `Pattern` | `pattern`  | `string?` | Glob pattern matched against normalized entry names.     |
+| `Min`     | `min`      | `int?`    | Minimum number of matching entries; null means no bound. |
+| `Max`     | `max`      | `int?`    | Maximum number of matching entries; null means no bound. |
+
 #### Design Decisions
 
-#### Design Constraints
-
-The `FileAssertData` classes contain no validation or business logic, delegating all
-validation to the factory methods in the Modeling subsystem. This maintains a clean
-separation between deserialization and domain object construction.
+The following decisions were made to keep the DTO layer simple and decoupled:
 
 - **Nullable reference type properties**: All properties are nullable to correctly represent
   absent YAML keys without throwing during deserialization.
@@ -114,6 +129,12 @@ separation between deserialization and domain object construction.
   responsibility of the factory methods in the Modeling subsystem, keeping DTOs simple.
 - **YamlMember aliases**: Explicit `[YamlMember(Alias = "...")]` attributes tie each property
   to its YAML key, decoupling C# naming conventions from the YAML schema.
+
+#### Design Constraints
+
+The `FileAssertData` classes contain no validation or business logic, delegating all
+validation to the factory methods in the Modeling subsystem. This maintains a clean
+separation between deserialization and domain object construction.
 
 #### Purpose
 

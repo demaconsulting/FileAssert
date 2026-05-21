@@ -20,3 +20,6 @@ sections:
             tests:
               - FileAssert_VersionDisplay
               - FileAssert_HelpDisplay
+              - FileAssert_Results
+              - FileAssert_Exists
+              - FileAssert_Contains

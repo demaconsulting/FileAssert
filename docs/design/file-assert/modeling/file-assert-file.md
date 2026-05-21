@@ -1,4 +1,4 @@
-### FileAssertFile Design
+﻿### FileAssertFile Design
 
 #### Overview
 
@@ -78,6 +78,10 @@ Execution proceeds in five phases:
    g. If `JsonAssert` is defined, attempts to parse the file using `System.Text.Json`;
       reports an immediate error if parsing fails, otherwise applies dot-notation path
       count assertions.
+   h. If `ZipAssert` is defined, attempts to open the file as a zip archive using
+      `System.IO.Compression.ZipFile`; reports an immediate error if the archive cannot
+      be opened, otherwise matches entry names against each configured glob pattern and
+      enforces the declared minimum and maximum count constraints.
 
 ##### Count Constraint Error Messages
 

@@ -19,8 +19,8 @@
 // SOFTWARE.
 
 using DemaConsulting.FileAssert.Cli;
-
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Cli;
 
 /// <summary>
@@ -107,7 +107,7 @@ public class CliTests
     [Fact]
     public void Cli_CreateContext_UnknownArgument_ThrowsArgumentException()
     {
-        // Arrange & Act & Assert
+        // Act / Assert - an unrecognized flag starting with '-' must throw
         Assert.Throws<ArgumentException>(() => Context.Create(["--unknown-flag"]));
     }
 
@@ -185,6 +185,22 @@ public class CliTests
         var logContent = File.ReadAllText(logPath);
         Assert.Contains("informational message", logContent);
         Assert.Contains("error message", logContent);
+    }
 
+    /// <summary>
+    ///     Verifies that the Cli subsystem exposes the --depth flag value as the typed Depth property.
+    /// </summary>
+    [Fact]
+    public void Cli_CreateContext_ParsesDepthFlag()
+    {
+        // Arrange: a non-default depth value to confirm the flag is parsed and exposed
+        const int expectedDepth = 3;
+
+        // Act
+        using var context = Context.Create(["--silent", "--depth", "3"]);
+
+        // Assert - the Depth property reflects the parsed flag value
+        Assert.Equal(expectedDepth, context.Depth);
+        Assert.Equal(0, context.ExitCode);
     }
 }

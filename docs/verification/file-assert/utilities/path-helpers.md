@@ -132,13 +132,16 @@ base path.
 
 #### Requirements Coverage
 
-- (valid path combination): PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
-- (leading traversal rejection): PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
-- (embedded traversal rejection): PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
-- (absolute path rejection): PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
-- (current-directory prefix): PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
-- (nested path combination): PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
-- (empty relative path): PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
-- (dot-dot filename, not traversal): PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
-- (null basePath rejection): PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
-- (null relativePath rejection): PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
+- **FileAssert-PathHelpers-SafeCombine** (safe path combination):
+  - PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
+  - PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
+  - PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
+  - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
+  - PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
+
+- **FileAssert-PathHelpers-NullValidation** (null input rejection):
+  - PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
+  - PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException

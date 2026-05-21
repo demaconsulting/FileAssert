@@ -37,6 +37,7 @@ sections:
           - Cli_CreateContext_ParsesSilentValidateAndLogFlags
           - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
           - Cli_CreateContext_WithFilters_ParsesPositionalArguments
+          - Cli_CreateContext_ParsesDepthFlag
 
       - id: FileAssert-Cli-ErrorReporting
         title: The Cli subsystem shall set the exit code to 1 when errors are reported.
@@ -46,6 +47,7 @@ sections:
           CI/CD pipelines and calling scripts can reliably detect failures.
         children:
           - FileAssert-Context-ExitCode
+          - FileAssert-Context-ErrorCount
         tests:
           - Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
 

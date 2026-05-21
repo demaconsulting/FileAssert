@@ -23,6 +23,7 @@ using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
@@ -221,7 +222,6 @@ public class FileAssertTestTests
 
         // Assert - min=1 would have produced an error if the file had not been found
         Assert.Equal(0, context.ExitCode);
-
     }
 
     /// <summary>

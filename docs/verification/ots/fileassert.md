@@ -40,9 +40,37 @@ pipeline.
 
 **Requirement coverage**: `FileAssert-OTS-FileAssert`.
 
+#### FileAssert_Results
+
+**Scenario**: FileAssert self-validation exercises the `--results` flag by running a configuration with one
+passing test and one deliberately failing test, then verifying that a TRX results file is written.
+
+**Expected**: Exits non-zero (due to the failing test) and creates a TRX results file at the specified path.
+
+**Requirement coverage**: `FileAssert-OTS-FileAssert`.
+
+#### FileAssert_Exists
+
+**Scenario**: FileAssert self-validation exercises file-existence checking by matching a glob pattern against
+a temporary directory containing a single `.txt` file.
+
+**Expected**: Exits 0, confirming that the glob-based file-existence assertion passes.
+
+**Requirement coverage**: `FileAssert-OTS-FileAssert`.
+
+#### FileAssert_Contains
+
+**Scenario**: FileAssert self-validation exercises file-content checking by asserting that a temporary `.txt`
+file contains a known string.
+
+**Expected**: Exits 0, confirming that the text `contains` assertion passes.
+
+**Requirement coverage**: `FileAssert-OTS-FileAssert`.
+
 ### Requirements Coverage
 
-- **`FileAssert-OTS-FileAssert`**: FileAssert_VersionDisplay, FileAssert_HelpDisplay
+- **`FileAssert-OTS-FileAssert`**: FileAssert_VersionDisplay, FileAssert_HelpDisplay, FileAssert_Results,
+  FileAssert_Exists, FileAssert_Contains
 
 ### Acceptance Criteria
 

@@ -23,6 +23,7 @@ using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>

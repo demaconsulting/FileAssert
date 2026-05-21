@@ -134,6 +134,7 @@ public sealed class FileAssertZipAssertTests
 
             // Assert
             Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
         }
         finally
         {
@@ -168,6 +169,7 @@ public sealed class FileAssertZipAssertTests
 
             // Assert
             Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
         }
         finally
         {

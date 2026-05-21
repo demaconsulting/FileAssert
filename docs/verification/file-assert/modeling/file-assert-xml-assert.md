@@ -80,6 +80,24 @@ query result count is within bounds.
 
 **Requirement coverage**: Min/max count constraint pass requirement.
 
+##### FileAssertXmlAssert_Run_MinCount_NotMet_WritesError
+
+**Scenario**: `FileAssertXmlAssert.Run` is called with a `min` count constraint and the XPath
+query returns fewer nodes than the minimum.
+
+**Expected**: An error is written to the context; exit code is non-zero.
+
+**Requirement coverage**: Min count constraint violation requirement.
+
+##### FileAssertXmlAssert_Run_MaxCount_Exceeded_WritesError
+
+**Scenario**: `FileAssertXmlAssert.Run` is called with a `max` count constraint and the XPath
+query returns more nodes than the maximum.
+
+**Expected**: An error is written to the context; exit code is non-zero.
+
+**Requirement coverage**: Max count constraint violation requirement.
+
 ##### FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
 
 **Scenario**: `FileAssertXmlAssert.Run` is called with a malformed XPath query string.
@@ -132,7 +150,9 @@ result does not contain the expected value.
 - **Invalid query**: FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
 - **Count constraints**: FileAssertXmlAssert_Run_ExactCount_Matches_NoError,
   FileAssertXmlAssert_Run_ExactCount_Mismatch_WritesError,
-  FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError
+  FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError,
+  FileAssertXmlAssert_Run_MinCount_NotMet_WritesError,
+  FileAssertXmlAssert_Run_MaxCount_Exceeded_WritesError
 - **Text assertions**: FileAssertXmlAssert_Run_XPathExactTextMatch_Matches_NoError,
   FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError,
   FileAssertXmlAssert_Run_XPathContainsText_Matches_NoError,

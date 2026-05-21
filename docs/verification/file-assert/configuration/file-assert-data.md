@@ -25,6 +25,21 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 `FileAssertData` depends only on YamlDotNet deserialization annotations. No mocking is needed.
 
+#### Test Scenarios
+
+The following named scenarios exercise the `FileAssertData` schema indirectly via
+`FileAssertConfig.ReadFromFile`:
+
+- **Valid minimal YAML schema deserializes correctly** — A YAML file containing a single
+  `tests` entry with a `name` and a `files` list with one `pattern` is parsed without error
+  and the resulting domain object reflects the expected values.
+  Covered by: `FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig`.
+
+- **PDF assertion block deserializes correctly** — A YAML file containing a `pdf:` block
+  with `metadata`, `pages`, and `text` sub-keys is parsed without error and the resulting
+  domain object contains a non-null PDF assertion.
+  Covered by: `FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly`.
+
 #### Coverage
 
 `FileAssertData` objects are verified indirectly by every `FileAssertConfig_ReadFromFile_*` test

@@ -23,6 +23,7 @@ using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
@@ -67,7 +68,6 @@ public class ModelingTests
 
         // Assert - no errors reported
         Assert.Equal(0, context.ExitCode);
-
     }
 
     /// <summary>

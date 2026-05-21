@@ -150,3 +150,6 @@ file is larger than the maximum.
 - **Content rules**: FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
   FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError,
   FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation
+- **File-type assert delegation**: FileAssertFile_Create_ValidData_CreatesFile,
+  FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
+  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

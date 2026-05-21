@@ -121,6 +121,16 @@ a count of 1 is asserted.
 
 **Requirement coverage**: Scalar value counts as one requirement.
 
+##### FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount
+
+**Scenario**: `FileAssertYamlAssert.Run` is called with an empty YAML file (a stream with no
+documents).
+
+**Expected**: The query returns a count of 0; if the assertion specifies `min: 1` an error is
+written; if no lower bound is set no error is written.
+
+**Boundary / error path**: Empty YAML document edge case.
+
 ##### FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called with a minimum count constraint that is not
@@ -153,4 +163,5 @@ exceeded.
   FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError,
   FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError,
   FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError,
-  FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError
+  FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError,
+  FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount

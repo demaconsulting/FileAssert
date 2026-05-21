@@ -33,6 +33,14 @@ internal static class Program
     /// <summary>
     ///     Gets the application version string.
     /// </summary>
+    /// <remarks>
+    ///     Reads the informational version from <see cref="AssemblyInformationalVersionAttribute"/> so
+    ///     that CI-injected pre-release labels are preserved. Falls back to the assembly version, then
+    ///     to the hard-coded sentinel <c>"0.0.0"</c> if neither attribute is present.
+    /// </remarks>
+    /// <returns>
+    ///     A non-null, non-empty version string; falls back through assembly version then <c>"0.0.0"</c>.
+    /// </returns>
     public static string Version
     {
         get
@@ -88,6 +96,12 @@ internal static class Program
     /// <summary>
     ///     Runs the program logic based on the provided context.
     /// </summary>
+    /// <remarks>
+    ///     Declared <c>public</c> so that unit tests and self-validation tests can invoke it
+    ///     directly without spawning a child process. Dispatches in priority order: version query,
+    ///     help, self-validation, then main tool logic. Each path writes its output through
+    ///     <paramref name="context"/> and leaves the exit code in <see cref="Context.ExitCode"/>.
+    /// </remarks>
     /// <param name="context">The context containing command line arguments and program state.</param>
     public static void Run(Context context)
     {

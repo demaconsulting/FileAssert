@@ -115,4 +115,4 @@ assertion configuration (pages, metadata, text rules).
 - **Non-matching filter**: FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
 - **TRX results output**: FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
 - **JUnit results output**: FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
-- **PDF config parsing**: FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
+- **Configuration file reading (PDF variant)**: FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly

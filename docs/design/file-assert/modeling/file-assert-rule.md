@@ -124,12 +124,14 @@ a file's text content.
 
 #### Data Model
 
-| Class                          | Field      | Type    | Description                                     |
-| :----------------------------- | :--------- | :------ | :---------------------------------------------- |
-| `FileAssertContainsRule`       | `Value`    | `string`| Substring the file content must contain.        |
-| `FileAssertDoesNotContainRule` | `Value`    | `string`| Substring the file content must NOT contain.    |
-| `FileAssertMatchesRule`        | `Pattern`  | `Regex` | Compiled regex the file content must match.     |
-| `FileAssertDoesNotMatchRule`   | `Pattern`  | `Regex` | Compiled regex the file content must NOT match. |
+| Class                          | Field      | Type    | Description                                                      |
+| :----------------------------- | :--------- | :------ | :--------------------------------------------------------------- |
+| `FileAssertContainsRule`       | `Value`    | `string`| Substring the file content must contain.                         |
+| `FileAssertDoesNotContainRule` | `Value`    | `string`| Substring the file content must NOT contain.                     |
+| `FileAssertMatchesRule`        | `Pattern`  | `string`| Raw pattern string; used in error messages.                      |
+| `FileAssertMatchesRule`        | `_regex`   | `Regex` | Compiled regex (private) the file content must match.            |
+| `FileAssertDoesNotMatchRule`   | `Pattern`  | `string`| Raw pattern string; used in error messages.                      |
+| `FileAssertDoesNotMatchRule`   | `_regex`   | `Regex` | Compiled regex (private) the file content must NOT match.        |
 
 Regex objects are compiled at construction with a ten-second evaluation timeout.
 

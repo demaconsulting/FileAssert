@@ -43,8 +43,8 @@ internal void Run(Context context, string fileName)
 Execution proceeds in the following steps:
 
 1. Loads the file using `HtmlDocument.Load`.
-2. If `ParseErrors` contains critical errors, writes the error below and returns
-   immediately.
+2. If `Load` throws an `IOException` or `UnauthorizedAccessException`, writes the
+   error below and returns immediately.
 3. For each query entry: selects nodes via
    `HtmlDocument.DocumentNode.SelectNodes(xpathQuery)`, counts the result, and applies
    `Count`, `Min`, and `Max` constraints against the match count.
@@ -82,9 +82,11 @@ files:
 - **HtmlAgilityPack chosen**: HtmlAgilityPack is the de-facto standard for lenient HTML
   parsing in .NET. It handles malformed HTML gracefully, making it appropriate for
   asserting generated documentation and static site outputs that may not be strict XHTML.
-- **Immediate failure on critical parse errors**: When HtmlAgilityPack reports critical
-  parse errors, applying XPath assertions would produce meaningless results. Reporting the
-  parse failure immediately gives users a clear, actionable error message.
+- **Immediate failure on I/O errors**: HtmlAgilityPack is lenient and parses malformed
+  HTML without throwing exceptions. The primary error condition handled is a missing or
+  inaccessible file; `IOException` and `UnauthorizedAccessException` from `Load` are
+  caught and reported immediately so users receive a clear, actionable error message
+  rather than silent XPath results against an empty document.
 - **Independent query model**: `FileAssertHtmlQuery` is private to this unit so that HTML
   assertion behavior can evolve independently of the other structured-document assert units.
 

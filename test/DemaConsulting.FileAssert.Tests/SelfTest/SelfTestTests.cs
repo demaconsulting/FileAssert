@@ -22,6 +22,7 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.SelfTest;
 
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.SelfTest;
 
 /// <summary>
@@ -58,7 +59,6 @@ public class SelfTestTests
         Assert.Contains("Total Tests:", logContent);
         Assert.Contains("Passed:", logContent);
         Assert.Contains("Failed:", logContent);
-
     }
 
     /// <summary>
@@ -82,7 +82,6 @@ public class SelfTestTests
         Assert.Contains("Tool Version", logContent);
         Assert.Contains("Machine Name", logContent);
         Assert.Contains("OS Version", logContent);
-
     }
 
     /// <summary>

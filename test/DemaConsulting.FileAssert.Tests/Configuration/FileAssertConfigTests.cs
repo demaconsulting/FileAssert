@@ -21,8 +21,8 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
-
 using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Configuration;
 
 /// <summary>

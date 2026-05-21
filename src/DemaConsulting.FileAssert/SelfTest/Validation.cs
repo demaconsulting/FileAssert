@@ -394,7 +394,6 @@ internal static partial class Validation
         };
     }
 
-
     /// <summary>
     ///     Source-generated regex for matching semantic version strings (N.N.N format).
     /// </summary>

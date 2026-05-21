@@ -38,7 +38,7 @@ one or more units:
 |               |           | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,               |
 |               |           | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert,             |
 |               |           | FileAssertZipAssert                                                           |
-| Utilities     | Subsystem | PathHelpers                                                                   |
+| Utilities     | Subsystem | PathHelpers, TemporaryDirectory                                               |
 | SelfTest      | Subsystem | Validation                                                                    |
 
 ## Execution Flow
@@ -96,7 +96,7 @@ system-level code; the system boundary is defined by the combination of its part
 | Cli           | Subsystem | Contains `Context`; owns arg parsing, I/O references, filter list, exit.   |
 | Configuration | Subsystem | Contains `FileAssertConfig`/`FileAssertData`; YAML deserialization, tests. |
 | Modeling      | Subsystem | Contains assertion classes; pure domain objects evaluating file rules.     |
-| Utilities     | Subsystem | Contains `PathHelpers`; stateless path helper used by Modeling subsystem.  |
+| Utilities     | Subsystem | Contains `PathHelpers` and `TemporaryDirectory`; shared utilities.         |
 | SelfTest      | Subsystem | Contains `Validation`; runs built-in assertions when `--validate` passed.  |
 
 All subsystems receive a `Context` instance (created by `Program`) rather than reading
@@ -219,7 +219,7 @@ Outputs:
 - **Error accumulation**: Failures are accumulated via `Context.WriteError` rather than
   exceptions, so all assertions in a run are reported in a single pass.
 - **Lazy file-type parsing**: A file is only parsed as a structured document (PDF, XML, HTML,
-  YAML, or JSON) if the corresponding assertion block is declared in the YAML configuration.
+  YAML, JSON, or zip archive) if the corresponding assertion block is declared in the YAML configuration.
   This avoids unnecessary I/O and third-party library invocations for files that are only
   checked for size or text content.
 - **Immediate failure on parse error**: If a file-type assertion block is declared and the file

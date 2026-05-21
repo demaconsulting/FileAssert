@@ -55,10 +55,14 @@ Execution proceeds in the following steps:
 File '<fileName>' could not be read as text
 ```
 
-| Parameter    | Type      | Description                              |
-| :----------- | :-------- | :--------------------------------------- |
-| `context`    | `Context` | Reporting sink used to record errors.    |
-| `fileName`   | `string`  | Full path to the file to validate.       |
+| Parameter    | Type      | Description                                             |
+| :----------- | :-------- | :------------------------------------------------------ |
+| `context`    | `Context` | Reporting sink used to record errors. Must not be null. |
+| `fileName`   | `string`  | Full path to the file to validate. Must not be null.    |
+
+| Exception                   | Condition                                              |
+| :-------------------------- | :----------------------------------------------------- |
+| `ArgumentNullException`     | Thrown when `context` or `fileName` is null.           |
 
 #### YAML Configuration
 
@@ -108,6 +112,7 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 | Scenario                                               | Handling                                             |
 | :----------------------------------------------------- | :--------------------------------------------------- |
 | Null `data` passed to `Create`                         | `ArgumentNullException` thrown.                      |
+| Null `context` or `fileName` passed to `Run`           | `ArgumentNullException` thrown.                      |
 | `IOException` or `UnauthorizedAccessException` on read | Error via `context.WriteError`; `Run` returns.       |
 | Individual rule check fails                            | Error via `context` in `Rule.Apply`; rules continue. |
 

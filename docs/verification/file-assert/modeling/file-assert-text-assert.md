@@ -80,9 +80,9 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 #### Requirements Coverage
 
-- **Text assert creation**: FileAssertTextAssert_Create_ValidData_CreatesTextAssert
-- **Null guard**: FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
-- **Pass**: FileAssertTextAssert_Run_FileContainsText_NoError
-- **Fail**: FileAssertTextAssert_Run_FileMissingText_WritesError
-- **Missing file**: FileAssertTextAssert_Run_NonExistentFile_WritesError
-- **Multiple violations**: FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
+- **FileAssert-FileAssertTextAssert-Creation**: FileAssertTextAssert_Create_ValidData_CreatesTextAssert,
+  FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
+- **FileAssert-FileAssertTextAssert-RuleApplication**: FileAssertTextAssert_Run_FileContainsText_NoError,
+  FileAssertTextAssert_Run_FileMissingText_WritesError,
+  FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
+- **FileAssert-FileAssertTextAssert-IOError**: FileAssertTextAssert_Run_NonExistentFile_WritesError

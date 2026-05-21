@@ -203,7 +203,7 @@ with a test message.
 
 **Scenario**: `Context.Create` is called with `["--depth", "3"]`.
 
-**Expected**: `HeadingDepth` property equals 3.
+**Expected**: `Depth` property equals 3.
 
 **Requirement coverage**: Depth flag parsing requirement.
 
@@ -211,7 +211,7 @@ with a test message.
 
 **Scenario**: `Context.Create` is called with an empty argument array.
 
-**Expected**: `HeadingDepth` property equals 1 (the default).
+**Expected**: `Depth` property equals 1 (the default).
 
 **Requirement coverage**: Default heading depth requirement.
 

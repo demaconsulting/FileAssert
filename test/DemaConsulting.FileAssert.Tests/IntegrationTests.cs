@@ -54,6 +54,8 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_VersionFlag_OutputsVersion()
     {
+        // Arrange: no test-specific state required; _dllPath is resolved in the constructor
+
         // Act
         var exitCode = Runner.Run(
             out var output,
@@ -72,6 +74,8 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_HelpFlag_OutputsUsageInformation()
     {
+        // Arrange: no test-specific state required; _dllPath is resolved in the constructor
+
         // Act
         var exitCode = Runner.Run(
             out var output,
@@ -92,6 +96,8 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_ValidateFlag_RunsValidation()
     {
+        // Arrange: no test-specific state required; _dllPath is resolved in the constructor
+
         // Act
         var exitCode = Runner.Run(
             out var output,
@@ -148,6 +154,8 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_SilentFlag_SuppressesOutput()
     {
+        // Arrange: no test-specific state required; _dllPath is resolved in the constructor
+
         // Act
         var exitCode = Runner.Run(
             out var output,
@@ -237,6 +245,8 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_UnknownArgument_ReturnsError()
     {
+        // Arrange: no test-specific state required; _dllPath is resolved in the constructor
+
         // Act
         var exitCode = Runner.Run(
             out var output,

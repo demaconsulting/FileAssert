@@ -316,7 +316,7 @@ tests:
 | `json[].count`                      | Exact number of matched JSON nodes                            |
 | `json[].min`                        | Minimum number of matched JSON nodes                          |
 | `json[].max`                        | Maximum number of matched JSON nodes                          |
-| `zip:`                              | Zip archive assertion block                                   |
+| `zip:`                              | Zip archive entry assertions (fails if not a valid zip)       |
 | `zip.entries[].pattern`             | Glob pattern matching zip entry names                         |
 | `zip.entries[].min`                 | Minimum number of matching entries                            |
 | `zip.entries[].max`                 | Maximum number of matching entries                            |

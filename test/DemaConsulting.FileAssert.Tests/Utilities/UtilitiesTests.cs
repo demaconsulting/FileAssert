@@ -46,4 +46,29 @@ public class UtilitiesTests
         var relativePath = Path.GetRelativePath(tempDir.DirectoryPath, combined);
         Assert.Equal(Path.Combine("nested", "file.txt"), relativePath);
     }
+
+    /// <summary>
+    ///     Verifies that the Utilities subsystem's temporary directory provides an isolated
+    ///     scratch space that is created on construction, accessible during the lifetime,
+    ///     and fully removed on disposal.
+    /// </summary>
+    [Fact]
+    public void Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace()
+    {
+        // Arrange & Act: create a temp directory, write a file inside it, then dispose
+        string filePath;
+        using (var tempDir = new TemporaryDirectory())
+        {
+            filePath = tempDir.GetFilePath("scratch.txt");
+            File.WriteAllText(filePath, "scratch content");
+
+            // Assert: file is accessible within the temporary directory lifetime
+            Assert.True(File.Exists(filePath),
+                "Scratch file should be accessible within the temporary directory lifetime.");
+        }
+
+        // Assert: directory and its contents are removed after disposal
+        Assert.False(File.Exists(filePath),
+            "Scratch file should be removed after the temporary directory is disposed.");
+    }
 }

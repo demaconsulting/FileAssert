@@ -40,7 +40,7 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Boundary / error path**: Null guard at the unit boundary.
 
-**Coverage type**: Defensive/boundary test — no formal requirement.
+**Requirement coverage**: `FileAssert-Validation-NullContext` — null context rejection requirement.
 
 ##### Validation_Run_WithSilentContext_PrintsSummary
 
@@ -86,7 +86,8 @@ is written to `context` indicating the unsupported format.
 
 **Boundary / error path**: Tests the unsupported-format error path.
 
-**Coverage type**: Defensive/boundary test — no formal requirement.
+**Requirement coverage**: `FileAssert-Validation-Results` — results file output requirement
+(boundary condition: unsupported extension is rejected without creating a file).
 
 ##### Validation_Run_WithSilentContext_LogContainsFileAssertResults
 
@@ -124,13 +125,13 @@ is written to `context` indicating the unsupported format.
 
 | Requirement                          | Test Scenario                                                   |
 |--------------------------------------|-----------------------------------------------------------------|
-| Defensive boundary (no req.)         | Validation_Run_NullContext_ThrowsArgumentNullException          |
-| Summary output                       | Validation_Run_WithSilentContext_PrintsSummary                  |
-| Successful exit code                 | Validation_Run_WithSilentContext_ExitCodeIsZero                 |
-| TRX results output                   | Validation_Run_WithTrxResultsFile_WritesTrxFile                 |
-| JUnit results output                 | Validation_Run_WithXmlResultsFile_WritesXmlFile                 |
-| Defensive boundary (no req.)         | Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile    |
-| Logging                              | Validation_Run_WithSilentContext_LogContainsFileAssertResults   |
-| Self-validation content              | Validation_Run_WithSilentContext_LogContainsFileAssertExists,   |
-|                                      | Validation_Run_WithSilentContext_LogContainsFileAssertContains  |
-| Heading depth                        | Validation_Run_WithDepth_UsesSpecifiedHeadingDepth              |
+| FileAssert-Validation-NullContext    | Validation_Run_NullContext_ThrowsArgumentNullException          |
+| FileAssert-Validation-Run            | Validation_Run_WithSilentContext_PrintsSummary                  |
+| FileAssert-Validation-Run            | Validation_Run_WithSilentContext_ExitCodeIsZero                 |
+| FileAssert-Validation-Results        | Validation_Run_WithTrxResultsFile_WritesTrxFile                 |
+| FileAssert-Validation-Results        | Validation_Run_WithXmlResultsFile_WritesXmlFile                 |
+| FileAssert-Validation-Results        | Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile    |
+| FileAssert-Validation-ResultsTest    | Validation_Run_WithSilentContext_LogContainsFileAssertResults   |
+| FileAssert-Validation-ExistsTest     | Validation_Run_WithSilentContext_LogContainsFileAssertExists    |
+| FileAssert-Validation-ContainsTest   | Validation_Run_WithSilentContext_LogContainsFileAssertContains  |
+| FileAssert-Validation-Depth          | Validation_Run_WithDepth_UsesSpecifiedHeadingDepth              |

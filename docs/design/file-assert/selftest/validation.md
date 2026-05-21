@@ -104,6 +104,7 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 | Method                                                                       |
 | :--------------------------------------------------------------------------- |
 | `Run(Context context)` *(public)*                                            |
+| `PrintValidationHeader(Context)` *(private)*                                 |
 | `RunVersionTest(Context, TestResults)` *(private)*                           |
 | `RunHelpTest(Context, TestResults)` *(private)*                              |
 | `RunResultsTest(Context, TestResults)` *(private)*                           |
@@ -111,6 +112,7 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 | `RunContainsTest(Context, TestResults)` *(private)*                          |
 | `RunValidationTest(Context, TestResults, string, Func<string?>)` *(private)* |
 | `WriteResultsFile(Context, TestResults)` *(private)*                         |
+| `CreateTestResult(string)` *(private)*                                       |
 
 #### Error Handling
 

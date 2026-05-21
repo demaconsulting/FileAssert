@@ -42,6 +42,7 @@ The following integration test scenarios are defined in `UtilitiesTests.cs`.
 ### Requirements Coverage
 
 - **Path traversal prevention**: Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
+- **Temporary directory isolation and cleanup**: Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
 
 ### TemporaryDirectory Verification
 

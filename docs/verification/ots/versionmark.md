@@ -4,10 +4,9 @@ This document provides the verification evidence for the `VersionMark` OTS softw
 
 ### Required Functionality
 
-DemaConsulting.VersionMark reads version metadata for each dotnet tool used in the pipeline and
-writes a versions markdown document included in the release artifacts. It runs in the same CI
-pipeline that produces the TRX test results, so a successful pipeline run is evidence that
-VersionMark executed without error.
+DemaConsulting.VersionMark captures version metadata for each dotnet tool used in the pipeline
+via `--capture`, then publishes that metadata as a versions markdown document via `--publish`.
+The published document is included in the Build Notes release artifact.
 
 ### Verification Approach
 

@@ -11,9 +11,9 @@ assertions for each document type proves Pandoc executed correctly and produced 
 
 ### Verification Approach
 
-Pandoc is verified by self-validation evidence from the CI pipeline. Each scenario is a FileAssert
-assertion that runs after Pandoc converts a specific Markdown document to HTML. A passing pipeline
-run for all scenarios constitutes evidence that the requirement is satisfied.
+Pandoc is verified by CI pipeline evidence. Each scenario is a FileAssert assertion that runs after
+Pandoc converts a specific Markdown document to HTML. A passing pipeline run for all scenarios
+constitutes evidence that the requirement is satisfied.
 
 ### Test Scenarios
 

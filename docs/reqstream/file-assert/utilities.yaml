@@ -20,3 +20,16 @@ sections:
           - FileAssert-PathHelpers-NullValidation
         tests:
           - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
+
+      - id: FileAssert-Utilities-TemporaryDirectory
+        title: The Utilities subsystem shall provide a disposable temporary directory for isolated file operations.
+        justification: |
+          Tests and other consumers that write scratch files need an isolated location that
+          is automatically created on demand and cleaned up on disposal. Providing this as a
+          shared utility prevents ad-hoc temp-file management scattered across the codebase
+          and ensures cleanup even when an operation fails.
+        children:
+          - FileAssert-TemporaryDirectory-Lifecycle
+          - FileAssert-TemporaryDirectory-SafePath
+        tests:
+          - Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace

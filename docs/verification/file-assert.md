@@ -1,4 +1,4 @@
-# System Verification
+# FileAssert System Verification
 
 This document describes the system-level verification design for FileAssert. It defines the overall
 verification strategy, test environments, interface simulation approach, and end-to-end integration
@@ -236,20 +236,6 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
-### FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
-
-**Scenario**: A zip assertion is configured and the archive contains entries that satisfy
-the declared minimum and maximum count constraints.
-
-**Expected**: Exit code 0.
-
-### FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
-
-**Scenario**: A zip assertion is configured with a minimum count but the archive contains
-fewer matching entries than required.
-
-**Expected**: Exit code non-zero.
-
 ### IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
 
 **Scenario**: A zip assertion is configured and the archive contains entries that satisfy
@@ -265,7 +251,10 @@ the declared constraints.
 
 ### IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
 
-**Scenario**: An HTML assertion is configured but the target file is not valid HTML.
+**Scenario**: An HTML assertion is configured with an XPath query that yields no matching elements
+and a `min: 1` constraint. Note: HtmlAgilityPack is intentionally lenient and does not raise a
+parse error for malformed HTML; this test exercises the assertion-failure path (zero matching
+elements) rather than a parse-failure path.
 
 **Expected**: Exit code non-zero.
 
@@ -313,8 +302,7 @@ the declared constraints.
   IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_JsonAssert_PassingQuery_ReturnsZero,
   IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
-- **Zip archive assertions**: FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError,
-  FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError,
-  IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
+  IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero,
+  IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
+- **Zip archive assertions**: IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
   IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero

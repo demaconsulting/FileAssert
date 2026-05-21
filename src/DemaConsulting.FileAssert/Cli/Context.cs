@@ -139,9 +139,10 @@ internal sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Opens the log file for writing
+    ///     Opens the log file for writing.
     /// </summary>
-    /// <param name="logFile">Log file path</param>
+    /// <param name="logFile">Log file path.</param>
+    /// <exception cref="InvalidOperationException">Thrown when the log file cannot be opened due to an I/O or access error.</exception>
     private void OpenLogFile(string logFile)
     {
         try
@@ -160,7 +161,7 @@ internal sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Helper class for parsing command-line arguments
+    ///     Helper class for parsing command-line arguments.
     /// </summary>
     private sealed class ArgumentParser
     {
@@ -215,7 +216,7 @@ internal sealed class Context : IDisposable
         public List<string> Filters { get; } = [];
 
         /// <summary>
-        ///     Parses command-line arguments
+        ///     Parses command-line arguments.
         /// </summary>
         /// <param name="args">Command-line arguments.</param>
         public void ParseArguments(string[] args)
@@ -232,12 +233,13 @@ internal sealed class Context : IDisposable
         }
 
         /// <summary>
-        ///     Parses a single argument
+        ///     Parses a single argument.
         /// </summary>
-        /// <param name="arg">Argument to parse</param>
-        /// <param name="args">All arguments</param>
-        /// <param name="index">Current index</param>
-        /// <returns>Updated index</returns>
+        /// <param name="arg">Argument to parse.</param>
+        /// <param name="args">All arguments.</param>
+        /// <param name="index">Current index.</param>
+        /// <returns>Updated index.</returns>
+        /// <exception cref="ArgumentException">Thrown when an unknown flag or a missing required value is encountered.</exception>
         private int ParseArgument(string arg, string[] args, int index)
         {
             switch (arg)
@@ -298,13 +300,14 @@ internal sealed class Context : IDisposable
         }
 
         /// <summary>
-        ///     Gets a required string argument value
+        ///     Gets a required string argument value.
         /// </summary>
-        /// <param name="arg">Argument name</param>
-        /// <param name="args">All arguments</param>
-        /// <param name="index">Current index</param>
-        /// <param name="description">Description of what's required</param>
-        /// <returns>Argument value</returns>
+        /// <param name="arg">Argument name.</param>
+        /// <param name="args">All arguments.</param>
+        /// <param name="index">Current index.</param>
+        /// <param name="description">Description of what's required.</param>
+        /// <returns>Argument value.</returns>
+        /// <exception cref="ArgumentException">Thrown when no value follows the argument flag.</exception>
         private static string GetRequiredStringArgument(string arg, string[] args, int index, string description)
         {
             if (index >= args.Length)

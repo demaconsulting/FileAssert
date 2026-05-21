@@ -143,6 +143,8 @@ serialization.
 | Results file write failure                  | Exception caught; error written via `context.WriteError`.     |
 | Individual test assertion failures          | Accumulated in `context` via `WriteError`; run continues.     |
 
+#### Interactions
+
 - **Caller**: `Program.RunToolLogic` calls `ReadFromFile` with `context.ConfigFile`, then calls
   `Run(context, context.Filters)`.
 - **Creates**: `FileAssertTest` instances via `FileAssertTest.Create` during `ReadFromFile`.

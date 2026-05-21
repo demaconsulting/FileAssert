@@ -55,8 +55,17 @@ a filter naming one tag is passed to `FileAssertConfig.Run`.
 
 **Expected**: Only the test matching the tag runs; exit code is 0.
 
+#### Configuration_Run_WithResultsFile_WritesTrxResultsFile
+
+**Scenario**: A configuration file with one test is loaded. A results file path with a `.trx`
+extension is provided to the context via `--results`.
+
+**Expected**: `FileAssertConfig.Run` completes and a TRX results file is written to the specified
+path.
+
 ### Requirements Coverage
 
 - **YAML loading and hierarchy construction**: Configuration_LoadYaml_BuildsCompleteTestHierarchy
 - **Test name filtering**: Configuration_RunWithFilter_ExecutesOnlyMatchingTests
 - **Tag filtering**: Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
+- **Results file output (TRX/JUnit XML)**: Configuration_Run_WithResultsFile_WritesTrxResultsFile

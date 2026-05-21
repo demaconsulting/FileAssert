@@ -80,3 +80,5 @@ sections:
           and the overall design extensible to future formats.
         tests:
           - FileAssertFile_Create_ValidData_CreatesFile
+          - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
+          - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

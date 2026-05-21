@@ -29,7 +29,7 @@ internal static PdfMetadataRule FromData(FileAssertPdfMetadataRuleData data)
 ###### PdfMetadataRule Apply
 
 ```csharp
-internal void Apply(Context context, string fileName, string? fieldValue)
+internal void Apply(Context context, string fileName, string? value)
 ```
 
 Checks `Contains` substring presence (ordinal) and `Matches` regex against `fieldValue`.
