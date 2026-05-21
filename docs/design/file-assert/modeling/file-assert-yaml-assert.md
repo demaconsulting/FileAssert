@@ -117,7 +117,7 @@ Each `YamlQuery` (private nested record) holds:
 
 | Method                                          | Purpose                                                          |
 | :---------------------------------------------- | :--------------------------------------------------------------- |
-| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `FileAssertYamlQuery` instances.          |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `YamlQuery` instances.                    |
 | `Run(Context context, string fileName)`         | Parses the YAML file and evaluates each dot-notation path query. |
 
 #### Error Handling

@@ -1,4 +1,4 @@
-﻿## Modeling Subsystem Design
+## Modeling Subsystem Design
 
 ### Overview
 

@@ -3,9 +3,10 @@
 #### Overview
 
 The `FileAssertHtmlAssert` class attempts to parse a matched file as an HTML document using
-`HtmlAgilityPack`. If parsing produces critical errors, an error is reported and no further
-assertions are evaluated. Otherwise it evaluates each XPath query against the document and
-applies min, max, and exact count constraints to the number of matching nodes.
+`HtmlAgilityPack`. If loading the file fails due to I/O or permission errors, an error is
+reported and no further assertions are evaluated. Otherwise it evaluates each XPath query
+against the document and applies min, max, and exact count constraints to the number of
+matching nodes.
 
 #### Class Structure
 
@@ -19,7 +20,7 @@ The main class coordinating XPath-based node count assertions for an HTML file.
 | :-------- |
 | `Queries` |
 
-Each `FileAssertHtmlQuery` entry holds:
+Each `HtmlQuery` entry holds:
 
 | Property |
 | :------- |
@@ -87,7 +88,7 @@ files:
   inaccessible file; `IOException` and `UnauthorizedAccessException` from `Load` are
   caught and reported immediately so users receive a clear, actionable error message
   rather than silent XPath results against an empty document.
-- **Independent query model**: `FileAssertHtmlQuery` is private to this unit so that HTML
+- **Independent query model**: `HtmlQuery` is a private nested record in this unit so that HTML
   assertion behavior can evolve independently of the other structured-document assert units.
 
 #### Purpose
@@ -102,7 +103,7 @@ constraints per query.
 | :--------------- |
 | `Queries`        |
 
-Each `FileAssertHtmlQuery` (private nested record) holds:
+Each `HtmlQuery` (private nested record) holds:
 
 | Property |
 | :------- |
@@ -120,12 +121,13 @@ Each `FileAssertHtmlQuery` (private nested record) holds:
 
 #### Error Handling
 
-| Scenario                                      |
-| :-------------------------------------------- |
-| HtmlAgilityPack reports critical parse errors |
-| Query result below `Min`                      |
-| Query result above `Max`                      |
-| Query result not equal to `Count`             |
+| Scenario                                                                 |
+| :----------------------------------------------------------------------- |
+| `IOException` or `UnauthorizedAccessException` while loading the file    |
+| Query XPath expression is invalid (`XPathException`)                     |
+| Query result below `Min`                                                 |
+| Query result above `Max`                                                 |
+| Query result not equal to `Count`                                        |
 
 #### Interactions
 

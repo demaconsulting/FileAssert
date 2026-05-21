@@ -1,4 +1,4 @@
-﻿## Configuration Subsystem Design
+## Configuration Subsystem Design
 
 ### Overview
 

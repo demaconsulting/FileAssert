@@ -1,4 +1,4 @@
-﻿### FileAssertFile Design
+### FileAssertFile Design
 
 #### Overview
 
