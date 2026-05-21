@@ -15,8 +15,8 @@ only with the local file system and delegates traversal protection to `PathHelpe
 
 Tests execute in the standard CI pipeline environment using the xUnit test runner. The test
 collection is marked `[Collection("Sequential")]` to prevent parallel execution of tests that
-mutate the working directory. No special hardware, peripherals, or environment configuration is
-required beyond the standard build toolchain.
+share `Console` state. No special hardware, peripherals, or environment configuration is required
+beyond the standard build toolchain.
 
 #### Acceptance Criteria
 

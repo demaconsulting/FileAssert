@@ -36,6 +36,7 @@ This document covers the verification design for the same software items describ
   - **FileAssertZipAssert** — Zip archive entry assertions
 - **Utilities** — shared utility subsystem
   - **PathHelpers** — safe path combination utilities
+  - **TemporaryDirectory** — temporary workspace lifecycle utility
 - **SelfTest** — self-validation subsystem
   - **Validation** — self-validation test runner
 
@@ -81,7 +82,8 @@ FileAssert (System)
 │   ├── FileAssertJsonAssert (Unit)
 │   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
-│   └── PathHelpers (Unit)
+│   ├── PathHelpers (Unit)
+│   └── TemporaryDirectory (Unit)
 └── SelfTest (Subsystem)
     └── Validation (Unit)
 
