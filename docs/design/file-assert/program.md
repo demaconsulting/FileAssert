@@ -27,7 +27,7 @@ attribute is absent, then to `"0.0.0"` if neither is available.
 
 **Preconditions**: None.
 
-**Postconditions**: Returns a non-null, non-empty string representing the application version.
+**Post-conditions**: Returns a non-null, non-empty string representing the application version.
 
 #### Main Method
 
@@ -46,7 +46,7 @@ error and re-thrown so that the runtime generates a crash-report event-log entry
 **Preconditions**: `args` is the raw command-line argument array supplied by the runtime (may be
 empty; must not be null).
 
-**Postconditions**: Returns `0` for success or a non-zero value for failure.
+**Post-conditions**: Returns `0` for success or a non-zero value for failure.
 
 #### Run Method
 
@@ -69,7 +69,7 @@ spawning a child process.
 
 **Preconditions**: `context` must not be null.
 
-**Postconditions**: Appropriate output has been written to `context`; `context.ExitCode` reflects
+**Post-conditions**: Appropriate output has been written to `context`; `context.ExitCode` reflects
 the outcome of the dispatched path.
 
 #### PrintBanner Method
@@ -85,7 +85,7 @@ separator line.
 
 **Preconditions**: `context` must not be null.
 
-**Postconditions**: Banner lines have been written to `context`.
+**Post-conditions**: Banner lines have been written to `context`.
 
 #### PrintHelp Method
 
@@ -99,7 +99,7 @@ private static void PrintHelp(Context context)
 
 **Preconditions**: `context` must not be null.
 
-**Postconditions**: Help text has been written to `context`.
+**Post-conditions**: Help text has been written to `context`.
 
 #### RunToolLogic Method
 
@@ -118,7 +118,7 @@ matching tests are executed.
 
 **Preconditions**: `context` must not be null.
 
-**Postconditions**: Either an error has been reported via `context.WriteError`, guidance has been
+**Post-conditions**: Either an error has been reported via `context.WriteError`, guidance has been
 written for a missing default config, or all matching assertions have been executed and their
 outcomes reflected in `context.ExitCode`.
 
