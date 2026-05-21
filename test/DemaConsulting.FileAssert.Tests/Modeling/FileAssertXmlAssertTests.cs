@@ -285,7 +285,7 @@ public sealed class FileAssertXmlAssertTests
     }
 
     /// <summary>
-    ///     Verifies that Run produces no error when an XPath exact text query finds no matching nodes.
+    ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
     /// </summary>
     [Fact]
     public void FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError()

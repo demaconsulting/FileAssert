@@ -24,7 +24,7 @@ environment configuration is required beyond the standard build toolchain.
 
 ### Acceptance Criteria
 
-The Selftest subsystem verification passes when all test scenarios listed in
+The SelfTest subsystem verification passes when all test scenarios listed in
 this document execute and pass in the CI pipeline without any test failures, unexpected
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
