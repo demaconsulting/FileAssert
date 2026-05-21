@@ -10,6 +10,17 @@ defines the test scenarios, dependency usage, and requirement coverage for
 create temporary YAML files with controlled content and assert on path query results and count
 constraints.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 | Dependency | Usage in Tests                                              |
@@ -110,6 +121,16 @@ a count of 1 is asserted.
 
 **Requirement coverage**: Scalar value counts as one requirement.
 
+##### FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount
+
+**Scenario**: `FileAssertYamlAssert.Run` is called with an empty YAML file (a stream with no
+documents).
+
+**Expected**: The query returns a count of 0; if the assertion specifies `min: 1` an error is
+written; if no lower bound is set no error is written.
+
+**Boundary / error path**: Empty YAML document edge case.
+
 ##### FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called with a minimum count constraint that is not
@@ -142,4 +163,5 @@ exceeded.
   FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError,
   FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError,
   FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError,
-  FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError
+  FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError,
+  FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount

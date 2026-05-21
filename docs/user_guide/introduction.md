@@ -1,5 +1,7 @@
 # Introduction
 
+This guide describes how to install, configure, and use FileAssert.
+
 ## Purpose
 
 FileAssert is a .NET CLI tool for asserting file properties using YAML-defined test suites. It validates
@@ -15,6 +17,11 @@ This user guide covers:
 - YAML test file format and acceptance criteria
 - Command-line options reference
 - Practical examples for various scenarios
+
+## References
+
+- [DemaConsulting.FileAssert releases](https://github.com/demaconsulting/FileAssert/releases)
+- [Continuous Compliance](https://github.com/demaconsulting/ContinuousCompliance)
 
 # Continuous Compliance
 
@@ -253,6 +260,16 @@ tests:
         json:
           - query: "ConnectionStrings"
             count: 1
+
+  - name: TestProject_PackageValid
+    # Zip archive contains required artifacts
+    tags: [release]
+    files:
+      - pattern: "output/package.zip"
+        zip:
+          entries:
+            - pattern: "**/*.dll"
+              min: 1
 ```
 
 ## Acceptance Criteria Reference
@@ -299,6 +316,10 @@ tests:
 | `json[].count`                      | Exact number of matched JSON nodes                            |
 | `json[].min`                        | Minimum number of matched JSON nodes                          |
 | `json[].max`                        | Maximum number of matched JSON nodes                          |
+| `zip:`                              | Zip archive entry assertions (fails if not a valid zip)       |
+| `zip.entries[].pattern`             | Glob pattern matching zip entry names                         |
+| `zip.entries[].min`                 | Minimum number of matching entries                            |
+| `zip.entries[].max`                 | Maximum number of matching entries                            |
 
 # Command-Line Options
 

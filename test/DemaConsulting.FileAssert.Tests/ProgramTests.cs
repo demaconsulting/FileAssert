@@ -50,6 +50,7 @@ public class ProgramTests
             Assert.Contains(Program.Version, output);
             Assert.DoesNotContain("Copyright", output);
             Assert.DoesNotContain("FileAssert version", output);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -80,6 +81,7 @@ public class ProgramTests
             Assert.Contains("Options:", output);
             Assert.Contains("--version", output);
             Assert.Contains("--help", output);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -107,6 +109,7 @@ public class ProgramTests
             // Assert
             var output = outWriter.ToString();
             Assert.Contains("Total Tests:", output);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {
@@ -135,6 +138,7 @@ public class ProgramTests
             var output = outWriter.ToString();
             Assert.Contains("FileAssert version", output);
             Assert.Contains("Copyright", output);
+            Assert.Equal(0, context.ExitCode);
         }
         finally
         {

@@ -9,17 +9,35 @@ sections:
   - title: Cli Subsystem Requirements
     requirements:
       - id: FileAssert-Cli-ArgumentParsing
-        title: The Cli subsystem shall parse command-line arguments and expose them as structured properties.
+        title: The Cli subsystem shall parse command-line arguments into recognized flags and values.
         justification: |
           A dedicated argument-parsing subsystem provides a single point of truth for all
           command-line interface logic, keeping the rest of the tool free of raw argument
           handling. It also enables consistent unit and integration testing of argument
           behavior independently of business logic.
+        children:
+          - FileAssert-Context-ArgumentParsing
+          - FileAssert-Context-InvalidArgs
+        tests:
+          - Cli_CreateContext_ParsesSilentValidateAndLogFlags
+          - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
+          - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
+
+      - id: FileAssert-Cli-ArgumentExposure
+        title: The Cli subsystem shall expose parsed argument values as typed properties on the Context object.
+        justification: |
+          Exposing parsed arguments as typed properties provides a strongly-typed interface
+          for downstream subsystems, eliminating repeated string parsing and making argument
+          access self-documenting.
+        children:
+          - FileAssert-Context-ConfigFile
+          - FileAssert-Context-Filters
+          - FileAssert-Context-Depth
         tests:
           - Cli_CreateContext_ParsesSilentValidateAndLogFlags
           - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
           - Cli_CreateContext_WithFilters_ParsesPositionalArguments
-          - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
+          - Cli_CreateContext_ParsesDepthFlag
 
       - id: FileAssert-Cli-ErrorReporting
         title: The Cli subsystem shall set the exit code to 1 when errors are reported.
@@ -27,8 +45,11 @@ sections:
           A non-zero exit code is the standard Unix convention for indicating failure.
           Setting the exit code to 1 as soon as any error is written ensures that
           CI/CD pipelines and calling scripts can reliably detect failures.
+        children:
+          - FileAssert-Context-ExitCode
+          - FileAssert-Context-ErrorCount
         tests:
-          - Cli_WriteError_ChangesExitCodeToOne
+          - Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
 
       - id: FileAssert-Cli-OutputPipeline
         title: The Cli subsystem shall route output and errors to the console and optional log file.
@@ -36,5 +57,10 @@ sections:
           A unified output pipeline ensures that all messages, whether informational or
           error-level, are consistently written to both the console and any active log file.
           This provides a reliable audit trail for automated environments and CI/CD pipelines.
+        children:
+          - FileAssert-Context-Output
+          - FileAssert-Context-Silent
+          - FileAssert-Context-ErrorOutput
         tests:
-          - Cli_OutputPipeline_WritesMessagesToLogFile
+          - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
+          - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole

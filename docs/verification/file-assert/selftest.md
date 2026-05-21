@@ -4,7 +4,7 @@ This document describes the subsystem-level verification design for the `SelfTes
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `SelfTest` subsystem requirements.
 
-### Verification Approach
+### Verification Strategy
 
 The `SelfTest` subsystem is verified by integration tests defined in `SelfTestTests.cs`. Each
 test exercises the `Validation.Run` method with a real `Context` to confirm that the subsystem
@@ -16,7 +16,20 @@ At the subsystem boundary, `Context` (from the `Cli` subsystem) and `PathHelpers
 `Utilities` subsystem) are used with their real implementations. No mocking is applied. Temporary
 directories are used for result file output so that tests remain isolated.
 
-### Integration Test Scenarios
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The SelfTest subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
+
+### Test Scenarios
 
 The following integration test scenarios are defined in `SelfTestTests.cs`.
 
@@ -43,6 +56,8 @@ element; exit code is 0.
 
 ### Requirements Coverage
 
-- **Self-validation execution**: SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary
-- **System info header**: SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader
-- **TRX results output**: SelfTest_Run_WithResultsFile_WritesTrxResultsFile
+| Requirement | Scenario | Test Method(s) |
+| :---------- | :------- | :------------- |
+| FileAssert-SelfTest-ValidationPipeline | SelfTest runs all built-in tests and produces a summary | SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary |
+| FileAssert-SelfTest-ValidationPipeline | SelfTest prints a system information header | SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader |
+| FileAssert-SelfTest-ValidationPipeline | SelfTest writes a TRX results file when requested | SelfTest_Run_WithResultsFile_WritesTrxResultsFile |

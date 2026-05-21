@@ -72,13 +72,13 @@ sections:
 
       - id: FileAssert-FileAssertFile-FileTypeAssertDelegation
         title: |
-          The FileAssertFile class shall delegate per-file assertions to the appropriate
-          file-type assert unit (FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,
-          FileAssertHtmlAssert, FileAssertYamlAssert, or FileAssertJsonAssert) when the
-          corresponding assertion block is declared.
+          The FileAssertFile class shall evaluate the file-type-specific assertion
+          block configured for each matched file.
         justification: |
           Delegating file-type assertions to dedicated units keeps FileAssertFile free of
           format-specific parsing and assertion logic, making each unit independently testable
           and the overall design extensible to future formats.
         tests:
           - FileAssertFile_Create_ValidData_CreatesFile
+          - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError
+          - FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

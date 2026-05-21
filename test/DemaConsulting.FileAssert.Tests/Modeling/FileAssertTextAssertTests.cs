@@ -56,6 +56,8 @@ public sealed class FileAssertTextAssertTests
     [Fact]
     public void FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException()
     {
+        // Arrange: no setup required - null is passed directly to the method under test
+
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => FileAssertTextAssert.Create(null!));
     }

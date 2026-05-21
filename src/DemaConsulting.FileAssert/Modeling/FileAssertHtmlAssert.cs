@@ -39,6 +39,9 @@ internal sealed class FileAssertHtmlAssert
     /// <param name="Max">The maximum node count expected, or null for no upper-bound constraint.</param>
     private sealed record HtmlQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>
+    ///     The ordered list of XPath query assertions to evaluate against the parsed HTML document.
+    /// </summary>
     private readonly IReadOnlyList<HtmlQuery> _queries;
 
     /// <summary>

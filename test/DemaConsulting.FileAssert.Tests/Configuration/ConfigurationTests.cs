@@ -21,6 +21,8 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 
+using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Configuration;
 
 /// <summary>
@@ -37,41 +39,34 @@ public class ConfigurationTests
     public void Configuration_LoadYaml_BuildsCompleteTestHierarchy()
     {
         // Arrange - write a YAML configuration with nested test, file, and rule entries
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
-        try
-        {
-            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "License Check"
-                    tags:
-                      - license
-                    files:
-                      - pattern: "**/*.txt"
-                        min: 1
-                        text:
-                          - contains: "Copyright"
-                """);
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("config.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "License Check"
+                tags:
+                  - license
+                files:
+                  - pattern: "**/*.txt"
+                    min: 1
+                    text:
+                      - contains: "Copyright"
+            """);
 
-            // Act
-            var config = FileAssertConfig.ReadFromFile(configPath);
+        // Act
+        var config = FileAssertConfig.ReadFromFile(configPath);
 
-            // Assert - the full hierarchy is correctly constructed
-            Assert.Single(config.Tests);
-            var test = config.Tests[0];
-            Assert.Equal("License Check", test.Name);
-            Assert.Single(test.Tags);
-            Assert.Equal("license", test.Tags[0]);
-            Assert.Single(test.Files);
-            var file = test.Files[0];
-            Assert.Equal("**/*.txt", file.Pattern);
-            Assert.Equal(1, file.Min);
-            Assert.Single(file.TextAssert!.Rules);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - the full hierarchy is correctly constructed
+        Assert.Single(config.Tests);
+        var test = config.Tests[0];
+        Assert.Equal("License Check", test.Name);
+        Assert.Single(test.Tags);
+        Assert.Equal("license", test.Tags[0]);
+        Assert.Single(test.Files);
+        var file = test.Files[0];
+        Assert.Equal("**/*.txt", file.Pattern);
+        Assert.Equal(1, file.Min);
+        Assert.Single(file.TextAssert!.Rules);
     }
 
     /// <summary>
@@ -82,38 +77,32 @@ public class ConfigurationTests
     public void Configuration_RunWithFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests in config; only one file exists so only that test should pass
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
-        try
-        {
-            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "Alpha"
-                    files:
-                      - pattern: "alpha.txt"
-                        min: 1
-                  - name: "Beta"
-                    files:
-                      - pattern: "beta.txt"
-                        min: 1
-                """);
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("config.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "Alpha"
+                files:
+                  - pattern: "alpha.txt"
+                    min: 1
+              - name: "Beta"
+                files:
+                  - pattern: "beta.txt"
+                    min: 1
+            """);
 
-            // Create only alpha.txt so the Alpha test passes and Beta would fail
-            File.WriteAllText(Path.Combine(tempDir.FullName, "alpha.txt"), "content");
+        // Create only alpha.txt so the Alpha test passes and Beta would fail
+        File.WriteAllText(tempDir.GetFilePath("alpha.txt"), "content");
 
-            var config = FileAssertConfig.ReadFromFile(configPath);
-            using var context = Context.Create(["--silent"]);
+        var config = FileAssertConfig.ReadFromFile(configPath);
+        using var context = Context.Create(["--silent"]);
 
-            // Act - run with the "Alpha" filter only
-            config.Run(context, ["Alpha"]);
+        // Act - run with the "Alpha" filter only
+        config.Run(context, ["Alpha"]);
 
-            // Assert - no errors because only Alpha ran (and alpha.txt exists)
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - no errors because only Alpha ran (and alpha.txt exists)
+        Assert.Equal(0, context.ExitCode);
+
     }
 
     /// <summary>
@@ -124,41 +113,65 @@ public class ConfigurationTests
     public void Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests()
     {
         // Arrange - two tests with different tags; only one file exists so only that test passes
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_config_");
-        try
-        {
-            var configPath = Path.Combine(tempDir.FullName, "config.yaml");
-            File.WriteAllText(configPath, """
-                tests:
-                  - name: "Alpha"
-                    tags:
-                      - smoke
-                    files:
-                      - pattern: "alpha.txt"
-                        min: 1
-                  - name: "Beta"
-                    tags:
-                      - regression
-                    files:
-                      - pattern: "beta.txt"
-                        min: 1
-                """);
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("config.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "Alpha"
+                tags:
+                  - smoke
+                files:
+                  - pattern: "alpha.txt"
+                    min: 1
+              - name: "Beta"
+                tags:
+                  - regression
+                files:
+                  - pattern: "beta.txt"
+                    min: 1
+            """);
 
-            // Create only alpha.txt so the Alpha test passes and Beta would fail
-            File.WriteAllText(Path.Combine(tempDir.FullName, "alpha.txt"), "content");
+        // Create only alpha.txt so the Alpha test passes and Beta would fail
+        File.WriteAllText(tempDir.GetFilePath("alpha.txt"), "content");
 
-            var config = FileAssertConfig.ReadFromFile(configPath);
-            using var context = Context.Create(["--silent"]);
+        var config = FileAssertConfig.ReadFromFile(configPath);
+        using var context = Context.Create(["--silent"]);
 
-            // Act - run with the "smoke" tag filter only
-            config.Run(context, ["smoke"]);
+        // Act - run with the "smoke" tag filter only
+        config.Run(context, ["smoke"]);
 
-            // Assert - no errors because only Alpha ran (matching the smoke tag) and alpha.txt exists
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - no errors because only Alpha ran (matching the smoke tag) and alpha.txt exists
+        Assert.Equal(0, context.ExitCode);
+
+    }
+
+    /// <summary>
+    ///     Verifies that the Configuration subsystem writes a TRX results file
+    ///     when a .trx results path is provided to the context.
+    /// </summary>
+    [Fact]
+    public void Configuration_Run_WithResultsFile_WritesTrxResultsFile()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("config.yaml");
+        var resultsPath = tempDir.GetFilePath("results.trx");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "Exists Check"
+                files:
+                  - pattern: "*.yaml"
+                    min: 1
+            """);
+
+        var config = FileAssertConfig.ReadFromFile(configPath);
+        using var context = Context.Create(["--silent", "--results", resultsPath]);
+
+        // Act
+        config.Run(context, []);
+
+        // Assert - results file was written
+        Assert.True(File.Exists(resultsPath),
+            "TRX results file should be written when --results is provided.");
     }
 }

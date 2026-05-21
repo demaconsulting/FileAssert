@@ -155,6 +155,16 @@ reviews:
       - "src/**/Utilities/PathHelpers.cs"                            # implementation
       - "test/**/Utilities/PathHelpersTests.cs"                      # unit tests
 
+  # FileAssert-Utilities-TemporaryDirectory Review (one per unit)
+  - id: FileAssert-Utilities-TemporaryDirectory
+    title: Review that FileAssert Utilities TemporaryDirectory Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/utilities/temporary-directory.yaml"  # requirements
+      - "docs/design/file-assert/utilities/temporary-directory.md"       # design
+      - "docs/verification/file-assert/utilities/temporary-directory.md"  # verification
+      - "src/**/Utilities/TemporaryDirectory.cs"                         # implementation
+      - "test/**/Utilities/TemporaryDirectoryTests.cs"                   # unit tests
+
   # FileAssert-Modeling-FileAssertRule Review (one per unit)
   - id: FileAssert-Modeling-FileAssertRule
     title: Review that FileAssert Modeling FileAssertRule Implementation is Correct

@@ -10,6 +10,17 @@ performs pure path manipulation using only .NET BCL types, no mocking or test do
 Tests call `PathHelpers.SafePathCombine` directly with controlled base and relative path arguments
 and assert on the returned string or the thrown exception.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 `PathHelpers` has no dependencies on other tool units. All path operations use .NET BCL types
@@ -121,13 +132,16 @@ base path.
 
 #### Requirements Coverage
 
-- (valid path combination): PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
-- (leading traversal rejection): PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
-- (embedded traversal rejection): PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
-- (absolute path rejection): PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
-- (current-directory prefix): PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
-- (nested path combination): PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
-- (empty relative path): PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
-- (dot-dot filename, not traversal): PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
-- (null basePath rejection): PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
-- (null relativePath rejection): PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
+- **FileAssert-PathHelpers-SafeCombine** (safe path combination):
+  - PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
+  - PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
+  - PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
+  - PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
+  - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
+  - PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
+
+- **FileAssert-PathHelpers-NullValidation** (null input rejection):
+  - PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
+  - PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException

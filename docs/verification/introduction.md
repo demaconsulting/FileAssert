@@ -33,8 +33,10 @@ This document covers the verification design for the same software items describ
   - **FileAssertHtmlAssert** — HTML XPath query assertions
   - **FileAssertYamlAssert** — YAML path query assertions
   - **FileAssertJsonAssert** — JSON path query assertions
+  - **FileAssertZipAssert** — Zip archive entry assertions
 - **Utilities** — shared utility subsystem
   - **PathHelpers** — safe path combination utilities
+  - **TemporaryDirectory** — temporary workspace lifecycle utility
 - **SelfTest** — self-validation subsystem
   - **Validation** — self-validation test runner
 
@@ -77,9 +79,11 @@ FileAssert (System)
 │   ├── FileAssertXmlAssert (Unit)
 │   ├── FileAssertHtmlAssert (Unit)
 │   ├── FileAssertYamlAssert (Unit)
-│   └── FileAssertJsonAssert (Unit)
+│   ├── FileAssertJsonAssert (Unit)
+│   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
-│   └── PathHelpers (Unit)
+│   ├── PathHelpers (Unit)
+│   └── TemporaryDirectory (Unit)
 └── SelfTest (Subsystem)
     └── Validation (Unit)
 
@@ -112,3 +116,8 @@ OTS items have parallel artifacts in:
 - Verification: `docs/verification/ots/{ots-name}.md`
 
 Review-sets: defined in `.reviewmark.yaml`
+
+## References
+
+- [FileAssert releases](https://github.com/demaconsulting/FileAssert/releases) — compiled release
+  artifacts for FileAssert, including the Verification Design Document PDF

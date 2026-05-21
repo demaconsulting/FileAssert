@@ -16,6 +16,19 @@ All collaborators at the subsystem boundary (`Context`, `FileAssertConfig`, `Pat
 their real implementations. Temporary directories are used for configuration files and test
 artifacts so that tests remain isolated and leave no permanent file-system side-effects.
 
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The Configuration subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
+
 ### Integration Test Scenarios
 
 The following integration test scenarios are defined in `ConfigurationTests.cs`.
@@ -42,8 +55,17 @@ a filter naming one tag is passed to `FileAssertConfig.Run`.
 
 **Expected**: Only the test matching the tag runs; exit code is 0.
 
+#### Configuration_Run_WithResultsFile_WritesTrxResultsFile
+
+**Scenario**: A configuration file with one test is loaded. A results file path with a `.trx`
+extension is provided to the context via `--results`.
+
+**Expected**: `FileAssertConfig.Run` completes and a TRX results file is written to the specified
+path.
+
 ### Requirements Coverage
 
 - **YAML loading and hierarchy construction**: Configuration_LoadYaml_BuildsCompleteTestHierarchy
 - **Test name filtering**: Configuration_RunWithFilter_ExecutesOnlyMatchingTests
 - **Tag filtering**: Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
+- **Results file output (TRX/JUnit XML)**: Configuration_Run_WithResultsFile_WritesTrxResultsFile

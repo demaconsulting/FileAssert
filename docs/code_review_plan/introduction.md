@@ -31,3 +31,7 @@ This document is intended for:
 - Quality assurance teams validating review coverage
 - Project stakeholders reviewing compliance status
 - Auditors verifying that all required files have been reviewed
+
+## References
+
+- [DemaConsulting.FileAssert releases](https://github.com/demaconsulting/FileAssert/releases)

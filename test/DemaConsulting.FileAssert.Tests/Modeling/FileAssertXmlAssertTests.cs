@@ -231,6 +231,60 @@ public sealed class FileAssertXmlAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Run reports an error when the XPath query result exceeds the maximum count.
+    /// </summary>
+    [Fact]
+    public void FileAssertXmlAssert_Run_MaxCount_Exceeded_WritesError()
+    {
+        // Arrange - sample XML has 3 items; assert max=1 so 3 > 1 is a violation
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item", Max = 1 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the XPath query result is below the minimum count.
+    /// </summary>
+    [Fact]
+    public void FileAssertXmlAssert_Run_MinCount_NotMet_WritesError()
+    {
+        // Arrange - sample XML has 3 items; assert min=10 so 3 < 10 is a violation
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleXml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//item", Min = 10 } };
+            var xmlAssert = FileAssertXmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            xmlAssert.Run(context, tempFile);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that Run reports an error when an XPath exact text query finds no matching nodes.
     /// </summary>
     [Fact]

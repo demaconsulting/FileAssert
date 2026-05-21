@@ -31,3 +31,7 @@ This document is intended for:
 - Users evaluating what has changed in this release
 - Project stakeholders tracking progress
 - Contributors understanding recent changes
+
+## References
+
+- [DemaConsulting.FileAssert releases](https://github.com/demaconsulting/FileAssert/releases)

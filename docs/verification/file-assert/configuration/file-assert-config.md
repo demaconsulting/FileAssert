@@ -10,6 +10,17 @@ defines the test scenarios, dependency usage, and requirement coverage for
 YAML configuration files in temporary directories and assert on the resulting object state, exit
 codes, and results files.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 | Dependency     | Usage in Tests                                               |
@@ -104,4 +115,4 @@ assertion configuration (pages, metadata, text rules).
 - **Non-matching filter**: FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
 - **TRX results output**: FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
 - **JUnit results output**: FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
-- **PDF config parsing**: FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
+- **Configuration file reading (PDF variant)**: FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly

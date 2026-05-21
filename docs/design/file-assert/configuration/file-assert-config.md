@@ -108,3 +108,47 @@ file is absent, the tool reports an error and exits with a non-zero code.
   a per-test sub-context, `Run` snapshots `context.ErrorCount` before each test and
   compares after. This reuses the existing error-reporting path without additional
   abstraction. Tests that were skipped by the filter are not recorded in the results.
+
+#### Purpose
+
+`FileAssertConfig` is the top-level configuration object for a FileAssert execution. Its single
+responsibility is to load a YAML configuration file, materialize the full test/file/rule
+hierarchy, and drive test execution with optional name or tag filtering and results
+serialization.
+
+#### Data Model
+
+| Field / Property | Type                            | Description                                            |
+| :--------------- | :------------------------------ | :----------------------------------------------------- |
+| `_configPath`    | `string`                        | Path to the YAML config file; base for glob patterns.  |
+| `Tests`          | `IReadOnlyList<FileAssertTest>` | Ordered list of tests loaded from the configuration.   |
+
+#### Key Methods
+
+| Method                                               | Purpose                                                      |
+| :--------------------------------------------------- | :----------------------------------------------------------- |
+| `ReadFromFile(string path)`                          | Reads YAML; validates path; returns new `FileAssertConfig`.  |
+| `Run(Context context, IEnumerable<string> filters)`  | Iterates matching tests, executes each, writes results file. |
+| `WriteResultsFile(Context, TestResults)` *(private)* | Serializes results to TRX or JUnit XML by file extension.    |
+
+#### Error Handling
+
+| Scenario                                    | Handling                                                      |
+| :------------------------------------------ | :------------------------------------------------------------ |
+| Null `path` passed to `ReadFromFile`        | `ArgumentNullException` propagated to caller.                 |
+| Configuration file does not exist           | `FileNotFoundException` propagated to `Program.RunToolLogic`. |
+| Invalid YAML in configuration file          | `YamlDotNet` exceptions propagate to `Program.RunToolLogic`.  |
+| Null `context` or `filters` passed to `Run` | `ArgumentNullException` propagated to caller.                 |
+| Unsupported results file extension          | Error written via `context.WriteError`; no exception.         |
+| Results file write failure                  | Exception caught; error written via `context.WriteError`.     |
+| Individual test assertion failures          | Accumulated in `context` via `WriteError`; run continues.     |
+
+#### Interactions
+
+- **Caller**: `Program.RunToolLogic` calls `ReadFromFile` with `context.ConfigFile`, then calls
+  `Run(context, context.Filters)`.
+- **Creates**: `FileAssertTest` instances via `FileAssertTest.Create` during `ReadFromFile`.
+- **Calls**: `FileAssertTest.MatchesFilter` and `FileAssertTest.Run` for each qualifying test.
+- **Uses**: `Context` for output and error reporting; `DemaConsulting.TestResults.IO.TrxSerializer`
+  and `JUnitSerializer` for results serialization; `YamlDotNet.Serialization.DeserializerBuilder`
+  for configuration parsing.

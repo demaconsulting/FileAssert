@@ -10,6 +10,17 @@ defines the test scenarios, dependency usage, and requirement coverage for
 temporary directories with controlled file sets and assert on constraint evaluation and error
 reporting behavior.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 | Dependency   | Usage in Tests                                              |
@@ -139,3 +150,6 @@ file is larger than the maximum.
 - **Content rules**: FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
   FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError,
   FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation
+- **File-type assert delegation**: FileAssertFile_Create_ValidData_CreatesFile,
+  FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
+  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

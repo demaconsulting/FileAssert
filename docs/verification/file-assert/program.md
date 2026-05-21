@@ -19,6 +19,19 @@ codes.
 
 No test doubles are introduced at the `Program` level; all collaborators execute their real logic.
 
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The Program subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
+
 ### Test Scenarios
 
 #### Program_Run_WithVersionFlag_DisplaysVersionOnly

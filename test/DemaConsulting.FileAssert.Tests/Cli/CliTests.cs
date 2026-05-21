@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using DemaConsulting.FileAssert.Cli;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Cli;
 
@@ -35,32 +36,26 @@ public class CliTests
     public void Cli_CreateContext_ParsesSilentValidateAndLogFlags()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
-        try
-        {
-            var logPath = Path.Combine(tempDir.FullName, "out.log");
+        using var tempDir = new TemporaryDirectory();
+        var logPath = tempDir.GetFilePath("out.log");
 
-            // Act - create a context with the silent, validate, and log flags
-            using (var context = Context.Create(
-            [
-                "--silent",
-                "--validate",
-                "--log", logPath
-            ]))
-            {
-                // Assert - all flags are reflected in the context properties
-                Assert.True(context.Silent);
-                Assert.True(context.Validate);
-                Assert.False(context.Version);
-                Assert.False(context.Help);
-                Assert.Equal(".fileassert.yaml", context.ConfigFile);
-                Assert.Equal(0, context.ExitCode);
-            }
-        }
-        finally
+        // Act - create a context with the silent, validate, and log flags
+        using (var context = Context.Create(
+        [
+            "--silent",
+            "--validate",
+            "--log", logPath
+        ]))
         {
-            tempDir.Delete(recursive: true);
+            // Assert - all flags are reflected in the context properties
+            Assert.True(context.Silent);
+            Assert.True(context.Validate);
+            Assert.False(context.Version);
+            Assert.False(context.Help);
+            Assert.Equal(".fileassert.yaml", context.ConfigFile);
+            Assert.Equal(0, context.ExitCode);
         }
+
     }
 
     /// <summary>
@@ -70,31 +65,25 @@ public class CliTests
     public void Cli_CreateContext_ParsesVersionHelpConfigResultsFlags()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
-        try
-        {
-            var configPath = Path.Combine(tempDir.FullName, "custom.yaml");
-            var resultsPath = Path.Combine(tempDir.FullName, "results.trx");
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("custom.yaml");
+        var resultsPath = tempDir.GetFilePath("results.trx");
 
-            // Act - create a context with the version, help, config, and results flags
-            using var context = Context.Create(
-            [
-                "--version",
-                "--help",
-                "--config", configPath,
-                "--results", resultsPath
-            ]);
+        // Act - create a context with the version, help, config, and results flags
+        using var context = Context.Create(
+        [
+            "--version",
+            "--help",
+            "--config", configPath,
+            "--results", resultsPath
+        ]);
 
-            // Assert - all flags are reflected in the context properties
-            Assert.True(context.Version);
-            Assert.True(context.Help);
-            Assert.Equal(configPath, context.ConfigFile);
-            Assert.Equal(resultsPath, context.ResultsFile);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - all flags are reflected in the context properties
+        Assert.True(context.Version);
+        Assert.True(context.Help);
+        Assert.Equal(configPath, context.ConfigFile);
+        Assert.Equal(resultsPath, context.ResultsFile);
+
     }
 
     /// <summary>
@@ -118,15 +107,15 @@ public class CliTests
     [Fact]
     public void Cli_CreateContext_UnknownArgument_ThrowsArgumentException()
     {
-        // Arrange & Act & Assert
+        // Act / Assert - an unrecognized flag starting with '-' must throw
         Assert.Throws<ArgumentException>(() => Context.Create(["--unknown-flag"]));
     }
 
     /// <summary>
-    ///     Verifies that WriteError changes the context exit code from 0 to 1.
+    ///     Verifies that WriteError changes the context exit code from 0 to 1 after a successful Create.
     /// </summary>
     [Fact]
-    public void Cli_WriteError_ChangesExitCodeToOne()
+    public void Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne()
     {
         // Arrange
         using var context = Context.Create(["--silent"]);
@@ -140,33 +129,78 @@ public class CliTests
     }
 
     /// <summary>
-    ///     Verifies that the Cli subsystem routes both informational and error messages
-    ///     through the log file when a log path is specified.
+    ///     Verifies that WriteLine and WriteError messages reach the console when --silent is absent.
     /// </summary>
     [Fact]
-    public void Cli_OutputPipeline_WritesMessagesToLogFile()
+    public void Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_cli_");
+        var originalOut = Console.Out;
+        var originalError = Console.Error;
+        var outWriter = new System.IO.StringWriter();
+        var errorWriter = new System.IO.StringWriter();
+
         try
         {
-            var logPath = Path.Combine(tempDir.FullName, "out.log");
+            Console.SetOut(outWriter);
+            Console.SetError(errorWriter);
 
-            // Act - create a silent context with logging, write messages, dispose to flush
-            using (var context = Context.Create(["--silent", "--log", logPath]))
+            // Act - create a context WITHOUT --silent, write messages
+            using (var context = Context.Create(Array.Empty<string>()))
             {
                 context.WriteLine("informational message");
                 context.WriteError("error message");
             }
 
-            // Assert - both messages appear in the log file
-            var logContent = File.ReadAllText(logPath);
-            Assert.Contains("informational message", logContent);
-            Assert.Contains("error message", logContent);
+            // Assert - messages appear on the respective streams
+            Assert.Contains("informational message", outWriter.ToString());
+            Assert.Contains("error message", errorWriter.ToString());
         }
         finally
         {
-            tempDir.Delete(recursive: true);
+            Console.SetOut(originalOut);
+            Console.SetError(originalError);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that the Cli subsystem routes both informational and error messages
+    ///     through the log file when a log path is specified.
+    /// </summary>
+    [Fact]
+    public void Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var logPath = tempDir.GetFilePath("out.log");
+
+        // Act - create a silent context with logging, write messages, dispose to flush
+        using (var context = Context.Create(["--silent", "--log", logPath]))
+        {
+            context.WriteLine("informational message");
+            context.WriteError("error message");
+        }
+
+        // Assert - both messages appear in the log file
+        var logContent = File.ReadAllText(logPath);
+        Assert.Contains("informational message", logContent);
+        Assert.Contains("error message", logContent);
+    }
+
+    /// <summary>
+    ///     Verifies that the Cli subsystem exposes the --depth flag value as the typed Depth property.
+    /// </summary>
+    [Fact]
+    public void Cli_CreateContext_ParsesDepthFlag()
+    {
+        // Arrange: a non-default depth value to confirm the flag is parsed and exposed
+        const int expectedDepth = 3;
+
+        // Act
+        using var context = Context.Create(["--silent", "--depth", "3"]);
+
+        // Assert - the Depth property reflects the parsed flag value
+        Assert.Equal(expectedDepth, context.Depth);
+        Assert.Equal(0, context.ExitCode);
     }
 }

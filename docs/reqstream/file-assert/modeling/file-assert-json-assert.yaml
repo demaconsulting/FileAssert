@@ -41,3 +41,5 @@ sections:
           - FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
           - FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError
           - FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError
+          - FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError
+          - FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError

@@ -21,6 +21,7 @@ includes:
   - docs/reqstream/file-assert/modeling/file-assert-zip-assert.yaml
   - docs/reqstream/file-assert/utilities.yaml
   - docs/reqstream/file-assert/utilities/path-helpers.yaml
+  - docs/reqstream/file-assert/utilities/temporary-directory.yaml
   - docs/reqstream/file-assert/selftest.yaml
   - docs/reqstream/file-assert/selftest/validation.yaml
   - docs/reqstream/file-assert/platform-requirements.yaml

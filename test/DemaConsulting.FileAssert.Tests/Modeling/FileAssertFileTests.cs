@@ -22,6 +22,8 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
+using DemaConsulting.FileAssert.Utilities;
+
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
@@ -94,23 +96,17 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError()
     {
         // Arrange - use an empty temp directory so the pattern matches nothing
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            var data = new FileAssertFileData { Pattern = "*.txt" };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        var data = new FileAssertFileData { Pattern = "*.txt" };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+
     }
 
     /// <summary>
@@ -120,24 +116,18 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError()
     {
         // Arrange - create a temp file for the pattern to match
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "sample.txt"), "content");
-            var data = new FileAssertFileData { Pattern = "*.txt" };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "content");
+        var data = new FileAssertFileData { Pattern = "*.txt" };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+
     }
 
     /// <summary>
@@ -147,23 +137,17 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_TooFewFiles_WritesError()
     {
         // Arrange - empty directory so zero files match, but min requires at least 1
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            var data = new FileAssertFileData { Pattern = "*.txt", Min = 1 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        var data = new FileAssertFileData { Pattern = "*.txt", Min = 1 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -173,25 +157,19 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_TooManyFiles_WritesError()
     {
         // Arrange - create two files but constrain max to 1
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
-            var data = new FileAssertFileData { Pattern = "*.txt", Max = 1 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("a.txt"), "content a");
+        File.WriteAllText(tempDir.GetFilePath("b.txt"), "content b");
+        var data = new FileAssertFileData { Pattern = "*.txt", Max = 1 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -201,28 +179,22 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError()
     {
         // Arrange - create a file that satisfies the contains rule
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("check.txt"), "expected content here");
+        var data = new FileAssertFileData
         {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "check.txt"), "expected content here");
-            var data = new FileAssertFileData
-            {
-                Pattern = "*.txt",
-                Text = [new FileAssertRuleData { Contains = "expected content" }]
-            };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+            Pattern = "*.txt",
+            Text = [new FileAssertRuleData { Contains = "expected content" }]
+        };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(0, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+
     }
 
     /// <summary>
@@ -232,28 +204,22 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError()
     {
         // Arrange - create a file that does NOT satisfy the contains rule
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("check.txt"), "unrelated content");
+        var data = new FileAssertFileData
         {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "check.txt"), "unrelated content");
-            var data = new FileAssertFileData
-            {
-                Pattern = "*.txt",
-                Text = [new FileAssertRuleData { Contains = "expected content" }]
-            };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+            Pattern = "*.txt",
+            Text = [new FileAssertRuleData { Contains = "expected content" }]
+        };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -263,25 +229,19 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_WrongCount_WritesError()
     {
         // Arrange - create two files but constrain count to exactly 1
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "a.txt"), "content a");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "b.txt"), "content b");
-            var data = new FileAssertFileData { Pattern = "*.txt", Count = 1 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("a.txt"), "content a");
+        File.WriteAllText(tempDir.GetFilePath("b.txt"), "content b");
+        var data = new FileAssertFileData { Pattern = "*.txt", Count = 1 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -291,24 +251,18 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_TooSmall_WritesError()
     {
         // Arrange - create an empty file and require at least 10 bytes
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "small.txt"), string.Empty);
-            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 10 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("small.txt"), string.Empty);
+        var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 10 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -318,24 +272,18 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_TooLarge_WritesError()
     {
         // Arrange - create a file with content larger than 5 bytes
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this content is more than five bytes");
-            var data = new FileAssertFileData { Pattern = "*.txt", MaxSize = 5 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("large.txt"), "this content is more than five bytes");
+        var data = new FileAssertFileData { Pattern = "*.txt", MaxSize = 5 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert
-            Assert.Equal(1, context.ExitCode);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert
+        Assert.Equal(1, context.ExitCode);
+
     }
 
     /// <summary>
@@ -346,27 +294,21 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation()
     {
         // Arrange - three files: one within bounds, one too small, one too large
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
-        {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "ok.txt"), "valid");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "small.txt"), string.Empty);
-            File.WriteAllText(Path.Combine(tempDir.FullName, "large.txt"), "this file is too large");
-            var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 2, MaxSize = 10 };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("ok.txt"), "valid");
+        File.WriteAllText(tempDir.GetFilePath("small.txt"), string.Empty);
+        File.WriteAllText(tempDir.GetFilePath("large.txt"), "this file is too large");
+        var data = new FileAssertFileData { Pattern = "*.txt", MinSize = 2, MaxSize = 10 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert - both invalid files should trigger errors regardless of enumeration order
-            Assert.Equal(1, context.ExitCode);
-            Assert.Equal(2, context.ErrorCount);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - both invalid files should trigger errors regardless of enumeration order
+        Assert.Equal(1, context.ExitCode);
+        Assert.Equal(2, context.ErrorCount);
+
     }
 
     /// <summary>
@@ -377,30 +319,24 @@ public class FileAssertFileTests
     public void FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation()
     {
         // Arrange - three files: one with the required content, two without
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_test_");
-        try
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("good.txt"), "expected content here");
+        File.WriteAllText(tempDir.GetFilePath("bad1.txt"), "unrelated content");
+        File.WriteAllText(tempDir.GetFilePath("bad2.txt"), "also unrelated");
+        var data = new FileAssertFileData
         {
-            File.WriteAllText(Path.Combine(tempDir.FullName, "good.txt"), "expected content here");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "bad1.txt"), "unrelated content");
-            File.WriteAllText(Path.Combine(tempDir.FullName, "bad2.txt"), "also unrelated");
-            var data = new FileAssertFileData
-            {
-                Pattern = "*.txt",
-                Text = [new FileAssertRuleData { Contains = "expected content" }]
-            };
-            var file = FileAssertFile.Create(data);
-            using var context = Context.Create(["--silent"]);
+            Pattern = "*.txt",
+            Text = [new FileAssertRuleData { Contains = "expected content" }]
+        };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
 
-            // Act
-            file.Run(context, tempDir.FullName);
+        // Act
+        file.Run(context, tempDir.DirectoryPath);
 
-            // Assert - both bad files should trigger errors regardless of enumeration order
-            Assert.Equal(1, context.ExitCode);
-            Assert.Equal(2, context.ErrorCount);
-        }
-        finally
-        {
-            tempDir.Delete(recursive: true);
-        }
+        // Assert - both bad files should trigger errors regardless of enumeration order
+        Assert.Equal(1, context.ExitCode);
+        Assert.Equal(2, context.ErrorCount);
+
     }
 }

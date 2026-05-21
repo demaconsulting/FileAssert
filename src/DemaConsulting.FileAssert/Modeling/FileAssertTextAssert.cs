@@ -60,6 +60,9 @@ internal sealed class FileAssertTextAssert
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The full path to the file to validate.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="context"/> or <paramref name="fileName"/> is null.
+    /// </exception>
     internal void Run(Context context, string fileName)
     {
         ArgumentNullException.ThrowIfNull(context);

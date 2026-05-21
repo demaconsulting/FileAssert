@@ -19,6 +19,7 @@ sections:
           - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
           - FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
           - FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException
+          - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
 
       - id: FileAssert-FileAssertConfig-Run
         title: |

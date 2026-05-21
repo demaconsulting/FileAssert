@@ -36,9 +36,21 @@ internal static class PathHelpers
     ///     absolute form and compared against the resolved base directory to detect escape
     ///     attempts using <c>../</c> sequences, absolute paths, or other traversal vectors.
     /// </summary>
-    /// <param name="basePath">The base path.</param>
-    /// <param name="relativePath">The relative path to combine.</param>
-    /// <returns>The combined path.</returns>
+    /// <param name="basePath">
+    ///     The root directory that the combined result must remain within. Must not be
+    ///     <see langword="null"/>; must be a valid file-system path (relative or absolute).
+    /// </param>
+    /// <param name="relativePath">
+    ///     The path to append to <paramref name="basePath"/>. Must not be <see langword="null"/>.
+    ///     Must not contain traversal segments (<c>../</c>) or be an absolute path, as these
+    ///     would cause the resolved result to escape <paramref name="basePath"/>.
+    ///     An empty string is accepted and causes the method to return <paramref name="basePath"/> unchanged.
+    /// </param>
+    /// <returns>
+    ///     The combined path string as returned by <see cref="Path.Combine(string, string)"/>.
+    ///     The resolved (absolute) form of this path is guaranteed to reside within the resolved
+    ///     form of <paramref name="basePath"/>.
+    /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> or <paramref name="relativePath"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     ///     Thrown when the resolved combined path escapes the base directory, or when a supplied path is invalid.

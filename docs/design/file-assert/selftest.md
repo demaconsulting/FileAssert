@@ -19,6 +19,36 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 - Optionally serialize results to TRX or JUnit XML format.
 - Report a system information header before running tests.
 
+### Interfaces
+
+#### Exposed
+
+| Member / Class            | Description                                                                          |
+| :-----------------------  | :----------------------------------------------------------------------------------- |
+| `Validation.Run(Context)` | Executes all built-in self-validation tests and writes results via `Context`.        |
+
+#### Consumed
+
+| Dependency                       | Usage                                                                         |
+| :-------------------------       | :---------------------------------------------------------------------------- |
+| `Context` (Cli subsystem)        | Receives test output and result file path; exposes `ResultsFile`.             |
+| `Program.Version`                | Included in the system information header printed before tests run.           |
+| `Program.Run`                    | Called within each built-in test to exercise the tool's execution logic.      |
+| `TemporaryDirectory` (Utilities) | Provides isolated, self-cleaning workspaces for test fixture files.           |
+| `DemaConsulting.TestResults`     | Serializes validation outcomes to TRX or JUnit XML when requested.            |
+
+### Design
+
+`Validation.Run` executes a set of built-in test cases in a self-contained loop:
+
+1. A system information header (`Program.Version`, OS, runtime) is written via `Context.WriteLine`.
+2. For each built-in test, a fresh `TemporaryDirectory` is created to hold fixture files, and a
+   dedicated `Context` is constructed from controlled argument arrays so the test runs in isolation.
+3. `Program.Run` is invoked with the per-test context; pass or fail is determined by whether
+   `context.ExitCode` changed.
+4. Results are accumulated and, when `context.ResultsFile` is non-null, serialized to TRX or JUnit
+   XML using `DemaConsulting.TestResults`.
+
 ### Interactions with Other Subsystems
 
 | Dependency  | Usage                                                              |

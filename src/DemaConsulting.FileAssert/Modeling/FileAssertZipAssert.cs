@@ -125,6 +125,9 @@ internal sealed class FileAssertZipAssert
     /// </remarks>
     /// <param name="context">The context used for reporting errors. Must not be null.</param>
     /// <param name="fileName">The full path to the zip file to validate. Must not be null.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="context"/> or <paramref name="fileName"/> is null.
+    /// </exception>
     internal void Run(Context context, string fileName)
     {
         ArgumentNullException.ThrowIfNull(context);

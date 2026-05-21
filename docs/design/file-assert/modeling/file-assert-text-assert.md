@@ -55,10 +55,14 @@ Execution proceeds in the following steps:
 File '<fileName>' could not be read as text
 ```
 
-| Parameter    | Type      | Description                              |
-| :----------- | :-------- | :--------------------------------------- |
-| `context`    | `Context` | Reporting sink used to record errors.    |
-| `fileName`   | `string`  | Full path to the file to validate.       |
+| Parameter    | Type      | Description                                             |
+| :----------- | :-------- | :------------------------------------------------------ |
+| `context`    | `Context` | Reporting sink used to record errors. Must not be null. |
+| `fileName`   | `string`  | Full path to the file to validate. Must not be null.    |
+
+| Exception                   | Condition                                              |
+| :-------------------------- | :----------------------------------------------------- |
+| `ArgumentNullException`     | Thrown when `context` or `fileName` is null.           |
 
 #### YAML Configuration
 
@@ -83,3 +87,39 @@ files:
 - **Delegates to `FileAssertRule.Apply`**: Each rule is applied independently via the
   abstract `Apply` method, so all rule violations in a single file are reported in one pass
   without short-circuiting on the first failure.
+
+#### Purpose
+
+`FileAssertTextAssert` wraps a list of `FileAssertRule` instances and applies them to the
+UTF-8 text content of a matched file. It provides the same structural pattern as the other
+file-type assert units, keeping `FileAssertFile` free of rule-application logic.
+
+#### Data Model
+
+| Property | Type                            | Description                               |
+| :------- | :------------------------------ | :---------------------------------------- |
+| `Rules`  | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file's text. |
+
+#### Key Methods
+
+| Method                                         | Purpose                                                            |
+| :--------------------------------------------- | :----------------------------------------------------------------- |
+| `Create(IEnumerable<FileAssertRuleData> data)` | Static factory: creates a `FileAssertRule` for each DTO entry.     |
+| `Run(Context context, string fileName)`        | Reads the file as UTF-8 text and applies each rule to the content. |
+
+#### Error Handling
+
+| Scenario                                               | Handling                                             |
+| :----------------------------------------------------- | :--------------------------------------------------- |
+| Null `data` passed to `Create`                         | `ArgumentNullException` thrown.                      |
+| Null `context` or `fileName` passed to `Run`           | `ArgumentNullException` thrown.                      |
+| `IOException` or `UnauthorizedAccessException` on read | Error via `context.WriteError`; `Run` returns.       |
+| Individual rule check fails                            | Error via `context` in `Rule.Apply`; rules continue. |
+
+#### Interactions
+
+- **Caller**: `FileAssertFile.Run` calls `TextAssert.Run(context, fileName)` when the `text:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertTextAssert.Create`.
+- **Delegates to**: `FileAssertRule.Apply` for each content rule.
+- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.

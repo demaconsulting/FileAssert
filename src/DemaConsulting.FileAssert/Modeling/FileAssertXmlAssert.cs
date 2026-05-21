@@ -34,8 +34,15 @@ internal sealed class FileAssertXmlAssert
     /// <summary>
     ///     Represents a single XPath query assertion with count constraints.
     /// </summary>
+    /// <param name="Query">XPath expression to evaluate against the document.</param>
+    /// <param name="Count">Expected exact node count; <see langword="null"/> means no exact count constraint.</param>
+    /// <param name="Min">Minimum node count; <see langword="null"/> means no lower bound.</param>
+    /// <param name="Max">Maximum node count; <see langword="null"/> means no upper bound.</param>
     private sealed record XmlQuery(string Query, int? Count, int? Min, int? Max);
 
+    /// <summary>
+    ///     The ordered list of XPath query assertions to apply when this rule runs.
+    /// </summary>
     private readonly IReadOnlyList<XmlQuery> _queries;
 
     /// <summary>

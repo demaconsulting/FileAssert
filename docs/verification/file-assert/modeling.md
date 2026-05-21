@@ -4,7 +4,7 @@ This document describes the subsystem-level verification design for the `Modelin
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `Modeling` subsystem requirements.
 
-### Verification Approach
+### Verification Strategy
 
 The `Modeling` subsystem is verified by integration tests defined in `ModelingTests.cs`. Each test
 exercises the assertion execution pipeline — creating a `FileAssertTest`, resolving file patterns,
@@ -14,6 +14,19 @@ evaluating constraints, and reporting results through a real `Context`.
 
 All collaborators at the subsystem boundary use their real implementations. Temporary directories
 are used for test files so that tests remain isolated.
+
+### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner against
+the .NET runtime specified by the build matrix. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
+
+### Acceptance Criteria
+
+The Modeling subsystem verification passes when all test scenarios listed in
+this document execute and pass in the CI pipeline without any test failures, unexpected
+exceptions, or assertion errors. Each named scenario must pass on all supported runtime
+and platform combinations.
 
 ### Integration Test Scenarios
 
@@ -53,5 +66,3 @@ satisfying the query and count constraints is provided.
   Modeling_ExecuteChain_ReportsFailuresThroughContext
 - **XML parsing error reporting**: Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 - **XML query assertion**: Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
-- **Zip assert creation and parse error**: FileAssertZipAssert_Create_ValidData_CreatesZipAssert,
-  FileAssertZipAssert_Run_InvalidZipFile_WritesError

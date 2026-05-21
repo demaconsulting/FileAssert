@@ -17,6 +17,9 @@ sections:
           the Modeling subsystem can execute them. Verifying this end-to-end pipeline at the
           subsystem level ensures that the deserialization and domain-object construction
           stages interact correctly.
+        children:
+          - FileAssert-FileAssertConfig-ReadFromFile
+          - FileAssert-FileAssertData-YamlSchema
         tests:
           - Configuration_LoadYaml_BuildsCompleteTestHierarchy
 
@@ -26,6 +29,22 @@ sections:
           Selective test execution based on names and tags is a core feature of the
           Configuration subsystem. Testing this capability at the subsystem level verifies
           that filtering works correctly across the full load-and-run pipeline.
+        children:
+          - FileAssert-FileAssertConfig-Run
         tests:
           - Configuration_RunWithFilter_ExecutesOnlyMatchingTests
           - Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
+
+      - id: FileAssert-Configuration-ResultsFiles
+        title: The Configuration subsystem shall write per-test pass/fail results to a TRX or JUnit XML file when a results
+          file path is provided.
+        justification: |
+          CI/CD pipelines and regulated environments require machine-readable test result files
+          to collect evidence of assertion outcomes. Supporting both TRX and JUnit XML formats
+          at the subsystem level confirms that the configuration load, test execution, and results
+          output stages integrate correctly end-to-end.
+        children:
+          - FileAssert-FileAssertConfig-ResultsTrx
+          - FileAssert-FileAssertConfig-ResultsJUnit
+        tests:
+          - Configuration_Run_WithResultsFile_WritesTrxResultsFile

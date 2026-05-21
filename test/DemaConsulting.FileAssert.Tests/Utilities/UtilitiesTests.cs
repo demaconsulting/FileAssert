@@ -36,20 +36,39 @@ public class UtilitiesTests
     public void Utilities_SafePathCombine_PreventsPathTraversalToFileSystem()
     {
         // Arrange
-        var tempDir = Directory.CreateTempSubdirectory("fileassert_util_");
-        try
-        {
-            // Act & Assert - a traversal attempt is rejected with ArgumentException
-            Assert.Throws<ArgumentException>(
-                () => PathHelpers.SafePathCombine(tempDir.FullName, "../escape.txt"));
+        using var tempDir = new TemporaryDirectory();
+        // Act & Assert - a traversal attempt is rejected with ArgumentException
+        Assert.Throws<ArgumentException>(
+            () => PathHelpers.SafePathCombine(tempDir.DirectoryPath, "../escape.txt"));
 
-            // Act & Assert - a valid relative path within the base is accepted
-            var combined = PathHelpers.SafePathCombine(tempDir.FullName, "nested/file.txt");
-            Assert.StartsWith(tempDir.FullName, combined);
-        }
-        finally
+        // Act & Assert - a valid relative path within the base is accepted
+        var combined = PathHelpers.SafePathCombine(tempDir.DirectoryPath, "nested/file.txt");
+        var relativePath = Path.GetRelativePath(tempDir.DirectoryPath, combined);
+        Assert.Equal(Path.Combine("nested", "file.txt"), relativePath);
+    }
+
+    /// <summary>
+    ///     Verifies that the Utilities subsystem's temporary directory provides an isolated
+    ///     scratch space that is created on construction, accessible during the lifetime,
+    ///     and fully removed on disposal.
+    /// </summary>
+    [Fact]
+    public void Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace()
+    {
+        // Arrange & Act: create a temp directory, write a file inside it, then dispose
+        string filePath;
+        using (var tempDir = new TemporaryDirectory())
         {
-            tempDir.Delete(recursive: true);
+            filePath = tempDir.GetFilePath("scratch.txt");
+            File.WriteAllText(filePath, "scratch content");
+
+            // Assert: file is accessible within the temporary directory lifetime
+            Assert.True(File.Exists(filePath),
+                "Scratch file should be accessible within the temporary directory lifetime.");
         }
+
+        // Assert: directory and its contents are removed after disposal
+        Assert.False(File.Exists(filePath),
+            "Scratch file should be removed after the temporary directory is disposed.");
     }
 }

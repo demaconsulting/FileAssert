@@ -10,6 +10,17 @@ defines the test scenarios, dependency usage, and requirement coverage for
 create temporary XML files with controlled content and assert on XPath query results, count
 constraints, and text matching.
 
+#### Test Environment
+
+Tests execute in the standard CI pipeline environment using the xUnit test runner. No
+special hardware, peripherals, or environment configuration is required.
+
+#### Acceptance Criteria
+
+N/A – Acceptance criteria are managed at the subsystem and system integration levels.
+Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
+subsystem level when all unit tests supporting a subsystem requirement pass.
+
 #### Dependencies
 
 | Dependency | Usage in Tests                                              |
@@ -69,6 +80,24 @@ query result count is within bounds.
 
 **Requirement coverage**: Min/max count constraint pass requirement.
 
+##### FileAssertXmlAssert_Run_MinCount_NotMet_WritesError
+
+**Scenario**: `FileAssertXmlAssert.Run` is called with a `min` count constraint and the XPath
+query returns fewer nodes than the minimum.
+
+**Expected**: An error is written to the context; exit code is non-zero.
+
+**Requirement coverage**: Min count constraint violation requirement.
+
+##### FileAssertXmlAssert_Run_MaxCount_Exceeded_WritesError
+
+**Scenario**: `FileAssertXmlAssert.Run` is called with a `max` count constraint and the XPath
+query returns more nodes than the maximum.
+
+**Expected**: An error is written to the context; exit code is non-zero.
+
+**Requirement coverage**: Max count constraint violation requirement.
+
 ##### FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
 
 **Scenario**: `FileAssertXmlAssert.Run` is called with a malformed XPath query string.
@@ -121,7 +150,9 @@ result does not contain the expected value.
 - **Invalid query**: FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
 - **Count constraints**: FileAssertXmlAssert_Run_ExactCount_Matches_NoError,
   FileAssertXmlAssert_Run_ExactCount_Mismatch_WritesError,
-  FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError
+  FileAssertXmlAssert_Run_MinMaxCount_WithinBounds_NoError,
+  FileAssertXmlAssert_Run_MinCount_NotMet_WritesError,
+  FileAssertXmlAssert_Run_MaxCount_Exceeded_WritesError
 - **Text assertions**: FileAssertXmlAssert_Run_XPathExactTextMatch_Matches_NoError,
   FileAssertXmlAssert_Run_XPathExactTextMatch_NoMatch_WritesError,
   FileAssertXmlAssert_Run_XPathContainsText_Matches_NoError,

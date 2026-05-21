@@ -14,6 +14,23 @@ sections:
           The Modeling subsystem integrates three unit types (FileAssertTest, FileAssertFile,
           FileAssertRule) into a single execution chain. Verifying the chain end-to-end at the
           subsystem level ensures that inter-unit delegation and data flow work correctly.
+        children:
+          - FileAssert-FileAssertTest-Creation
+          - FileAssert-FileAssertTest-Filtering
+          - FileAssert-FileAssertTest-Execution
+          - FileAssert-FileAssertTest-RunValidation
+          - FileAssert-FileAssertFile-Creation
+          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-ContentRules
+          - FileAssert-FileAssertFile-ExactCount
+          - FileAssert-FileAssertFile-SizeConstraints
+          - FileAssert-FileAssertFile-FileTypeAssertDelegation
+          - FileAssert-FileAssertRule-Factory
+          - FileAssert-FileAssertRule-ContainsRule
+          - FileAssert-FileAssertRule-MatchesRule
+          - FileAssert-FileAssertRule-DoesNotContainRule
+          - FileAssert-FileAssertRule-DoesNotContainRegexRule
+          - FileAssert-FileAssertZipAssert-EntryMatching
         tests:
           - Modeling_ExecuteChain_PassesWhenAllConstraintsMet
 
@@ -23,13 +40,18 @@ sections:
           Assertion failures must propagate from the innermost rule through the file and test
           layers to the context, setting the error exit code. Testing this at the subsystem
           level verifies that the full error-reporting pipeline within the subsystem works.
+        children:
+          - FileAssert-FileAssertTest-Execution
+          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-ContentRules
+          - FileAssert-FileAssertFile-SizeConstraints
         tests:
           - Modeling_ExecuteChain_ReportsFailuresThroughContext
 
       - id: FileAssert-Modeling-FileTypeParsing
         title: |
           The Modeling subsystem shall parse matched files as structured documents (PDF, XML,
-          HTML, YAML, JSON) when the corresponding assertion block is declared, and report
+          HTML, YAML, JSON, ZIP) when the corresponding assertion block is declared, and report
           an immediate error if the file cannot be parsed.
         justification: |
           File-type parsing enables structured-document assertions (metadata, XPath, dot-notation
@@ -38,6 +60,7 @@ sections:
         children:
           - FileAssert-FileAssertTextAssert-Creation
           - FileAssert-FileAssertTextAssert-RuleApplication
+          - FileAssert-FileAssertTextAssert-IOError
           - FileAssert-FileAssertPdfAssert-Creation
           - FileAssert-FileAssertPdfAssert-ParseError
           - FileAssert-FileAssertPdfAssert-MetadataAssertions

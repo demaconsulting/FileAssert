@@ -25,7 +25,6 @@ namespace DemaConsulting.FileAssert.Tests.Utilities;
 /// <summary>
 ///     Tests for the PathHelpers class.
 /// </summary>
-[Collection("Sequential")]
 public class PathHelpersTests
 {
     /// <summary>
@@ -158,9 +157,11 @@ public class PathHelpersTests
     [Fact]
     public void PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly()
     {
-        // Arrange - filename with ".." as substring, not a path traversal component
+        // Arrange - filename starting with ".." but it is a directory name, not a traversal component.
+        // This exercises the design requirement that "..data" (dot-dot followed by a non-separator
+        // character) must not be misidentified as an escaping "../" sequence.
         var basePath = "/home/user/project";
-        var relativePath = "my..file.txt";
+        var relativePath = "..data/file.txt";
 
         // Act
         var result = PathHelpers.SafePathCombine(basePath, relativePath);

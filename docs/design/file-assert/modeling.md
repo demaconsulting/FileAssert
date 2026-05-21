@@ -53,6 +53,40 @@ FileAssertTest
     └── FileAssertZipAssert? (zero or one)
 ```
 
+### Interfaces
+
+#### Exposed
+
+| Member / Class                 | Description                                                                                 |
+| :--------------------------    | :------------------------------------------------------------------------------------------ |
+| `FileAssertTest.Create`        | Factory method: builds a domain test object from a `FileAssertTestData` DTO.                |
+| `FileAssertTest.MatchesFilter` | Returns whether the test name or tags match the provided filter list.                       |
+| `FileAssertTest.Run`           | Executes all file assertions within the test and reports results via `Context`.             |
+| `FileAssertFile.Create`        | Factory method: builds a domain file-pattern object from a `FileAssertFileData` DTO.        |
+| `FileAssertRule.Create`        | Factory method: selects and returns the correct concrete rule subclass.                     |
+
+#### Consumed
+
+| Dependency                                                                                    | Usage                                                                          |
+| :-------------------------                                                                    | :----------------------------------------------------------------------------- |
+| `Context` (Cli subsystem)                                                                     | Receives assertion failure messages and error exit code.                       |
+| `FileAssertData` DTOs                                                                         | Input types for all `Create` factory methods.                                  |
+| Microsoft.Extensions.FileSystemGlobbing                                                       | Cross-platform glob evaluation for file discovery.                             |
+| YamlDotNet, PdfPig, HtmlAgilityPack, System.Xml.Linq, System.Text.Json, System.IO.Compression | Format-specific parsing libraries.                                             |
+
+### Design
+
+Domain objects are constructed and executed in the following layers:
+
+1. `FileAssertTest.Create` iterates the `FileAssertTestData.Files` list, calling
+   `FileAssertFile.Create` for each entry. `FileAssertFile.Create` in turn creates any
+   declared assert units (`FileAssertTextAssert`, `FileAssertPdfAssert`, etc.).
+2. `FileAssertTextAssert.Create` iterates rule data, calling `FileAssertRule.Create` for
+   each entry to produce the correct concrete rule subclass.
+3. During execution, `FileAssertConfig.Run` calls `FileAssertTest.Run` → `FileAssertFile.Run`
+   → assert unit `Run` methods, threading `Context` through every layer so all failures are
+   reported via a single path.
+
 ### Interactions with Other Subsystems
 
 | Dependency    | Usage                                                    |

@@ -307,4 +307,31 @@ public sealed class FileAssertYamlAssertTests
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
     }
+
+    /// <summary>
+    ///     Verifies that Run reports zero matches for all queries when the YAML file has no documents.
+    /// </summary>
+    [Fact]
+    public void FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount()
+    {
+        // Arrange - write an empty file; YamlStream.Load produces no documents
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, string.Empty);
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 1 } };
+            var yamlAssert = FileAssertYamlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            // Act
+            yamlAssert.Run(context, tempFile);
+
+            // Assert - no documents means 0 matches; min=1 constraint is violated
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
 }

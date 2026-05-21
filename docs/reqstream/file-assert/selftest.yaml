@@ -15,6 +15,14 @@ sections:
           subsystems to produce a complete self-validation report. Testing the full pipeline
           at the subsystem level verifies that test execution, result collection, and summary
           output all work together correctly.
+        children:
+          - FileAssert-Validation-Run
+          - FileAssert-Validation-Results
+          - FileAssert-Validation-ResultsTest
+          - FileAssert-Validation-ExistsTest
+          - FileAssert-Validation-ContainsTest
+          - FileAssert-Validation-NullContext
+          - FileAssert-Validation-Depth
         tests:
           - SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary
           - SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader
