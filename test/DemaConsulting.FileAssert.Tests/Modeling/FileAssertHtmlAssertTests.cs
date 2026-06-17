@@ -167,6 +167,46 @@ public sealed class FileAssertHtmlAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Run parses syntactically imperfect HTML (missing closing tags) leniently
+    ///     and still evaluates XPath queries successfully.
+    /// </summary>
+    [Fact]
+    public void FileAssertHtmlAssert_Run_MalformedHtml_ParsesAndQueriesSuccessfully_NoError()
+    {
+        // Arrange - HTML with missing closing </li>, </ul>, </body>, and </html> tags
+        const string malformedHtml = """
+            <html>
+            <body>
+            <ul>
+              <li>Item one
+              <li>Item two
+              <li>Item three
+            """;
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, malformedHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//li", Count = 3 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act - the lenient parser repairs the markup so the XPath query can run
+            htmlAssert.Run(context, container, fileName);
+
+            // Assert - all three list items are found despite the missing closing tags
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that Run reports an error when the file does not exist and cannot be parsed.
     /// </summary>
     [Fact]

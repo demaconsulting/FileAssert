@@ -21,10 +21,12 @@ sections:
           - FileAssert-FileAssertTest-Execution
           - FileAssert-FileAssertTest-RunValidation
           - FileAssert-FileAssertFile-Creation
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MinCountConstraint
+          - FileAssert-FileAssertFile-MaxCountConstraint
           - FileAssert-FileAssertFile-ContentRules
           - FileAssert-FileAssertFile-ExactCount
-          - FileAssert-FileAssertFile-SizeConstraints
+          - FileAssert-FileAssertFile-MinSize
+          - FileAssert-FileAssertFile-MaxSize
           - FileAssert-FileAssertFile-FileTypeAssertDelegation
           - FileAssert-FileAssertRule-Factory
           - FileAssert-FileAssertRule-ContainsRule
@@ -43,9 +45,11 @@ sections:
           level verifies that the full error-reporting pipeline within the subsystem works.
         children:
           - FileAssert-FileAssertTest-Execution
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MinCountConstraint
+          - FileAssert-FileAssertFile-MaxCountConstraint
           - FileAssert-FileAssertFile-ContentRules
-          - FileAssert-FileAssertFile-SizeConstraints
+          - FileAssert-FileAssertFile-MinSize
+          - FileAssert-FileAssertFile-MaxSize
         tests:
           - Modeling_ExecuteChain_ReportsFailuresThroughContext
 
@@ -133,7 +137,7 @@ sections:
           - FileAssert-Modeling-FileTypeParsing-Json
           - FileAssert-Modeling-FileTypeParsing-Zip
         tests:
-          - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+          - Modeling_FileTypeParsing_ValidPdf_ParsesAndAppliesPageCount_NoError
 
       - id: FileAssert-Modeling-FileTypeParseError
         title: |
@@ -141,9 +145,10 @@ sections:
           parsed as the structured-document type declared by its assertion block.
         justification: |
           Reporting an immediate error on parse failure prevents misleading partial results from
-          downstream assertions.
+          downstream assertions. This requirement covers content parse failures only; failures to
+          read a matched file due to I/O errors are a separate concern covered by the file-type
+          read-error requirement.
         children:
-          - FileAssert-FileAssertTextAssert-IOError
           - FileAssert-FileAssertPdfAssert-ParseError
           - FileAssert-FileAssertXmlAssert-ParseError
           - FileAssert-FileAssertHtmlAssert-ParseError
@@ -153,6 +158,20 @@ sections:
           - FileAssert-FileAssertZipAssert-ParseError
         tests:
           - Modeling_FileTypeParsing_InvalidXml_ReportsParseError
+
+      - id: FileAssert-Modeling-FileTypeReadError
+        title: |
+          The Modeling subsystem shall report an immediate error when a matched file cannot be read
+          due to an I/O failure, independently of any content-parse step.
+        justification: |
+          I/O read failures (a file that cannot be opened or accessed) are distinct from
+          content-parse failures: the file may be perfectly valid for its declared type but
+          unreadable. Reporting the read failure as a clean assertion error rather than an unhandled
+          exception keeps the failure-reporting behavior consistent across all asserters.
+        children:
+          - FileAssert-FileAssertTextAssert-IOError
+        tests:
+          - windows@Modeling_FileTypeReadError_LockedFile_ReportsError
 
       - id: FileAssert-Modeling-QueryAssertions-Xml
         title: |
@@ -174,7 +193,7 @@ sections:
         children:
           - FileAssert-FileAssertHtmlAssert-QueryAssertions
         tests:
-          - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+          - Modeling_QueryAssertions_HtmlQueryMeetsCount_NoError
 
       - id: FileAssert-Modeling-QueryAssertions-Yaml
         title: |
@@ -188,7 +207,7 @@ sections:
           - FileAssert-FileAssertYamlAssert-QueryMaxCount
           - FileAssert-FileAssertYamlAssert-QueryExactCount
         tests:
-          - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
+          - Modeling_QueryAssertions_YamlQueryMeetsCount_NoError
 
       - id: FileAssert-Modeling-QueryAssertions-Json
         title: |
@@ -199,7 +218,7 @@ sections:
         children:
           - FileAssert-FileAssertJsonAssert-QueryAssertions
         tests:
-          - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
+          - Modeling_QueryAssertions_JsonQueryMeetsCount_NoError
 
       - id: FileAssert-Modeling-QueryAssertions
         title: |

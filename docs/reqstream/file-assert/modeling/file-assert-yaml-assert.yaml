@@ -15,6 +15,9 @@ sections:
         tests:
           - FileAssertYamlAssert_Create_ValidData_CreatesYamlAssert
           - FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException
+          - FileAssertYamlAssert_Create_EmptyQueryList_ThrowsInvalidOperationException
+          - FileAssertYamlAssert_Create_QueryWithoutConstraint_ThrowsInvalidOperationException
+          - FileAssertYamlAssert_Create_QueryMinGreaterThanMax_ThrowsInvalidOperationException
 
       - id: FileAssert-FileAssertYamlAssert-ParseErrorReported
         title: |

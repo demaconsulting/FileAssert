@@ -48,3 +48,4 @@ sections:
           - FileAssert-FileAssertConfig-ResultsJUnit
         tests:
           - Configuration_Run_WithResultsFile_WritesTrxResultsFile
+          - Configuration_Run_WithResultsFile_WritesJUnitResultsFile

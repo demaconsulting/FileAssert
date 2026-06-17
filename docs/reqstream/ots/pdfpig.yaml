@@ -62,7 +62,9 @@ sections:
           - id: FileAssert-OTS-PdfPig
             title: PdfPig shall parse PDF documents and expose page count, metadata, and text content.
             justification: |
-              Composite requirement covering all PdfPig features consumed by FileAssert.
+              Composite requirement covering all PdfPig features consumed by FileAssert. This is a
+              non-requirement grouping node; verification evidence is carried by the atomic child
+              requirements below.
             tags: [ots]
             children:
               - FileAssert-OTS-PdfPig-Parse
@@ -70,5 +72,3 @@ sections:
               - FileAssert-OTS-PdfPig-Metadata
               - FileAssert-OTS-PdfPig-Text
               - FileAssert-OTS-PdfPig-InvalidFile
-            tests:
-              - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError

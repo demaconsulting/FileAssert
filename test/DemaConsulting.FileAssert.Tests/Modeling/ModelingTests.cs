@@ -26,6 +26,11 @@ using DemaConsulting.FileAssert.Modeling;
 
 using DemaConsulting.FileAssert.Utilities;
 
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
+using UglyToad.PdfPig.Writer;
+
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
 /// <summary>
@@ -309,5 +314,215 @@ public class ModelingTests
         Assert.Contains("archive.zip", logContents);
         Assert.Contains("entry.txt", logContents);
 
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a matched file as a PDF document (a file-type
+    ///     parse distinct from a query assertion) and applies a page-count constraint successfully.
+    /// </summary>
+    [Fact]
+    public void Modeling_FileTypeParsing_ValidPdf_ParsesAndAppliesPageCount_NoError()
+    {
+        // Arrange - generate a single-page PDF so the pdf: block exercises real PDF parsing
+        using var tempDir = new TemporaryDirectory();
+        using (var builder = new PdfDocumentBuilder())
+        {
+            var page = builder.AddPage(PageSize.A4);
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            page.AddText("Report Body", 12, new PdfPoint(50, 700), font);
+            File.WriteAllBytes(tempDir.GetFilePath("report.pdf"), builder.Build());
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "PdfParseCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.pdf",
+                    Pdf = new FileAssertPdfData
+                    {
+                        Pages = new FileAssertPdfPagesData { Min = 1, Max = 1 }
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert - the file parsed as a PDF and satisfied the page-count constraint
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem reports an I/O read failure (as opposed to a parse
+    ///     failure) when a matched file cannot be read. On Windows the exclusive lock forces the
+    ///     read to fail; POSIX systems do not enforce the share mode, so only Windows runs count as
+    ///     evidence for the linked requirement.
+    /// </summary>
+    [Fact]
+    public void Modeling_FileTypeReadError_LockedFile_ReportsError()
+    {
+        // Arrange - a readable text file whose content would otherwise satisfy the rule
+        using var tempDir = new TemporaryDirectory();
+        var filePath = tempDir.GetFilePath("locked.txt");
+        File.WriteAllText(filePath, "Copyright (c) DEMA Consulting");
+
+        var testData = new FileAssertTestData
+        {
+            Name = "ReadErrorCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.txt",
+                    Text = [new FileAssertRuleData { Contains = "Copyright" }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act - hold an exclusive lock so the asserter's read fails with an I/O error on Windows
+        using (new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            test.Run(context, tempDir.DirectoryPath);
+        }
+
+        // Assert - on Windows the locked file produces a reported I/O error; POSIX does not enforce
+        // the lock, so the read succeeds there and no error is expected
+        if (OperatingSystem.IsWindows())
+        {
+            Assert.Equal(1, context.ExitCode);
+        }
+        else
+        {
+            Assert.Equal(0, context.ExitCode);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses an HTML document and evaluates an XPath node
+    ///     count query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_HtmlQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid HTML file with two paragraph elements
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("report.html"), """
+            <!DOCTYPE html>
+            <html>
+            <head><title>Report</title></head>
+            <body><p>one</p><p>two</p></body>
+            </html>
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "HtmlQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.html",
+                    Html = [new FileAssertQueryData { Query = "//p", Count = 2 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a YAML document and evaluates a dot-notation
+    ///     query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_YamlQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid YAML file with a server mapping
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.yaml"), """
+            server:
+              host: localhost
+              port: 8080
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "YamlQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.yaml",
+                    Yaml = [new FileAssertQueryData { Query = "server.host", Count = 1 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a JSON document and evaluates a dot-notation
+    ///     query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_JsonQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid JSON file with a server object
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.json"), """
+            {
+              "server": {
+                "host": "localhost",
+                "port": 8080
+              }
+            }
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "JsonQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.json",
+                    Json = [new FileAssertQueryData { Query = "server.host", Count = 1 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
     }
 }

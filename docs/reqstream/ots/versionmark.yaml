@@ -29,10 +29,10 @@ sections:
           - id: FileAssert-OTS-VersionMark
             title: VersionMark shall capture and publish tool-version information.
             justification: |
-              Composite requirement covering capture and publish behaviors.
+              Composite requirement covering capture and publish behaviors. This is a non-requirement
+              grouping node; verification evidence is carried by the atomic child requirements, each
+              of which covers one behavior (capture and publish).
             tags: [ots]
             children:
               - FileAssert-OTS-VersionMark-Capture
               - FileAssert-OTS-VersionMark-Publish
-            tests:
-              - VersionMark_CapturesVersions

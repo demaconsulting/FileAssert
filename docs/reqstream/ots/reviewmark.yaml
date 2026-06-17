@@ -28,10 +28,10 @@ sections:
           - id: FileAssert-OTS-ReviewMark
             title: ReviewMark shall generate a review plan and review report from the review configuration.
             justification: |
-              Composite requirement covering plan and report generation.
+              Composite requirement covering plan and report generation. This is a non-requirement
+              grouping node; verification evidence is carried by the atomic child requirements,
+              each of which covers one behavior (plan generation and report generation).
             tags: [ots]
             children:
               - FileAssert-OTS-ReviewMark-Plan
               - FileAssert-OTS-ReviewMark-Report
-            tests:
-              - ReviewMark_ReviewPlanGeneration

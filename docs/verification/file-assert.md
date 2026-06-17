@@ -299,7 +299,7 @@ text content rule against the nested entry is satisfied.
 **Expected**: Exit code non-zero; the error message contains the breadcrumb-style entry path
 identifying the enclosing archive and the failing entry.
 
-### IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
+### IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero
 
 **Scenario**: An HTML assertion is configured with an XPath query that yields no matching elements
 and a `min: 1` constraint. Note: HtmlAgilityPack is intentionally lenient and does not raise a
@@ -322,11 +322,12 @@ elements) rather than a parse-failure path.
 
 ### IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
 
-**Scenario**: The `--depth` flag is supplied to control the heading depth used in `--validate`
-output. Detailed unit-level coverage for this behavior is provided by
+**Scenario**: The tool is invoked with `--validate --depth 3` so that the self-validation report is
+emitted with its headings shifted to the requested depth. The combined output is captured. Detailed
+unit-level coverage for the heading-depth behavior is provided by
 `Validation_Run_WithDepth_UsesSpecifiedHeadingDepth` in the SelfTest verification set
-(`docs/verification/file-assert/selftest/validation.md`); this entry records the system-level
-recognition of the `--depth` flag as part of the public CLI contract.
+(`docs/verification/file-assert/selftest/validation.md`).
 
-**Expected**: The flag is accepted at the system boundary and the heading depth used in
-validation output matches the supplied value.
+**Expected**: Exit code 0; the combined output contains the top-level validation heading at the
+requested depth (`### DEMA Consulting FileAssert`), confirming the `--depth` flag is recognized at
+the system boundary and applied to the validation output.

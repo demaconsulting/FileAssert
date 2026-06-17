@@ -35,6 +35,15 @@ node count that matches.
 
 **Expected**: The test passes and the result appears in the TRX output.
 
+#### FileAssertHtmlAssert_Run_MalformedHtml_ParsesAndQueriesSuccessfully_NoError
+
+**Scenario**: FileAssert hands HtmlAgilityPack syntactically imperfect markup (missing closing
+`</li>`, `</ul>`, `</body>`, and `</html>` tags). The lenient parser repairs the document and
+FileAssert then evaluates an XPath node-count query against the repaired tree.
+
+**Expected**: The parser does not fail on the malformed markup, the XPath query returns the
+expected node count, and the test passes with its result recorded in the TRX output.
+
 #### FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
 
 **Scenario**: FileAssert parses an HTML document with HtmlAgilityPack and asserts an XPath node

@@ -15,9 +15,9 @@ html, yaml, json, pdf, and recursive zip) is now available for zip entry validat
 
 ##### Properties
 
-| Property | Type                              | Description                                   |
-| :------- | :-------------------------------- | :-------------------------------------------- |
-| `Files`  | `IReadOnlyList<FileAssertFile>`   | The file assertions to apply to zip contents. |
+| Property | Type                            | Description                                   |
+| :------- | :------------------------------ | :-------------------------------------------- |
+| `Files`  | `IReadOnlyList<FileAssertFile>` | The file assertions to apply to zip contents. |
 
 ##### Factory Method
 
@@ -28,9 +28,9 @@ internal static FileAssertZipAssert Create(FileAssertZipData data)
 Converts each `FileAssertFileData` DTO from `data.Files` into a
 `FileAssertFile` instance after validating that a pattern is specified.
 
-| Parameter | Description                                          |
-| :-------- | :--------------------------------------------------- |
-| `data`    | The zip assertion DTO; must not be null.             |
+| Parameter | Description                              |
+| :-------- | :--------------------------------------- |
+| `data`    | The zip assertion DTO; must not be null. |
 
 | Return / Exception          | Condition                                                   |
 | :-------------------------- | :---------------------------------------------------------- |
@@ -52,9 +52,9 @@ Execution proceeds in the following steps:
 1. Calls `container.GetDisplayPath(entryPath)` to get the display path for breadcrumb use.
 2. Opens the entry stream via `container.OpenEntry(entryPath)`.
 3. Wraps the stream in a `ZipFileContainer(stream, displayPath)`.
-4. If `InvalidDataException` or `IOException` is thrown constructing the `ZipFileContainer`,
-   writes the parse error and returns immediately. The stream is disposed in a nested `try`
-   block even when the `ZipFileContainer` constructor throws.
+4. If `InvalidDataException`, `IOException`, or `UnauthorizedAccessException` is thrown constructing
+   the `ZipFileContainer`, writes the parse error and returns immediately. The stream is disposed in
+   a nested `try` block even when the `ZipFileContainer` constructor throws.
 5. Creates a scoped context via `context.WithPrefix(displayPath)`.
 6. Runs each `FileAssertFile` in `Files` against the `ZipFileContainer` and scoped context.
 
@@ -64,11 +64,11 @@ Execution proceeds in the following steps:
 File '<displayPath>' could not be read as a zip archive
 ```
 
-| Parameter    | Description                                               |
-| :----------- | :-------------------------------------------------------- |
-| `context`    | The `IContext` to report errors through.                  |
-| `container`  | The `IFileContainer` that owns the zip entry.             |
-| `entryPath`  | The relative path of the zip entry within the container.  |
+| Parameter   | Description                                              |
+| :---------- | :------------------------------------------------------- |
+| `context`   | The `IContext` to report errors through.                 |
+| `container` | The `IFileContainer` that owns the zip entry.            |
+| `entryPath` | The relative path of the zip entry within the container. |
 
 #### YAML Configuration
 
@@ -120,26 +120,26 @@ and applying the full FileAssert assertion suite to its contents using a scoped 
 
 #### Data Model
 
-| Property | Type                              | Description                                        |
-| :------- | :-------------------------------- | :------------------------------------------------- |
-| `Files`  | `IReadOnlyList<FileAssertFile>`   | File assertions applied to the zip contents.       |
+| Property | Type                            | Description                                  |
+| :------- | :------------------------------ | :------------------------------------------- |
+| `Files`  | `IReadOnlyList<FileAssertFile>` | File assertions applied to the zip contents. |
 
 #### Key Methods
 
-| Method                                                                  | Purpose                                                          |
-| :---------------------------------------------------------------------- | :--------------------------------------------------------------- |
-| `Create(FileAssertZipData data)`                                        | Factory: builds `FileAssertFile` list from DTO.                  |
-| `Run(IContext context, IFileContainer container, string entryPath)`     | Opens zip entry, wraps in container, runs file assertions.       |
+| Method                                                              | Purpose                                                    |
+| :------------------------------------------------------------------ | :--------------------------------------------------------- |
+| `Create(FileAssertZipData data)`                                    | Factory: builds `FileAssertFile` list from DTO.            |
+| `Run(IContext context, IFileContainer container, string entryPath)` | Opens zip entry, wraps in container, runs file assertions. |
 
 #### Error Handling
 
-| Scenario                                                                         | Handling                                                    |
-| :------------------------------------------------------------------------------- | :---------------------------------------------------------- |
-| Null `data` passed to `Create`                                                   | `ArgumentNullException` thrown.                             |
-| File entry with null or whitespace pattern in `Create`                           | `InvalidOperationException` thrown.                         |
-| `IOException` or `InvalidDataException` opening entry as zip                     | Error written via `context.WriteError`; `Run` returns.      |
-| Entry match count below `Min`                                                    | Reported by the `FileAssertFile` instance.                  |
-| Entry match count above `Max`                                                    | Reported by the `FileAssertFile` instance.                  |
+| Scenario                                                                                     | Handling                                               |
+| :------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| Null `data` passed to `Create`                                                               | `ArgumentNullException` thrown.                        |
+| File entry with null or whitespace pattern in `Create`                                       | `InvalidOperationException` thrown.                    |
+| `IOException`, `InvalidDataException`, or `UnauthorizedAccessException` opening entry as zip | Error written via `context.WriteError`; `Run` returns. |
+| Entry match count below `Min`                                                                | Reported by the `FileAssertFile` instance.             |
+| Entry match count above `Max`                                                                | Reported by the `FileAssertFile` instance.             |
 
 #### Dependencies
 

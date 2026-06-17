@@ -63,12 +63,22 @@ extension is provided to the context via `--results`.
 **Expected**: `FileAssertConfig.Run` completes and a TRX results file is written to the specified
 path.
 
+#### Configuration_Run_WithResultsFile_WritesJUnitResultsFile
+
+**Scenario**: A configuration file with one test is loaded. A results file path with an `.xml`
+extension is provided to the context via `--results`.
+
+**Expected**: `FileAssertConfig.Run` completes and a JUnit XML results file (containing a
+`<testsuites` root element) is written to the specified path. This confirms the subsystem selects
+the JUnit format from the file extension, complementing the TRX scenario above.
+
 #### Configuration_LoadYaml_InvalidYaml_ThrowsOrReportsParseError
 
 **Scenario** (negative): A YAML file containing syntactically invalid YAML (for example, an
 unbalanced bracket or a stray tab character that breaks the parser) is supplied to
 `FileAssertConfig.ReadFromFile`.
 
-**Expected**: The loader does not return a partially-constructed configuration; either a
-deserialization exception propagates to the caller, or the subsystem reports a parse error
-through the supplied context. In either case, no assertions are executed.
+**Expected**: `FileAssertConfig.ReadFromFile` does not return a partially-constructed configuration.
+A YAML deserialization exception (`YamlDotNet.Core.YamlException`, surfaced through the loader)
+propagates to the caller; no test hierarchy is constructed and no assertions are executed. The
+caller is responsible for translating the exception into the appropriate non-zero exit code.

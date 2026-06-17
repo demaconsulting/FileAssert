@@ -34,6 +34,10 @@ internal sealed class FileAssertYamlAssert
     /// <summary>
     ///     Represents a single dot-notation path assertion with count constraints.
     /// </summary>
+    /// <param name="Query">The dot-notation path to evaluate against the YAML document.</param>
+    /// <param name="Count">The exact number of matching nodes required, or null if no exact-count check.</param>
+    /// <param name="Min">The minimum number of matching nodes required, or null if no lower bound.</param>
+    /// <param name="Max">The maximum number of matching nodes permitted, or null if no upper bound.</param>
     private sealed record YamlQuery(string Query, int? Count, int? Min, int? Max);
 
     /// <summary>The list of configured dot-notation path assertions to evaluate against each matched YAML file.</summary>
@@ -55,8 +59,9 @@ internal sealed class FileAssertYamlAssert
     /// <returns>A new <see cref="FileAssertYamlAssert"/> instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="data"/> is null.</exception>
     /// <exception cref="InvalidOperationException">
-    ///     Thrown when a query does not specify a query string, or when the query path is malformed
-    ///     (contains leading/trailing dots or consecutive dots).
+    ///     Thrown when no queries are specified, when a query does not specify a query string, when
+    ///     the query path is malformed (contains leading/trailing dots or consecutive dots), when a
+    ///     query specifies none of count/min/max, or when a query's min exceeds its max.
     /// </exception>
     internal static FileAssertYamlAssert Create(IEnumerable<FileAssertQueryData> data)
     {
@@ -75,8 +80,25 @@ internal sealed class FileAssertYamlAssert
                     $"YAML query assertion has malformed path '{d.Query}'");
             }
 
+            if (d.Count == null && d.Min == null && d.Max == null)
+            {
+                throw new InvalidOperationException(
+                    $"YAML query '{d.Query}' must specify count, min, or max");
+            }
+
+            if (d.Min.HasValue && d.Max.HasValue && d.Min.Value > d.Max.Value)
+            {
+                throw new InvalidOperationException(
+                    $"YAML query '{d.Query}' has min greater than max");
+            }
+
             return new YamlQuery(d.Query, d.Count, d.Min, d.Max);
         }).ToList();
+
+        if (queries.Count == 0)
+        {
+            throw new InvalidOperationException("YAML assertion must specify at least one query");
+        }
 
         return new FileAssertYamlAssert(queries.AsReadOnly());
     }

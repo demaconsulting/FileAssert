@@ -7,8 +7,8 @@ defines the test scenarios, dependency usage, and requirement coverage for
 #### Verification Approach
 
 `FileAssertPdfAssert` is verified with unit tests defined in `FileAssertPdfAssertTests.cs`. Tests
-use PDF files in test fixtures and assert on page-count constraints, metadata field assertions,
-and text content assertions.
+generate PDF documents dynamically with `PdfDocumentBuilder`, write them to temporary files, and
+assert on page-count constraints, metadata field assertions, and text content assertions.
 
 #### Test Environment
 
@@ -42,6 +42,25 @@ meets the project minimum threshold.
 **Expected**: An `ArgumentNullException` is thrown.
 
 **Boundary / error path**: Null data guard.
+
+##### FileAssertPdfAssert_Create_MetadataRuleMissingField_ThrowsInvalidOperationException
+
+**Scenario**: `FileAssertPdfAssert.Create` is called with a metadata rule that declares a constraint
+but no field name, exercising the negative validation path of `PdfMetadataRule.FromData`.
+
+**Expected**: An `InvalidOperationException` is thrown.
+
+**Boundary / error path**: Missing metadata field guard.
+
+##### FileAssertPdfAssert_Create_MetadataRuleMissingContainsAndMatches_ThrowsInvalidOperationException
+
+**Scenario**: `FileAssertPdfAssert.Create` is called with a metadata rule that declares a field name
+but neither a `contains` nor a `matches` constraint, exercising the negative validation path of
+`PdfMetadataRule.FromData`.
+
+**Expected**: An `InvalidOperationException` is thrown.
+
+**Boundary / error path**: Missing metadata constraint guard.
 
 ##### FileAssertPdfAssert_Run_InvalidFile_WritesError
 
@@ -125,3 +144,13 @@ satisfy the rule.
 text matches the pattern.
 
 **Expected**: No errors are written to the context; exit code is 0.
+
+##### FileAssertPdfAssert_Run_MultiPageText_PageBoundarySeparated_NoError
+
+**Scenario**: `FileAssertPdfAssert.Run` is called on a dynamically generated two-page PDF where the
+first page ends with the token `concat` and the second begins with `enation`. A `contains` rule for
+`concat` and a `does-not-contain` rule for `concatenation` are applied to the joined page text.
+
+**Expected**: Both rules pass and exit code is 0, demonstrating that the `\n` separator inserted
+between page texts prevents the trailing token of one page from merging with the leading token of
+the next.

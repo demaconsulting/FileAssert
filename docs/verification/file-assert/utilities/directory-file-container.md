@@ -15,7 +15,9 @@ with the local file system.
 
 Tests execute in the standard CI pipeline environment using the xUnit test runner. The test
 collection is marked `[Collection("Sequential")]` to serialize tests that create and tear down
-shared temporary directories under `Path.GetTempPath()`. No special hardware, peripherals, or
+shared temporary directories. `TemporaryDirectory` creates these under
+`Environment.CurrentDirectory` (not `Path.GetTempPath()`) to avoid OS symlink resolution issues
+such as `/tmp` resolving to `/private/tmp` on macOS. No special hardware, peripherals, or
 environment configuration is required beyond the standard build toolchain.
 
 #### Acceptance Criteria

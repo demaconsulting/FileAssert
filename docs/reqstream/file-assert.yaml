@@ -114,7 +114,7 @@ sections:
           artifacts that should always be present. Users declare the lower bound they expect;
           the tool reports a violation when fewer files are found.
         children:
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MinCountConstraint
         tests:
           - IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero
 
@@ -127,7 +127,7 @@ sections:
           configuration files from silently passing validation. Users declare the upper
           bound they expect; the tool reports a violation when more files are found.
         children:
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MaxCountConstraint
         tests:
           - IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero
 
@@ -171,7 +171,8 @@ sections:
           YAML configuration, deserialization, and file system inspection all integrate
           correctly.
         children:
-          - FileAssert-FileAssertFile-SizeConstraints
+          - FileAssert-FileAssertFile-MinSize
+          - FileAssert-FileAssertFile-MaxSize
         tests:
           - IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero
           - IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
@@ -315,7 +316,7 @@ sections:
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
-          - IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
+          - IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero
 
       - id: FileAssert-System-YamlAssertions
         title: |
@@ -403,6 +404,7 @@ sections:
         children:
           - FileAssert-Context-Depth
         tests:
+          - IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
           - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 
       - id: FileAssert-System-MultiPlatform

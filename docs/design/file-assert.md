@@ -21,6 +21,8 @@ files do not meet the declared constraints.
 |                         | if the file cannot be parsed.                                             |
 | Output and logging      | Report results to stdout/stderr and optionally to a log file.             |
 | Self-validation         | Verify core functionality at run time via built-in tests.                 |
+| Validation output depth | Accept a `--depth` value (1-6) controlling the Markdown heading level of  |
+|                         | self-validation output, defaulting to 1.                                  |
 | Results serialization   | Write test outcome records to TRX or JUnit XML format.                    |
 
 ## Software Item Hierarchy
@@ -50,7 +52,9 @@ The following sequence describes the normal execution path:
 2. `Program.Run` inspects context flags in priority order:
    a. `--version` — prints the version string and exits.
    b. `--help` — prints usage information and exits.
-   c. `--validate` — delegates to `Validation.Run` for self-validation and exits.
+   c. `--validate` — delegates to `Validation.Run` for self-validation and exits. The optional
+      `--depth` value (default 1, range 1-6) sets the Markdown heading level used for the
+      self-validation report so it can be embedded at an appropriate level within a larger document.
    d. Default — delegates to `Program.RunToolLogic`.
 3. `RunToolLogic` resolves the configuration file from `context.ConfigFile` (default:
    `.fileassert.yaml`; overridden by `--config`). If absent, it prints guidance (default

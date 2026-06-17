@@ -23,6 +23,10 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 using DemaConsulting.FileAssert.Utilities;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
+using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -148,6 +152,25 @@ public sealed class FileAssertZipAssertTests
         var outerEntry = outerArchive.CreateEntry(innerEntryName);
         using var outerEntryStream = outerEntry.Open();
         outerEntryStream.Write(innerZipBytes, 0, innerZipBytes.Length);
+    }
+
+    /// <summary>
+    ///     Creates a zip file at <paramref name="path"/> containing a single entry named
+    ///     <paramref name="entryName"/> whose content is the supplied raw bytes. Used for
+    ///     binary entries such as PDF documents that cannot be written as text.
+    /// </summary>
+    /// <param name="path">Destination path for the zip file. Any existing file is removed first.</param>
+    /// <param name="entryName">Name of the entry to add to the archive.</param>
+    /// <param name="content">The raw bytes to write as the entry content.</param>
+    private static void CreateZipFileWithBinaryEntry(string path, string entryName, byte[] content)
+    {
+        // Remove the file first because ZipFile.Open in Create mode requires a non-existent path
+        File.Delete(path);
+
+        using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
+        var archiveEntry = archive.CreateEntry(entryName);
+        using var stream = archiveEntry.Open();
+        stream.Write(content, 0, content.Length);
     }
 
     /// <summary>
@@ -636,6 +659,112 @@ public sealed class FileAssertZipAssertTests
             // Assert
             Assert.Equal(1, context.ExitCode);
             Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains HTML that satisfies
+    ///     the XPath count constraint of the <c>html:</c> asserter.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryHtmlMatchesXPath_NoError()
+    {
+        // Arrange - create a zip with an HTML entry containing exactly one <title> element
+        const string sampleHtml = """
+            <!DOCTYPE html>
+            <html>
+            <head><title>Report</title></head>
+            <body><p>one</p><p>two</p></body>
+            </html>
+            """;
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("report.html", sampleHtml)]);
+            var data = new FileAssertZipData
+            {
+                Files =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "report.html",
+                        Html = [new FileAssertQueryData { Query = "//p", Count = 2 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains a PDF that satisfies
+    ///     the page-count constraint of the <c>pdf:</c> asserter.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryPdfMatchesConstraint_NoError()
+    {
+        // Arrange - build a single-page PDF with body text and store it as a zip entry
+        byte[] pdfBytes;
+        using (var builder = new PdfDocumentBuilder())
+        {
+            var page = builder.AddPage(PageSize.A4);
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            page.AddText("Hello World", 12, new PdfPoint(50, 700), font);
+            pdfBytes = builder.Build();
+        }
+
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithBinaryEntry(tempFile, "report.pdf", pdfBytes);
+            var data = new FileAssertZipData
+            {
+                Files =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "report.pdf",
+                        Pdf = new FileAssertPdfData
+                        {
+                            Pages = new FileAssertPdfPagesData { Min = 1, Max = 1 },
+                            Text = [new FileAssertRuleData { Contains = "Hello" }]
+                        }
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
         }
         finally
         {

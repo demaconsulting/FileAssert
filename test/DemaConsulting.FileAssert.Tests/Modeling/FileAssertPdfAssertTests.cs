@@ -535,4 +535,98 @@ public sealed class FileAssertPdfAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that text extracted from adjacent pages is not concatenated across the page
+    ///     boundary: the <c>\n</c> separator inserted between page texts prevents the trailing token
+    ///     of one page from merging with the leading token of the next.
+    /// </summary>
+    [Fact]
+    public void FileAssertPdfAssert_Run_MultiPageText_PageBoundarySeparated_NoError()
+    {
+        // Arrange - build a two-page PDF where page one ends with "concat" and page two starts
+        // with "enation"; without the page separator these would merge into "concatenation"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            using var builder = new PdfDocumentBuilder();
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+
+            var page1 = builder.AddPage(PageSize.A4);
+            page1.AddText("concat", 12, new PdfPoint(50, 700), font);
+
+            var page2 = builder.AddPage(PageSize.A4);
+            page2.AddText("enation", 12, new PdfPoint(50, 700), font);
+
+            File.WriteAllBytes(tempFile, builder.Build());
+
+            var data = new FileAssertPdfData
+            {
+                Text =
+                [
+                    // Each page's token is present in the joined text
+                    new FileAssertRuleData { Contains = "concat" },
+                    // But the merged word must NOT appear because the pages are separated by '\n'
+                    new FileAssertRuleData { DoesNotContain = "concatenation" }
+                ]
+            };
+            var pdfAssert = FileAssertPdfAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            pdfAssert.Run(context, container, fileName);
+
+            // Assert - both rules pass, proving the page boundary prevents cross-page concatenation
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a metadata rule
+    ///     does not specify a field name (negative path of <c>PdfMetadataRule.FromData</c>).
+    /// </summary>
+    [Fact]
+    public void FileAssertPdfAssert_Create_MetadataRuleMissingField_ThrowsInvalidOperationException()
+    {
+        // Arrange - a metadata rule with a constraint but no field name
+        var data = new FileAssertPdfData
+        {
+            Metadata =
+            [
+                new FileAssertPdfMetadataRuleData { Contains = "Test" }
+            ]
+        };
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertPdfAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a metadata rule
+    ///     specifies neither <c>contains</c> nor <c>matches</c> (negative path of
+    ///     <c>PdfMetadataRule.FromData</c>).
+    /// </summary>
+    [Fact]
+    public void FileAssertPdfAssert_Create_MetadataRuleMissingContainsAndMatches_ThrowsInvalidOperationException()
+    {
+        // Arrange - a metadata rule with a field name but no contains/matches constraint
+        var data = new FileAssertPdfData
+        {
+            Metadata =
+            [
+                new FileAssertPdfMetadataRuleData { Field = "Title" }
+            ]
+        };
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertPdfAssert.Create(data));
+    }
 }

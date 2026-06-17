@@ -41,6 +41,8 @@ sections:
           - FileAssertZipAssert_Run_EntryMissingRequiredText_WritesError
           - FileAssertZipAssert_Run_EntryXmlMatchesXPath_NoError
           - FileAssertZipAssert_Run_EntryXmlFailsXPath_WritesError
+          - FileAssertZipAssert_Run_EntryHtmlMatchesXPath_NoError
+          - FileAssertZipAssert_Run_EntryPdfMatchesConstraint_NoError
           - FileAssertZipAssert_Run_EntryYamlMatchesQuery_NoError
           - FileAssertZipAssert_Run_EntryYamlFailsQuery_WritesError
           - FileAssertZipAssert_Run_EntryJsonMatchesQuery_NoError

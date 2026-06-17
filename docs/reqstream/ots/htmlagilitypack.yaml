@@ -16,6 +16,7 @@ sections:
             tags: [ots]
             tests:
               - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+              - FileAssertHtmlAssert_Run_MalformedHtml_ParsesAndQueriesSuccessfully_NoError
 
           - id: FileAssert-OTS-HtmlAgilityPack-XPath
             title: HtmlAgilityPack shall evaluate XPath node-count and text queries against parsed HTML.

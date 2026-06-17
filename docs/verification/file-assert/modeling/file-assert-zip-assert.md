@@ -118,6 +118,21 @@ XML that does not satisfy the XPath count constraint.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
+##### FileAssertZipAssert_Run_EntryHtmlMatchesXPath_NoError
+
+**Scenario**: `FileAssertZipAssert.Run` is called on a zip archive whose matching entry contains
+HTML, validated through the `html:` asserter, that satisfies the XPath count constraint.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+##### FileAssertZipAssert_Run_EntryPdfMatchesConstraint_NoError
+
+**Scenario**: `FileAssertZipAssert.Run` is called on a zip archive whose matching entry is a PDF
+document, validated through the `pdf:` asserter, that satisfies the page-count constraint and a
+body-text `contains` rule. The PDF is generated in memory and stored as a binary zip entry.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
 ##### FileAssertZipAssert_Run_EntryYamlMatchesQuery_NoError
 
 **Scenario**: `FileAssertZipAssert.Run` is called on a zip archive whose matching entry contains

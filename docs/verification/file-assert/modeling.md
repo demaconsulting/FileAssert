@@ -55,10 +55,50 @@ not valid XML.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
+#### Modeling_FileTypeParsing_ValidPdf_ParsesAndAppliesPageCount_NoError
+
+**Scenario**: A `FileAssertFile` with a `pdf:` assertion is configured against a generated
+single-page PDF. The subsystem parses the file as a PDF (a file-type parse distinct from a query
+assertion) and applies a page-count constraint.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+#### Modeling_FileTypeReadError_LockedFile_ReportsError
+
+**Scenario**: A `FileAssertFile` with a `text:` assertion is configured against a readable file
+whose content would otherwise satisfy the rule, but the file is held under an exclusive lock so the
+read fails with an I/O error. This exercises the read-error path, which is separate from any
+content-parse failure.
+
+**Expected**: On Windows (where the share mode is enforced) an I/O read error is reported and exit
+code is non-zero; on POSIX systems the lock is not enforced, the read succeeds, and exit code is 0.
+Only Windows runs count as evidence for the linked requirement.
+
 #### Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
 
 **Scenario**: A `FileAssertFile` with an XML XPath assertion is configured and a valid XML file
 satisfying the query and count constraints is provided.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+#### Modeling_QueryAssertions_HtmlQueryMeetsCount_NoError
+
+**Scenario**: A `FileAssertFile` with an `html:` XPath assertion is configured and a valid HTML file
+satisfying the node-count constraint is provided.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+#### Modeling_QueryAssertions_YamlQueryMeetsCount_NoError
+
+**Scenario**: A `FileAssertFile` with a `yaml:` dot-notation assertion is configured and a valid
+YAML file satisfying the count constraint is provided.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+#### Modeling_QueryAssertions_JsonQueryMeetsCount_NoError
+
+**Scenario**: A `FileAssertFile` with a `json:` dot-notation assertion is configured and a valid
+JSON file satisfying the count constraint is provided.
 
 **Expected**: No errors are written to the context; exit code is 0.
 

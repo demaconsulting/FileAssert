@@ -9,7 +9,7 @@ sections:
       - title: xUnit Requirements
         requirements:
           - id: FileAssert-OTS-xUnit-Discover
-            title: xUnit shall discover all test methods annotated with `[Fact]` (or equivalent).
+            title: xUnit shall discover all test methods annotated with the `[Fact]` and `[Theory]` attributes.
             justification: |
               The framework must locate every test the project has declared so that none are
               silently skipped. Successful test runs that report the expected number of cases

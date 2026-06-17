@@ -33,6 +33,48 @@ verified when the test scenarios that exercise its functionality pass in the CI 
 
 **Expected**: The test passes and the result appears in the TRX output.
 
+#### FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
+
+**Scenario**: FileAssert counts the pages of a valid PDF via PdfPig and reports an error when the
+document has fewer pages than the configured minimum.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
+#### FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
+
+**Scenario**: FileAssert counts the pages of a valid PDF via PdfPig and reports an error when the
+document has more pages than the configured maximum.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
+#### FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
+
+**Scenario**: FileAssert reads PDF metadata via PdfPig and reports an error when a `contains` rule
+targets a metadata field that is not present in the document.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
+#### FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
+
+**Scenario**: FileAssert reads PDF metadata via PdfPig and reports an error when a `matches` regex
+rule does not match the field value.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
+#### FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
+
+**Scenario**: FileAssert extracts page text via PdfPig and confirms that a `contains` rule is
+satisfied when the required content is present.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
+#### FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
+
+**Scenario**: FileAssert extracts page text via PdfPig and confirms that a `matches` regex rule is
+satisfied when the extracted text matches the pattern.
+
+**Expected**: The test passes and the result appears in the TRX output.
+
 #### FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
 
 **Scenario**: FileAssert reads PDF metadata via PdfPig and asserts that the title contains an

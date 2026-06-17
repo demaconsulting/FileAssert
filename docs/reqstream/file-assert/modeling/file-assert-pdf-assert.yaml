@@ -15,6 +15,8 @@ sections:
         tests:
           - FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
           - FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
+          - FileAssertPdfAssert_Create_MetadataRuleMissingField_ThrowsInvalidOperationException
+          - FileAssertPdfAssert_Create_MetadataRuleMissingContainsAndMatches_ThrowsInvalidOperationException
 
       - id: FileAssert-FileAssertPdfAssert-ParseError
         title: |
@@ -71,3 +73,4 @@ sections:
           - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
           - FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
           - FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
+          - FileAssertPdfAssert_Run_MultiPageText_PageBoundarySeparated_NoError

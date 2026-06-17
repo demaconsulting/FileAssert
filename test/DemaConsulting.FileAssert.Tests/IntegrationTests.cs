@@ -149,6 +149,26 @@ public partial class IntegrationTests
     }
 
     /// <summary>
+    ///     Test that the --depth flag controls the markdown heading depth of the --validate output.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth()
+    {
+        // Act - run self-validation with a heading depth of 3
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            _dllPath,
+            "--validate",
+            "--depth",
+            "3");
+
+        // Assert - validation passes and the top heading is emitted at the requested depth (###)
+        Assert.Equal(0, exitCode);
+        Assert.Contains("### DEMA Consulting FileAssert", output);
+    }
+
+    /// <summary>
     ///     Test that silent flag suppresses output.
     /// </summary>
     [Fact]
@@ -1039,10 +1059,12 @@ public partial class IntegrationTests
     }
 
     /// <summary>
-    ///     Test that an HTML assert with a non-existent XPath query and min:1 returns a non-zero exit code.
+    ///     Test that an HTML assert whose XPath query matches zero elements with min:1 returns a
+    ///     non-zero exit code. HtmlAgilityPack parses leniently, so this exercises the zero-match
+    ///     assertion-failure path rather than a parse-failure path.
     /// </summary>
     [Fact]
-    public void IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero()
+    public void IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero()
     {
         // Arrange
         using var tempDir = new TemporaryDirectory();

@@ -338,6 +338,47 @@ public sealed class FileAssertYamlAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when the query list is empty.
+    /// </summary>
+    [Fact]
+    public void FileAssertYamlAssert_Create_EmptyQueryList_ThrowsInvalidOperationException()
+    {
+        // Arrange - no queries declared at all
+        var data = new List<FileAssertQueryData>();
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a query specifies
+    ///     none of count, min, or max.
+    /// </summary>
+    [Fact]
+    public void FileAssertYamlAssert_Create_QueryWithoutConstraint_ThrowsInvalidOperationException()
+    {
+        // Arrange - a valid path but no count/min/max constraint
+        var data = new List<FileAssertQueryData> { new() { Query = "tools" } };
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a query's min
+    ///     constraint exceeds its max constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertYamlAssert_Create_QueryMinGreaterThanMax_ThrowsInvalidOperationException()
+    {
+        // Arrange - min is greater than max
+        var data = new List<FileAssertQueryData> { new() { Query = "tools", Min = 5, Max = 2 } };
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertYamlAssert.Create(data));
+    }
+
+    /// <summary>
     ///     Verifies that Run reports zero matches for all queries when the YAML file has no documents.
     /// </summary>
     [Fact]
