@@ -143,12 +143,15 @@ serialization.
 | Results file write failure                  | Exception caught; error written via `context.WriteError`.     |
 | Individual test assertion failures          | Accumulated in `context` via `WriteError`; run continues.     |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `Program.RunToolLogic` calls `ReadFromFile` with `context.ConfigFile`, then calls
-  `Run(context, context.Filters)`.
 - **Creates**: `FileAssertTest` instances via `FileAssertTest.Create` during `ReadFromFile`.
 - **Calls**: `FileAssertTest.MatchesFilter` and `FileAssertTest.Run` for each qualifying test.
 - **Uses**: `Context` for output and error reporting; `DemaConsulting.TestResults.IO.TrxSerializer`
   and `JUnitSerializer` for results serialization; `YamlDotNet.Serialization.DeserializerBuilder`
   for configuration parsing.
+
+#### Callers
+
+- **Caller**: `Program.RunToolLogic` calls `ReadFromFile` with `context.ConfigFile`, then calls
+  `Run(context, context.Filters)`.

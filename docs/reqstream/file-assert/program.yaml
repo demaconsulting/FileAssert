@@ -35,11 +35,12 @@ sections:
 
       - id: FileAssert-Program-DefaultBehavior
         title: |
-          The Program class shall display version and copyright information when invoked
-          with no recognized flags or configuration file arguments.
+          The Program class shall, when invoked with no arguments, print the application banner
+          and then load and execute the default `.fileassert.yaml` configuration.
         justification: |
-          When no arguments are supplied the tool has no test suite to run. Displaying the
-          version and copyright banner gives the user a quick visual confirmation that the
-          tool is installed and operational without producing an unexpected error.
+          When no arguments are supplied the tool prints the version and copyright banner to give
+          the user a quick visual confirmation that the tool is installed and operational, then
+          proceeds to load and run the default-named configuration from the current working
+          directory so the project can be validated with zero configuration.
         tests:
           - Program_Run_NoArguments_DisplaysDefaultBehavior

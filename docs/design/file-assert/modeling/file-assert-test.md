@@ -106,13 +106,16 @@ filter criteria for selective execution, and drive execution of its assertions.
 | Null `context` or `basePath` in `Run`    | `ArgumentNullException` thrown.                      |
 | Individual file assertion failures       | Accumulated in `context`; subsequent files continue. |
 
-#### Interactions
+#### Dependencies
+
+- **Creates and owns**: `FileAssertFile` instances via `FileAssertFile.Create`.
+- **Calls**: `FileAssertFile.Run(context, container)` for each file assertion, where `container`
+  is a `DirectoryFileContainer` wrapping `basePath`.
+- **OTS dependency**: `DirectoryFileContainer` (Utilities subsystem) for wrapping the base path.
+
+#### Callers
 
 - **Created by**: `FileAssertConfig.ReadFromFile` via `FileAssertTest.Create` for each
   `FileAssertTestData` entry.
 - **Called by**: `FileAssertConfig.Run` — calls `MatchesFilter(filterList)` then
   `Run(context, basePath)` for each qualifying test.
-- **Creates and owns**: `FileAssertFile` instances via `FileAssertFile.Create`.
-- **Calls**: `FileAssertFile.Run(context, container)` for each file assertion, where `container`
-  is a `DirectoryFileContainer` wrapping `basePath`.
-- **OTS dependency**: `DirectoryFileContainer` (Utilities subsystem) for wrapping the base path.

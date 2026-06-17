@@ -395,3 +395,31 @@ reviews:
     paths:
       - "docs/reqstream/ots/xunit.yaml"                              # OTS requirements
       - "docs/verification/ots/xunit.md"                             # OTS verification
+
+  # FileAssert-OTS-YamlDotNet Review
+  - id: FileAssert-OTS-YamlDotNet
+    title: Review FileAssert OTS YamlDotNet Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/yamldotnet.yaml"                         # OTS requirements
+      - "docs/verification/ots/yamldotnet.md"                        # OTS verification
+
+  # FileAssert-OTS-PdfPig Review
+  - id: FileAssert-OTS-PdfPig
+    title: Review FileAssert OTS PdfPig Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/pdfpig.yaml"                             # OTS requirements
+      - "docs/verification/ots/pdfpig.md"                            # OTS verification
+
+  # FileAssert-OTS-HtmlAgilityPack Review
+  - id: FileAssert-OTS-HtmlAgilityPack
+    title: Review FileAssert OTS HtmlAgilityPack Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/htmlagilitypack.yaml"                    # OTS requirements
+      - "docs/verification/ots/htmlagilitypack.md"                   # OTS verification
+
+  # FileAssert-OTS-FileSystemGlobbing Review
+  - id: FileAssert-OTS-FileSystemGlobbing
+    title: Review FileAssert OTS FileSystemGlobbing Requirements and Verification
+    paths:
+      - "docs/reqstream/ots/filesystemglobbing.yaml"                 # OTS requirements
+      - "docs/verification/ots/filesystemglobbing.md"                # OTS verification

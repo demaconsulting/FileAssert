@@ -26,6 +26,7 @@ sections:
           immediately gives users a clear, actionable error message.
         tests:
           - FileAssertYamlAssert_Run_InvalidFile_WritesError
+          - FileAssertYamlAssert_Run_InvalidFile_RemainingAssertionsSkipped
 
       - id: FileAssert-FileAssertYamlAssert-QueryAssertions
         title: |

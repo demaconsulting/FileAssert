@@ -1,0 +1,26 @@
+---
+# HtmlAgilityPack OTS Software Requirements
+#
+# Requirements for the HtmlAgilityPack library functionality consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: HtmlAgilityPack Requirements
+        requirements:
+          - id: FileAssert-OTS-HtmlAgilityPack
+            title: HtmlAgilityPack shall parse HTML documents leniently and evaluate XPath queries against them.
+            justification: |
+              HtmlAgilityPack is the HTML parser used by FileAssert to read HTML documents under test
+              for `html:` XPath assertions. FileAssert relies on HtmlAgilityPack to parse syntactically
+              imperfect markup without failing and to evaluate XPath node-count and text queries
+              against the resulting document.
+            tags: [ots]
+            # Test IDs below are FileAssert's own tests that exercise HtmlAgilityPack through the
+            # assertion pipeline. Each ID matches a TestCase Name in the test TRX output
+            # (artifacts/**/*.trx in CI); ReqStream consumes the artifacts/**/*.trx glob.
+            tests:
+              - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+              - FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
+              - FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError
+              - FileAssertHtmlAssert_Run_NonExistentFile_WritesError

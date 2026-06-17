@@ -89,7 +89,11 @@ The `Context` class uses the following collaboration flow:
 6. `WriteError` additionally sets the internal `_hasErrors` flag, causing `ExitCode`
    to return `1` for the remainder of the context's lifetime.
 
-### Interactions with Other Subsystems
+### Dependencies
+
+- None.
+
+### Callers
 
 | Consumer          | Usage                                                                |
 | :---------------- | :------------------------------------------------------------------- |

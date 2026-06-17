@@ -129,11 +129,14 @@ Each `HtmlQuery` (private nested record) holds:
 | Query result above `Max`                                                 |
 | Query result not equal to `Count`                                        |
 
-#### Interactions
+#### Dependencies
+
+- **OTS dependency**: `HtmlAgilityPack.HtmlDocument` for lenient HTML parsing and
+  `HtmlDocument.DocumentNode.SelectNodes` for XPath evaluation.
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, container, entryPath)` when the `html:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertHtmlAssert.Create`.
-- **OTS dependency**: `HtmlAgilityPack.HtmlDocument` for lenient HTML parsing and
-  `HtmlDocument.DocumentNode.SelectNodes` for XPath evaluation.
-- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

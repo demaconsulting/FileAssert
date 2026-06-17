@@ -130,13 +130,17 @@ outcomes reflected in `context.ExitCode`.
 | `InvalidOperationException` | Invalid state detected by downstream code                   | Caught in `Main`; message printed to standard error; exit code `1`     |
 | All other exceptions        | Unexpected runtime failure (programming error or I/O fault) | Printed to standard error and re-thrown; runtime generates crash log   |
 
-### Interactions
+### Dependencies
 
 - `Context` provides the parsed flags, config path, filters, and output methods used by every
   execution path.
 - `Validation` runs the built-in self-validation flow when `context.Validate` is set.
 - `FileAssertConfig` loads the YAML configuration and executes matching assertions during normal
   tool runs.
+
+### Callers
+
+- None.
 
 ### Design Decisions
 

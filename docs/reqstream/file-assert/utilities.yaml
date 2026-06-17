@@ -45,7 +45,10 @@ sections:
         children:
           - FileAssert-IFileContainer-UniformAccess
           - FileAssert-DirectoryFileContainer-FileSystemAccess
-          - FileAssert-ZipFileContainer-ZipArchiveAccess
+          - FileAssert-ZipFileContainer-EntryEnumeration
+          - FileAssert-ZipFileContainer-BreadcrumbDisplayPath
+          - FileAssert-ZipFileContainer-MissingEntryException
+          - FileAssert-ZipFileContainer-EntrySize
         tests:
           - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
           - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
@@ -59,3 +62,4 @@ sections:
           - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
           - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
           - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
+          - Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd

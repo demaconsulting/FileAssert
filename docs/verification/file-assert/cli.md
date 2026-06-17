@@ -4,7 +4,7 @@ This document describes the subsystem-level verification design for the `Cli` su
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `Cli` subsystem requirements.
 
-### Verification Strategy
+### Verification Approach
 
 The `Cli` subsystem boundary at `Program` is verified by integration tests defined in
 `CliTests.cs`. Each test exercises `Context.Create` and `Program.Run` together, treating the pair
@@ -34,7 +34,7 @@ this document execute and pass in the CI pipeline without any test failures, une
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
 
-### Integration Test Scenarios
+### Test Scenarios
 
 The following integration test scenarios are defined in `CliTests.cs`.
 

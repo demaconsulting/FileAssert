@@ -267,7 +267,7 @@ tests:
     files:
       - pattern: "output/package.zip"
         zip:
-          entries:
+          files:
             - pattern: "**/*.dll"
               min: 1
 ```

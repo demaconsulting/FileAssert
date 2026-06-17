@@ -141,9 +141,11 @@ Each in-house software item has corresponding artifacts in parallel directory tr
 - Source code: `src/{SystemName}/.../{Item}.cs` (PascalCase for C#)
 - Tests: `test/{SystemName}.Tests/.../{Item}Tests.cs` (PascalCase for C#)
 
-OTS items have no design documentation; their artifacts sit parallel to system folders:
+OTS items have integration/usage design docs at `docs/design/ots/{ots-name}.md` describing how
+FileAssert integrates the third-party library; their artifacts sit parallel to system folders:
 
 - Requirements: `docs/reqstream/ots/{ots-name}.yaml`
+- Design: `docs/design/ots/{ots-name}.md`
 - Verification: `docs/verification/ots/{ots-name}.md`
 
 Review-sets: defined in `.reviewmark.yaml`

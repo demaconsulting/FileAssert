@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertTest.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -114,6 +114,14 @@ from a test tag.
 
 **Requirement coverage**: Case-insensitive tag matching requirement.
 
+##### FileAssertTest_Create_NullFilters_ThrowsArgumentNullException
+
+**Scenario**: `FileAssertTest.MatchesFilter` is called with a `null` filters argument.
+
+**Expected**: An `ArgumentNullException` is thrown.
+
+**Boundary / error path**: Null filters guard.
+
 ##### FileAssertTest_Run_RunsAllFiles
 
 **Scenario**: `FileAssertTest.Run` is called on a test with multiple file entries.
@@ -150,6 +158,7 @@ from a test tag.
 - **Tag filter**: FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue,
   FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
 - **Non-matching filter**: FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
+- **Null filters guard**: FileAssertTest_Create_NullFilters_ThrowsArgumentNullException
 - **Run all files**: FileAssertTest_Run_RunsAllFiles
 - **Null context guard**: FileAssertTest_Run_NullContext_ThrowsArgumentNullException
 - **Null base path guard**: FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException

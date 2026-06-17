@@ -116,10 +116,13 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 | `IOException` or `UnauthorizedAccessException` on read | Error via `context.WriteError`; `Run` returns.       |
 | Individual rule check fails                            | Error via `context` in `Rule.Apply`; rules continue. |
 
-#### Interactions
+#### Dependencies
+
+- **Delegates to**: `FileAssertRule.Apply` for each content rule.
+- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Caller**: `FileAssertFile.Run` calls `TextAssert.Run(context, container, entryPath)` when the `text:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertTextAssert.Create`.
-- **Delegates to**: `FileAssertRule.Apply` for each content rule.
-- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.

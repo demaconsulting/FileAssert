@@ -56,13 +56,17 @@ and runs the tests.
 3. `FileAssertData` classes are pure data holders: they carry no logic and are used only during
    deserialization. Once `ReadFromFile` returns, the DTOs are discarded.
 
-### Interactions with Other Subsystems
+### Dependencies
 
 | Dependency  | Usage                                                                       |
 | :---------- | :-------------------------------------------------------------------------- |
 | Cli         | Receives a `Context` to report errors and write progress output.            |
 | Modeling    | Delegates test construction to `FileAssertTest.Create` and execution to     |
 |             | `FileAssertTest.Run`.                                                       |
+
+### Callers
+
+- None.
 
 ### YAML Configuration Format
 

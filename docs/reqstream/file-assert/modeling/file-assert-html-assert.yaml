@@ -26,6 +26,7 @@ sections:
           immediately gives users a clear, actionable error message.
         tests:
           - FileAssertHtmlAssert_Run_NonExistentFile_WritesError
+          - FileAssertHtmlAssert_Run_UnauthorizedAccess_WritesError
 
       - id: FileAssert-FileAssertHtmlAssert-QueryAssertions
         title: |
@@ -40,6 +41,8 @@ sections:
           - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
           - FileAssertHtmlAssert_Run_ExactCount_Mismatch_WritesError
           - FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
+          - FileAssertHtmlAssert_Run_MinCount_BelowMinimum_WritesError
+          - FileAssertHtmlAssert_Run_MaxCount_ExceedsMaximum_WritesError
           - FileAssertHtmlAssert_Run_NonExistentFile_WritesError
           - FileAssertHtmlAssert_Run_InvalidXPathQuery_WritesError
           - FileAssertHtmlAssert_Run_XPathExactTextMatch_Matches_NoError

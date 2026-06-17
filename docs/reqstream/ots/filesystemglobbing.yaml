@@ -1,0 +1,25 @@
+---
+# FileSystemGlobbing OTS Software Requirements
+#
+# Requirements for the Microsoft.Extensions.FileSystemGlobbing library consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: FileSystemGlobbing Requirements
+        requirements:
+          - id: FileAssert-OTS-FileSystemGlobbing
+            title: FileSystemGlobbing shall match files against glob patterns including recursive wildcards.
+            justification: |
+              Microsoft.Extensions.FileSystemGlobbing provides the glob pattern matcher used by
+              FileAssert to resolve file-assertion patterns (for example `**/*.dll`) against the set of
+              candidate files in a directory or container. FileAssert relies on it for correct
+              wildcard, recursive-wildcard, and exact-path matching that drives count constraints.
+            tags: [ots]
+            # Test IDs below are FileAssert's own tests that exercise FileSystemGlobbing through the
+            # assertion pipeline. Each ID matches a TestCase Name in the test TRX output
+            # (artifacts/**/*.trx in CI); ReqStream consumes the artifacts/**/*.trx glob.
+            tests:
+              - FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError
+              - FileAssertFile_Run_TooFewFiles_WritesError
+              - FileAssertFile_Run_TooManyFiles_WritesError

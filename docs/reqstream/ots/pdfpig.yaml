@@ -1,0 +1,26 @@
+---
+# PdfPig OTS Software Requirements
+#
+# Requirements for the PdfPig library functionality consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: PdfPig Requirements
+        requirements:
+          - id: FileAssert-OTS-PdfPig
+            title: PdfPig shall parse PDF documents and expose page count, metadata, and text content.
+            justification: |
+              PdfPig (UglyToad.PdfPig) is the PDF parsing library used by FileAssert to read PDF
+              documents under test for `pdf:` assertions. FileAssert relies on PdfPig to extract page
+              counts, document metadata, and page text, and to detect files that are not valid PDF
+              documents.
+            tags: [ots]
+            # Test IDs below are FileAssert's own tests that exercise PdfPig through the assertion
+            # pipeline. Each ID matches a TestCase Name in the test TRX output
+            # (artifacts/**/*.trx in CI); ReqStream consumes the artifacts/**/*.trx glob.
+            tests:
+              - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+              - FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
+              - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
+              - FileAssertPdfAssert_Run_InvalidFile_WritesError

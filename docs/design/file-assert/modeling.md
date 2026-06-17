@@ -91,13 +91,17 @@ Domain objects are constructed and executed in the following layers:
    `context.WithPrefix(displayPath)` to create a scoped `IContext` that prepends the archive
    path as a breadcrumb to every nested error message.
 
-### Interactions with Other Subsystems
+### Dependencies
 
 | Dependency    | Usage                                                          |
 | :------------ | :------------------------------------------------------------- |
 | Cli           | Receives `IContext` to report assertion failures.              |
 | Utilities     | Accesses files via `IFileContainer` and `ZipFileContainer`.    |
 | Configuration | Accepts DTO types for test, file, and rule construction.       |
+
+### Callers
+
+- None.
 
 ### Design Decisions
 

@@ -204,7 +204,7 @@ public sealed class FileAssertZipAssertTests
         // Arrange
         var data = new FileAssertZipData
         {
-            Entries =
+            Files =
             [
                 new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
             ]
@@ -241,7 +241,7 @@ public sealed class FileAssertZipAssertTests
         // Arrange
         var data = new FileAssertZipData
         {
-            Entries = [new FileAssertFileData { Min = 1 }]
+            Files = [new FileAssertFileData { Min = 1 }]
         };
 
         // Act / Assert
@@ -262,7 +262,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFile(tempFile, ["lib/net8.0/MyLib.dll"]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData { Pattern = "lib/net8.0/MyLib.dll", Min = 1, Max = 1 }
                 ]
@@ -301,7 +301,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFile(tempFile, ["lib/net8.0/MyLib.dll", "lib/net8.0/MyOther.dll"]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
                 ]
@@ -340,7 +340,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFile(tempFile, []);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
                 ]
@@ -379,7 +379,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFile(tempFile, ["lib/net8.0/MyLib.dll", "lib/net8.0/MyOther.dll"]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData { Pattern = "lib/**/*.dll", Max = 1 }
                 ]
@@ -417,7 +417,7 @@ public sealed class FileAssertZipAssertTests
             File.WriteAllBytes(tempFile, [0x00, 0x01, 0x02, 0x03]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData { Pattern = "**/*.dll", Min = 1 }
                 ]
@@ -452,7 +452,7 @@ public sealed class FileAssertZipAssertTests
         var missingFileName = $"does_not_exist_{Guid.NewGuid():N}.zip";
         var data = new FileAssertZipData
         {
-            Entries =
+            Files =
             [
                 new FileAssertFileData { Pattern = "**/*.dll", Min = 1 }
             ]
@@ -486,7 +486,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("readme.txt", "hello world")]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -528,7 +528,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("readme.txt", "goodbye world")]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -571,7 +571,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.xml", SampleXmlContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -614,7 +614,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.xml", SampleXmlContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -657,7 +657,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.yaml", SampleYamlContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -700,7 +700,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.yaml", SampleYamlContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -743,7 +743,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.json", SampleJsonContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -786,7 +786,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("config.json", SampleJsonContent)]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -830,7 +830,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
             var data = new FileAssertZipData
             {
-                Entries = [new FileAssertFileData { Pattern = "data.bin", MinSize = 5 }]
+                Files = [new FileAssertFileData { Pattern = "data.bin", MinSize = 5 }]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -867,7 +867,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
             var data = new FileAssertZipData
             {
-                Entries = [new FileAssertFileData { Pattern = "data.bin", MinSize = 20 }]
+                Files = [new FileAssertFileData { Pattern = "data.bin", MinSize = 20 }]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -904,7 +904,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
             var data = new FileAssertZipData
             {
-                Entries = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 20 }]
+                Files = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 20 }]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -941,7 +941,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
             var data = new FileAssertZipData
             {
-                Entries = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 5 }]
+                Files = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 5 }]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
@@ -979,7 +979,7 @@ public sealed class FileAssertZipAssertTests
             // The inner zip assert checks the text entry and the outer zip assert locates inner.zip
             var innerZipData = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -991,7 +991,7 @@ public sealed class FileAssertZipAssertTests
             };
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {
@@ -1035,7 +1035,7 @@ public sealed class FileAssertZipAssertTests
             CreateZipFileWithContent(tempFile, [("readme.txt", "goodbye world")]);
             var data = new FileAssertZipData
             {
-                Entries =
+                Files =
                 [
                     new FileAssertFileData
                     {

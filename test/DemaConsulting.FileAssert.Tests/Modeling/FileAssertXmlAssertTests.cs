@@ -70,6 +70,22 @@ public sealed class FileAssertXmlAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a query is blank.
+    /// </summary>
+    [Fact]
+    public void FileAssertXmlAssert_Create_BlankQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange: query data whose query string is blank (whitespace)
+        var data = new List<FileAssertQueryData>
+        {
+            new() { Query = "   ", Count = 1 }
+        };
+
+        // Act / Assert: a blank query is rejected
+        Assert.Throws<InvalidOperationException>(() => FileAssertXmlAssert.Create(data));
+    }
+
+    /// <summary>
     ///     Verifies that Run reports an error when the file cannot be parsed as XML.
     /// </summary>
     [Fact]

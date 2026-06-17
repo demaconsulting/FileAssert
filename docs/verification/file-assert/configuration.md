@@ -29,7 +29,7 @@ this document execute and pass in the CI pipeline without any test failures, une
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
 
-### Integration Test Scenarios
+### Test Scenarios
 
 The following integration test scenarios are defined in `ConfigurationTests.cs`.
 

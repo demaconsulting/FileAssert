@@ -220,12 +220,15 @@ Inner class `PdfPages` holds:
 | Body text rule failure                      | Delegated to `FileAssertRule.Apply`; errors reported individually.   |
 | Unrecognised metadata field name            | Result is `null`; `Contains`/`Matches` run against null.             |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, container, entryPath)` when the `pdf:`
-  assertion block is declared.
-- **Created by**: `FileAssertFile.Create` via `FileAssertPdfAssert.Create`.
 - **Delegates to**: `FileAssertRule.Apply` for body text validation.
 - **OTS dependency**: `PdfPig.PdfDocument` for PDF parsing and text extraction.
 - **Configuration dependency**: `FileAssertPdfData`, `FileAssertPdfMetadataRuleData`,
   `FileAssertPdfPagesData`, and `FileAssertRuleData` DTOs from the Configuration subsystem.
+
+#### Callers
+
+- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, container, entryPath)` when the `pdf:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertPdfAssert.Create`.

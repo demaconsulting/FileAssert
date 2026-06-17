@@ -49,7 +49,7 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 4. Results are accumulated and, when `context.ResultsFile` is non-null, serialized to TRX or JUnit
    XML using `DemaConsulting.TestResults`.
 
-### Interactions with Other Subsystems
+### Dependencies
 
 | Dependency  | Usage                                                              |
 | :---------- | :----------------------------------------------------------------- |
@@ -57,6 +57,10 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 | Utilities   | Uses `PathHelpers.SafePathCombine` to create temporary file paths. |
 | Program     | References `Program.Version` for the system information header.    |
 |             | Calls `Program.Run` and `Context.Create` to exercise the tool.     |
+
+### Callers
+
+- None.
 
 ### Design Decisions
 

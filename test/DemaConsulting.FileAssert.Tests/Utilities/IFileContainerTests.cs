@@ -274,4 +274,36 @@ public sealed class IFileContainerTests
         // Assert
         Assert.Equal("outer.zip > inner.txt", displayPath);
     }
+
+    /// <summary>
+    ///     Verifies that GetEntries excludes zip directory marker entries (names ending in '/').
+    /// </summary>
+    [Fact]
+    public void ZipFileContainer_GetEntries_ExcludesDirectoryMarkers()
+    {
+        // Arrange - build a zip containing a directory marker entry and a file entry
+        using var ms = new MemoryStream();
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            // Directory marker entry (name ends in '/', no content)
+            zip.CreateEntry("lib/");
+
+            // Regular file entry within that directory
+            var fileEntry = zip.CreateEntry("lib/a.dll");
+            using var w = new StreamWriter(fileEntry.Open());
+            w.Write("a");
+        }
+
+        var bytes = ms.ToArray();
+        using var stream = new MemoryStream(bytes);
+        using var container = new ZipFileContainer(stream, "archive.zip");
+
+        // Act
+        var entries = container.GetEntries().ToList();
+
+        // Assert - only the file entry is returned; the directory marker is excluded
+        Assert.Single(entries);
+        Assert.Contains("lib/a.dll", entries);
+        Assert.DoesNotContain("lib/", entries);
+    }
 }

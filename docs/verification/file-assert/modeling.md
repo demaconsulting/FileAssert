@@ -4,7 +4,7 @@ This document describes the subsystem-level verification design for the `Modelin
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `Modeling` subsystem requirements.
 
-### Verification Strategy
+### Verification Approach
 
 The `Modeling` subsystem is verified by integration tests defined in `ModelingTests.cs`. Each test
 exercises the assertion execution pipeline — creating a `FileAssertTest`, resolving file patterns,
@@ -30,7 +30,7 @@ this document execute and pass in the CI pipeline without any test failures, une
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
 
-### Integration Test Scenarios
+### Test Scenarios
 
 The following integration test scenarios are defined in `ModelingTests.cs`.
 
@@ -64,7 +64,7 @@ satisfying the query and count constraints is provided.
 
 #### Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet
 
-**Scenario**: A `FileAssertTest` is configured with a zip archive pattern and a `zip: entries:` block
+**Scenario**: A `FileAssertTest` is configured with a zip archive pattern and a `zip: files:` block
 matching a text entry with a `text: contains:` rule. The zip archive in the temporary directory
 contains the entry with content that satisfies the constraint.
 

@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.IO.Compression;
 using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Utilities;
@@ -70,5 +71,55 @@ public class UtilitiesTests
         // Assert: directory and its contents are removed after disposal
         Assert.False(File.Exists(filePath),
             "Scratch file should be removed after the temporary directory is disposed.");
+    }
+
+    /// <summary>
+    ///     Verifies the file-container abstraction end-to-end by building a real zip archive with
+    ///     multiple entries and exercising the full <see cref="ZipFileContainer"/> surface:
+    ///     <c>GetEntries</c>, <c>OpenEntry</c>, <c>GetEntrySize</c>, and <c>GetDisplayPath</c>.
+    /// </summary>
+    [Fact]
+    public void Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd()
+    {
+        // Arrange: build a zip archive in memory with multiple entries
+        using var ms = new MemoryStream();
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            var readme = zip.CreateEntry("docs/readme.txt");
+            using (var w = new StreamWriter(readme.Open()))
+            {
+                w.Write("hello");
+            }
+
+            var data = zip.CreateEntry("lib/data.bin");
+            using (var w = new StreamWriter(data.Open()))
+            {
+                w.Write("12345678");
+            }
+        }
+
+        var bytes = ms.ToArray();
+        using var stream = new MemoryStream(bytes);
+        using var container = new ZipFileContainer(stream, "package.zip");
+
+        // Act & Assert: GetEntries returns both file entries
+        var entries = container.GetEntries().ToList();
+        Assert.Equal(2, entries.Count);
+        Assert.Contains("docs/readme.txt", entries);
+        Assert.Contains("lib/data.bin", entries);
+
+        // Act & Assert: OpenEntry returns the entry content
+        using (var entryStream = container.OpenEntry("docs/readme.txt"))
+        using (var reader = new StreamReader(entryStream))
+        {
+            Assert.Equal("hello", reader.ReadToEnd());
+        }
+
+        // Act & Assert: GetEntrySize returns the uncompressed length
+        Assert.Equal(5L, container.GetEntrySize("docs/readme.txt"));
+        Assert.Equal(8L, container.GetEntrySize("lib/data.bin"));
+
+        // Act & Assert: GetDisplayPath includes the archive breadcrumb prefix
+        Assert.Equal("package.zip > lib/data.bin", container.GetDisplayPath("lib/data.bin"));
     }
 }

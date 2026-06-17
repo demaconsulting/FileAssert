@@ -129,10 +129,13 @@ Each `YamlQuery` (private nested record) holds:
 | Query result above `Max`                                            | Error written via `context.WriteError`; subsequent queries continue.  |
 | Query result not equal to `Count`                                   | Error written via `context.WriteError`; subsequent queries continue.  |
 
-#### Interactions
+#### Dependencies
+
+- **OTS dependency**: `YamlDotNet.RepresentationModel.YamlStream` for parsing and traversal.
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Caller**: `FileAssertFile.Run` calls `YamlAssert.Run(context, container, entryPath)` when the `yaml:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertYamlAssert.Create`.
-- **OTS dependency**: `YamlDotNet.RepresentationModel.YamlStream` for parsing and traversal.
-- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

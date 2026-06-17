@@ -160,10 +160,8 @@ delegates per-file content validation to file-type-specific assert units.
 | File size outside `MinSize`/`MaxSize`  | Error written via `context.WriteError`; per-file assertions continue. |
 | Parse errors in assert units           | Assert units catch parse exceptions and call `context.WriteError`.    |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertTest.Run` iterates the `Files` collection and calls `Run` on each instance.
-- **Created by**: `FileAssertTest.Create` via `FileAssertFile.Create`.
 - **Delegates to**:
   - `FileAssertTextAssert.Run` for text content rules.
   - `FileAssertPdfAssert.Run` for PDF document rules.
@@ -173,3 +171,8 @@ delegates per-file content validation to file-type-specific assert units.
   - `FileAssertJsonAssert.Run` for JSON path rules.
   - `FileAssertZipAssert.Run` for zip archive entry rules.
 - **OTS dependency**: `Microsoft.Extensions.FileSystemGlobbing.Matcher` for file discovery.
+
+#### Callers
+
+- **Caller**: `FileAssertTest.Run` iterates the `Files` collection and calls `Run` on each instance.
+- **Created by**: `FileAssertTest.Create` via `FileAssertFile.Create`.

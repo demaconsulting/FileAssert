@@ -4,7 +4,7 @@ This document describes the subsystem-level verification design for the `SelfTes
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `SelfTest` subsystem requirements.
 
-### Verification Strategy
+### Verification Approach
 
 The `SelfTest` subsystem is verified by integration tests defined in `SelfTestTests.cs`. Each
 test exercises the `Validation.Run` method with a real `Context` to confirm that the subsystem

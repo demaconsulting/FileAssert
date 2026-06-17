@@ -206,13 +206,18 @@ public class FileAssertTestTests
     [Fact]
     public void FileAssertTest_Run_RunsAllFiles()
     {
-        // Arrange - create a temp directory with a file matching the pattern
+        // Arrange - create a temp directory with files matching two patterns
         using var tempDir = new TemporaryDirectory();
         File.WriteAllText(tempDir.GetFilePath("sample.txt"), "content");
+        File.WriteAllText(tempDir.GetFilePath("sample.log"), "log content");
         var data = new FileAssertTestData
         {
             Name = "Run Test",
-            Files = [new FileAssertFileData { Pattern = "*.txt", Min = 1 }]
+            Files =
+            [
+                new FileAssertFileData { Pattern = "*.txt", Min = 1 },
+                new FileAssertFileData { Pattern = "*.log", Min = 1 }
+            ]
         };
         var test = FileAssertTest.Create(data);
         using var context = Context.Create(["--silent"]);
@@ -220,8 +225,21 @@ public class FileAssertTestTests
         // Act
         test.Run(context, tempDir.DirectoryPath);
 
-        // Assert - min=1 would have produced an error if the file had not been found
+        // Assert - min=1 on each file assertion would have produced an error if not found
         Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that MatchesFilter throws <see cref="ArgumentNullException"/> when filters is null.
+    /// </summary>
+    [Fact]
+    public void FileAssertTest_Create_NullFilters_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var test = FileAssertTest.Create(new FileAssertTestData { Name = "Test" });
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => test.MatchesFilter(null!));
     }
 
     /// <summary>

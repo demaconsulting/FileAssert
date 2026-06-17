@@ -20,6 +20,7 @@ This document covers the verification design for the same software items describ
 - **Program** — entry point and execution orchestrator
 - **Cli** — command-line interface subsystem
   - **Context** — argument parser and I/O owner
+  - **IContext** — output and error-reporting contract for assertion context
 - **Configuration** — configuration loading subsystem
   - **FileAssertConfig** — configuration file reader
   - **FileAssertData** — deserialization data transfer objects
@@ -37,6 +38,9 @@ This document covers the verification design for the same software items describ
 - **Utilities** — shared utility subsystem
   - **PathHelpers** — safe path combination utilities
   - **TemporaryDirectory** — temporary workspace lifecycle utility
+  - **IFileContainer** — uniform file-access abstraction over directories and zip archives
+  - **DirectoryFileContainer** — filesystem-backed file container
+  - **ZipFileContainer** — zip-archive-backed file container
 - **SelfTest** — self-validation subsystem
   - **Validation** — self-validation test runner
 
@@ -57,6 +61,10 @@ The following OTS items are also covered:
 - **VersionMark** — tool-version documentation tool
 - **WeasyPrint** — HTML-to-PDF conversion tool
 - **xUnit** — unit-testing framework
+- **YamlDotNet** — YAML parsing and deserialization library
+- **PdfPig** — PDF parsing library
+- **HtmlAgilityPack** — HTML parsing library
+- **FileSystemGlobbing** — glob pattern-matching library
 
 ## Software Structure
 
@@ -66,7 +74,8 @@ The following tree shows the software items covered by this document:
 FileAssert (System)
 ├── Program (Unit)
 ├── Cli (Subsystem)
-│   └── Context (Unit)
+│   ├── Context (Unit)
+│   └── IContext (Unit)
 ├── Configuration (Subsystem)
 │   ├── FileAssertConfig (Unit)
 │   └── FileAssertData (Unit)
@@ -83,7 +92,10 @@ FileAssert (System)
 │   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
 │   ├── PathHelpers (Unit)
-│   └── TemporaryDirectory (Unit)
+│   ├── TemporaryDirectory (Unit)
+│   ├── IFileContainer (Unit)
+│   ├── DirectoryFileContainer (Unit)
+│   └── ZipFileContainer (Unit)
 └── SelfTest (Subsystem)
     └── Validation (Unit)
 
@@ -97,7 +109,11 @@ OTS Items
 ├── SonarMark
 ├── VersionMark
 ├── WeasyPrint
-└── xUnit
+├── xUnit
+├── YamlDotNet
+├── PdfPig
+├── HtmlAgilityPack
+└── FileSystemGlobbing
 ```
 
 ## Companion Artifact Structure
@@ -113,6 +129,7 @@ In-house items have corresponding artifacts in parallel directory trees:
 OTS items have parallel artifacts in:
 
 - Requirements: `docs/reqstream/ots/{ots-name}.yaml`
+- Design: `docs/design/ots/{ots-name}.md`
 - Verification: `docs/verification/ots/{ots-name}.md`
 
 Review-sets: defined in `.reviewmark.yaml`

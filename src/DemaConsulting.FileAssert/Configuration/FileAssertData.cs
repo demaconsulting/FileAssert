@@ -208,12 +208,12 @@ internal sealed class FileAssertPdfData
 internal sealed class FileAssertZipData
 {
     /// <summary>
-    ///     Gets or sets the list of file assertions to validate against the zip archive entries.
-    ///     Each entry uses the same <see cref="FileAssertFileData"/> schema as top-level file assertions,
+    ///     Gets or sets the list of file assertions to validate against the files inside the zip archive.
+    ///     Each file uses the same <see cref="FileAssertFileData"/> schema as top-level file assertions,
     ///     enabling the full assertion suite (text, xml, html, yaml, json, pdf, nested zip) inside archives.
     /// </summary>
-    [YamlMember(Alias = "entries")]
-    public List<FileAssertFileData>? Entries { get; set; }
+    [YamlMember(Alias = "files")]
+    public List<FileAssertFileData>? Files { get; set; }
 }
 
 /// <summary>

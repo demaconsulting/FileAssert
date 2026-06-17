@@ -105,6 +105,9 @@ it also closes and disposes the underlying stream.
 - **`IOException` on missing entry**: Using the parent type rather than `FileNotFoundException`
   avoids conflating file-system semantics with archive-entry semantics. All callers catch
   `IOException` for I/O failures.
+- **Directory marker exclusion**: Zip archives may contain explicit directory entries whose names
+  end with `/`. These markers carry no file content, so `GetEntries` filters them out and exposes
+  only real file entries to the asserters.
 - **Display name as breadcrumb prefix**: Embedding the archive name in `GetDisplayPath` makes
   error messages self-explanatory without requiring the asserter to format the path itself.
 

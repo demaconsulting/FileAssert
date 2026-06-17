@@ -3,9 +3,10 @@
 #### Overview
 
 The `FileAssertXmlAssert` class attempts to parse a matched file as an XML document using
-`System.Xml.Linq` (`XDocument.Load`). If parsing fails, an error is reported and no further
-assertions are evaluated. Otherwise it evaluates each XPath query against the document and
-applies min, max, and exact count constraints to the number of matching nodes.
+`System.Xml.Linq`. The entry is opened through `IFileContainer.OpenEntry` and the resulting
+stream is passed to `XDocument.Load(stream)`. If parsing fails, an error is reported and no
+further assertions are evaluated. Otherwise it evaluates each XPath query against the document
+and applies min, max, and exact count constraints to the number of matching nodes.
 
 #### Class Structure
 
@@ -15,14 +16,14 @@ The main class coordinating XPath-based node count assertions for an XML file.
 
 ###### FileAssertXmlAssert Fields
 
-| Field      | Type                             | Description             |
-| :--------- | :------------------------------- | :---------------------- |
-| `_queries` | `IReadOnlyList<XmlQuery>`        | XPath query assertions. |
+| Field      | Type                      | Description             |
+|:-----------|:--------------------------|:------------------------|
+| `_queries` | `IReadOnlyList<XmlQuery>` | XPath query assertions. |
 
 Each `XmlQuery` entry holds:
 
 | Property | Type     | Description                      |
-| :------- | :------- | :------------------------------- |
+|:---------|:---------|:---------------------------------|
 | `Query`  | `string` | XPath expression to evaluate.    |
 | `Count`  | `int?`   | Exact number of matched nodes.   |
 | `Min`    | `int?`   | Minimum number of matched nodes. |
@@ -42,7 +43,8 @@ internal void Run(IContext context, IFileContainer container, string entryPath)
 
 Execution proceeds in the following steps:
 
-1. Attempts to load the file using `XDocument.Load(fileName)`.
+1. Opens the matched entry via `container.OpenEntry(entryPath)` and loads the resulting stream
+   using `XDocument.Load(stream)`.
 2. If an exception is thrown, writes the error below and returns immediately.
 3. For each query entry: evaluates the XPath expression against the document using
    `System.Xml.XPath` extension methods. If the XPath expression is malformed and throws
@@ -96,13 +98,13 @@ exact node-count constraints per query.
 #### Data Model
 
 | Field      | Type                      | Description                             |
-| :--------- | :------------------------ | :-------------------------------------- |
+|:-----------|:--------------------------|:----------------------------------------|
 | `_queries` | `IReadOnlyList<XmlQuery>` | Ordered list of XPath query assertions. |
 
 Each `XmlQuery` (private nested record) holds:
 
 | Property | Type     | Description                              |
-| :------- | :------- | :--------------------------------------- |
+|:---------|:---------|:-----------------------------------------|
 | `Query`  | `string` | XPath expression to evaluate.            |
 | `Count`  | `int?`   | Expected exact node count; `null` = N/A. |
 | `Min`    | `int?`   | Minimum node count; `null` = no bound.   |
@@ -111,24 +113,28 @@ Each `XmlQuery` (private nested record) holds:
 #### Key Methods
 
 | Method                                          | Purpose                                                       |
-| :---------------------------------------------- | :------------------------------------------------------------ |
+|:------------------------------------------------|:--------------------------------------------------------------|
 | `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `XmlQuery` instances.                  |
 | `Run(IContext, IFileContainer, string)`         | Loads the XML file and evaluates each XPath query against it. |
 
 #### Error Handling
 
-| Scenario                                         | Handling                                                                          |
-| :----------------------------------------------- | :-------------------------------------------------------------------------------- |
-| `XDocument.Load` throws on parse failure         | Error written via `context.WriteError`; `Run` returns immediately.                |
-| XPath expression malformed (`XPathException`)    | Error written via `context.WriteError`; evaluation continues with the next query. |
-| Query result below `Min`                         | Error written via `context.WriteError`; subsequent queries continue.              |
-| Query result above `Max`                         | Error written via `context.WriteError`; subsequent queries continue.              |
-| Query result not equal to `Count`                | Error written via `context.WriteError`; subsequent queries continue.              |
+| Scenario                                      | Handling                                                                          |
+|:----------------------------------------------|:----------------------------------------------------------------------------------|
+| `Create` called with a blank/whitespace query | `InvalidOperationException` thrown at construction time before any file access.   |
+| `XDocument.Load` throws on parse failure      | Error written via `context.WriteError`; `Run` returns immediately.                |
+| XPath expression malformed (`XPathException`) | Error written via `context.WriteError`; evaluation continues with the next query. |
+| Query result below `Min`                      | Error written via `context.WriteError`; subsequent queries continue.              |
+| Query result above `Max`                      | Error written via `context.WriteError`; subsequent queries continue.              |
+| Query result not equal to `Count`             | Error written via `context.WriteError`; subsequent queries continue.              |
 
-#### Interactions
+#### Dependencies
+
+- **OTS dependency**: `System.Xml.Linq.XDocument` and `System.Xml.XPath` extension methods (BCL).
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Caller**: `FileAssertFile.Run` calls `XmlAssert.Run(context, container, entryPath)` when the `xml:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertXmlAssert.Create`.
-- **OTS dependency**: `System.Xml.Linq.XDocument` and `System.Xml.XPath` extension methods (BCL).
-- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

@@ -79,7 +79,11 @@ subsystem; they are pure utilities with no awareness of the tool's execution sta
 `IFileContainer` and its implementations are similarly isolated, depending only on .NET BCL
 file-system and compression APIs.
 
-### Interactions with Other Subsystems
+### Dependencies
+
+- None.
+
+### Callers
 
 | Consumer  | Usage                                                                                     |
 | :-------- | :---------------------------------------------------------------------------------------- |

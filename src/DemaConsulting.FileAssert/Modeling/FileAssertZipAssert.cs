@@ -72,7 +72,7 @@ internal sealed class FileAssertZipAssert
         ArgumentNullException.ThrowIfNull(data);
 
         // Convert each entry DTO into a FileAssertFile domain object using the shared factory
-        var files = (data.Entries ?? [])
+        var files = (data.Files ?? [])
             .Select(FileAssertFile.Create)
             .ToList();
 

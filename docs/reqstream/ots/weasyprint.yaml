@@ -17,6 +17,9 @@ sections:
               content in the rendered text. Passing FileAssert assertions for each document type
               proves WeasyPrint executed correctly and produced meaningful output.
             tags: [ots]
+            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
+            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
+            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
             tests:
               - WeasyPrint_BuildNotesPdf
               - WeasyPrint_CodeQualityPdf

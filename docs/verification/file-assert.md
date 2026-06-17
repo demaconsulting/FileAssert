@@ -134,6 +134,14 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
+### IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero
+
+**Scenario**: The tool is invoked with no arguments from a working directory containing a
+`.fileassert.yaml` file whose assertions are satisfied.
+
+**Expected**: Exit code 0; the default-named configuration is loaded and executed from the
+current working directory without an explicit `--config` argument.
+
 ### IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
 
 **Scenario**: All assertions pass and `--results <path>.trx` is specified.
@@ -236,6 +244,13 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
+### IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
+
+**Scenario**: A PDF assertion is configured against a valid PDF, but the asserted condition
+(e.g., page count or text content) is not satisfied.
+
+**Expected**: Exit code non-zero.
+
 ### IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
 
 **Scenario**: A zip assertion is configured and the archive contains entries that satisfy
@@ -248,6 +263,41 @@ the declared constraints.
 **Scenario**: A zip assertion is configured but the target file is not a valid zip archive.
 
 **Expected**: Exit code non-zero.
+
+### IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero
+
+**Scenario**: A zip assertion declares a text content rule against an entry whose content
+satisfies the rule.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero
+
+**Scenario**: A zip assertion declares a text content rule against an entry whose content does
+not satisfy the rule.
+
+**Expected**: Exit code non-zero.
+
+### IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero
+
+**Scenario**: A zip assertion declares an XML XPath assertion against a zip entry whose XML
+satisfies the query constraint.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero
+
+**Scenario**: A zip assertion targets an entry that is itself a zip archive (zip-in-zip), and a
+text content rule against the nested entry is satisfied.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
+
+**Scenario**: A zip assertion's content rule fails for an entry inside the archive.
+
+**Expected**: Exit code non-zero; the error message contains the breadcrumb-style entry path
+identifying the enclosing archive and the failing entry.
 
 ### IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
 
@@ -281,6 +331,7 @@ elements) rather than a parse-failure path.
 - **Log file output**: IntegrationTest_LogFlag_WritesOutputToFile
 - **Invalid argument rejection**: IntegrationTest_UnknownArgument_ReturnsError
 - **Test filtering**: IntegrationTest_TestFiltering_OnlyRunsMatchingTests
+- **Default behavior**: IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero
 - **File assertions**: IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero,
   IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
 - **Results output**: IntegrationTest_PassingAssertions_WritesTrxWithPassedResults,
@@ -305,4 +356,16 @@ elements) rather than a parse-failure path.
   IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero,
   IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
 - **Zip archive assertions**: IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+  IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero,
+  IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero,
+  IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero,
+  IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero,
+  IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero,
+  IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
+- **Multi-platform / multi-runtime coverage**: The `FileAssert-System-MultiPlatform` and
+  `FileAssert-System-MultiRuntime` requirements are not verified by dedicated scenarios.
+  Instead, every integration test scenario above is executed across all nine runtime/platform
+  combinations listed in the Test Environments table. ReqStream links these requirements to the
+  same integration tests through platform- and runtime-scoped source filters
+  (`windows@`, `ubuntu@`, `macos@`, `dotnet8.x@`, `dotnet9.x@`, `dotnet10.x@`), so a passing
+  result on each combination provides the coverage evidence.

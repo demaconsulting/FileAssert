@@ -138,7 +138,12 @@ to the console.
 | Null `prefix` passed to `WithPrefix`      | `ArgumentNullException` thrown before `ScopedContext` created.|
 | Assertion or rule failure at runtime      | Handled by `WriteError`; no throw — errors in `_errorCount`.  |
 
-#### Interactions
+#### Dependencies
+
+- **Internal dependency**: `ArgumentParser` (private nested class) is used exclusively by
+  `Context.Create`. `ScopedContext` (private nested class) is returned by `WithPrefix`.
+
+#### Callers
 
 - **Callers**: `Program.RunToolLogic` constructs a `Context` via `Context.Create` and passes it
   to all execution paths. `Validation.Run` constructs additional `Context` instances to drive
@@ -149,5 +154,3 @@ to the console.
   receive an `IContext` reference and call `WriteLine` / `WriteError` to report results.
   `FileAssertZipAssert` additionally calls `context.WithPrefix(displayPath)` to derive a scoped
   context for nested zip entry assertions.
-- **Internal dependency**: `ArgumentParser` (private nested class) is used exclusively by
-  `Context.Create`. `ScopedContext` (private nested class) is returned by `WithPrefix`.

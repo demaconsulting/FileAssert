@@ -108,9 +108,14 @@ internal sealed class FileAssertJsonAssert
             var json = reader.ReadToEnd();
             document = JsonDocument.Parse(json);
         }
-        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        catch (JsonException)
         {
             context.WriteError($"File '{displayPath}' could not be parsed as a JSON document");
+            return;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            context.WriteError($"File '{displayPath}' could not be read");
             return;
         }
 

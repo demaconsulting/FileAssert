@@ -339,4 +339,95 @@ public sealed class FileAssertJsonAssertTests
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() => FileAssertJsonAssert.Create(data));
     }
+
+    /// <summary>
+    ///     Verifies that Run reports a parse-specific error message when the file is not valid JSON.
+    /// </summary>
+    [Fact]
+    public void FileAssertJsonAssert_Run_InvalidJson_WritesParseError()
+    {
+        // Arrange - create a non-JSON file
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, "this is not JSON");
+            var data = new List<FileAssertQueryData> { new() { Query = "tools", Count = 1 } };
+            var jsonAssert = FileAssertJsonAssert.Create(data);
+            var context = new CapturingContext();
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            jsonAssert.Run(context, container, fileName);
+
+            // Assert: the error identifies a parse failure, not an IO failure
+            Assert.Single(context.Errors);
+            Assert.Contains("could not be parsed as a JSON document", context.Errors[0]);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an IO-specific error message when the entry cannot be read.
+    /// </summary>
+    [Fact]
+    public void FileAssertJsonAssert_Run_IOError_WritesReadError()
+    {
+        // Arrange - a container whose OpenEntry raises an IO failure
+        var data = new List<FileAssertQueryData> { new() { Query = "tools", Count = 1 } };
+        var jsonAssert = FileAssertJsonAssert.Create(data);
+        var context = new CapturingContext();
+        var container = new ThrowingFileContainer();
+
+        // Act
+        jsonAssert.Run(context, container, "data.json");
+
+        // Assert: the error identifies an IO failure, not a parse failure
+        Assert.Single(context.Errors);
+        Assert.Contains("could not be read", context.Errors[0]);
+    }
+
+    /// <summary>
+    ///     Captures error messages written via <see cref="WriteError"/> for assertion in tests.
+    /// </summary>
+    private sealed class CapturingContext : IContext
+    {
+        private readonly List<string> _errors = [];
+
+        /// <summary>Gets all error messages captured since this context was created.</summary>
+        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+
+        /// <inheritdoc/>
+        public void WriteLine(string message) { }
+
+        /// <inheritdoc/>
+        public void WriteError(string message) => _errors.Add(message);
+
+        /// <inheritdoc/>
+        public IContext WithPrefix(string prefix) => this;
+    }
+
+    /// <summary>
+    ///     A file container whose <see cref="OpenEntry"/> raises an <see cref="UnauthorizedAccessException"/>
+    ///     to simulate an IO failure while reading an entry.
+    /// </summary>
+    private sealed class ThrowingFileContainer : IFileContainer
+    {
+        /// <inheritdoc/>
+        public IReadOnlyList<string> GetEntries() => ["data.json"];
+
+        /// <inheritdoc/>
+        public Stream OpenEntry(string entryPath) => throw new UnauthorizedAccessException("denied");
+
+        /// <inheritdoc/>
+        public long GetEntrySize(string entryPath) => 0;
+
+        /// <inheritdoc/>
+        public string GetDisplayPath(string entryPath) => entryPath;
+    }
 }

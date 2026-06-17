@@ -338,7 +338,50 @@ public partial class IntegrationTests
     }
 
     /// <summary>
-    ///     Test that a configuration file with a failing assertion causes the tool to return non-zero.
+    ///     Test that, when invoked with no arguments, the tool loads and executes the
+    ///     <c>.fileassert.yaml</c> file from the current working directory.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        // Create a file that satisfies the assertion
+        File.WriteAllText(tempDir.GetFilePath("sample.txt"), "Copyright (c) DEMA Consulting");
+
+        // Write the default-named config in the working directory (no --config argument)
+        File.WriteAllText(tempDir.GetFilePath(".fileassert.yaml"), """
+            tests:
+              - name: "License Check"
+                files:
+                  - pattern: "*.txt"
+                    min: 1
+                    text:
+                      - contains: "Copyright"
+            """);
+
+        var originalDirectory = Directory.GetCurrentDirectory();
+        try
+        {
+            // Act: run with no arguments from the temporary working directory
+            Directory.SetCurrentDirectory(tempDir.DirectoryPath);
+            var exitCode = Runner.Run(
+                out var _,
+                "dotnet",
+                _dllPath);
+
+            // Assert
+            Assert.Equal(0, exitCode);
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(originalDirectory);
+        }
+    }
+
+    /// <summary>
+    ///     Test that the tool returns a non-zero exit code when a valid configuration's
+    ///     assertions fail.
     /// </summary>
     [Fact]
     public void IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero()
@@ -951,7 +994,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "*.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "*.txt"
                           min: 1
             """);
@@ -982,7 +1025,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "*.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "*.txt"
                           min: 1
             """);
@@ -1173,7 +1216,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "*.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "readme.txt"
                           text:
                             - contains: "hello"
@@ -1212,7 +1255,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "*.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "readme.txt"
                           text:
                             - contains: "not-present"
@@ -1251,7 +1294,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "*.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "config.xml"
                           xml:
                             - query: "//item"
@@ -1302,11 +1345,11 @@ public partial class IntegrationTests
                 files:
                   - pattern: "outer.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "inner.zip"
                           min: 1
                           zip:
-                            entries:
+                            files:
                               - pattern: "readme.txt"
                                 min: 1
                                 text:
@@ -1346,7 +1389,7 @@ public partial class IntegrationTests
                 files:
                   - pattern: "archive.zip"
                     zip:
-                      entries:
+                      files:
                         - pattern: "readme.txt"
                           text:
                             - contains: "not-present"

@@ -16,14 +16,14 @@ The main class coordinating dot-notation path assertions for a JSON file.
 
 ###### FileAssertJsonAssert Properties
 
-| Field      | Type                          | Description                         |
-| :--------- | :---------------------------- | :---------------------------------- |
-| `_queries` | `IReadOnlyList<JsonQuery>`    | Dot-notation path query assertions. |
+| Field      | Type                       | Description                         |
+|:-----------|:---------------------------|:------------------------------------|
+| `_queries` | `IReadOnlyList<JsonQuery>` | Dot-notation path query assertions. |
 
 Each `JsonQuery` entry holds:
 
 | Property | Type     | Description                      |
-| :------- | :------- | :------------------------------- |
+|:---------|:---------|:---------------------------------|
 | `Query`  | `string` | Dot-notation path to evaluate.   |
 | `Count`  | `int?`   | Exact number of matched nodes.   |
 | `Min`    | `int?`   | Minimum number of matched nodes. |
@@ -43,8 +43,11 @@ internal void Run(IContext context, IFileContainer container, string entryPath)
 
 Execution proceeds in the following steps:
 
-1. Reads the file content and calls `JsonDocument.Parse`.
-2. If a `JsonException` is thrown, writes the error below and returns immediately.
+1. Opens the matched entry via `container.OpenEntry(entryPath)`, reads its content, and calls
+   `JsonDocument.Parse`.
+2. If a `JsonException` is thrown, writes the parse-error message below and returns immediately.
+   If an `IOException` or `UnauthorizedAccessException` is thrown while opening or reading the
+   entry, writes the IO-error message below and returns immediately.
 3. For each query entry: traverses the JSON element tree following the dot-notation path
    segments, counts the matched properties or array elements, and applies `Count`, `Min`,
    and `Max` constraints against the match count.
@@ -53,6 +56,12 @@ Execution proceeds in the following steps:
 
 ```text
 File '<fileName>' could not be parsed as a JSON document
+```
+
+###### FileAssertJsonAssert IO Error Message
+
+```text
+File '<fileName>' could not be read
 ```
 
 ###### FileAssertJsonAssert Query Error Messages
@@ -99,38 +108,42 @@ enforces min, max, and exact element-count constraints per path.
 #### Data Model
 
 | Field / Property | Type                       | Description                                   |
-| :--------------- | :------------------------- | :-------------------------------------------- |
+|:-----------------|:---------------------------|:----------------------------------------------|
 | `_queries`       | `IReadOnlyList<JsonQuery>` | Ordered list of dot-notation path assertions. |
 
 Each `JsonQuery` (private nested record) holds:
 
-| Property | Type     | Description                                              |
-| :------- | :------- | :------------------------------------------------------- |
-| `Query`  | `string` | Dot-notation path to traverse.                           |
-| `Count`  | `int?`   | Expected exact element count; `null` = N/A.              |
-| `Min`    | `int?`   | Minimum element count; `null` = no bound.                |
-| `Max`    | `int?`   | Maximum element count; `null` = no bound.                |
+| Property | Type     | Description                                 |
+|:---------|:---------|:--------------------------------------------|
+| `Query`  | `string` | Dot-notation path to traverse.              |
+| `Count`  | `int?`   | Expected exact element count; `null` = N/A. |
+| `Min`    | `int?`   | Minimum element count; `null` = no bound.   |
+| `Max`    | `int?`   | Maximum element count; `null` = no bound.   |
 
 #### Key Methods
 
 | Method                                          | Purpose                                                          |
-| :---------------------------------------------- | :--------------------------------------------------------------- |
+|:------------------------------------------------|:-----------------------------------------------------------------|
 | `Create(IEnumerable<FileAssertQueryData> data)` | Factory: converts query DTOs to `JsonQuery` instances.           |
 | `Run(IContext, IFileContainer, string)`         | Parses the JSON file and evaluates each dot-notation path query. |
 
 #### Error Handling
 
-| Scenario                                    | Handling                                                             |
-| :------------------------------------------ | :------------------------------------------------------------------- |
-| `JsonException` during `JsonDocument.Parse` | Error written via `context.WriteError`; `Run` returns immediately.   |
-| Query result below `Min`                    | Error written via `context.WriteError`; subsequent queries continue. |
-| Query result above `Max`                    | Error written via `context.WriteError`; subsequent queries continue. |
-| Query result not equal to `Count`           | Error written via `context.WriteError`; subsequent queries continue. |
+| Scenario                                                                       | Handling                                                                         |
+|:-------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
+| `JsonException` during `JsonDocument.Parse`                                    | Parse-error message written via `context.WriteError`; `Run` returns immediately. |
+| `IOException`/`UnauthorizedAccessException` while opening or reading the entry | IO-error message written via `context.WriteError`; `Run` returns immediately.    |
+| Query result below `Min`                                                       | Error written via `context.WriteError`; subsequent queries continue.             |
+| Query result above `Max`                                                       | Error written via `context.WriteError`; subsequent queries continue.             |
+| Query result not equal to `Count`                                              | Error written via `context.WriteError`; subsequent queries continue.             |
 
-#### Interactions
+#### Dependencies
+
+- **OTS dependency**: `System.Text.Json.JsonDocument` (BCL) for parsing and element traversal.
+- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Caller**: `FileAssertFile.Run` calls `JsonAssert.Run(context, container, entryPath)` when the `json:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertJsonAssert.Create`.
-- **OTS dependency**: `System.Text.Json.JsonDocument` (BCL) for parsing and element traversal.
-- **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.

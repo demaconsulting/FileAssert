@@ -10,6 +10,15 @@ Accepting `IContext` in asserter `Run` methods and in `FileAssertFile.Run` allow
 `FileAssertZipAssert` to pass a scoped context to nested asserters when processing zip archive
 entries, without those asserters requiring any knowledge of the scoping mechanism.
 
+#### Purpose
+
+`IContext` exists to decouple the asserters from the concrete output and error-tracking
+implementation. By depending only on this interface, each asserter can write informational
+output and errors, and request a scoped (breadcrumb-prefixed) child context, without knowing
+whether it holds the root `Context` or a nested `ScopedContext`. This enables consistent,
+self-describing error reporting across plain and nested (zip) assertion scenarios while keeping
+the scoping mechanism entirely transparent to callers.
+
 #### Interface Members
 
 ```csharp

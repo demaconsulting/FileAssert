@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertJsonAssert.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -85,6 +85,25 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Boundary / error path**: Invalid JSON file error path.
 
+##### FileAssertJsonAssert_Run_InvalidJson_WritesParseError
+
+**Scenario**: `FileAssertJsonAssert.Run` is called on a file whose content is not valid JSON.
+
+**Expected**: Exactly one error is written, and its message identifies a parse failure
+(`could not be parsed as a JSON document`), distinct from an IO failure.
+
+**Boundary / error path**: JSON parse-error reporting.
+
+##### FileAssertJsonAssert_Run_IOError_WritesReadError
+
+**Scenario**: `FileAssertJsonAssert.Run` is called with a container whose `OpenEntry` raises an
+`UnauthorizedAccessException`.
+
+**Expected**: Exactly one error is written, and its message identifies an IO failure
+(`could not be read`), distinct from a parse failure.
+
+**Boundary / error path**: IO-error reporting.
+
 ##### FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with an exact count assertion and the path
@@ -148,6 +167,8 @@ exceeded.
   FileAssertJsonAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException,
   FileAssertJsonAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException
 - **Invalid file**: FileAssertJsonAssert_Run_InvalidFile_WritesError
+- **Parse vs IO error**: FileAssertJsonAssert_Run_InvalidJson_WritesParseError,
+  FileAssertJsonAssert_Run_IOError_WritesReadError
 - **Count constraints**: FileAssertJsonAssert_Run_ArrayCount_Matches_NoError,
   FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError,
   FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError,

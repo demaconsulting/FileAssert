@@ -16,6 +16,9 @@ sections:
               same CI pipeline that produces the TRX test results, so a successful pipeline run is
               evidence that SonarMark executed without error.
             tags: [ots]
+            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
+            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
+            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
             tests:
               - SonarMark_QualityGateRetrieval
               - SonarMark_IssuesRetrieval

@@ -20,9 +20,9 @@ beyond the standard build toolchain.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `ZipFileContainer.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -40,6 +40,18 @@ mocking is needed at this level.
 entries (names ending in `/`) are excluded.
 
 **Requirement coverage**: Zip archive access — file entry enumeration with forward slashes.
+
+##### ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
+
+**Scenario**: A `ZipFileContainer` is created from an in-memory zip containing a directory
+marker entry `"lib/"` and a file entry `"lib/a.dll"`.
+
+**Expected**: `GetEntries()` returns only `"lib/a.dll"`; the directory marker entry (name ending
+in `/`) is excluded.
+
+**Boundary / error path**: Directory marker exclusion during entry enumeration.
+
+**Requirement coverage**: Entry enumeration — directory markers excluded.
 
 ##### ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
 
@@ -81,6 +93,7 @@ is called.
 #### Requirements Coverage
 
 - (file entry enumeration with forward slashes): ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+- (directory markers excluded): ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
 - (open zip entry as stream): ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
 - (missing entry throws IOException): ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
 - (uncompressed entry size): ZipFileContainer_GetEntrySize_ReturnsUncompressedLength

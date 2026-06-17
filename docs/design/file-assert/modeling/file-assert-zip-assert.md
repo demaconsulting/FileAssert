@@ -25,7 +25,7 @@ html, yaml, json, pdf, and recursive zip) is now available for zip entry validat
 internal static FileAssertZipAssert Create(FileAssertZipData data)
 ```
 
-Converts each `FileAssertFileData` DTO from `data.Files` (or `data.Entries`) into a
+Converts each `FileAssertFileData` DTO from `data.Files` into a
 `FileAssertFile` instance after validating that a pattern is specified.
 
 | Parameter | Description                                          |
@@ -73,7 +73,7 @@ File '<displayPath>' could not be read as a zip archive
 #### YAML Configuration
 
 Zip entry assertions are declared under the `zip:` key of a file entry, using the same
-`files:` / `entries:` structure as top-level test files:
+`files:` structure as top-level test files:
 
 ```yaml
 files:
@@ -89,8 +89,9 @@ files:
             - contains: "Copyright"
 ```
 
-The YAML key `entries:` is also accepted as an alias for `files:` inside a `zip:` block for
-backward compatibility.
+The file assertions inside a `zip:` block use the same `FileAssertFileData` schema as
+top-level file assertions, enabling the full assertion suite (text, xml, html, yaml, json,
+pdf, nested zip) against the archive contents.
 
 #### Design Decisions
 
@@ -140,14 +141,17 @@ and applying the full FileAssert assertion suite to its contents using a scoped 
 | Entry match count below `Min`                                                    | Reported by the `FileAssertFile` instance.                  |
 | Entry match count above `Max`                                                    | Reported by the `FileAssertFile` instance.                  |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertFile.Run` calls `ZipAssert.Run(context, container, entryPath)` when the
-  `zip:` assertion block is declared.
-- **Created by**: `FileAssertFile.Create` via `FileAssertZipAssert.Create`.
 - **Delegates to**: `FileAssertFile.Run` with a `ZipFileContainer` and scoped `IContext`.
 - **OTS dependencies**:
   - `System.IO.Compression.ZipArchive` (BCL) via `ZipFileContainer`.
   - `Microsoft.Extensions.FileSystemGlobbing.Matcher` via `FileAssertFile`.
 - **Configuration dependency**: `FileAssertZipData` and `FileAssertFileData` DTOs from the
   Configuration subsystem.
+
+#### Callers
+
+- **Caller**: `FileAssertFile.Run` calls `ZipAssert.Run(context, container, entryPath)` when the
+  `zip:` assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertZipAssert.Create`.

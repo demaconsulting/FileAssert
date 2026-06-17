@@ -27,6 +27,17 @@ sections:
         tests:
           - FileAssertXmlAssert_Run_InvalidFile_WritesError
 
+      - id: FileAssert-FileAssertXmlAssert-QueryValidation
+        title: |
+          The FileAssertXmlAssert class shall reject a blank or whitespace-only XPath query
+          at construction time by raising an error.
+        justification: |
+          An empty XPath query cannot express any meaningful node selection. Rejecting it at
+          construction time surfaces the configuration mistake before any file system or XML
+          parsing operations are attempted, giving the user a clear, early error.
+        tests:
+          - FileAssertXmlAssert_Create_BlankQuery_ThrowsInvalidOperationException
+
       - id: FileAssert-FileAssertXmlAssert-QueryAssertions
         title: |
           The FileAssertXmlAssert class shall evaluate each configured XPath query against

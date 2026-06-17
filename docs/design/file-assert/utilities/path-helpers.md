@@ -82,7 +82,12 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
 - **Combined or resolved path exceeds system maximum length**: `PathTooLongException`
   propagated from `Path.GetFullPath`; not caught by this method.
 
-#### Interactions
+#### Dependencies
+
+- **No internal FileAssert dependencies**: `PathHelpers` is a self-contained utility with no
+  references to other units in the system.
+
+#### Callers
 
 - **Callers**:
   - `TemporaryDirectory` — uses `SafePathCombine(Environment.CurrentDirectory, guid-name)` to
@@ -90,5 +95,3 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
     `GetFilePath`.
   - `Validation` built-in tests — uses `tempDir.GetFilePath(fileName)` (which internally calls
     `SafePathCombine`) to build fixture file paths.
-- **No internal FileAssert dependencies**: `PathHelpers` is a self-contained utility with no
-  references to other units in the system.

@@ -151,7 +151,11 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 | Regex evaluation timeout (>10 seconds)        | `RegexMatchTimeoutException` propagated to `Apply` caller.           |
 | Rule check fails at `Apply` time              | Error written via `context.WriteError`; no exception thrown.         |
 
-#### Interactions
+#### Dependencies
+
+- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Created by**:
   - `FileAssertTextAssert.Create` for text content rules.
@@ -159,4 +163,3 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 - **Called by**:
   - `FileAssertTextAssert.Run` — iterates rules and calls `Apply(context, fileName, content)`.
   - `FileAssertPdfAssert.Run` — iterates `_text` rules and calls `Apply(context, fileName, pdfText)`.
-- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.

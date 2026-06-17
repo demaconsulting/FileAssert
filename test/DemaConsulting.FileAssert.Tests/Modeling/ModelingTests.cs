@@ -219,7 +219,7 @@ public class ModelingTests
                     Pattern = "*.zip",
                     Zip = new FileAssertZipData
                     {
-                        Entries =
+                        Files =
                         [
                             new FileAssertFileData
                             {
@@ -274,7 +274,7 @@ public class ModelingTests
                     Pattern = "*.zip",
                     Zip = new FileAssertZipData
                     {
-                        Entries =
+                        Files =
                         [
                             new FileAssertFileData
                             {

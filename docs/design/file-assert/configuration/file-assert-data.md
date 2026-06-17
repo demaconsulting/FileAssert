@@ -108,10 +108,9 @@ Represents the `zip:` assertion block for a file entry.
 | Property   | YAML alias  | Type                          | Description                                               |
 | :--------- | :---------- | :---------------------------- | :-------------------------------------------------------- |
 | `Files`    | `files`     | `List<FileAssertFileData>?`   | Full file assertions applied to the zip archive contents. |
-| `Entries`  | `entries`   | `List<FileAssertFileData>?`   | Alias for `Files`; accepted for backward compatibility.   |
 
-The `Entries` YAML alias maps to the same `FileAssertFileData` list type as `Files`, ensuring
-that existing configurations using `entries:` continue to deserialize correctly.
+The `Files` property maps to the `files:` YAML key inside a `zip:` block. Each entry uses the
+same `FileAssertFileData` schema as top-level file assertions.
 
 #### Design Decisions
 
@@ -165,7 +164,11 @@ a `YamlException` that propagates directly to `FileAssertConfig.ReadFromFile`. C
 validation (e.g. exactly one rule type per `FileAssertRuleData`) is the responsibility of
 the Modeling subsystem factory methods.
 
-#### Interactions
+#### Dependencies
+
+- None.
+
+#### Callers
 
 - **Populated by**: `YamlDotNet.Serialization.Deserializer` inside `FileAssertConfig.ReadFromFile`
   via `DeserializerBuilder().IgnoreUnmatchedProperties().Build()`.

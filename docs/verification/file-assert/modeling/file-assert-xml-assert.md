@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertXmlAssert.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -44,6 +44,16 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Expected**: An `ArgumentNullException` is thrown.
 
 **Boundary / error path**: Null data guard.
+
+##### FileAssertXmlAssert_Create_BlankQuery_ThrowsInvalidOperationException
+
+**Scenario**: `FileAssertXmlAssert.Create` is called with a query that is blank or
+whitespace-only.
+
+**Expected**: An `InvalidOperationException` is thrown at construction time, before any file
+system or XML parsing is attempted.
+
+**Boundary / error path**: Blank-query validation guard.
 
 ##### FileAssertXmlAssert_Run_InvalidFile_WritesError
 
@@ -146,6 +156,7 @@ result does not contain the expected value.
 
 - **XML assert creation**: FileAssertXmlAssert_Create_ValidData_CreatesXmlAssert
 - **Null guard**: FileAssertXmlAssert_Create_NullData_ThrowsArgumentNullException
+- **Blank query**: FileAssertXmlAssert_Create_BlankQuery_ThrowsInvalidOperationException
 - **Invalid file**: FileAssertXmlAssert_Run_InvalidFile_WritesError
 - **Invalid query**: FileAssertXmlAssert_Run_InvalidXPathQuery_WritesError
 - **Count constraints**: FileAssertXmlAssert_Run_ExactCount_Matches_NoError,

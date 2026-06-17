@@ -367,4 +367,61 @@ public sealed class FileAssertYamlAssertTests
             File.Delete(tempFile);
         }
     }
+
+    /// <summary>
+    ///     Verifies that when the YAML file cannot be parsed, only the parse error is reported
+    ///     and the remaining configured query assertions are skipped.
+    /// </summary>
+    [Fact]
+    public void FileAssertYamlAssert_Run_InvalidFile_RemainingAssertionsSkipped()
+    {
+        // Arrange - malformed YAML with two configured queries
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, "key: [unclosed");
+            var data = new List<FileAssertQueryData>
+            {
+                new() { Query = "tools", Count = 3 },
+                new() { Query = "version", Count = 1 }
+            };
+            var yamlAssert = FileAssertYamlAssert.Create(data);
+            var context = new CapturingContext();
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            yamlAssert.Run(context, container, fileName);
+
+            // Assert - exactly one error (the parse failure); the queries are not evaluated
+            Assert.Single(context.Errors);
+            Assert.Contains("could not be parsed", context.Errors[0]);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Captures error messages written via <see cref="WriteError"/> for assertion in tests.
+    /// </summary>
+    private sealed class CapturingContext : IContext
+    {
+        private readonly List<string> _errors = [];
+
+        /// <summary>Gets all error messages captured since this context was created.</summary>
+        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+
+        /// <inheritdoc/>
+        public void WriteLine(string message) { }
+
+        /// <inheritdoc/>
+        public void WriteError(string message) => _errors.Add(message);
+
+        /// <inheritdoc/>
+        public IContext WithPrefix(string prefix) => this;
+    }
 }
