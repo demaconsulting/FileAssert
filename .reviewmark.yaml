@@ -401,6 +401,7 @@ reviews:
     title: Review FileAssert OTS YamlDotNet Requirements and Verification
     paths:
       - "docs/reqstream/ots/yamldotnet.yaml"                         # OTS requirements
+      - "docs/design/ots/yamldotnet.md"                              # OTS design
       - "docs/verification/ots/yamldotnet.md"                        # OTS verification
 
   # FileAssert-OTS-PdfPig Review
@@ -408,6 +409,7 @@ reviews:
     title: Review FileAssert OTS PdfPig Requirements and Verification
     paths:
       - "docs/reqstream/ots/pdfpig.yaml"                             # OTS requirements
+      - "docs/design/ots/pdfpig.md"                                  # OTS design
       - "docs/verification/ots/pdfpig.md"                            # OTS verification
 
   # FileAssert-OTS-HtmlAgilityPack Review
@@ -415,6 +417,7 @@ reviews:
     title: Review FileAssert OTS HtmlAgilityPack Requirements and Verification
     paths:
       - "docs/reqstream/ots/htmlagilitypack.yaml"                    # OTS requirements
+      - "docs/design/ots/htmlagilitypack.md"                         # OTS design
       - "docs/verification/ots/htmlagilitypack.md"                   # OTS verification
 
   # FileAssert-OTS-FileSystemGlobbing Review
@@ -422,4 +425,5 @@ reviews:
     title: Review FileAssert OTS FileSystemGlobbing Requirements and Verification
     paths:
       - "docs/reqstream/ots/filesystemglobbing.yaml"                 # OTS requirements
+      - "docs/design/ots/filesystemglobbing.md"                      # OTS design
       - "docs/verification/ots/filesystemglobbing.md"                # OTS verification
