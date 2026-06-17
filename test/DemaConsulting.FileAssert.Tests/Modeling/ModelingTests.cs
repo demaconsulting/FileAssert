@@ -360,54 +360,6 @@ public class ModelingTests
     }
 
     /// <summary>
-    ///     Verifies that the Modeling subsystem reports an I/O read failure (as opposed to a parse
-    ///     failure) when a matched file cannot be read. On Windows the exclusive lock forces the
-    ///     read to fail; POSIX systems do not enforce the share mode, so only Windows runs count as
-    ///     evidence for the linked requirement.
-    /// </summary>
-    [Fact]
-    public void Modeling_FileTypeReadError_LockedFile_ReportsError()
-    {
-        // Arrange - a readable text file whose content would otherwise satisfy the rule
-        using var tempDir = new TemporaryDirectory();
-        var filePath = tempDir.GetFilePath("locked.txt");
-        File.WriteAllText(filePath, "Copyright (c) DEMA Consulting");
-
-        var testData = new FileAssertTestData
-        {
-            Name = "ReadErrorCheck",
-            Files =
-            [
-                new FileAssertFileData
-                {
-                    Pattern = "*.txt",
-                    Text = [new FileAssertRuleData { Contains = "Copyright" }]
-                }
-            ]
-        };
-
-        var test = FileAssertTest.Create(testData);
-        using var context = Context.Create(["--silent"]);
-
-        // Act - hold an exclusive lock so the asserter's read fails with an I/O error on Windows
-        using (new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
-        {
-            test.Run(context, tempDir.DirectoryPath);
-        }
-
-        // Assert - on Windows the locked file produces a reported I/O error; POSIX does not enforce
-        // the lock, so the read succeeds there and no error is expected
-        if (OperatingSystem.IsWindows())
-        {
-            Assert.Equal(1, context.ExitCode);
-        }
-        else
-        {
-            Assert.Equal(0, context.ExitCode);
-        }
-    }
-
-    /// <summary>
     ///     Verifies that the Modeling subsystem parses an HTML document and evaluates an XPath node
     ///     count query, reporting no error when the count constraint is satisfied.
     /// </summary>

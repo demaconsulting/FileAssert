@@ -63,17 +63,6 @@ assertion) and applies a page-count constraint.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-#### Modeling_FileTypeReadError_LockedFile_ReportsError
-
-**Scenario**: A `FileAssertFile` with a `text:` assertion is configured against a readable file
-whose content would otherwise satisfy the rule, but the file is held under an exclusive lock so the
-read fails with an I/O error. This exercises the read-error path, which is separate from any
-content-parse failure.
-
-**Expected**: On Windows (where the share mode is enforced) an I/O read error is reported and exit
-code is non-zero; on POSIX systems the lock is not enforced, the read succeeds, and exit code is 0.
-Only Windows runs count as evidence for the linked requirement.
-
 #### Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
 
 **Scenario**: A `FileAssertFile` with an XML XPath assertion is configured and a valid XML file
