@@ -193,9 +193,11 @@ internal sealed class FileAssertFile
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(container);
 
-        // Perform the glob match against the container entries
+        // Perform the glob match against the container entries.
+        // Normalize the pattern to forward slashes so that user-supplied patterns with
+        // backslash separators (common on Windows) match the normalized entry paths from GetEntries().
         var matcher = new Matcher();
-        matcher.AddInclude(Pattern);
+        matcher.AddInclude(Pattern.Replace('\\', '/'));
         var allEntries = container.GetEntries();
         var result = matcher.Match(".", allEntries);
         var files = result.Files.Select(f => f.Path).ToList();

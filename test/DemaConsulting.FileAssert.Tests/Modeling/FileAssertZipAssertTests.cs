@@ -245,6 +245,34 @@ public sealed class FileAssertZipAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Files is null,
+    ///     preventing a silent pass on a zip block with no file assertions.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Create_NullFiles_ThrowsInvalidOperationException()
+    {
+        // Arrange - a zip data block with no files list (would silently pass everything if allowed)
+        var data = new FileAssertZipData { Files = null };
+
+        // Act / Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertZipAssert.Create(data));
+    }
+
+    /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when Files is empty,
+    ///     preventing a silent pass on a zip block with an empty file assertion list.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Create_EmptyFiles_ThrowsInvalidOperationException()
+    {
+        // Arrange - a zip data block with an empty files list
+        var data = new FileAssertZipData { Files = [] };
+
+        // Act / Assert
+        Assert.Throws<InvalidOperationException>(() => FileAssertZipAssert.Create(data));
+    }
+
+    /// <summary>
     ///     Verifies that Create throws <see cref="ArgumentNullException"/> when data is null.
     /// </summary>
     [Fact]

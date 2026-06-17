@@ -159,7 +159,6 @@ sections:
         tests:
           - Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 
-
       - id: FileAssert-Modeling-QueryAssertions-Xml
         title: |
           The Modeling subsystem shall report an XML XPath assertion as failed when the

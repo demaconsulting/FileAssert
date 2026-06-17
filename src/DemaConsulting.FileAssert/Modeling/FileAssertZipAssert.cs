@@ -71,8 +71,15 @@ internal sealed class FileAssertZipAssert
         // Validate that data was provided
         ArgumentNullException.ThrowIfNull(data);
 
-        // Convert each entry DTO into a FileAssertFile domain object using the shared factory
-        var files = (data.Files ?? [])
+        // Require at least one file assertion; a zip: block with no files: list is always a
+        // misconfiguration — it would silently pass every zip without checking any content.
+        if (data.Files is not { Count: > 0 })
+        {
+            throw new InvalidOperationException("Zip assertion must specify at least one entry under 'files:'");
+        }
+
+        // Convert each entry DTO into a FileAssertFile domain object using the shared factory.
+        var files = data.Files
             .Select(FileAssertFile.Create)
             .ToList();
 

@@ -54,7 +54,7 @@ including "Total Tests:".
 **Expected**: A TRX file is created at the specified path; the file contains a `<TestRun` XML
 element; exit code is 0.
 
-#### SelfTest_Run_WithXmlResultsFile_WritesXmlResultsFile
+#### Validation_Run_WithXmlResultsFile_WritesXmlFile
 
 **Scenario**: `Validation.Run` is called with a context whose `ResultsFile` points to a temporary
 `.xml` path.

@@ -206,4 +206,19 @@ public class ConfigurationTests
         var contents = File.ReadAllText(resultsPath);
         Assert.Contains("<testsuites", contents);
     }
+
+    /// <summary>
+    ///     Verifies that ReadFromFile throws when the YAML is syntactically invalid.
+    /// </summary>
+    [Fact]
+    public void Configuration_ReadFromFile_InvalidYaml_ThrowsException()
+    {
+        // Arrange - write syntactically broken YAML
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("bad.yaml");
+        File.WriteAllText(configPath, "tests: [unclosed bracket");
+
+        // Act / Assert - invalid YAML must not silently produce an empty config
+        Assert.ThrowsAny<Exception>(() => FileAssertConfig.ReadFromFile(configPath));
+    }
 }
