@@ -1183,11 +1183,11 @@ public sealed class FileAssertZipAssertTests
             // Act
             zipAssert.Run(capturingContext, container, fileName);
 
-            // Assert - the error message must contain both the zip filename and the entry path
+            // Assert - the error contains the full breadcrumb path and the zip name is not doubled
             Assert.NotEmpty(capturingContext.Errors);
             var error = capturingContext.Errors[0];
-            Assert.Contains(fileName, error);
-            Assert.Contains("readme.txt", error);
+            Assert.Contains($"{fileName} > readme.txt", error);
+            Assert.Equal(1, error.Split(fileName).Length - 1);
         }
         finally
         {

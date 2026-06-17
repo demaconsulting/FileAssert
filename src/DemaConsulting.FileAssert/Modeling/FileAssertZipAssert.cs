@@ -129,15 +129,13 @@ internal sealed class FileAssertZipAssert
             return;
         }
 
-        // Use a scoped context so all inner errors carry the zip path as a breadcrumb prefix
-        var scopedContext = context.WithPrefix(displayPath);
-
         using (zipContainer)
         {
-            // Run each file assertion against the zip container
+            // Run each file assertion against the zip container; breadcrumb context is
+            // already baked into every display path produced by ZipFileContainer.GetDisplayPath
             foreach (var file in _files)
             {
-                file.Run(scopedContext, zipContainer);
+                file.Run(context, zipContainer);
             }
         }
     }
