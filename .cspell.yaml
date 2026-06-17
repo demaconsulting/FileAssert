@@ -26,6 +26,7 @@ words:
   - deserialize
   - deserializes
   - dogfooding
+  - enation
   - fileassert
   - fontconfig
   - initialise
