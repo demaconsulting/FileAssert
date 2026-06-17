@@ -22,10 +22,13 @@ the base directory.
 **Validation steps:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Combine the paths with `Path.Combine` to produce the candidate path (preserving the
+2. Reject rooted relative paths via `Path.IsPathRooted(relativePath)` — a rooted second
+   argument to `Path.Combine` replaces the base entirely, so any such input is invalid even
+   when the rooted path resolves underneath `basePath`.
+3. Combine the paths with `Path.Combine` to produce the candidate path (preserving the
    caller's relative/absolute style).
-3. Resolve both `basePath` and the candidate to absolute form with `Path.GetFullPath`.
-4. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)` and reject the input if
+4. Resolve both `basePath` and the candidate to absolute form with `Path.GetFullPath`.
+5. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)` and reject the input if
    the result is exactly `".."`, starts with `".."` followed by `Path.DirectorySeparatorChar`
    or `Path.AltDirectorySeparatorChar`, or is itself rooted (absolute), which would indicate
    the combined path escapes the base directory.
@@ -64,10 +67,12 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
 **Algorithm:**
 
 1. Reject null inputs via `ArgumentNullException.ThrowIfNull`.
-2. Produce `combinedPath = Path.Combine(basePath, relativePath)`.
-3. Resolve both `basePath` and `combinedPath` to absolute form with `Path.GetFullPath`.
-4. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)`.
-5. Throw `ArgumentException` if the relative result equals `".."`, starts with `"../"` or
+2. Throw `ArgumentException` if `Path.IsPathRooted(relativePath)` returns true (rooted
+   relative paths replace the base under `Path.Combine` semantics).
+3. Produce `combinedPath = Path.Combine(basePath, relativePath)`.
+4. Resolve both `basePath` and `combinedPath` to absolute form with `Path.GetFullPath`.
+5. Compute `Path.GetRelativePath(absoluteBase, absoluteCombined)`.
+6. Throw `ArgumentException` if the relative result equals `".."`, starts with `"../"` or
    `"..\\"`, or is itself rooted.
 
 #### Error Handling

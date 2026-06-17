@@ -78,13 +78,3 @@ error messages.
 
 **Expected**: An error is written to the context; exit code is non-zero; the error message in the
 log file contains both the zip filename and the entry name as breadcrumbs.
-
-### Requirements Coverage
-
-- **Constraint evaluation**: Modeling_ExecuteChain_PassesWhenAllConstraintsMet,
-  Modeling_ExecuteChain_ReportsFailuresThroughContext
-- **XML parsing error reporting**: Modeling_FileTypeParsing_InvalidXml_ReportsParseError
-- **XML query assertion**: Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
-- **Zip entry content assertions and breadcrumb propagation**:
-  Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet,
-  Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs

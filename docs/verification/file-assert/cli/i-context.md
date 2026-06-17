@@ -37,8 +37,6 @@ require mocking at this level.
 
 **Expected**: The returned `IContext` instance is not null.
 
-**Requirement coverage**: IContext output contract requirement.
-
 ##### Context_WithPrefix_NullPrefix_ThrowsArgumentNullException
 
 **Scenario**: `context.WithPrefix(null!)` is called on a valid root context.
@@ -47,15 +45,11 @@ require mocking at this level.
 
 **Boundary / error path**: Null argument guard.
 
-**Requirement coverage**: IContext output contract requirement.
-
 ##### ScopedContext_WriteError_PropagatesExitCodeToRoot
 
 **Scenario**: An error is written via a scoped context derived from a root context.
 
 **Expected**: `context.ExitCode` is `1` and `context.ErrorCount` is `1`.
-
-**Requirement coverage**: Error propagation to root context.
 
 ##### ScopedContext_WriteLine_DoesNotSetError
 
@@ -63,29 +57,14 @@ require mocking at this level.
 
 **Expected**: `context.ExitCode` is `0` and `context.ErrorCount` is `0`.
 
-**Requirement coverage**: Informational output does not affect error state.
-
 ##### ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot
 
 **Scenario**: Two levels of `WithPrefix` are applied; an error is written via the deepest scope.
 
 **Expected**: `context.ExitCode` is `1` and `context.ErrorCount` is `1`.
 
-**Requirement coverage**: Multi-level prefix chaining and error propagation.
-
 ##### ScopedContext_MultipleErrors_AllAccumulateOnRoot
 
 **Scenario**: Two separate scoped contexts and the root context each write one error.
 
 **Expected**: `context.ErrorCount` is `3` and `context.ExitCode` is `1`.
-
-**Requirement coverage**: Error accumulation across multiple scopes.
-
-#### Requirements Coverage
-
-- (output contract — WithPrefix returns scoped context): Context_WithPrefix_ReturnsNonNullScopedContext
-- (null prefix rejection): Context_WithPrefix_NullPrefix_ThrowsArgumentNullException
-- (error propagates to root): ScopedContext_WriteError_PropagatesExitCodeToRoot
-- (informational output has no error effect): ScopedContext_WriteLine_DoesNotSetError
-- (nested prefix chaining): ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot
-- (multiple errors accumulate): ScopedContext_MultipleErrors_AllAccumulateOnRoot

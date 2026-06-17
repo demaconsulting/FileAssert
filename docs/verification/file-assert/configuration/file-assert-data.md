@@ -45,8 +45,3 @@ The following named scenarios exercise the `FileAssertData` schema indirectly vi
 `FileAssertData` objects are verified indirectly by every `FileAssertConfig_ReadFromFile_*` test
 scenario in `FileAssertConfigTests.cs` that supplies YAML content. Correct population of all
 fields confirms the data-transfer objects are correctly annotated and deserialized.
-
-#### Requirements Coverage
-
-All `FileAssertData` requirements are satisfied indirectly by the `FileAssertConfig` test
-scenarios. See the FileAssertConfig Verification document for details.

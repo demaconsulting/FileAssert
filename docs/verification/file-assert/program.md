@@ -41,15 +41,11 @@ and platform combinations.
 **Expected**: Standard output contains the version string; the word "Copyright" does not appear;
 exit code is 0.
 
-**Requirement coverage**: Version display requirement.
-
 #### Program_Run_WithHelpFlag_DisplaysUsageInformation
 
 **Scenario**: `Program.Run` is called with a context created from `["--help"]`.
 
 **Expected**: Standard output contains "Usage:"; exit code is 0.
-
-**Requirement coverage**: Help display requirement.
 
 #### Program_Run_WithValidateFlag_RunsValidation
 
@@ -57,28 +53,28 @@ exit code is 0.
 
 **Expected**: Standard output contains "Total Tests:"; exit code is 0.
 
-**Requirement coverage**: Self-validation requirement.
-
 #### Program_Run_NoArguments_DisplaysDefaultBehavior
 
 **Scenario**: `Program.Run` is called with a context created from an empty argument array.
 
 **Expected**: Standard output contains the tool name and copyright notice; exit code is 0.
 
-**Requirement coverage**: Default behavior requirement.
+#### Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance
+
+**Scenario**: `Program.Run` is called with a context created from an empty argument array while the
+current working directory contains no `.fileassert.yaml`.
+
+**Expected**: Standard output contains "No configuration file found"; exit code is 0.
+
+#### Program_Run_ExplicitConfigMissing_WritesError
+
+**Scenario**: `Program.Run` is called with a context created from `["--config", <missing-path>]`
+where `<missing-path>` refers to a file that does not exist.
+
+**Expected**: Output contains "Configuration file not found"; exit code is 1.
 
 #### Program_Version_ReturnsNonEmptyString
 
 **Scenario**: The `Program.Version` static property is read.
 
 **Expected**: The returned string is non-empty and non-null.
-
-**Requirement coverage**: Version string availability requirement.
-
-### Requirements Coverage
-
-- **Version display**: Program_Run_WithVersionFlag_DisplaysVersionOnly,
-  Program_Version_ReturnsNonEmptyString
-- **Help display**: Program_Run_WithHelpFlag_DisplaysUsageInformation
-- **Self-validation**: Program_Run_WithValidateFlag_RunsValidation
-- **Default behavior**: Program_Run_NoArguments_DisplaysDefaultBehavior

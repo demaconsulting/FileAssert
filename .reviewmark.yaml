@@ -77,6 +77,7 @@ reviews:
       - "docs/design/file-assert/cli.md"                         # subsystem design
       - "docs/verification/file-assert/cli.md"                   # subsystem verification
       - "test/**/Cli/CliTests.cs"                                    # subsystem tests
+      - "test/**/Cli/ScopedContextTests.cs"                          # subsystem tests
 
   # FileAssert-Configuration Review (one per subsystem)
   - id: FileAssert-Configuration
@@ -331,6 +332,7 @@ reviews:
     title: Review FileAssert OTS BuildMark Requirements and Verification
     paths:
       - "docs/reqstream/ots/buildmark.yaml"                          # OTS requirements
+      - "docs/design/ots/buildmark.md"                               # OTS design
       - "docs/verification/ots/buildmark.md"                         # OTS verification
 
   # FileAssert-OTS-FileAssert Review
@@ -338,6 +340,7 @@ reviews:
     title: Review FileAssert OTS FileAssert Requirements and Verification
     paths:
       - "docs/reqstream/ots/fileassert.yaml"                         # OTS requirements
+      - "docs/design/ots/fileassert.md"                              # OTS design
       - "docs/verification/ots/fileassert.md"                        # OTS verification
 
   # FileAssert-OTS-Pandoc Review
@@ -345,6 +348,7 @@ reviews:
     title: Review FileAssert OTS Pandoc Requirements and Verification
     paths:
       - "docs/reqstream/ots/pandoc.yaml"                             # OTS requirements
+      - "docs/design/ots/pandoc.md"                                  # OTS design
       - "docs/verification/ots/pandoc.md"                            # OTS verification
 
   # FileAssert-OTS-ReqStream Review
@@ -352,6 +356,7 @@ reviews:
     title: Review FileAssert OTS ReqStream Requirements and Verification
     paths:
       - "docs/reqstream/ots/reqstream.yaml"                          # OTS requirements
+      - "docs/design/ots/reqstream.md"                               # OTS design
       - "docs/verification/ots/reqstream.md"                         # OTS verification
 
   # FileAssert-OTS-ReviewMark Review
@@ -359,6 +364,7 @@ reviews:
     title: Review FileAssert OTS ReviewMark Requirements and Verification
     paths:
       - "docs/reqstream/ots/reviewmark.yaml"                         # OTS requirements
+      - "docs/design/ots/reviewmark.md"                              # OTS design
       - "docs/verification/ots/reviewmark.md"                        # OTS verification
 
   # FileAssert-OTS-SarifMark Review
@@ -366,6 +372,7 @@ reviews:
     title: Review FileAssert OTS SarifMark Requirements and Verification
     paths:
       - "docs/reqstream/ots/sarifmark.yaml"                          # OTS requirements
+      - "docs/design/ots/sarifmark.md"                               # OTS design
       - "docs/verification/ots/sarifmark.md"                         # OTS verification
 
   # FileAssert-OTS-SonarMark Review
@@ -373,6 +380,7 @@ reviews:
     title: Review FileAssert OTS SonarMark Requirements and Verification
     paths:
       - "docs/reqstream/ots/sonarmark.yaml"                          # OTS requirements
+      - "docs/design/ots/sonarmark.md"                               # OTS design
       - "docs/verification/ots/sonarmark.md"                         # OTS verification
 
   # FileAssert-OTS-VersionMark Review
@@ -380,6 +388,7 @@ reviews:
     title: Review FileAssert OTS VersionMark Requirements and Verification
     paths:
       - "docs/reqstream/ots/versionmark.yaml"                        # OTS requirements
+      - "docs/design/ots/versionmark.md"                             # OTS design
       - "docs/verification/ots/versionmark.md"                       # OTS verification
 
   # FileAssert-OTS-WeasyPrint Review
@@ -387,6 +396,7 @@ reviews:
     title: Review FileAssert OTS WeasyPrint Requirements and Verification
     paths:
       - "docs/reqstream/ots/weasyprint.yaml"                         # OTS requirements
+      - "docs/design/ots/weasyprint.md"                              # OTS design
       - "docs/verification/ots/weasyprint.md"                        # OTS verification
 
   # FileAssert-OTS-xUnit Review
@@ -394,6 +404,7 @@ reviews:
     title: Review FileAssert OTS xUnit Requirements and Verification
     paths:
       - "docs/reqstream/ots/xunit.yaml"                              # OTS requirements
+      - "docs/design/ots/xunit.md"                                   # OTS design
       - "docs/verification/ots/xunit.md"                             # OTS verification
 
   # FileAssert-OTS-YamlDotNet Review

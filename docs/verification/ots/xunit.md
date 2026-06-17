@@ -24,16 +24,12 @@ run for all scenarios constitutes evidence that both requirements are satisfied.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
-
 #### Context_Create_VersionFlag_SetsVersionTrue
 
 **Scenario**: xUnit discovers and runs this test; the test verifies that passing the --version flag
 sets the Version property to true.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
 
 #### Context_Create_SilentFlag_SetsSilentTrue
 
@@ -42,16 +38,12 @@ sets the Silent property to true.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
-
 #### Context_Create_LogFlag_OpensLogFile
 
 **Scenario**: xUnit discovers and runs this test; the test verifies that passing the --log flag
 opens a log file.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
 
 #### Context_Create_UnknownArgument_ThrowsArgumentException
 
@@ -60,16 +52,12 @@ raises an exception.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
-
 #### PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
 
 **Scenario**: xUnit discovers and runs this test; the test verifies that SafePathCombine correctly
 joins valid path segments.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
 
 #### Program_Run_WithVersionFlag_DisplaysVersionOnly
 
@@ -78,8 +66,6 @@ version information when invoked with the --version flag.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
-
 #### Validation_Run_WithSilentContext_PrintsSummary
 
 **Scenario**: xUnit discovers and runs this test; the test verifies that Validation.Run prints a
@@ -87,23 +73,8 @@ summary even when the context is configured for silent operation.
 
 **Expected**: xUnit executes the test, the test passes, and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-xUnit-Execute`, `FileAssert-OTS-xUnit-Report`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-xUnit-Execute`**: Context_Create_NoArguments_ReturnsDefaultContext,
-  Context_Create_VersionFlag_SetsVersionTrue, Context_Create_SilentFlag_SetsSilentTrue,
-  Context_Create_LogFlag_OpensLogFile, Context_Create_UnknownArgument_ThrowsArgumentException,
-  PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly,
-  Program_Run_WithVersionFlag_DisplaysVersionOnly, Validation_Run_WithSilentContext_PrintsSummary
-- **`FileAssert-OTS-xUnit-Report`**: Context_Create_NoArguments_ReturnsDefaultContext,
-  Context_Create_VersionFlag_SetsVersionTrue, Context_Create_SilentFlag_SetsSilentTrue,
-  Context_Create_LogFlag_OpensLogFile, Context_Create_UnknownArgument_ThrowsArgumentException,
-  PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly,
-  Program_Run_WithVersionFlag_DisplaysVersionOnly, Validation_Run_WithSilentContext_PrintsSummary
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

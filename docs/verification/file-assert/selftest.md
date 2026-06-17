@@ -54,10 +54,11 @@ including "Total Tests:".
 **Expected**: A TRX file is created at the specified path; the file contains a `<TestRun` XML
 element; exit code is 0.
 
-### Requirements Coverage
+#### SelfTest_Run_WithXmlResultsFile_WritesXmlResultsFile
 
-| Requirement | Scenario | Test Method(s) |
-| :---------- | :------- | :------------- |
-| FileAssert-SelfTest-ValidationPipeline | SelfTest runs all built-in tests and produces a summary | SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary |
-| FileAssert-SelfTest-ValidationPipeline | SelfTest prints a system information header | SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader |
-| FileAssert-SelfTest-ValidationPipeline | SelfTest writes a TRX results file when requested | SelfTest_Run_WithResultsFile_WritesTrxResultsFile |
+**Scenario**: `Validation.Run` is called with a context whose `ResultsFile` points to a temporary
+`.xml` path.
+
+**Expected**: An XML results file is created at the specified path and exit code is 0. The
+detailed contents of the XML file are verified by the unit-level scenarios in
+`docs/verification/file-assert/selftest/validation.md`.

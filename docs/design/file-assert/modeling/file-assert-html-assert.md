@@ -14,11 +14,11 @@ matching nodes.
 
 The main class coordinating XPath-based node count assertions for an HTML file.
 
-###### FileAssertHtmlAssert Properties
+###### FileAssertHtmlAssert Fields
 
-| Property  |
-| :-------- |
-| `Queries` |
+| Field      |
+| :--------- |
+| `_queries` |
 
 Each `HtmlQuery` entry holds:
 
@@ -99,9 +99,9 @@ constraints per query.
 
 #### Data Model
 
-| Field / Property |
-| :--------------- |
-| `Queries`        |
+| Field        |
+| :----------- |
+| `_queries`   |
 
 Each `HtmlQuery` (private nested record) holds:
 

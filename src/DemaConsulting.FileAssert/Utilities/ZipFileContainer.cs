@@ -104,8 +104,12 @@ internal sealed class ZipFileContainer : IFileContainer, IDisposable
         // Validate the entry path before searching the archive
         ArgumentNullException.ThrowIfNull(entryPath);
 
+        // Normalize backslashes to forward slashes so that callers using
+        // either separator can locate entries; mirrors GetEntries normalization.
+        var normalized = entryPath.Replace('\\', '/');
+
         // Locate the entry by its normalized name within the archive
-        var entry = _archive.GetEntry(entryPath)
+        var entry = _archive.GetEntry(normalized)
             ?? throw new IOException($"Zip entry '{entryPath}' not found in '{_displayName}'");
 
         return entry.Open();
@@ -126,8 +130,12 @@ internal sealed class ZipFileContainer : IFileContainer, IDisposable
         // Validate the entry path before searching the archive
         ArgumentNullException.ThrowIfNull(entryPath);
 
+        // Normalize backslashes to forward slashes so that callers using
+        // either separator can locate entries; mirrors GetEntries normalization.
+        var normalized = entryPath.Replace('\\', '/');
+
         // Locate the entry and return its uncompressed length
-        var entry = _archive.GetEntry(entryPath)
+        var entry = _archive.GetEntry(normalized)
             ?? throw new IOException($"Zip entry '{entryPath}' not found in '{_displayName}'");
 
         return entry.Length;

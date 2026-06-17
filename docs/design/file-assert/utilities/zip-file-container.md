@@ -1,6 +1,6 @@
 ### ZipFileContainer Design
 
-#### Overview
+#### Purpose
 
 `ZipFileContainer` is the zip archive implementation of `IFileContainer`. It wraps a `ZipArchive`
 opened from a caller-supplied `Stream`, exposing the archive's file entries as a virtual container.
@@ -51,9 +51,11 @@ forward slashes. Directory entries (whose names end with `/`) are excluded.
 public Stream OpenEntry(string entryPath)
 ```
 
-Finds the zip entry with the given name (using `_archive.GetEntry(entryPath)`) and opens it for
-reading via `entry.Open()`. Throws `IOException` with a descriptive message when the entry is not
-found.
+Finds the zip entry with the given name and opens it for reading via `entry.Open()`. The
+supplied `entryPath` is normalized by replacing any `\` with `/` before calling
+`_archive.GetEntry(...)`, mirroring the normalization performed by `GetEntries()` so that
+callers using either separator can locate entries. Throws `IOException` with a descriptive
+message when the entry is not found.
 
 **Why `IOException` rather than `FileNotFoundException`:** `FileNotFoundException` implies a
 file-system file. Inside a zip archive the abstraction is a "stream entry", so the more general
@@ -66,8 +68,9 @@ with the asserters' catch clauses.
 public long GetEntrySize(string entryPath)
 ```
 
-Returns `entry.Length` (the uncompressed size) for the named entry. Throws `IOException` when
-the entry is not found.
+Returns `entry.Length` (the uncompressed size) for the named entry. The supplied `entryPath`
+is normalized by replacing any `\` with `/` before lookup, mirroring `OpenEntry` and
+`GetEntries`. Throws `IOException` when the entry is not found.
 
 ##### GetDisplayPath Method
 

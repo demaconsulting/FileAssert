@@ -35,15 +35,11 @@ meets the project minimum threshold.
 
 **Expected**: A `ContainsRule` instance is returned.
 
-**Requirement coverage**: Contains rule creation requirement.
-
 ##### FileAssertRule_Create_WithMatches_ReturnsMatchesRule
 
 **Scenario**: `FileAssertRule.Create` is called with data specifying a `matches` regex rule.
 
 **Expected**: A `MatchesRule` instance is returned.
-
-**Requirement coverage**: Regex matches rule creation requirement.
 
 ##### FileAssertRule_Create_WithDoesNotContain_ReturnsDoesNotContainRule
 
@@ -51,15 +47,11 @@ meets the project minimum threshold.
 
 **Expected**: A `DoesNotContainRule` instance is returned.
 
-**Requirement coverage**: Does-not-contain rule creation requirement.
-
 ##### FileAssertRule_Create_WithDoesNotContainRegex_ReturnsDoesNotMatchRule
 
 **Scenario**: `FileAssertRule.Create` is called with data specifying a `does-not-match` regex rule.
 
 **Expected**: A `DoesNotMatchRule` instance is returned.
-
-**Requirement coverage**: Does-not-match rule creation requirement.
 
 ##### FileAssertRule_Create_WithNoType_ThrowsInvalidOperationException
 
@@ -83,15 +75,11 @@ meets the project minimum threshold.
 
 **Expected**: No error is written to the context; exit code is 0.
 
-**Requirement coverage**: Contains rule pass requirement.
-
 ##### FileAssertContainsRule_Apply_ContentMissingValue_WritesError
 
 **Scenario**: A `ContainsRule` is applied to content that does not contain the expected value.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Contains rule fail requirement.
 
 ##### FileAssertMatchesRule_Apply_ContentMatchesPattern_NoError
 
@@ -99,15 +87,11 @@ meets the project minimum threshold.
 
 **Expected**: No error is written to the context; exit code is 0.
 
-**Requirement coverage**: Regex match pass requirement.
-
 ##### FileAssertMatchesRule_Apply_ContentDoesNotMatchPattern_WritesError
 
 **Scenario**: A `MatchesRule` is applied to content that does not match the regex pattern.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Regex match fail requirement.
 
 ##### FileAssertDoesNotContainRule_Apply_ContentContainsValue_WritesError
 
@@ -115,15 +99,11 @@ meets the project minimum threshold.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Does-not-contain fail requirement.
-
 ##### FileAssertDoesNotContainRule_Apply_ContentMissingValue_NoError
 
 **Scenario**: A `DoesNotContainRule` is applied to content that does not contain the forbidden value.
 
 **Expected**: No error is written to the context; exit code is 0.
-
-**Requirement coverage**: Does-not-contain pass requirement.
 
 ##### FileAssertDoesNotMatchRule_Apply_ContentMatchesPattern_WritesError
 
@@ -131,29 +111,8 @@ meets the project minimum threshold.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Does-not-match fail requirement.
-
 ##### FileAssertDoesNotMatchRule_Apply_ContentDoesNotMatchPattern_NoError
 
 **Scenario**: A `DoesNotMatchRule` is applied to content that does not match the forbidden pattern.
 
 **Expected**: No error is written to the context; exit code is 0.
-
-**Requirement coverage**: Does-not-match pass requirement.
-
-#### Requirements Coverage
-
-- **Contains rule**: FileAssertRule_Create_WithContains_ReturnsContainsRule,
-  FileAssertContainsRule_Apply_ContentContainsValue_NoError,
-  FileAssertContainsRule_Apply_ContentMissingValue_WritesError
-- **Regex matches rule**: FileAssertRule_Create_WithMatches_ReturnsMatchesRule,
-  FileAssertMatchesRule_Apply_ContentMatchesPattern_NoError,
-  FileAssertMatchesRule_Apply_ContentDoesNotMatchPattern_WritesError
-- **Does-not-contain rule**: FileAssertRule_Create_WithDoesNotContain_ReturnsDoesNotContainRule,
-  FileAssertDoesNotContainRule_Apply_ContentContainsValue_WritesError,
-  FileAssertDoesNotContainRule_Apply_ContentMissingValue_NoError
-- **Does-not-match rule**: FileAssertRule_Create_WithDoesNotContainRegex_ReturnsDoesNotMatchRule,
-  FileAssertDoesNotMatchRule_Apply_ContentMatchesPattern_WritesError,
-  FileAssertDoesNotMatchRule_Apply_ContentDoesNotMatchPattern_NoError
-- **Unknown type guard**: FileAssertRule_Create_WithNoType_ThrowsInvalidOperationException
-- **Null data guard**: FileAssertRule_Create_WithNullData_ThrowsArgumentNullException

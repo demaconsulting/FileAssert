@@ -1,6 +1,6 @@
 ### IFileContainer Design
 
-#### Overview
+#### Purpose
 
 `IFileContainer` is the uniform file-access abstraction used by all asserters in FileAssert.
 It decouples asserters from the filesystem by hiding whether a "file" resides on disk inside a

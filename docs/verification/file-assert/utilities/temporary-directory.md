@@ -39,8 +39,6 @@ operations. No mocking is needed at this level.
 **Expected**: `Directory.Exists(tmpDir.DirectoryPath)` returns `true` immediately after
 construction.
 
-**Requirement coverage**: Lifecycle creation requirement.
-
 ##### TemporaryDirectory_Constructor_CreatesUniqueDirectories
 
 **Scenario**: Two `TemporaryDirectory` instances are constructed sequentially without disposal
@@ -50,16 +48,12 @@ between them.
 
 **Boundary / error path**: Ensures uniqueness under rapid successive construction.
 
-**Requirement coverage**: Lifecycle uniqueness requirement.
-
 ##### TemporaryDirectory_GetFilePath_SimpleFile_ReturnsPathUnderDirectory
 
 **Scenario**: `GetFilePath("output.md")` is called on a live `TemporaryDirectory` instance.
 
 **Expected**: The returned path starts with `tmpDir.DirectoryPath` and ends with `"output.md"`.
 No exception is thrown.
-
-**Requirement coverage**: Safe path construction requirement.
 
 ##### TemporaryDirectory_GetFilePath_NestedPath_CreatesIntermediateDirectories
 
@@ -68,8 +62,6 @@ No exception is thrown.
 
 **Expected**: `Directory.Exists` on the parent directory of the returned path returns `true`,
 confirming that intermediate subdirectories were created automatically. No exception is thrown.
-
-**Requirement coverage**: Intermediate subdirectory creation requirement.
 
 ##### TemporaryDirectory_GetFilePath_TraversalAttempt_ThrowsArgumentException
 
@@ -80,8 +72,6 @@ directory.
 
 **Boundary / error path**: Path-traversal attempt using leading `../`.
 
-**Requirement coverage**: Traversal rejection requirement.
-
 ##### TemporaryDirectory_Dispose_DeletesDirectory
 
 **Scenario**: A `TemporaryDirectory` is constructed, a file is written inside it via
@@ -89,8 +79,6 @@ directory.
 
 **Expected**: `Directory.Exists` on the captured `DirectoryPath` returns `false` after disposal,
 confirming that the directory and its contents were deleted.
-
-**Requirement coverage**: Lifecycle cleanup requirement.
 
 ##### TemporaryDirectory_Dispose_AlreadyDeleted_DoesNotThrow
 
@@ -100,15 +88,3 @@ confirming that the directory and its contents were deleted.
 **Expected**: `Dispose()` completes without throwing any exception.
 
 **Boundary / error path**: Cleanup error suppression when the directory no longer exists.
-
-**Requirement coverage**: Resilient disposal requirement.
-
-#### Requirements Coverage
-
-- (directory created on construction): TemporaryDirectory_Constructor_CreatesDirectory
-- (unique directory per instance): TemporaryDirectory_Constructor_CreatesUniqueDirectories
-- (directory deleted on disposal): TemporaryDirectory_Dispose_DeletesDirectory
-- (disposal safe when already deleted): TemporaryDirectory_Dispose_AlreadyDeleted_DoesNotThrow
-- (simple file path under directory): TemporaryDirectory_GetFilePath_SimpleFile_ReturnsPathUnderDirectory
-- (nested path creates subdirectories): TemporaryDirectory_GetFilePath_NestedPath_CreatesIntermediateDirectories
-- (traversal attempt rejected): TemporaryDirectory_GetFilePath_TraversalAttempt_ThrowsArgumentException

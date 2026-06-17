@@ -6,10 +6,11 @@ that together verify the `Cli` subsystem requirements.
 
 ### Verification Approach
 
-The `Cli` subsystem boundary at `Program` is verified by integration tests defined in
-`CliTests.cs`. Each test exercises `Context.Create` and `Program.Run` together, treating the pair
-as the observable subsystem interface. Tests pass controlled argument arrays and assert on captured
-console output, file system side-effects, and exit codes.
+The `Cli` subsystem boundary is verified by integration tests defined in `CliTests.cs`. Each
+test exercises the `Cli` subsystem's public surface — primarily `Context.Create` and the
+`Context` instance methods (`WriteLine`, `WriteError`, `WithPrefix`) — rather than
+`Program.Run`. Tests pass controlled argument arrays and assert on captured console output,
+file system side-effects, and exit codes.
 
 ### Dependencies and Mocking Strategy
 
@@ -89,17 +90,6 @@ through `Context.Create`.
 called with a message.
 
 **Expected**: The message appears on standard output; exit code is 0.
-
-### Requirements Coverage
-
-- **Argument parsing**: Cli_CreateContext_ParsesSilentValidateAndLogFlags,
-  Cli_CreateContext_ParsesVersionHelpConfigResultsFlags,
-  Cli_CreateContext_WithFilters_ParsesPositionalArguments
-- **Unknown argument rejection**: Cli_CreateContext_UnknownArgument_ThrowsArgumentException
-- **Typed property exposure (depth)**: Cli_CreateContext_ParsesDepthFlag
-- **Error exit code**: Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
-- **Log file output**: Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
-- **Console output**: Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
 
 ### ScopedContext Verification
 

@@ -58,15 +58,17 @@ and runs the tests.
 
 ### Dependencies
 
-| Dependency  | Usage                                                                       |
-| :---------- | :-------------------------------------------------------------------------- |
-| Cli         | Receives a `Context` to report errors and write progress output.            |
-| Modeling    | Delegates test construction to `FileAssertTest.Create` and execution to     |
-|             | `FileAssertTest.Run`.                                                       |
+| Dependency                 | Usage                                                            |
+| :------------------------- | :--------------------------------------------------------------- |
+| Cli                        | Receives a `Context` to report errors and write progress output. |
+| Modeling                   | Delegates test construction to `FileAssertTest.Create` and       |
+|                            | execution to `FileAssertTest.Run`.                               |
+| DemaConsulting.TestResults | Aggregates per-test results into TRX/JUnit output documents.     |
 
 ### Callers
 
-- None.
+- `Program` — reads the configuration file and invokes
+  `FileAssertConfig.ReadFromFile` followed by `FileAssertConfig.Run`.
 
 ### YAML Configuration Format
 

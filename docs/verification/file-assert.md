@@ -320,52 +320,13 @@ elements) rather than a parse-failure path.
 
 **Expected**: Exit code non-zero.
 
-## Requirements Coverage
+### IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
 
-- **Version display**: IntegrationTest_VersionFlag_OutputsVersion
-- **Help display**: IntegrationTest_HelpFlag_OutputsUsageInformation
-- **Self-validation**: IntegrationTest_ValidateFlag_RunsValidation,
-  IntegrationTest_ValidateWithResults_GeneratesTrxFile,
-  IntegrationTest_ValidateWithResults_GeneratesJUnitFile
-- **Silent mode**: IntegrationTest_SilentFlag_SuppressesOutput
-- **Log file output**: IntegrationTest_LogFlag_WritesOutputToFile
-- **Invalid argument rejection**: IntegrationTest_UnknownArgument_ReturnsError
-- **Test filtering**: IntegrationTest_TestFiltering_OnlyRunsMatchingTests
-- **Default behavior**: IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero
-- **File assertions**: IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero,
-  IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
-- **Results output**: IntegrationTest_PassingAssertions_WritesTrxWithPassedResults,
-  IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults
-- **Count/size constraints**: IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero,
-  IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero,
-  IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero,
-  IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero,
-  IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
-- **Text rules**: IntegrationTest_RegexRule_MatchingContent_ReturnsZero,
-  IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero,
-  IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero,
-  IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero
-- **Structured file assertions**: IntegrationTest_XmlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_YamlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_JsonAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
-- **Zip archive assertions**: IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero,
-  IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero,
-  IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero,
-  IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero,
-  IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
-- **Multi-platform / multi-runtime coverage**: The `FileAssert-System-MultiPlatform` and
-  `FileAssert-System-MultiRuntime` requirements are not verified by dedicated scenarios.
-  Instead, every integration test scenario above is executed across all nine runtime/platform
-  combinations listed in the Test Environments table. ReqStream links these requirements to the
-  same integration tests through platform- and runtime-scoped source filters
-  (`windows@`, `ubuntu@`, `macos@`, `dotnet8.x@`, `dotnet9.x@`, `dotnet10.x@`), so a passing
-  result on each combination provides the coverage evidence.
+**Scenario**: The `--depth` flag is supplied to control the heading depth used in `--validate`
+output. Detailed unit-level coverage for this behavior is provided by
+`Validation_Run_WithDepth_UsesSpecifiedHeadingDepth` in the SelfTest verification set
+(`docs/verification/file-assert/selftest/validation.md`); this entry records the system-level
+recognition of the `--depth` flag as part of the public CLI contract.
+
+**Expected**: The flag is accepted at the system boundary and the heading depth used in
+validation output matches the supplied value.

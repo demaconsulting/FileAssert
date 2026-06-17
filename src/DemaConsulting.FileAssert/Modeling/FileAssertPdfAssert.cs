@@ -253,8 +253,22 @@ internal sealed class FileAssertPdfAssert
             var bytes = ReadAllBytes(stream);
             document = PdfDocument.Open(bytes);
         }
+        catch (IOException ex)
+        {
+            context.WriteError($"File '{displayPath}' could not be read: {ex.Message}");
+            return;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            context.WriteError($"File '{displayPath}' could not be read: {ex.Message}");
+            return;
+        }
         catch (Exception)
         {
+            // Fallback: PdfPig surfaces a wide variety of exception types for malformed
+            // PDF input (PdfDocumentFormatException, InvalidOperationException,
+            // ArgumentException, etc.). Treat any unrecognized parse exception as an
+            // invalid PDF so behavior degrades gracefully.
             context.WriteError($"File '{displayPath}' could not be parsed as a PDF document");
             return;
         }
@@ -278,9 +292,16 @@ internal sealed class FileAssertPdfAssert
                 if (_text.Count > 0)
                 {
                     var sb = new StringBuilder();
-                    foreach (var page in pageList)
+                    for (var i = 0; i < pageList.Count; i++)
                     {
-                        sb.Append(page.Text);
+                        if (i > 0)
+                        {
+                            // Separate page text with newlines so that text rules don't
+                            // see two adjacent words from different pages glued together.
+                            sb.Append('\n');
+                        }
+
+                        sb.Append(pageList[i].Text);
                     }
 
                     var content = sb.ToString();

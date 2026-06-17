@@ -63,9 +63,12 @@ extension is provided to the context via `--results`.
 **Expected**: `FileAssertConfig.Run` completes and a TRX results file is written to the specified
 path.
 
-### Requirements Coverage
+#### Configuration_LoadYaml_InvalidYaml_ThrowsOrReportsParseError
 
-- **YAML loading and hierarchy construction**: Configuration_LoadYaml_BuildsCompleteTestHierarchy
-- **Test name filtering**: Configuration_RunWithFilter_ExecutesOnlyMatchingTests
-- **Tag filtering**: Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
-- **Results file output (TRX/JUnit XML)**: Configuration_Run_WithResultsFile_WritesTrxResultsFile
+**Scenario** (negative): A YAML file containing syntactically invalid YAML (for example, an
+unbalanced bracket or a stray tab character that breaks the parser) is supplied to
+`FileAssertConfig.ReadFromFile`.
+
+**Expected**: The loader does not return a partially-constructed configuration; either a
+deserialization exception propagates to the caller, or the subsystem reports a parse error
+through the supplied context. In either case, no assertions are executed.

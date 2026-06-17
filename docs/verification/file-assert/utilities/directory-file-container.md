@@ -14,9 +14,9 @@ with the local file system.
 #### Test Environment
 
 Tests execute in the standard CI pipeline environment using the xUnit test runner. The test
-collection is marked `[Collection("Sequential")]` to prevent parallel execution of tests that
-share `Console` state. No special hardware, peripherals, or environment configuration is required
-beyond the standard build toolchain.
+collection is marked `[Collection("Sequential")]` to serialize tests that create and tear down
+shared temporary directories under `Path.GetTempPath()`. No special hardware, peripherals, or
+environment configuration is required beyond the standard build toolchain.
 
 #### Acceptance Criteria
 
@@ -38,15 +38,11 @@ is called.
 
 **Expected**: Returns exactly 2 entries: `"a.txt"` and `"sub/b.txt"` with forward slashes.
 
-**Requirement coverage**: File-system access — recursive enumeration with forward-slash normalization.
-
 ##### DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
 
 **Scenario**: An empty directory is created; `GetEntries()` is called.
 
 **Expected**: Returns an empty list.
-
-**Requirement coverage**: File-system access — empty directory returns empty list.
 
 ##### DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
 
@@ -57,16 +53,12 @@ is called.
 
 **Boundary / error path**: Non-existent base directory treated as empty container.
 
-**Requirement coverage**: Non-existent directory returns empty list rather than throwing.
-
 ##### DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
 
 **Scenario**: A file `"data.txt"` containing `"hello"` is written to a temporary directory;
 `OpenEntry("data.txt")` is called.
 
 **Expected**: The returned stream reads `"hello"`.
-
-**Requirement coverage**: File-system access — stream opening for existing files.
 
 ##### DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
 
@@ -76,8 +68,6 @@ is called.
 
 **Boundary / error path**: Missing file throws appropriate exception.
 
-**Requirement coverage**: File-system access — IOException for missing entries.
-
 ##### DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
 
 **Scenario**: A file `"size.txt"` containing exactly 5 ASCII bytes is written; `GetEntrySize("size.txt")`
@@ -85,22 +75,8 @@ is called.
 
 **Expected**: Returns `5L`.
 
-**Requirement coverage**: File-system access — correct byte size reporting.
-
 ##### DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
 
 **Scenario**: `GetDisplayPath("report.pdf")` is called on a container with a known base path.
 
 **Expected**: Returns `Path.Combine(basePath, "report.pdf")` — the full absolute file-system path.
-
-**Requirement coverage**: File-system access — full path as display path for error messages.
-
-#### Requirements Coverage
-
-- (recursive enumeration with forward slashes): DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
-- (empty directory returns empty): DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
-- (non-existent directory returns empty): DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
-- (open existing file as stream): DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
-- (missing file throws IOException): DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
-- (correct file size): DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
-- (full path as display path): DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath

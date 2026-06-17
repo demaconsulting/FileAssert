@@ -59,11 +59,14 @@ sections:
       - id: FileAssert-FileAssertPdfAssert-TextAssertions
         title: |
           The FileAssertPdfAssert class shall extract the body text of the PDF document and
-          apply each configured text rule to the extracted content.
+          apply each configured text rule to the extracted content. Page texts shall be
+          joined with a `\n` separator so that text rules see clear page boundaries.
         justification: |
           Body text assertions allow users to verify that key content (such as required
           section headings or legal notices) is present in generated PDF outputs. Using the
           same FileAssertRule hierarchy as the text: block ensures consistent rule behavior.
+          Joining pages with `\n` prevents the last token of one page from running into the
+          first token of the next.
         tests:
           - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
           - FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError

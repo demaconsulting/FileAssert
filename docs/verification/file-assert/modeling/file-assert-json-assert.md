@@ -18,8 +18,8 @@ special hardware, peripherals, or environment configuration is required.
 #### Acceptance Criteria
 
 All listed unit test scenarios pass on every supported platform and runtime combination. No
-test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertJsonAssert.cs`
-meets the project minimum threshold.
+test failures, unhandled exceptions, or assertion errors occur. Each scenario asserts on
+specific `IContext.ExitCode` and `WriteError` outcomes that uniquely determine pass/fail.
 
 #### Dependencies
 
@@ -34,8 +34,6 @@ meets the project minimum threshold.
 **Scenario**: `FileAssertJsonAssert.Create` is called with valid data.
 
 **Expected**: A non-null `FileAssertJsonAssert` instance is returned.
-
-**Requirement coverage**: JSON assert creation requirement.
 
 ##### FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
 
@@ -111,16 +109,12 @@ query returns a JSON array with exactly the expected number of elements.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Array count match requirement.
-
 ##### FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with an exact count assertion and the path
 query returns a different number of elements.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Array count mismatch requirement.
 
 ##### FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError
 
@@ -129,16 +123,12 @@ count is within bounds.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Min/max count constraint pass requirement.
-
 ##### FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called on a path that resolves to a scalar JSON value;
 a count of 1 is asserted.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Scalar value counts as one requirement.
 
 ##### FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError
 
@@ -147,8 +137,6 @@ satisfied.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Minimum count constraint requirement.
-
 ##### FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with a maximum count constraint that is
@@ -156,22 +144,12 @@ exceeded.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Maximum count constraint requirement.
+##### FileAssertJsonAssert_Run_MultipleQueries_InvalidJson_ShortCircuitsAfterParseError
 
-#### Requirements Coverage
+**Scenario**: `FileAssertJsonAssert.Run` is configured with two or more path queries and is
+invoked against a file whose content is not valid JSON.
 
-- **JSON assert creation**: FileAssertJsonAssert_Create_ValidData_CreatesJsonAssert
-- **Null guard**: FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
-- **Query validation**: FileAssertJsonAssert_Create_EmptyQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException
-- **Invalid file**: FileAssertJsonAssert_Run_InvalidFile_WritesError
-- **Parse vs IO error**: FileAssertJsonAssert_Run_InvalidJson_WritesParseError,
-  FileAssertJsonAssert_Run_IOError_WritesReadError
-- **Count constraints**: FileAssertJsonAssert_Run_ArrayCount_Matches_NoError,
-  FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError,
-  FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError,
-  FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError,
-  FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError,
-  FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError
+**Expected**: Exactly one parse error is written for the file; subsequent queries are
+short-circuited (the parse failure is reported once, not once per query).
+
+**Boundary / error path**: Multi-query parse-error short-circuit.

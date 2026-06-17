@@ -63,6 +63,15 @@ internal static class PathHelpers
         ArgumentNullException.ThrowIfNull(basePath);
         ArgumentNullException.ThrowIfNull(relativePath);
 
+        // Reject rooted relative paths up-front. A rooted path supplied as the
+        // second argument to Path.Combine replaces basePath entirely, which can
+        // happen even when the rooted path resolves underneath basePath. Such
+        // inputs are never legitimate "relative" paths.
+        if (Path.IsPathRooted(relativePath))
+        {
+            throw new ArgumentException($"Invalid path component: {relativePath}", nameof(relativePath));
+        }
+
         // Combine the paths (preserves the caller's relative/absolute style)
         var combinedPath = Path.Combine(basePath, relativePath);
 

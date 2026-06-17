@@ -46,6 +46,7 @@ The following topics are out of scope:
   DemaConsulting.TestResults)
 - Build pipeline configuration
 - Deployment and packaging
+- Test projects are out of scope.
 
 ## Software Structure
 

@@ -148,7 +148,7 @@ by YamlDotNet.
 | `FileAssertPdfMetadataRuleData` | `Field?, Contains?, Matches?`                                               |
 | `FileAssertPdfPagesData`        | `Min: int?`, `Max: int?`                                                    |
 | `FileAssertQueryData`           | `Query?, Count?, Min?, Max?`                                                |
-| `FileAssertZipData`             | `Files: List<FileAssertFileData>?` (`Entries` is an alias)                  |
+| `FileAssertZipData`             | `Files: List<FileAssertFileData>?` (deserialized from the YAML `files:` key)|
 
 All properties are nullable so that absent YAML keys deserialize cleanly to `null`.
 

@@ -35,8 +35,6 @@ meets the project minimum threshold.
 
 **Expected**: A non-null `FileAssertFile` instance is returned.
 
-**Requirement coverage**: File entry creation requirement.
-
 ##### FileAssertFile_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertFile.Create` is called with `null` data.
@@ -135,21 +133,3 @@ file is larger than the maximum.
 **Scenario**: Multiple files match the pattern; more than one fails a content rule.
 
 **Expected**: A separate error is written for each violation; exit code is non-zero.
-
-#### Requirements Coverage
-
-- **File entry creation**: FileAssertFile_Create_ValidData_CreatesFile
-- **Null/blank pattern guards**: FileAssertFile_Create_NullData_ThrowsArgumentNullException,
-  FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException,
-  FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException
-- **Count constraints**: FileAssertFile_Run_TooFewFiles_WritesError,
-  FileAssertFile_Run_TooManyFiles_WritesError, FileAssertFile_Run_WrongCount_WritesError
-- **Size constraints**: FileAssertFile_Run_TooSmall_WritesError,
-  FileAssertFile_Run_TooLarge_WritesError,
-  FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation
-- **Content rules**: FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
-  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError,
-  FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation
-- **File-type assert delegation**: FileAssertFile_Create_ValidData_CreatesFile,
-  FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
-  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

@@ -24,7 +24,7 @@ additional environment setup is required.
 
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is considered
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is considered
 verified when the test scenarios that exercise its functionality pass in the CI pipeline.
 
 ### Test Scenarios
@@ -35,16 +35,12 @@ verified when the test scenarios that exercise its functionality pass in the CI 
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-FileSystemGlobbing`.
-
 #### FileAssertFile_Run_TooFewFiles_WritesError
 
 **Scenario**: FileAssert resolves a glob pattern with FileSystemGlobbing and reports an error when
 fewer files match than the minimum constraint allows.
 
 **Expected**: The test passes and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-FileSystemGlobbing`.
 
 #### FileAssertFile_Run_TooManyFiles_WritesError
 
@@ -53,4 +49,10 @@ more files match than the maximum constraint allows.
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-FileSystemGlobbing`.
+#### IntegrationTest_RecursiveGlob_MatchesFilesAcrossSubdirectories
+
+**Scenario**: FileAssert resolves a recursive glob pattern of the form `**/...` (for example
+`**/*.txt`) against a directory tree that contains matching files at multiple nesting levels.
+
+**Expected**: All files at every level are matched and the resulting count satisfies the
+configured constraint; the test passes and the result appears in the TRX output.

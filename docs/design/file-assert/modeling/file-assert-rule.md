@@ -153,6 +153,7 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 
 #### Dependencies
 
+- **Cli dependency**: `IContext` from the Cli subsystem (used by `Apply` to report failures).
 - **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.
 
 #### Callers

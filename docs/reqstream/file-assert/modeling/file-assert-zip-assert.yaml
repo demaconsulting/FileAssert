@@ -25,12 +25,13 @@ sections:
       - id: FileAssert-FileAssertZipAssert-EntryMatching
         title: |
           The FileAssertZipAssert class shall apply all configured file assertions to the
-          contents of a zip archive entry, using a scoped context for breadcrumb error messages.
+          contents of a zip archive entry.
         justification: |
           Running the full assertion suite (text, xml, html, yaml, json, pdf, recursive zip)
           against zip entry contents enables the same level of validation inside archives as
-          is possible for on-disk files. A scoped IContext prepends the archive entry's display
-          path to every error message, giving users unambiguous breadcrumb-style context.
+          is possible for on-disk files.
+        children:
+          - FileAssert-FileAssertZipAssert-BreadcrumbErrors
         tests:
           - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
           - FileAssertZipAssert_Run_GlobPatternMatchesMultipleEntries_NoError
@@ -49,12 +50,17 @@ sections:
           - FileAssertZipAssert_Run_EntryMeetsMaxSizeConstraint_NoError
           - FileAssertZipAssert_Run_EntryExceedsMaxSizeConstraint_WritesError
           - FileAssertZipAssert_Run_NestedZipTextContent_InnerEntryContentMatches_NoError
+
+      - id: FileAssert-FileAssertZipAssert-BreadcrumbErrors
+        title: |
+          The FileAssertZipAssert class shall prepend the archive entry's display path to
+          every error reported by nested file assertions, producing breadcrumb-style messages.
+        justification: |
+          A scoped IContext prepends the archive entry's display path to every error message,
+          giving users unambiguous breadcrumb-style context that identifies exactly which
+          archive entry failed which assertion.
+        tests:
           - FileAssertZipAssert_Run_ContentAssertionFails_ErrorContainsBreadcrumbs
-          - IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero
-          - IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero
-          - IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero
-          - IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero
-          - IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
 
       - id: FileAssert-FileAssertZipAssert-ParseError
         title: |

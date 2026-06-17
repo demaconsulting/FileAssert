@@ -1,6 +1,6 @@
 ### DirectoryFileContainer Design
 
-#### Overview
+#### Purpose
 
 `DirectoryFileContainer` is the filesystem implementation of `IFileContainer`. It exposes a local
 directory as a container of file entries, enumerating all files recursively, opening them via their

@@ -16,29 +16,81 @@ sections:
           - FileAssertYamlAssert_Create_ValidData_CreatesYamlAssert
           - FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException
 
-      - id: FileAssert-FileAssertYamlAssert-ParseError
+      - id: FileAssert-FileAssertYamlAssert-ParseErrorReported
         title: |
-          The FileAssertYamlAssert class shall report an immediate error and skip remaining
-          assertions when a matched file cannot be parsed as a valid YAML document.
+          The FileAssertYamlAssert class shall report an immediate error when a matched file
+          cannot be parsed as a valid YAML document.
         justification: |
-          Attempting to traverse a YAML document tree against a file that is not valid YAML
-          would produce meaningless or misleading results. Reporting the parse failure
-          immediately gives users a clear, actionable error message.
+          Reporting a parse failure immediately gives users a clear, actionable error message
+          rather than a misleading downstream traversal failure.
         tests:
           - FileAssertYamlAssert_Run_InvalidFile_WritesError
+
+      - id: FileAssert-FileAssertYamlAssert-ParseErrorSkipsRemaining
+        title: |
+          The FileAssertYamlAssert class shall skip remaining query assertions for a file
+          once a YAML parse error has been reported for that file.
+        justification: |
+          Attempting to traverse a YAML document tree against a file that is not valid YAML
+          would produce meaningless or misleading results, so subsequent queries are
+          short-circuited after the parse failure.
+        tests:
           - FileAssertYamlAssert_Run_InvalidFile_RemainingAssertionsSkipped
 
-      - id: FileAssert-FileAssertYamlAssert-QueryAssertions
+      - id: FileAssert-FileAssertYamlAssert-MalformedQueryRejected
+        title: |
+          The FileAssertYamlAssert class shall reject malformed dot-notation queries — empty,
+          starting with a dot, ending with a dot, or containing consecutive dots — at
+          construction time.
+        justification: |
+          Malformed queries cannot be evaluated unambiguously and indicate a configuration
+          error. Rejecting them up front prevents misleading "no match" results at runtime.
+        tests:
+          - FileAssertYamlAssert_Create_EmptyQuery_ThrowsInvalidOperationException
+          - FileAssertYamlAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException
+          - FileAssertYamlAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException
+          - FileAssertYamlAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException
+
+      - id: FileAssert-FileAssertYamlAssert-QueryTraversal
         title: |
           The FileAssertYamlAssert class shall evaluate each configured dot-notation path
-          against the parsed YAML document and apply min, max, and exact count constraints
-          to the number of matching nodes.
+          against the parsed YAML document and report the number of matching nodes.
         justification: |
-          Dot-notation path assertions allow users to verify that required configuration
-          keys are present and have the expected cardinality in YAML configuration files,
-          CI/CD pipeline definitions, and infrastructure-as-code documents.
+          Dot-notation traversal allows users to address required keys inside YAML
+          configuration files, CI/CD pipeline definitions, and infrastructure-as-code
+          documents.
+        tests:
+          - FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError
+          - FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount
+
+      - id: FileAssert-FileAssertYamlAssert-QueryMinCount
+        title: |
+          The FileAssertYamlAssert class shall enforce a minimum-count constraint on the
+          number of nodes matched by a query.
+        justification: |
+          A minimum-count constraint allows users to assert that at least a given number of
+          configuration items are declared (for example, a minimum number of CI jobs).
+        tests:
+          - FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError
+
+      - id: FileAssert-FileAssertYamlAssert-QueryMaxCount
+        title: |
+          The FileAssertYamlAssert class shall enforce a maximum-count constraint on the
+          number of nodes matched by a query.
+        justification: |
+          A maximum-count constraint allows users to enforce limits on permitted
+          configuration items (for example, no more than one production deployment target).
+        tests:
+          - FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError
+
+      - id: FileAssert-FileAssertYamlAssert-QueryExactCount
+        title: |
+          The FileAssertYamlAssert class shall enforce an exact-count constraint on the
+          number of nodes matched by a query.
+        justification: |
+          An exact-count constraint pins the cardinality of an addressable YAML node set,
+          catching both missing and extra entries in a single rule.
         tests:
           - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
           - FileAssertYamlAssert_Run_SequenceCount_Mismatch_WritesError
           - FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError
-          - FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError

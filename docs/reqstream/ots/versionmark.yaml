@@ -8,17 +8,31 @@ sections:
     sections:
       - title: VersionMark Requirements
         requirements:
+          - id: FileAssert-OTS-VersionMark-Capture
+            title: VersionMark shall capture tool-version information for each configured tool.
+            justification: |
+              VersionMark reads version metadata for each dotnet tool used in the pipeline so
+              the release artifact records the exact tools that produced it.
+            tags: [ots]
+            tests:
+              - VersionMark_CapturesVersions
+
+          - id: FileAssert-OTS-VersionMark-Publish
+            title: VersionMark shall publish the captured version information as a markdown report.
+            justification: |
+              The published markdown report is included in the release artifacts and serves as
+              the human-readable evidence of tool versions used.
+            tags: [ots]
+            tests:
+              - VersionMark_GeneratesMarkdownReport
+
           - id: FileAssert-OTS-VersionMark
             title: VersionMark shall capture and publish tool-version information.
             justification: |
-              DemaConsulting.VersionMark reads version metadata for each dotnet tool used in the
-              pipeline and writes a versions markdown document included in the release artifacts.
-              It runs in the same CI pipeline that produces the TRX test results, so a successful
-              pipeline run is evidence that VersionMark executed without error.
+              Composite requirement covering capture and publish behaviors.
             tags: [ots]
-            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
-            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
-            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
+            children:
+              - FileAssert-OTS-VersionMark-Capture
+              - FileAssert-OTS-VersionMark-Publish
             tests:
               - VersionMark_CapturesVersions
-              - VersionMark_GeneratesMarkdownReport

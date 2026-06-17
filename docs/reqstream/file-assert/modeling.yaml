@@ -49,26 +49,89 @@ sections:
         tests:
           - Modeling_ExecuteChain_ReportsFailuresThroughContext
 
+      - id: FileAssert-Modeling-FileTypeParsing-Text
+        title: The Modeling subsystem shall read matched files as plain text when a `text:` block is declared.
+        justification: |
+          The text path is the simplest format and exercises the rule pipeline directly.
+        children:
+          - FileAssert-FileAssertTextAssert-Creation
+          - FileAssert-FileAssertTextAssert-RuleApplication
+        tests:
+          - Modeling_ExecuteChain_PassesWhenAllConstraintsMet
+
+      - id: FileAssert-Modeling-FileTypeParsing-Pdf
+        title: The Modeling subsystem shall parse matched files as PDF documents when a `pdf:` block is declared.
+        justification: |
+          PDF parsing is required to apply metadata, page-count, and body-text assertions.
+        children:
+          - FileAssert-FileAssertPdfAssert-Creation
+          - FileAssert-FileAssertPdfAssert-MetadataAssertions
+          - FileAssert-FileAssertPdfAssert-PageCountAssertions
+          - FileAssert-FileAssertPdfAssert-TextAssertions
+        tests:
+          - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+
+      - id: FileAssert-Modeling-FileTypeParsing-Xml
+        title: The Modeling subsystem shall parse matched files as XML documents when an `xml:` block is declared.
+        justification: |
+          XML parsing supports XPath queries against XML reports.
+        children:
+          - FileAssert-FileAssertXmlAssert-Creation
+          - FileAssert-FileAssertXmlAssert-QueryValidation
+        tests:
+          - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+
+      - id: FileAssert-Modeling-FileTypeParsing-Html
+        title: The Modeling subsystem shall parse matched files as HTML documents when an `html:` block is declared.
+        justification: |
+          HTML parsing supports XPath queries against HTML reports (lenient parser).
+        children:
+          - FileAssert-FileAssertHtmlAssert-Creation
+        tests:
+          - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+
+      - id: FileAssert-Modeling-FileTypeParsing-Yaml
+        title: The Modeling subsystem shall parse matched files as YAML documents when a `yaml:` block is declared.
+        justification: |
+          YAML parsing supports dot-notation path queries against YAML configuration files.
+        children:
+          - FileAssert-FileAssertYamlAssert-Creation
+        tests:
+          - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
+
+      - id: FileAssert-Modeling-FileTypeParsing-Json
+        title: The Modeling subsystem shall parse matched files as JSON documents when a `json:` block is declared.
+        justification: |
+          JSON parsing supports dot-notation path queries against JSON outputs.
+        children:
+          - FileAssert-FileAssertJsonAssert-Creation
+        tests:
+          - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
+
+      - id: FileAssert-Modeling-FileTypeParsing-Zip
+        title: The Modeling subsystem shall parse matched files as ZIP archives when a `zip:` block is declared.
+        justification: |
+          ZIP parsing exposes archive entries to the IFileContainer abstraction.
+        children:
+          - FileAssert-FileAssertZipAssert-Creation
+        tests:
+          - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
+
       - id: FileAssert-Modeling-FileTypeParsing
         title: |
           The Modeling subsystem shall parse matched files as structured documents (PDF, XML,
           HTML, YAML, JSON, ZIP) when the corresponding assertion block is declared.
         justification: |
-          File-type parsing enables structured-document assertions (metadata, XPath, dot-notation
-          paths) that are not possible with plain-text content rules.
+          Composite requirement decomposed per file format; each child carries the specific
+          parser binding.
         children:
-          - FileAssert-FileAssertTextAssert-Creation
-          - FileAssert-FileAssertTextAssert-RuleApplication
-          - FileAssert-FileAssertPdfAssert-Creation
-          - FileAssert-FileAssertPdfAssert-MetadataAssertions
-          - FileAssert-FileAssertPdfAssert-PageCountAssertions
-          - FileAssert-FileAssertPdfAssert-TextAssertions
-          - FileAssert-FileAssertXmlAssert-Creation
-          - FileAssert-FileAssertXmlAssert-QueryValidation
-          - FileAssert-FileAssertHtmlAssert-Creation
-          - FileAssert-FileAssertYamlAssert-Creation
-          - FileAssert-FileAssertJsonAssert-Creation
-          - FileAssert-FileAssertZipAssert-Creation
+          - FileAssert-Modeling-FileTypeParsing-Text
+          - FileAssert-Modeling-FileTypeParsing-Pdf
+          - FileAssert-Modeling-FileTypeParsing-Xml
+          - FileAssert-Modeling-FileTypeParsing-Html
+          - FileAssert-Modeling-FileTypeParsing-Yaml
+          - FileAssert-Modeling-FileTypeParsing-Json
+          - FileAssert-Modeling-FileTypeParsing-Zip
         tests:
           - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
 
@@ -84,11 +147,59 @@ sections:
           - FileAssert-FileAssertPdfAssert-ParseError
           - FileAssert-FileAssertXmlAssert-ParseError
           - FileAssert-FileAssertHtmlAssert-ParseError
-          - FileAssert-FileAssertYamlAssert-ParseError
+          - FileAssert-FileAssertYamlAssert-ParseErrorReported
+          - FileAssert-FileAssertYamlAssert-ParseErrorSkipsRemaining
           - FileAssert-FileAssertJsonAssert-ParseError
           - FileAssert-FileAssertZipAssert-ParseError
         tests:
           - Modeling_FileTypeParsing_InvalidXml_ReportsParseError
+
+      - id: FileAssert-Modeling-QueryAssertions-Xml
+        title: |
+          The Modeling subsystem shall report an XML XPath assertion as failed when the
+          number of nodes selected does not satisfy the declared count constraint.
+        justification: |
+          XML XPath queries are the primary structured-document assertion for XML reports.
+        children:
+          - FileAssert-FileAssertXmlAssert-QueryAssertions
+        tests:
+          - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+
+      - id: FileAssert-Modeling-QueryAssertions-Html
+        title: |
+          The Modeling subsystem shall report an HTML XPath assertion as failed when the
+          number of nodes selected does not satisfy the declared count constraint.
+        justification: |
+          HTML XPath queries are the primary structured-document assertion for HTML reports.
+        children:
+          - FileAssert-FileAssertHtmlAssert-QueryAssertions
+        tests:
+          - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+
+      - id: FileAssert-Modeling-QueryAssertions-Yaml
+        title: |
+          The Modeling subsystem shall report a YAML dot-notation query as failed when the
+          number of selected scalars/sequences does not satisfy the declared count constraint.
+        justification: |
+          YAML queries are the primary structured-document assertion for YAML configuration files.
+        children:
+          - FileAssert-FileAssertYamlAssert-QueryTraversal
+          - FileAssert-FileAssertYamlAssert-QueryMinCount
+          - FileAssert-FileAssertYamlAssert-QueryMaxCount
+          - FileAssert-FileAssertYamlAssert-QueryExactCount
+        tests:
+          - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
+
+      - id: FileAssert-Modeling-QueryAssertions-Json
+        title: |
+          The Modeling subsystem shall report a JSON dot-notation query as failed when the
+          number of selected scalars/arrays does not satisfy the declared count constraint.
+        justification: |
+          JSON queries are the primary structured-document assertion for JSON outputs.
+        children:
+          - FileAssert-FileAssertJsonAssert-QueryAssertions
+        tests:
+          - FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
 
       - id: FileAssert-Modeling-QueryAssertions
         title: |
@@ -96,28 +207,56 @@ sections:
           and HTML; dot-notation paths for YAML and JSON) as failed when the number of nodes the
           query matches does not satisfy the assertion's declared count constraint.
         justification: |
-          Query-based assertions at the subsystem level verify that the parsing and assertion
-          pipeline integrates correctly across all supported structured-document formats without
-          requiring format-specific integration tests at the subsystem level.
+          Composite requirement decomposed per file format.
         children:
-          - FileAssert-FileAssertXmlAssert-QueryAssertions
-          - FileAssert-FileAssertHtmlAssert-QueryAssertions
-          - FileAssert-FileAssertYamlAssert-QueryAssertions
-          - FileAssert-FileAssertJsonAssert-QueryAssertions
+          - FileAssert-Modeling-QueryAssertions-Xml
+          - FileAssert-Modeling-QueryAssertions-Html
+          - FileAssert-Modeling-QueryAssertions-Yaml
+          - FileAssert-Modeling-QueryAssertions-Json
         tests:
           - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+
+      - id: FileAssert-Modeling-ZipEntryContentAssertions-Text
+        title: The Modeling subsystem shall apply text content rules to matched zip archive entries.
+        justification: |
+          Verifies the simplest content asserter (text) flows through ZipFileContainer correctly.
+        children:
+          - FileAssert-FileAssertZipAssert-EntryMatching
+        tests:
+          - FileAssertZipAssert_Run_EntryContainsRequiredText_NoError
+
+      - id: FileAssert-Modeling-ZipEntryContentAssertions-Xml
+        title: The Modeling subsystem shall apply XML XPath rules to matched zip archive entries.
+        justification: |
+          Verifies XML asserter integration with the IFileContainer abstraction.
+        tests:
+          - FileAssertZipAssert_Run_EntryXmlMatchesXPath_NoError
+
+      - id: FileAssert-Modeling-ZipEntryContentAssertions-Yaml
+        title: The Modeling subsystem shall apply YAML query rules to matched zip archive entries.
+        justification: |
+          Verifies YAML asserter integration with the IFileContainer abstraction.
+        tests:
+          - FileAssertZipAssert_Run_EntryYamlMatchesQuery_NoError
+
+      - id: FileAssert-Modeling-ZipEntryContentAssertions-Json
+        title: The Modeling subsystem shall apply JSON query rules to matched zip archive entries.
+        justification: |
+          Verifies JSON asserter integration with the IFileContainer abstraction.
+        tests:
+          - FileAssertZipAssert_Run_EntryJsonMatchesQuery_NoError
 
       - id: FileAssert-Modeling-ZipEntryContentAssertions
         title: |
           The Modeling subsystem shall apply the full content assertion suite (text, xml, yaml,
           json) to matched zip archive entries.
         justification: |
-          Zip entry content assertions are the primary new capability introduced by the IFileContainer
-          abstraction. Verifying at the subsystem level that all content asserter types (text, xml,
-          yaml, json) execute correctly through a ZipFileContainer confirms the full integration of
-          the IFileContainer abstraction with the existing asserter pipeline.
+          Composite requirement decomposed per content asserter.
         children:
-          - FileAssert-FileAssertZipAssert-EntryMatching
+          - FileAssert-Modeling-ZipEntryContentAssertions-Text
+          - FileAssert-Modeling-ZipEntryContentAssertions-Xml
+          - FileAssert-Modeling-ZipEntryContentAssertions-Yaml
+          - FileAssert-Modeling-ZipEntryContentAssertions-Json
         tests:
           - Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet
 
@@ -130,6 +269,6 @@ sections:
           users receive actionable failure output identifying both the archive and the entry that
           failed, including for archives nested inside other archives.
         children:
-          - FileAssert-FileAssertZipAssert-ParseError
+          - FileAssert-FileAssertZipAssert-BreadcrumbErrors
         tests:
           - Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs

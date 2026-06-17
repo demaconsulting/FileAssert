@@ -40,15 +40,11 @@ meets the project minimum threshold.
 **Expected**: `GetEntries()` returns exactly 2 entries: `"a.txt"` and `"sub/b.txt"` (forward
 slashes regardless of platform).
 
-**Requirement coverage**: IFileContainer uniform access; DirectoryFileContainer file-system access.
-
 ##### DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
 
 **Scenario**: A `DirectoryFileContainer` is created over an empty directory.
 
 **Expected**: `GetEntries()` returns an empty list.
-
-**Requirement coverage**: DirectoryFileContainer file-system access (empty directory).
 
 ##### DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
 
@@ -58,16 +54,12 @@ slashes regardless of platform).
 
 **Boundary / error path**: Non-existent directory treated as empty container.
 
-**Requirement coverage**: DirectoryFileContainer returns empty for non-existent directories.
-
 ##### DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
 
 **Scenario**: A file with known content is written to a temporary directory; `OpenEntry` is
 called with its filename.
 
 **Expected**: The returned stream contains the expected content.
-
-**Requirement coverage**: IFileContainer stream opening.
 
 ##### DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
 
@@ -77,23 +69,17 @@ called with its filename.
 
 **Boundary / error path**: Missing entry error handling.
 
-**Requirement coverage**: IFileContainer error for missing entries.
-
 ##### DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
 
 **Scenario**: A file containing exactly 5 ASCII bytes is written; `GetEntrySize` is called.
 
 **Expected**: Returns `5L`.
 
-**Requirement coverage**: IFileContainer size reporting.
-
 ##### DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
 
 **Scenario**: `GetDisplayPath("report.pdf")` is called on a `DirectoryFileContainer`.
 
 **Expected**: Returns `Path.Combine(basePath, "report.pdf")` — the full file-system path.
-
-**Requirement coverage**: DirectoryFileContainer display path is full file-system path.
 
 ##### ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
 
@@ -102,16 +88,12 @@ called with its filename.
 
 **Expected**: `GetEntries()` returns exactly 2 entries with forward slashes.
 
-**Requirement coverage**: IFileContainer uniform access; ZipFileContainer archive access.
-
 ##### ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
 
 **Scenario**: A `ZipFileContainer` wraps a zip containing `"readme.txt"` with known content;
 `OpenEntry("readme.txt")` is called.
 
 **Expected**: The returned stream contains the expected content.
-
-**Requirement coverage**: IFileContainer stream opening.
 
 ##### ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
 
@@ -121,15 +103,11 @@ called with its filename.
 
 **Boundary / error path**: Missing zip entry error handling.
 
-**Requirement coverage**: IFileContainer error for missing entries (IOException).
-
 ##### ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
 
 **Scenario**: A `ZipFileContainer` wraps a zip containing a 5-byte entry; `GetEntrySize` is called.
 
 **Expected**: Returns `5L` (uncompressed length).
-
-**Requirement coverage**: IFileContainer size reporting for zip entries.
 
 ##### ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
 
@@ -137,14 +115,3 @@ called with its filename.
 called.
 
 **Expected**: Returns `"outer.zip > inner.txt"`.
-
-**Requirement coverage**: ZipFileContainer breadcrumb display paths.
-
-#### Requirements Coverage
-
-- (uniform access — enumerate all entries): DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes, ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
-- (empty container — empty or non-existent): DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty, DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
-- (open entry as stream): DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream, ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
-- (missing entry throws IOException): DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException, ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
-- (entry size): DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize, ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
-- (display path): DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath, ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath

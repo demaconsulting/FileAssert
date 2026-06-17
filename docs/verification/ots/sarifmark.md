@@ -26,8 +26,6 @@ failure at any step is evidence that SarifMark did not produce the required outp
 
 **Expected**: Exits 0 and successfully reads the SARIF content.
 
-**Requirement coverage**: `FileAssert-OTS-SarifMark`.
-
 #### SarifMark_MarkdownReportGeneration
 
 **Scenario**: SarifMark renders the SARIF input as a markdown report included in the release
@@ -35,14 +33,8 @@ artifacts.
 
 **Expected**: Exits 0 and produces a non-empty markdown report.
 
-**Requirement coverage**: `FileAssert-OTS-SarifMark`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-SarifMark`**: SarifMark_SarifReading, SarifMark_MarkdownReportGeneration
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

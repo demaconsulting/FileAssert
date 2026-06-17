@@ -14,15 +14,16 @@ needed because the class interacts only with the in-memory `ZipArchive` API.
 #### Test Environment
 
 Tests execute in the standard CI pipeline environment using the xUnit test runner. The test
-collection is marked `[Collection("Sequential")]` to prevent parallel execution of tests that
-share `Console` state. No special hardware, peripherals, or environment configuration is required
-beyond the standard build toolchain.
+collection is marked `[Collection("Sequential")]` to serialize tests that share temporary
+directory and stream resources. No special hardware, peripherals, or environment configuration
+is required beyond the standard build toolchain.
 
 #### Acceptance Criteria
 
 All listed unit test scenarios pass on every supported platform and runtime combination. No
-test failures, unhandled exceptions, or assertion errors occur. Code coverage for `ZipFileContainer.cs`
-meets the project minimum threshold.
+test failures, unhandled exceptions, or assertion errors occur. The IO behaviors documented in
+the design (entry enumeration, lookup, size reporting, display-path formatting) all return the
+documented value or raise the documented exception type for each scenario.
 
 #### Dependencies
 
@@ -39,8 +40,6 @@ mocking is needed at this level.
 **Expected**: `GetEntries()` returns exactly 2 entries with forward slashes; directory marker
 entries (names ending in `/`) are excluded.
 
-**Requirement coverage**: Zip archive access — file entry enumeration with forward slashes.
-
 ##### ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
 
 **Scenario**: A `ZipFileContainer` is created from an in-memory zip containing a directory
@@ -51,16 +50,12 @@ in `/`) is excluded.
 
 **Boundary / error path**: Directory marker exclusion during entry enumeration.
 
-**Requirement coverage**: Entry enumeration — directory markers excluded.
-
 ##### ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
 
 **Scenario**: A zip containing `"readme.txt"` with content `"zip content"` is opened; `OpenEntry("readme.txt")`
 is called.
 
 **Expected**: The returned stream reads `"zip content"`.
-
-**Requirement coverage**: Zip archive access — stream opening for existing zip entries.
 
 ##### ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
 
@@ -71,15 +66,11 @@ is called.
 **Boundary / error path**: Missing zip entry uses `IOException` rather than `FileNotFoundException`,
 since zip entries are not file-system files.
 
-**Requirement coverage**: Zip archive access — IOException for missing entries.
-
 ##### ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
 
 **Scenario**: A zip containing a single entry with 5 ASCII characters is created; `GetEntrySize` is called.
 
 **Expected**: Returns `5L` (the uncompressed `ZipArchiveEntry.Length` value).
-
-**Requirement coverage**: Zip archive access — correct uncompressed byte size reporting.
 
 ##### ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
 
@@ -88,13 +79,13 @@ is called.
 
 **Expected**: Returns `"outer.zip > inner.txt"`.
 
-**Requirement coverage**: Zip archive access — breadcrumb display paths for error messages.
+##### ZipFileContainer_BackslashEntryPath_OpensAndSizesAfterNormalization
 
-#### Requirements Coverage
+**Scenario**: A zip stores entry `"lib/a.dll"` (forward slash). The test calls
+`OpenEntry("lib\\a.dll")` and `GetEntrySize("lib\\a.dll")` using a backslash separator.
 
-- (file entry enumeration with forward slashes): ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
-- (directory markers excluded): ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
-- (open zip entry as stream): ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
-- (missing entry throws IOException): ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
-- (uncompressed entry size): ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
-- (breadcrumb display path): ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
+**Expected**: `OpenEntry` returns a stream that reads the entry's content; `GetEntrySize`
+returns the uncompressed length of the entry. Both APIs locate the entry by normalizing
+backslashes to forward slashes before calling `ZipArchive.GetEntry(...)`.
+
+**Boundary / error path**: Backslash-separator normalization in `OpenEntry` and `GetEntrySize`.

@@ -199,4 +199,27 @@ public class PathHelpersTests
         Assert.Throws<ArgumentNullException>(() =>
             PathHelpers.SafePathCombine(basePath, relativePath!));
     }
+
+    /// <summary>
+    ///     Test that SafePathCombine rejects a rooted relative path even when its resolved
+    ///     form would lie within the base directory. A rooted second argument to
+    ///     <see cref="Path.Combine(string, string)"/> replaces the base entirely, so any
+    ///     such input is treated as invalid by the helper.
+    /// </summary>
+    [Fact]
+    public void PathHelpers_SafePathCombine_RootedPathInsideBase_RejectsIt()
+    {
+        // Arrange - use the platform's temp directory as a base and an absolute path
+        // that lives inside that base. Both expressions are rooted on either OS.
+        var basePath = Path.GetFullPath(Path.GetTempPath());
+        var relativePath = Path.Combine(basePath, "child", "file.txt");
+
+        // Pre-condition: the resolved combined location IS inside basePath.
+        Assert.True(Path.IsPathRooted(relativePath));
+
+        // Act & Assert - rooted relative paths are rejected unconditionally
+        var exception = Assert.Throws<ArgumentException>(() =>
+            PathHelpers.SafePathCombine(basePath, relativePath));
+        Assert.Contains("Invalid path component", exception.Message);
+    }
 }

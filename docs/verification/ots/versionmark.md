@@ -26,22 +26,14 @@ evidence that VersionMark did not execute correctly.
 
 **Expected**: Exits 0 and captures version data for every tool.
 
-**Requirement coverage**: `FileAssert-OTS-VersionMark`.
-
 #### VersionMark_GeneratesMarkdownReport
 
 **Scenario**: VersionMark writes a versions markdown document to the release artifacts.
 
 **Expected**: Exits 0 and produces a non-empty versions markdown file.
 
-**Requirement coverage**: `FileAssert-OTS-VersionMark`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-VersionMark`**: VersionMark_CapturesVersions, VersionMark_GeneratesMarkdownReport
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

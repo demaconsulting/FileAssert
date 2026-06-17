@@ -306,4 +306,73 @@ public sealed class IFileContainerTests
         Assert.Contains("lib/a.dll", entries);
         Assert.DoesNotContain("lib/", entries);
     }
+
+    /// <summary>
+    ///     Verifies that OpenEntry and GetEntrySize accept entry paths that use backslash
+    ///     separators by normalizing them to forward slashes before lookup.
+    /// </summary>
+    [Fact]
+    public void ZipFileContainer_BackslashEntryPath_OpensAndSizesAfterNormalization()
+    {
+        // Arrange - zip stores the entry with a forward-slash separator
+        var bytes = CreateZipBytes([("lib/a.dll", "abc")]);
+        using var stream = new MemoryStream(bytes);
+        using var container = new ZipFileContainer(stream, "archive.zip");
+
+        // Act - look the entry up using a backslash path
+        using var entryStream = container.OpenEntry("lib\\a.dll");
+        using var reader = new StreamReader(entryStream);
+        var content = reader.ReadToEnd();
+        var size = container.GetEntrySize("lib\\a.dll");
+
+        // Assert - both APIs resolve the entry through backslash normalization
+        Assert.Equal("abc", content);
+        Assert.Equal(3L, size);
+    }
+
+    // ---------------------------------------------------------------------------
+    // DirectoryFileContainer null-input tests
+    // ---------------------------------------------------------------------------
+
+    /// <summary>
+    ///     Verifies that the constructor rejects a null base path.
+    /// </summary>
+    [Fact]
+    public void DirectoryFileContainer_Constructor_NullBasePath_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DirectoryFileContainer(null!));
+    }
+
+    /// <summary>
+    ///     Verifies that OpenEntry rejects a null entry path.
+    /// </summary>
+    [Fact]
+    public void DirectoryFileContainer_OpenEntry_NullEntryPath_ThrowsArgumentNullException()
+    {
+        using var tempDir = new TemporaryDirectory();
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        Assert.Throws<ArgumentNullException>(() => container.OpenEntry(null!));
+    }
+
+    /// <summary>
+    ///     Verifies that GetEntrySize rejects a null entry path.
+    /// </summary>
+    [Fact]
+    public void DirectoryFileContainer_GetEntrySize_NullEntryPath_ThrowsArgumentNullException()
+    {
+        using var tempDir = new TemporaryDirectory();
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        Assert.Throws<ArgumentNullException>(() => container.GetEntrySize(null!));
+    }
+
+    /// <summary>
+    ///     Verifies that GetDisplayPath rejects a null entry path.
+    /// </summary>
+    [Fact]
+    public void DirectoryFileContainer_GetDisplayPath_NullEntryPath_ThrowsArgumentNullException()
+    {
+        using var tempDir = new TemporaryDirectory();
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        Assert.Throws<ArgumentNullException>(() => container.GetDisplayPath(null!));
+    }
 }

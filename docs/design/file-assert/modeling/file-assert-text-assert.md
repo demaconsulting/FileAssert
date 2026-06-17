@@ -40,7 +40,8 @@ internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Reads the entire file content as a UTF-8 string and applies each rule via
-`rule.Apply(context, fileName, content)`.
+`rule.Apply(context, displayPath, content)`, where `displayPath` is obtained from
+`container.GetDisplayPath(entryPath)`.
 
 Execution proceeds in the following steps:
 
@@ -52,17 +53,18 @@ Execution proceeds in the following steps:
 ###### Run Error Message
 
 ```text
-File '<fileName>' could not be read as text
+File '<displayPath>' could not be read as text
 ```
 
-| Parameter    | Type      | Description                                             |
-| :----------- | :-------- | :------------------------------------------------------ |
-| `context`    | `Context` | Reporting sink used to record errors. Must not be null. |
-| `fileName`   | `string`  | Full path to the file to validate. Must not be null.    |
+| Parameter   | Type             | Description                                                               |
+| :---------- | :--------------- | :------------------------------------------------------------------------ |
+| `context`   | `IContext`       | Reporting sink used to record errors. Must not be null.                   |
+| `container` | `IFileContainer` | Container used to open the entry. Must not be null.                       |
+| `entryPath` | `string`         | Path of the entry, **relative to** `container`. Must not be null.         |
 
-| Exception                   | Condition                                              |
-| :-------------------------- | :----------------------------------------------------- |
-| `ArgumentNullException`     | Thrown when `context` or `fileName` is null.           |
+| Exception                   | Condition                                                              |
+| :-------------------------- | :--------------------------------------------------------------------- |
+| `ArgumentNullException`     | Thrown when `context`, `container`, or `entryPath` is null.            |
 
 #### YAML Configuration
 
@@ -109,12 +111,12 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 
 #### Error Handling
 
-| Scenario                                               | Handling                                             |
-| :----------------------------------------------------- | :--------------------------------------------------- |
-| Null `data` passed to `Create`                         | `ArgumentNullException` thrown.                      |
-| Null `context` or `fileName` passed to `Run`           | `ArgumentNullException` thrown.                      |
-| `IOException` or `UnauthorizedAccessException` on read | Error via `context.WriteError`; `Run` returns.       |
-| Individual rule check fails                            | Error via `context` in `Rule.Apply`; rules continue. |
+| Scenario                                                    | Handling                                             |
+| :---------------------------------------------------------- | :--------------------------------------------------- |
+| Null `data` passed to `Create`                              | `ArgumentNullException` thrown.                      |
+| Null `context`, `container`, or `entryPath` passed to `Run` | `ArgumentNullException` thrown.                      |
+| `IOException` or `UnauthorizedAccessException` on read      | Error via `context.WriteError`; `Run` returns.       |
+| Individual rule check fails                                 | Error via `context` in `Rule.Apply`; rules continue. |
 
 #### Dependencies
 

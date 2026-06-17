@@ -48,15 +48,6 @@ The following integration test scenarios are defined in `UtilitiesTests.cs`.
 **Expected**: All entries are enumerated, content is read back correctly, entry sizes report
 the uncompressed lengths, and display paths include the archive breadcrumb prefix.
 
-### Requirements Coverage
-
-- **Path traversal prevention**: Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
-- **Temporary directory isolation and cleanup**: Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
-- **IFileContainer uniform access**: DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes, ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
-- **File-container abstraction end-to-end**: Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd
-- **DirectoryFileContainer file-system access**: DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty, DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream, DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
-- **ZipFileContainer archive access**: ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream, ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
-
 ### TemporaryDirectory Verification
 
 The `TemporaryDirectory` unit is verified by the unit tests defined in `TemporaryDirectoryTests.cs`.

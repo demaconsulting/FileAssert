@@ -9,20 +9,82 @@
 sections:
   - title: DirectoryFileContainer Unit Requirements
     requirements:
-      - id: FileAssert-DirectoryFileContainer-FileSystemAccess
-        title: The DirectoryFileContainer class shall expose a local directory as an IFileContainer, returning empty entries
-          for non-existent directories.
+      - id: FileAssert-DirectoryFileContainer-Enumeration
+        title: |
+          The DirectoryFileContainer class shall enumerate all files under the base directory
+          recursively, returning relative paths with forward-slash separators.
         justification: |
-          FileAssert tests specify files via glob patterns and count constraints. When
-          the base directory does not exist (e.g., due to a misconfigured test suite),
-          returning an empty entry list allows zero-count constraints to pass cleanly
-          rather than throwing an unhandled exception. All other operations delegate to
-          the .NET file system API.
+          Asserters discover candidate files by enumerating container entries. Forward-slash
+          normalization gives platform-independent entry names.
         tests:
           - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
           - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
+
+      - id: FileAssert-DirectoryFileContainer-MissingDirectory
+        title: |
+          The DirectoryFileContainer class shall return an empty entry list when the base
+          directory does not exist, rather than throwing.
+        justification: |
+          Returning an empty list lets zero-count constraints pass cleanly when a test
+          suite is misconfigured, instead of surfacing an unhandled `DirectoryNotFoundException`.
+        tests:
           - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
+
+      - id: FileAssert-DirectoryFileContainer-OpenEntry
+        title: |
+          The DirectoryFileContainer class shall open a readable stream for a named entry,
+          and propagate an IO exception when the entry is missing.
+        justification: |
+          Asserters need streamed access to file contents, and the exception surface for
+          missing files must match the rest of the I/O code path.
+        tests:
           - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
           - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
+
+      - id: FileAssert-DirectoryFileContainer-EntrySize
+        title: The DirectoryFileContainer class shall report the on-disk size of a named entry.
+        justification: |
+          Size constraints (min-size, max-size) require the on-disk byte length so asserters
+          can validate file sizes without reading the file content.
+        tests:
           - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
+
+      - id: FileAssert-DirectoryFileContainer-DisplayPath
+        title: |
+          The DirectoryFileContainer class shall return the full file-system path of a named
+          entry for use in error messages.
+        justification: |
+          Error messages must identify the exact file on disk so users can locate and fix
+          the offending file directly.
+        tests:
           - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
+
+      - id: FileAssert-DirectoryFileContainer-NullArgumentRejection
+        title: |
+          The DirectoryFileContainer class shall reject null arguments to its constructor and
+          to its public entry-path methods.
+        justification: |
+          Null-argument guards prevent obscure NullReferenceException failures and document
+          the expected contract at the unit boundary.
+        tests:
+          - DirectoryFileContainer_Constructor_NullBasePath_ThrowsArgumentNullException
+          - DirectoryFileContainer_OpenEntry_NullEntryPath_ThrowsArgumentNullException
+          - DirectoryFileContainer_GetEntrySize_NullEntryPath_ThrowsArgumentNullException
+          - DirectoryFileContainer_GetDisplayPath_NullEntryPath_ThrowsArgumentNullException
+
+      - id: FileAssert-DirectoryFileContainer-FileSystemAccess
+        title: |
+          The DirectoryFileContainer class shall expose a local directory as an IFileContainer,
+          composing the enumeration, missing-directory, open, size, and display-path behaviors.
+        justification: |
+          The composite behavior is what callers depend on; the children carry the precise
+          contracts.
+        children:
+          - FileAssert-DirectoryFileContainer-Enumeration
+          - FileAssert-DirectoryFileContainer-MissingDirectory
+          - FileAssert-DirectoryFileContainer-OpenEntry
+          - FileAssert-DirectoryFileContainer-EntrySize
+          - FileAssert-DirectoryFileContainer-DisplayPath
+          - FileAssert-DirectoryFileContainer-NullArgumentRejection
+        tests:
+          - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes

@@ -23,7 +23,7 @@ additional environment setup is required.
 
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is considered
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is considered
 verified when the test scenarios that exercise its functionality pass in the CI pipeline.
 
 ### Test Scenarios
@@ -35,16 +35,12 @@ count, which matches the constraint.
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-YamlDotNet`.
-
 #### FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError
 
 **Scenario**: FileAssert parses a YAML document with YamlDotNet and treats a scalar value at a path
 as a single match.
 
 **Expected**: The test passes and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-YamlDotNet`.
 
 #### FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError
 
@@ -53,13 +49,9 @@ min/max bounds.
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-YamlDotNet`.
-
 #### FileAssertYamlAssert_Run_InvalidFile_WritesError
 
 **Scenario**: FileAssert attempts to parse a malformed YAML document; YamlDotNet raises a parse
 error that FileAssert reports.
 
 **Expected**: The test passes and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-YamlDotNet`.

@@ -18,8 +18,8 @@ special hardware, peripherals, or environment configuration is required.
 #### Acceptance Criteria
 
 All listed unit test scenarios pass on every supported platform and runtime combination. No
-test failures, unhandled exceptions, or assertion errors occur. Code coverage for `PathHelpers.cs`
-meets the project minimum threshold.
+test failures, unhandled exceptions, or assertion errors occur. Each scenario asserts the
+exact return value or the exact exception type produced by `SafePathCombine` for its inputs.
 
 #### Dependencies
 
@@ -34,8 +34,6 @@ meets the project minimum threshold.
 
 **Expected**: The returned path equals the expected combined result; no exception is thrown.
 
-**Requirement coverage**: Valid path combination requirement.
-
 ##### PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
 
 **Scenario**: A relative path starting with `"../"` is passed to `SafePathCombine`.
@@ -43,8 +41,6 @@ meets the project minimum threshold.
 **Expected**: An `ArgumentException` is thrown containing the text "Invalid path component".
 
 **Boundary / error path**: Directory traversal attempt via leading `../`.
-
-**Requirement coverage**: Traversal rejection requirement.
 
 ##### PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
 
@@ -54,8 +50,6 @@ meets the project minimum threshold.
 **Expected**: An `ArgumentException` is thrown.
 
 **Boundary / error path**: Directory traversal attempt via embedded `../` sequence.
-
-**Requirement coverage**: Embedded traversal rejection requirement.
 
 ##### PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
 
@@ -69,16 +63,12 @@ Sub-cases:
 
 **Boundary / error path**: Absolute path used where a relative path is required.
 
-**Requirement coverage**: Absolute path rejection requirement.
-
 ##### PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
 
 **Scenario**: A relative path starting with `"./"` (e.g., `"./subfolder/file.txt"`) is combined
 with a base path.
 
 **Expected**: The returned path equals the expected combined result; no exception is thrown.
-
-**Requirement coverage**: Current-directory prefix requirement.
 
 ##### PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
 
@@ -87,8 +77,6 @@ base path.
 
 **Expected**: The returned path equals the expected combined result; no exception is thrown.
 
-**Requirement coverage**: Nested path combination requirement.
-
 ##### PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
 
 **Scenario**: An empty string is passed as the relative path argument.
@@ -96,8 +84,6 @@ base path.
 **Expected**: The returned path equals the base path; no exception is thrown.
 
 **Boundary / error path**: Empty relative path edge case.
-
-**Requirement coverage**: Empty relative path requirement.
 
 ##### PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
 
@@ -108,8 +94,6 @@ base path.
 
 **Boundary / error path**: Filename beginning with `".."` must not be misidentified as a traversal.
 
-**Requirement coverage**: Dot-dot-prefixed filename requirement.
-
 ##### PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
 
 **Scenario**: `null` is passed as the `basePath` argument to `SafePathCombine`.
@@ -117,8 +101,6 @@ base path.
 **Expected**: An `ArgumentNullException` is thrown.
 
 **Boundary / error path**: Null guard on `basePath`.
-
-**Requirement coverage**: Null input rejection requirement.
 
 ##### PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
 
@@ -128,20 +110,14 @@ base path.
 
 **Boundary / error path**: Null guard on `relativePath`.
 
-**Requirement coverage**: Null input rejection requirement.
+##### PathHelpers_SafePathCombine_RootedPathInsideBase_RejectsIt
 
-#### Requirements Coverage
+**Scenario**: An absolute path that resolves underneath the base directory (e.g., a child of
+`Path.GetTempPath()` while `basePath` is `Path.GetTempPath()` itself) is passed as the
+`relativePath` argument to `SafePathCombine`.
 
-- **FileAssert-PathHelpers-SafeCombine** (safe path combination):
-  - PathHelpers_SafePathCombine_ValidPaths_CombinesCorrectly
-  - PathHelpers_SafePathCombine_PathTraversalWithDoubleDots_ThrowsArgumentException
-  - PathHelpers_SafePathCombine_DoubleDotsInMiddle_ThrowsArgumentException
-  - PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
-  - PathHelpers_SafePathCombine_CurrentDirectoryReference_CombinesCorrectly
-  - PathHelpers_SafePathCombine_NestedPaths_CombinesCorrectly
-  - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
-  - PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
+**Expected**: An `ArgumentException` containing `"Invalid path component"` is thrown.
 
-- **FileAssert-PathHelpers-NullValidation** (null input rejection):
-  - PathHelpers_SafePathCombine_NullBasePath_ThrowsArgumentNullException
-  - PathHelpers_SafePathCombine_NullRelativePath_ThrowsArgumentNullException
+**Boundary / error path**: Rooted relative paths are rejected even when the resolved location
+is inside `basePath`, because `Path.Combine` discards `basePath` whenever the second argument
+is rooted.

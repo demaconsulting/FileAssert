@@ -44,3 +44,24 @@ sections:
           directory so the project can be validated with zero configuration.
         tests:
           - Program_Run_NoArguments_DisplaysDefaultBehavior
+
+      - id: FileAssert-Program-MissingDefaultConfig
+        title: |
+          The Program class shall, when invoked with no `--config` and no `.fileassert.yaml`
+          in the current directory, print user guidance and exit with success.
+        justification: |
+          Treating an absent default configuration as an informational state (rather than an
+          error) lets first-time users discover how to create a config without seeing a
+          confusing failure exit code.
+        tests:
+          - Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance
+
+      - id: FileAssert-Program-MissingExplicitConfig
+        title: |
+          The Program class shall, when an explicit `--config <file>` argument refers to a
+          non-existent file, write an error and set a non-zero exit code.
+        justification: |
+          When the user names a configuration file explicitly, a missing file is unambiguously
+          an error and must surface as such so CI pipelines fail fast.
+        tests:
+          - Program_Run_ExplicitConfigMissing_WritesError

@@ -101,7 +101,8 @@ Domain objects are constructed and executed in the following layers:
 
 ### Callers
 
-- None.
+- `FileAssertConfig` — instantiates `FileAssertTest` items and drives the modeling subsystem
+  through `FileAssertTest.Run`.
 
 ### Design Decisions
 

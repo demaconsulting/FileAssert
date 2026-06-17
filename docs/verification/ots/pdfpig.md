@@ -22,7 +22,7 @@ additional environment setup is required.
 
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is considered
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is considered
 verified when the test scenarios that exercise its functionality pass in the CI pipeline.
 
 ### Test Scenarios
@@ -33,16 +33,12 @@ verified when the test scenarios that exercise its functionality pass in the CI 
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-PdfPig`.
-
 #### FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
 
 **Scenario**: FileAssert reads PDF metadata via PdfPig and asserts that the title contains an
 expected value.
 
 **Expected**: The test passes and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-PdfPig`.
 
 #### FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
 
@@ -51,13 +47,9 @@ missing.
 
 **Expected**: The test passes and the result appears in the TRX output.
 
-**Requirement coverage**: `FileAssert-OTS-PdfPig`.
-
 #### FileAssertPdfAssert_Run_InvalidFile_WritesError
 
 **Scenario**: FileAssert attempts to parse a file that is not a valid PDF; PdfPig raises a parse
 error that FileAssert reports.
 
 **Expected**: The test passes and the result appears in the TRX output.
-
-**Requirement coverage**: `FileAssert-OTS-PdfPig`.

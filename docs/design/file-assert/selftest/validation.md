@@ -133,8 +133,7 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
   - `TemporaryDirectory.GetFilePath` to build all fixture and log file paths safely.
   - `DemaConsulting.TestResults.IO.TrxSerializer.Serialize` and `JUnitSerializer.Serialize` for
     results serialization.
-- **OTS dependencies**: `System.Runtime.InteropServices.RuntimeInformation` for system info
-  output; `System.Text.RegularExpressions.Regex` (source-generated) for version string matching.
+- **OTS dependencies**: `DemaConsulting.TestResults` for TRX/JUnit serialization.
 
 #### Callers
 
