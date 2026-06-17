@@ -42,13 +42,13 @@ Returns `true` when:
 ##### Execution Method
 
 ```csharp
-internal void Run(Context context, string basePath)
+internal void Run(IContext context, string basePath)
 ```
 
-Iterates `Files` and calls `Run(context, basePath)` on each entry. Errors reported
-by individual file assertions accumulate in the context and do not stop subsequent
-assertions from running. Passing a null `context` or null `basePath` throws
-`ArgumentNullException`.
+Creates a `DirectoryFileContainer(basePath)` and then iterates `Files`, calling
+`Run(context, container)` on each entry. Errors reported by individual file assertions
+accumulate in the context and do not stop subsequent assertions from running. Passing a null
+`context` or null `basePath` throws `ArgumentNullException`.
 
 #### YAML Configuration
 
@@ -90,11 +90,11 @@ filter criteria for selective execution, and drive execution of its assertions.
 
 #### Key Methods
 
-| Method                                       | Purpose                                                      |
-| :------------------------------------------- | :----------------------------------------------------------- |
-| `Create(FileAssertTestData data)`            | Validates `Name`; builds `FileAssertFile` list.              |
-| `MatchesFilter(IEnumerable<string> filters)` | Returns `true` if filters empty or any matches name or tag.  |
-| `Run(Context context, string basePath)`      | Iterates `Files` and calls `Run(context, basePath)` on each. |
+| Method                                       | Purpose                                                         |
+| :------------------------------------------- | :-------------------------------------------------------------- |
+| `Create(FileAssertTestData data)`            | Validates `Name`; builds `FileAssertFile` list.                 |
+| `MatchesFilter(IEnumerable<string> filters)` | Returns `true` if filters empty or any matches name or tag.     |
+| `Run(IContext context, string basePath)`     | Wraps basePath in `DirectoryFileContainer`; runs each file.     |
 
 #### Error Handling
 
@@ -113,4 +113,6 @@ filter criteria for selective execution, and drive execution of its assertions.
 - **Called by**: `FileAssertConfig.Run` — calls `MatchesFilter(filterList)` then
   `Run(context, basePath)` for each qualifying test.
 - **Creates and owns**: `FileAssertFile` instances via `FileAssertFile.Create`.
-- **Calls**: `FileAssertFile.Run(context, basePath)` for each file assertion.
+- **Calls**: `FileAssertFile.Run(context, container)` for each file assertion, where `container`
+  is a `DirectoryFileContainer` wrapping `basePath`.
+- **OTS dependency**: `DirectoryFileContainer` (Utilities subsystem) for wrapping the base path.

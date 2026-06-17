@@ -5,6 +5,7 @@ includes:
   - docs/reqstream/file-assert/program.yaml
   - docs/reqstream/file-assert/cli.yaml
   - docs/reqstream/file-assert/cli/context.yaml
+  - docs/reqstream/file-assert/cli/i-context.yaml
   - docs/reqstream/file-assert/configuration.yaml
   - docs/reqstream/file-assert/configuration/file-assert-config.yaml
   - docs/reqstream/file-assert/configuration/file-assert-data.yaml
@@ -22,6 +23,9 @@ includes:
   - docs/reqstream/file-assert/utilities.yaml
   - docs/reqstream/file-assert/utilities/path-helpers.yaml
   - docs/reqstream/file-assert/utilities/temporary-directory.yaml
+  - docs/reqstream/file-assert/utilities/i-file-container.yaml
+  - docs/reqstream/file-assert/utilities/directory-file-container.yaml
+  - docs/reqstream/file-assert/utilities/zip-file-container.yaml
   - docs/reqstream/file-assert/selftest.yaml
   - docs/reqstream/file-assert/selftest/validation.yaml
   - docs/reqstream/file-assert/platform-requirements.yaml

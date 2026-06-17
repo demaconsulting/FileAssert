@@ -30,7 +30,7 @@ supported rule types.
 ##### Abstract Method
 
 ```csharp
-internal abstract void Apply(Context context, string fileName, string content)
+internal abstract void Apply(IContext context, string fileName, string content)
 ```
 
 Each derived class implements `Apply` to perform its specific check against
@@ -137,10 +137,10 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 
 #### Key Methods
 
-| Method                                                                 | Purpose                                    |
-| :--------------------------------------------------------------------- | :----------------------------------------- |
-| `Create(FileAssertRuleData data)` *(static on base)*                   | Returns concrete rule subclass for `data`. |
-| `Apply(Context context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
+| Method                                                                  | Purpose                                    |
+| :---------------------------------------------------------------------  | :----------------------------------------- |
+| `Create(FileAssertRuleData data)` *(static on base)*                    | Returns concrete rule subclass for `data`. |
+| `Apply(IContext context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
 
 #### Error Handling
 

@@ -22,6 +22,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 using UglyToad.PdfPig;
 
 namespace DemaConsulting.FileAssert.Modeling;
@@ -96,7 +97,7 @@ internal sealed class FileAssertPdfAssert
         /// <param name="context">The context used for reporting errors.</param>
         /// <param name="fileName">The file being validated.</param>
         /// <param name="value">The metadata field value, or null if not present.</param>
-        internal void Apply(Context context, string fileName, string? value)
+        internal void Apply(IContext context, string fileName, string? value)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -156,7 +157,7 @@ internal sealed class FileAssertPdfAssert
         /// <param name="context">The context used for reporting errors.</param>
         /// <param name="fileName">The file being validated.</param>
         /// <param name="n">The actual page count.</param>
-        internal void Apply(Context context, string fileName, int n)
+        internal void Apply(IContext context, string fileName, int n)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -229,24 +230,32 @@ internal sealed class FileAssertPdfAssert
     }
 
     /// <summary>
-    ///     Opens the PDF file and applies all configured assertions, reporting violations.
+    ///     Opens the PDF entry and applies all configured assertions, reporting violations.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="fileName">The full path to the PDF file to validate.</param>
-    internal void Run(Context context, string fileName)
+    /// <param name="container">The container from which the entry is opened.</param>
+    /// <param name="entryPath">The relative path of the entry to validate.</param>
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
 
-        // Attempt to open the file as a PDF document
+        // Compute the display path once for use in error messages
+        var displayPath = container.GetDisplayPath(entryPath);
+
+        // Attempt to open the entry as a PDF document
+        // PdfPig does not support opening from a Stream directly, so bytes are read first
         PdfDocument document;
         try
         {
-            document = PdfDocument.Open(fileName);
+            using var stream = container.OpenEntry(entryPath);
+            var bytes = ReadAllBytes(stream);
+            document = PdfDocument.Open(bytes);
         }
         catch (Exception)
         {
-            context.WriteError($"File '{fileName}' could not be parsed as a PDF document");
+            context.WriteError($"File '{displayPath}' could not be parsed as a PDF document");
             return;
         }
 
@@ -256,14 +265,14 @@ internal sealed class FileAssertPdfAssert
             foreach (var rule in _metadata)
             {
                 var value = GetMetadataField(document, rule.Field);
-                rule.Apply(context, fileName, value);
+                rule.Apply(context, displayPath, value);
             }
 
             // Apply page count constraints and collect pages only when needed
             if (_pages != null || _text.Count > 0)
             {
                 var pageList = document.GetPages().ToList();
-                _pages?.Apply(context, fileName, pageList.Count);
+                _pages?.Apply(context, displayPath, pageList.Count);
 
                 // Apply text rules to the extracted body text when rules are defined
                 if (_text.Count > 0)
@@ -277,11 +286,27 @@ internal sealed class FileAssertPdfAssert
                     var content = sb.ToString();
                     foreach (var rule in _text)
                     {
-                        rule.Apply(context, fileName, content);
+                        rule.Apply(context, displayPath, content);
                     }
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Reads all bytes from a stream into a byte array.
+    /// </summary>
+    /// <remarks>
+    ///     PdfPig does not expose a Stream-based Open overload, so bytes are buffered
+    ///     first. This helper is used to read the entry contents from any IFileContainer.
+    /// </remarks>
+    /// <param name="stream">The stream to read.</param>
+    /// <returns>A byte array containing the full stream contents.</returns>
+    private static byte[] ReadAllBytes(Stream stream)
+    {
+        using var ms = new MemoryStream();
+        stream.CopyTo(ms);
+        return ms.ToArray();
     }
 
     /// <summary>

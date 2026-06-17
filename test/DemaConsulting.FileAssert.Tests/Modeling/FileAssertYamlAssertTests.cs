@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -82,8 +83,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -109,8 +114,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -136,8 +145,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -163,8 +176,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -190,8 +207,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -217,8 +238,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert - min violation produces an error
             Assert.Equal(1, context.ExitCode);
@@ -244,8 +269,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert - max violation produces an error
             Assert.Equal(1, context.ExitCode);
@@ -323,8 +352,12 @@ public sealed class FileAssertYamlAssertTests
             var yamlAssert = FileAssertYamlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            yamlAssert.Run(context, tempFile);
+            yamlAssert.Run(context, container, fileName);
 
             // Assert - no documents means 0 matches; min=1 constraint is violated
             Assert.Equal(1, context.ExitCode);

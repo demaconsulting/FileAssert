@@ -1,0 +1,28 @@
+---
+# Software Unit Requirements for the DirectoryFileContainer Class
+#
+# DirectoryFileContainer is the filesystem implementation of IFileContainer. It
+# exposes a local directory as a container of file entries, enumerating all files
+# recursively, opening them as streams, returning their sizes, and constructing
+# full file-system paths for error messages.
+
+sections:
+  - title: DirectoryFileContainer Unit Requirements
+    requirements:
+      - id: FileAssert-DirectoryFileContainer-FileSystemAccess
+        title: The DirectoryFileContainer class shall expose a local directory as an IFileContainer, returning empty entries
+          for non-existent directories.
+        justification: |
+          FileAssert tests specify files via glob patterns and count constraints. When
+          the base directory does not exist (e.g., due to a misconfigured test suite),
+          returning an empty entry list allows zero-count constraints to pass cleanly
+          rather than throwing an unhandled exception. All other operations delegate to
+          the .NET file system API.
+        tests:
+          - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
+          - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
+          - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
+          - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
+          - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
+          - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
+          - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath

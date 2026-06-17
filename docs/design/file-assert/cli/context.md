@@ -38,11 +38,29 @@ Delegates argument parsing to the private `ArgumentParser` nested class. Opens a
 ```csharp
 public void WriteLine(string message)
 public void WriteError(string message)
+public IContext WithPrefix(string prefix)
 ```
 
 `WriteLine` writes to stdout and the log file (unless `--silent` suppresses console output).
 `WriteError` sets the internal error flag, writes to stderr in red (unless silent), and writes
 to the log file.
+`WithPrefix` creates and returns a new `ScopedContext` that prepends `"{prefix} > "` to every
+`WriteError` message before delegating to this context. The prefix must not be null.
+
+##### ScopedContext Nested Class
+
+`ScopedContext` is a private sealed class nested inside `Context`. It implements `IContext` and
+holds a reference to its parent `IContext` and a prefix string:
+
+- `WriteLine` — delegated unchanged to the parent context.
+- `WriteError` — the message is rewritten as `"{_prefix} > {message}"` before passing to the
+  parent, so all errors bubble up through the chain and reach the root context's `_hasErrors`
+  and `_errorCount` fields.
+- `WithPrefix` — creates a further-nested `ScopedContext(this, prefix)`, enabling arbitrarily
+  deep breadcrumb chains (e.g., `"outer.zip > inner.zip > error message"`).
+
+`ScopedContext` is used by `FileAssertZipAssert.Run` to scope every error message with the
+archive entry's display path before passing the context to nested `FileAssertFile` assertions.
 
 ##### Argument Parsing
 
@@ -57,6 +75,10 @@ The private nested class `ArgumentParser` processes each argument in order:
 
 #### Design Decisions
 
+- **Implements `IContext`**: `Context` implements the `IContext` interface, which is also
+  implemented by `ScopedContext`. This allows all asserters to accept `IContext` rather than the
+  concrete `Context`, enabling `FileAssertZipAssert` to supply a scoped context without those
+  asserters requiring any knowledge of the scoping mechanism.
 - **Sealed with IDisposable**: The class is sealed to prevent inheritance of internal state, and
   implements `IDisposable` to ensure the log file stream is always closed.
 - **Factory method**: The `Create` factory method is `public` so tests and the self-validation
@@ -100,6 +122,7 @@ to the console.
 | `Context.Create(string[])`                | Factory: parses args, opens log file, returns initialized instance. |
 | `WriteLine(string)`                       | Writes to stdout (unless silent) and log file.                      |
 | `WriteError(string)`                      | Sets error flag and counter; writes to stderr/log (unless silent).  |
+| `WithPrefix(string) → IContext`           | Returns a new `ScopedContext` prepending the given prefix to errors.|
 | `Dispose()`                               | Closes and disposes the log-file stream writer.                     |
 | `ArgumentParser.ParseArguments(string[])` | Inner class: translates argument array into named parser state.     |
 
@@ -112,6 +135,7 @@ to the console.
 | Value-requiring flag with no value        | `ArgumentException` propagated to the caller of `Create`.     |
 | `--depth` value not in 1–6 range          | `ArgumentException` propagated to the caller of `Create`.     |
 | Log file cannot be opened                 | `InvalidOperationException` wrapping the underlying I/O.      |
+| Null `prefix` passed to `WithPrefix`      | `ArgumentNullException` thrown before `ScopedContext` created.|
 | Assertion or rule failure at runtime      | Handled by `WriteError`; no throw — errors in `_errorCount`.  |
 
 #### Interactions
@@ -122,6 +146,8 @@ to the console.
 - **Consumers**: `FileAssertConfig.Run`, `FileAssertTest.Run`, `FileAssertFile.Run`, and every
   assert unit (`FileAssertTextAssert`, `FileAssertPdfAssert`, `FileAssertXmlAssert`,
   `FileAssertHtmlAssert`, `FileAssertYamlAssert`, `FileAssertJsonAssert`, `FileAssertZipAssert`)
-  receive a `Context` reference and call `WriteLine` / `WriteError` to report results.
+  receive an `IContext` reference and call `WriteLine` / `WriteError` to report results.
+  `FileAssertZipAssert` additionally calls `context.WithPrefix(displayPath)` to derive a scoped
+  context for nested zip entry assertions.
 - **Internal dependency**: `ArgumentParser` (private nested class) is used exclusively by
-  `Context.Create`.
+  `Context.Create`. `ScopedContext` (private nested class) is returned by `WithPrefix`.

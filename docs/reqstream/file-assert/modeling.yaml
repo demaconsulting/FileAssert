@@ -95,3 +95,20 @@ sections:
           - FileAssert-FileAssertJsonAssert-QueryAssertions
         tests:
           - Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+
+      - id: FileAssert-Modeling-ZipEntryContentAssertions
+        title: |
+          The Modeling subsystem shall apply the full content assertion suite to matched zip archive
+          entries and propagate failures through a scoped context with breadcrumb-style error messages.
+        justification: |
+          Zip entry content assertions are the primary new capability introduced by the IFileContainer
+          abstraction. Verifying at the subsystem level that all content asserter types (text, xml,
+          yaml, json) execute correctly through a ZipFileContainer confirms the full integration of
+          the IFileContainer abstraction with the existing asserter pipeline. Breadcrumb error messages
+          must propagate correctly through the scoped context to give users actionable failure output.
+        children:
+          - FileAssert-FileAssertZipAssert-EntryMatching
+          - FileAssert-FileAssertZipAssert-ParseError
+        tests:
+          - Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet
+          - Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs

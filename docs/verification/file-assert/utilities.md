@@ -43,6 +43,9 @@ The following integration test scenarios are defined in `UtilitiesTests.cs`.
 
 - **Path traversal prevention**: Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
 - **Temporary directory isolation and cleanup**: Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
+- **IFileContainer uniform access**: DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes, ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+- **DirectoryFileContainer file-system access**: DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty, DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream, DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
+- **ZipFileContainer archive access**: ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream, ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
 
 ### TemporaryDirectory Verification
 
@@ -65,3 +68,37 @@ Each test exercises construction, path resolution, and disposal against the real
   deleted when the instance is disposed.
 - **TemporaryDirectory_Dispose_AlreadyDeleted_DoesNotThrow** – confirms that disposal does not
   throw when the directory has already been removed externally.
+
+### IFileContainer Verification
+
+The `IFileContainer` interface and its two implementations (`DirectoryFileContainer`,
+`ZipFileContainer`) are verified by the unit tests defined in `IFileContainerTests.cs`.
+Each test exercises all four interface members against real filesystem directories and
+in-memory zip archives.
+
+#### IFileContainer Test Scenarios
+
+- **DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes** – confirms recursive
+  enumeration with forward-slash separator normalization.
+- **DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty** – confirms empty list for
+  an empty directory.
+- **DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty** – confirms empty list
+  (no exception) when the base directory does not exist.
+- **DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream** – confirms a readable stream
+  is returned for an existing file.
+- **DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException** – confirms
+  `FileNotFoundException` is thrown for a missing file.
+- **DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize** – confirms the correct byte count
+  is returned.
+- **DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath** – confirms the full
+  file-system path is returned.
+- **ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes** – confirms zip entry
+  enumeration with forward slashes, excluding directory markers.
+- **ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream** – confirms a readable stream for
+  an existing zip entry.
+- **ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException** – confirms `IOException`
+  for a missing zip entry.
+- **ZipFileContainer_GetEntrySize_ReturnsUncompressedLength** – confirms the uncompressed byte
+  count is returned.
+- **ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath** – confirms the
+  breadcrumb-style display path `"displayName > entryPath"`.

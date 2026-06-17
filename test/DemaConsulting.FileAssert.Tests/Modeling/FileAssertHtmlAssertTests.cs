@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -87,8 +88,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -114,8 +119,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -141,8 +150,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -159,14 +172,15 @@ public sealed class FileAssertHtmlAssertTests
     [Fact]
     public void FileAssertHtmlAssert_Run_NonExistentFile_WritesError()
     {
-        // Arrange - use a path that does not exist to trigger a parse failure
-        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.html");
+        // Arrange - use a filename that does not exist inside the temp directory to trigger a parse failure
+        var missingFileName = $"does_not_exist_{Guid.NewGuid():N}.html";
         var data = new List<FileAssertQueryData> { new() { Query = "//p", Count = 1 } };
         var htmlAssert = FileAssertHtmlAssert.Create(data);
         using var context = Context.Create(["--silent"]);
+        using var container = new DirectoryFileContainer(Path.GetTempPath());
 
         // Act
-        htmlAssert.Run(context, missingFile);
+        htmlAssert.Run(context, container, missingFileName);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -187,8 +201,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -214,8 +232,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -241,8 +263,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -268,8 +294,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -295,8 +325,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);

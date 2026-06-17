@@ -1147,4 +1147,218 @@ public partial class IntegrationTests
         Assert.NotEqual(0, exitCode);
 
     }
+
+    /// <summary>
+    ///     Test that a ZIP assert with a passing text-content rule on a zip entry returns a
+    ///     zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("readme.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("hello world");
+        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipTextCheck
+                files:
+                  - pattern: "*.zip"
+                    zip:
+                      entries:
+                        - pattern: "readme.txt"
+                          text:
+                            - contains: "hello"
+            """);
+
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+        // Assert
+        Assert.Equal(0, exitCode);
+
+    }
+
+    /// <summary>
+    ///     Test that a ZIP assert with a failing text-content rule on a zip entry returns a
+    ///     non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("readme.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("goodbye world");
+        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipTextFail
+                files:
+                  - pattern: "*.zip"
+                    zip:
+                      entries:
+                        - pattern: "readme.txt"
+                          text:
+                            - contains: "not-present"
+            """);
+
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+        // Assert
+        Assert.NotEqual(0, exitCode);
+
+    }
+
+    /// <summary>
+    ///     Test that a ZIP assert with a passing XML XPath query on a zip entry returns a
+    ///     zero exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("config.xml");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("""<?xml version="1.0"?><root><item>one</item><item>two</item></root>""");
+        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipXmlCheck
+                files:
+                  - pattern: "*.zip"
+                    zip:
+                      entries:
+                        - pattern: "config.xml"
+                          xml:
+                            - query: "//item"
+                              count: 2
+            """);
+
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+        // Assert
+        Assert.Equal(0, exitCode);
+
+    }
+
+    /// <summary>
+    ///     Test that a nested zip-in-zip with a passing text-content assertion returns a zero
+    ///     exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero()
+    {
+        // Arrange - build inner.zip in memory containing readme.txt, then wrap it in outer.zip
+        using var tempDir = new TemporaryDirectory();
+        var outerZipPath = tempDir.GetFilePath("outer.zip");
+
+        using var innerZipStream = new MemoryStream();
+        using (var innerArchive = new ZipArchive(innerZipStream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            var innerEntry = innerArchive.CreateEntry("readme.txt");
+            using var innerStream = innerEntry.Open();
+            using var innerWriter = new StreamWriter(innerStream, System.Text.Encoding.UTF8);
+            innerWriter.Write("hello world");
+        }
+
+        var innerZipBytes = innerZipStream.ToArray();
+
+        using (var outerArchive = ZipFile.Open(outerZipPath, ZipArchiveMode.Create))
+        {
+            var outerEntry = outerArchive.CreateEntry("inner.zip");
+            using var outerEntryStream = outerEntry.Open();
+            outerEntryStream.Write(innerZipBytes, 0, innerZipBytes.Length);
+        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: NestedZipCheck
+                files:
+                  - pattern: "outer.zip"
+                    zip:
+                      entries:
+                        - pattern: "inner.zip"
+                          min: 1
+                          zip:
+                            entries:
+                              - pattern: "readme.txt"
+                                min: 1
+                                text:
+                                  - contains: "hello"
+            """);
+
+        // Act
+        var exitCode = Runner.Run(out var _, "dotnet", _dllPath, "--silent", "--config", configPath);
+
+        // Assert
+        Assert.Equal(0, exitCode);
+
+    }
+
+    /// <summary>
+    ///     Test that when a text assertion fails inside a zip entry, the error output contains
+    ///     both the zip file name and the failing entry path as breadcrumbs.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("readme.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("goodbye world");
+        }
+
+        var configPath = tempDir.GetFilePath(".fileassert.yaml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: ZipErrorBreadcrumb
+                files:
+                  - pattern: "archive.zip"
+                    zip:
+                      entries:
+                        - pattern: "readme.txt"
+                          text:
+                            - contains: "not-present"
+            """);
+
+        // Act - run without --silent so that error messages are written to stderr and captured
+        var exitCode = Runner.Run(out var output, "dotnet", _dllPath, "--config", configPath);
+
+        // Assert - error output must carry both the zip filename and the entry path as breadcrumbs
+        Assert.NotEqual(0, exitCode);
+        Assert.Contains("archive.zip", output);
+        Assert.Contains("readme.txt", output);
+
+    }
 }

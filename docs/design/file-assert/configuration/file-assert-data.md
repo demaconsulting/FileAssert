@@ -105,19 +105,13 @@ assertion blocks.
 
 Represents the `zip:` assertion block for a file entry.
 
-| Property   | YAML alias  | Type                               | Description                            |
-| :--------- | :---------- | :--------------------------------- | :------------------------------------- |
-| `Entries`  | `entries`   | `List<FileAssertZipEntryData>?`    | Entry glob pattern constraints.        |
+| Property   | YAML alias  | Type                          | Description                                               |
+| :--------- | :---------- | :---------------------------- | :-------------------------------------------------------- |
+| `Files`    | `files`     | `List<FileAssertFileData>?`   | Full file assertions applied to the zip archive contents. |
+| `Entries`  | `entries`   | `List<FileAssertFileData>?`   | Alias for `Files`; accepted for backward compatibility.   |
 
-##### FileAssertZipEntryData
-
-Represents a single zip archive entry count constraint.
-
-| Property  | YAML alias | Type      | Description                                              |
-| :-------- | :--------- | :-------- | :------------------------------------------------------  |
-| `Pattern` | `pattern`  | `string?` | Glob pattern matched against normalized entry names.     |
-| `Min`     | `min`      | `int?`    | Minimum number of matching entries; null means no bound. |
-| `Max`     | `max`      | `int?`    | Maximum number of matching entries; null means no bound. |
+The `Entries` YAML alias maps to the same `FileAssertFileData` list type as `Files`, ensuring
+that existing configurations using `entries:` continue to deserialize correctly.
 
 #### Design Decisions
 
@@ -155,8 +149,7 @@ by YamlDotNet.
 | `FileAssertPdfMetadataRuleData` | `Field?, Contains?, Matches?`                                               |
 | `FileAssertPdfPagesData`        | `Min: int?`, `Max: int?`                                                    |
 | `FileAssertQueryData`           | `Query?, Count?, Min?, Max?`                                                |
-| `FileAssertZipData`             | `Entries: List<FileAssertZipEntryData>?`                                    |
-| `FileAssertZipEntryData`        | `Pattern?, Min?, Max?`                                                      |
+| `FileAssertZipData`             | `Files: List<FileAssertFileData>?` (`Entries` is an alias)                  |
 
 All properties are nullable so that absent YAML keys deserialize cleanly to `null`.
 

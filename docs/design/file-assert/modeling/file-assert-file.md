@@ -39,13 +39,14 @@ that block is present.
 ##### Execution Method
 
 ```csharp
-internal void Run(Context context, string basePath)
+internal void Run(IContext context, IFileContainer container)
 ```
 
 Execution proceeds in five phases:
 
 1. **File discovery** — `Microsoft.Extensions.FileSystemGlobbing.Matcher` evaluates
-   `Pattern` relative to `basePath` and returns the list of matched file paths.
+   `Pattern` against the entries returned by `container.GetEntries()` and returns the
+   list of matched entry paths.
 
 2. **Minimum count validation** — If `Min` is set and the match count is below it,
    an error is written and execution returns immediately.
@@ -57,31 +58,17 @@ Execution proceeds in five phases:
    it, an error is written and execution returns immediately. Early return prevents
    misleading per-file errors when the count constraint already signals a failure.
 
-5. **Per-file validation** — Each matched file is inspected individually:
-   a. Validates size constraints (`MinSize`, `MaxSize`) using `FileInfo.Length`. Size
-      violations are recorded via `context.WriteError` but do NOT cause early return;
+5. **Per-file validation** — Each matched entry is inspected individually:
+   a. Validates size constraints (`MinSize`, `MaxSize`) using `container.GetEntrySize(entryPath)`.
+      Size violations are recorded via `context.WriteError` but do NOT cause early return;
       the remaining per-file assertions continue to execute.
-   b. If `TextAssert` is defined, delegates to `FileAssertTextAssert` which reads the
-      file as text and applies each `FileAssertRule`.
-   c. If `PdfAssert` is defined, attempts to parse the file using PdfPig; reports
-      an immediate error if parsing fails, otherwise applies metadata, page, and
-      body text assertions.
-   d. If `XmlAssert` is defined, attempts to parse the file using `System.Xml.Linq`;
-      reports an immediate error if parsing fails, otherwise applies XPath node count
-      assertions.
-   e. If `HtmlAssert` is defined, attempts to parse the file using HtmlAgilityPack;
-      reports an immediate error if parsing fails, otherwise applies XPath node count
-      assertions.
-   f. If `YamlAssert` is defined, attempts to parse the file using YamlDotNet; reports
-      an immediate error if parsing fails, otherwise applies dot-notation path count
-      assertions.
-   g. If `JsonAssert` is defined, attempts to parse the file using `System.Text.Json`;
-      reports an immediate error if parsing fails, otherwise applies dot-notation path
-      count assertions.
-   h. If `ZipAssert` is defined, attempts to open the file as a zip archive using
-      `System.IO.Compression.ZipFile`; reports an immediate error if the archive cannot
-      be opened, otherwise matches entry names against each configured glob pattern and
-      enforces the declared minimum and maximum count constraints.
+   b. If `TextAssert` is defined, delegates to `FileAssertTextAssert.Run(context, container, entryPath)`.
+   c. If `PdfAssert` is defined, delegates to `FileAssertPdfAssert.Run(context, container, entryPath)`.
+   d. If `XmlAssert` is defined, delegates to `FileAssertXmlAssert.Run(context, container, entryPath)`.
+   e. If `HtmlAssert` is defined, delegates to `FileAssertHtmlAssert.Run(context, container, entryPath)`.
+   f. If `YamlAssert` is defined, delegates to `FileAssertYamlAssert.Run(context, container, entryPath)`.
+   g. If `JsonAssert` is defined, delegates to `FileAssertJsonAssert.Run(context, container, entryPath)`.
+   h. If `ZipAssert` is defined, delegates to `FileAssertZipAssert.Run(context, container, entryPath)`.
 
 ##### Count Constraint Error Messages
 
@@ -94,8 +81,8 @@ Pattern '<Pattern>' matched <n> file(s), but expected exactly <Count>
 ##### Size Constraint Error Messages
 
 ```text
-File '<filePath>' is <n> byte(s), which is less than the minimum <MinSize> bytes
-File '<filePath>' is <n> byte(s), which exceeds the maximum <MaxSize> bytes
+File '<displayPath>' is <n> byte(s), which is less than the minimum <MinSize> bytes
+File '<displayPath>' is <n> byte(s), which exceeds the maximum <MaxSize> bytes
 ```
 
 #### YAML Configuration
@@ -116,6 +103,9 @@ All properties except `pattern` are optional.
 
 #### Design Decisions
 
+- **`IContext` and `IFileContainer` parameters**: Accepting interfaces rather than concrete types
+  allows `FileAssertFile` to be called identically for on-disk files (via `DirectoryFileContainer`)
+  and for zip archive entries (via `ZipFileContainer`), with no conditional logic in this class.
 - **Glob via FileSystemGlobbing**: The `Microsoft.Extensions.FileSystemGlobbing`
   library is already a project dependency and provides cross-platform glob support
   consistent with the rest of the .NET ecosystem.
@@ -154,10 +144,10 @@ delegates per-file content validation to file-type-specific assert units.
 
 #### Key Methods
 
-| Method                                   | Purpose                                                            |
-| :--------------------------------------- | :----------------------------------------------------------------- |
-| `Create(FileAssertFileData data)`        | Factory: validates pattern, builds assert units, returns instance. |
-| `Run(Context context, string basePath)`  | Discovers files, checks count/size, delegates to assert units.     |
+| Method                                            | Purpose                                                            |
+| :-----------------------------------------------  | :----------------------------------------------------------------- |
+| `Create(FileAssertFileData data)`                 | Factory: validates pattern, builds assert units, returns instance. |
+| `Run(IContext context, IFileContainer container)` | Discovers entries, checks count/size, delegates to assert units.   |
 
 #### Error Handling
 

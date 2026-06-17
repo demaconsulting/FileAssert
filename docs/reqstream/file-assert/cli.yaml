@@ -64,3 +64,19 @@ sections:
         tests:
           - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
           - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+
+      - id: FileAssert-Cli-ScopedContext
+        title: The Cli subsystem shall provide a scoped context that prepends a path prefix to every error message, enabling
+          breadcrumb-style error reporting in nested assertions.
+        justification: |
+          When asserting files inside a zip archive, error messages must identify both the
+          archive and the entry that failed. A scoped context wrapper created via
+          IContext.WithPrefix prepends the archive name to all error messages, giving users
+          immediate context without requiring each asserter to format breadcrumb paths
+          explicitly. Nesting multiple scoped contexts supports zip-in-zip scenarios.
+        children:
+          - FileAssert-IContext-OutputContract
+        tests:
+          - Context_WithPrefix_ReturnsNonNullScopedContext
+          - ScopedContext_WriteError_PropagatesExitCodeToRoot
+          - ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot

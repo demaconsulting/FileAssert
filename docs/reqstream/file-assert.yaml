@@ -350,20 +350,28 @@ sections:
 
       - id: FileAssert-System-ZipAssertions
         title: |
-          The FileAssert tool shall evaluate zip archive entry assertions declared in a `zip:` block
-          and return a non-zero exit code when any entry count constraint fails or when the file
-          cannot be opened as a valid zip archive.
+          The FileAssert tool shall evaluate the full content assertion suite on matched zip archive
+          entries declared in a `zip:` block, enforcing count constraints and recursive nesting, and
+          return a non-zero exit code when any assertion fails or when the file cannot be opened as
+          a valid zip archive.
         justification: |
           Zip archives are a common packaging format for build outputs, distribution packages, and
-          compliance artifacts. Entry count constraints allow users to assert that required files
-          are present in the archive without unpacking it. An immediate failure on an invalid zip
-          archive prevents misleading partial results.
+          compliance artifacts. Entry count constraints allow users to assert that required files are
+          present in the archive without unpacking it. Content assertions (text, XML, YAML, JSON) on
+          individual entries allow users to validate the content of packaged files directly from the
+          archive. Recursive nesting lets users validate archives embedded inside other archives. An
+          immediate failure on an invalid zip archive prevents misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-FileAssertZipAssert-EntryMatching
         tests:
           - IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
           - IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+          - IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero
+          - IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero
+          - IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero
+          - IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero
+          - IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
 
       - id: FileAssert-System-DefaultBehavior
         title: |

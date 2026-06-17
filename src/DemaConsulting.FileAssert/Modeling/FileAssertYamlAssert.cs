@@ -20,6 +20,7 @@
 
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 
@@ -81,25 +82,31 @@ internal sealed class FileAssertYamlAssert
     }
 
     /// <summary>
-    ///     Parses the YAML file and evaluates all configured dot-notation path queries, reporting violations.
+    ///     Parses the YAML entry and evaluates all configured dot-notation path queries, reporting violations.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="fileName">The full path to the YAML file to validate.</param>
-    internal void Run(Context context, string fileName)
+    /// <param name="container">The container from which the entry is opened.</param>
+    /// <param name="entryPath">The relative path of the entry to validate.</param>
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
 
-        // Attempt to parse the file as a YAML document
+        // Compute the display path once for use in error messages
+        var displayPath = container.GetDisplayPath(entryPath);
+
+        // Attempt to parse the entry as a YAML document
         var yaml = new YamlStream();
         try
         {
-            using var reader = new StreamReader(fileName);
+            using var stream = container.OpenEntry(entryPath);
+            using var reader = new StreamReader(stream);
             yaml.Load(reader);
         }
         catch (Exception ex) when (ex is YamlException or IOException or UnauthorizedAccessException)
         {
-            context.WriteError($"File '{fileName}' could not be parsed as a YAML document");
+            context.WriteError($"File '{displayPath}' could not be parsed as a YAML document");
             return;
         }
 
@@ -108,7 +115,7 @@ internal sealed class FileAssertYamlAssert
         {
             foreach (var q in _queries)
             {
-                ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, 0);
+                ApplyConstraints(context, displayPath, q.Query, q.Count, q.Min, q.Max, 0);
             }
 
             return;
@@ -120,7 +127,7 @@ internal sealed class FileAssertYamlAssert
         foreach (var q in _queries)
         {
             var n = CountYamlNodes(root, q.Query);
-            ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, n);
+            ApplyConstraints(context, displayPath, q.Query, q.Count, q.Min, q.Max, n);
         }
     }
 
@@ -187,7 +194,7 @@ internal sealed class FileAssertYamlAssert
     /// <param name="max">The maximum count constraint, or null.</param>
     /// <param name="n">The actual node count returned by the query.</param>
     private static void ApplyConstraints(
-        Context context, string fileName, string query,
+        IContext context, string fileName, string query,
         int? count, int? min, int? max, int n)
     {
         if (count.HasValue && n != count.Value)

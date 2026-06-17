@@ -20,8 +20,8 @@
 
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
@@ -176,20 +176,28 @@ internal sealed class FileAssertFile
     }
 
     /// <summary>
-    ///     Executes the file assertion against the specified base directory, reporting any violations.
+    ///     Executes the file assertion against the provided container, reporting any violations.
     /// </summary>
+    /// <remarks>
+    ///     The glob pattern is matched against all entries exposed by <paramref name="container"/>
+    ///     using <c>Matcher.Match(".", entries)</c>, which works uniformly for both directory-backed
+    ///     and zip-backed containers. Per-file type asserters receive the scoped container and the
+    ///     relative entry path so they can open the entry as a stream without needing to know
+    ///     whether the content lives on disk or inside an archive.
+    /// </remarks>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="basePath">The directory path in which to evaluate the glob pattern.</param>
-    internal void Run(Context context, string basePath)
+    /// <param name="container">The container in which to evaluate the glob pattern.</param>
+    internal void Run(IContext context, IFileContainer container)
     {
-        // Validate required parameters before performing any file system operations
+        // Validate required parameters before performing any container operations
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(basePath);
+        ArgumentNullException.ThrowIfNull(container);
 
-        // Perform the glob match to discover files matching the pattern
+        // Perform the glob match against the container entries
         var matcher = new Matcher();
         matcher.AddInclude(Pattern);
-        var result = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(basePath)));
+        var allEntries = container.GetEntries();
+        var result = matcher.Match(".", allEntries);
         var files = result.Files.Select(f => f.Path).ToList();
         var count = files.Count;
 
@@ -218,7 +226,7 @@ internal sealed class FileAssertFile
         }
 
         // Skip the per-file loop entirely when no size or file-type assertions are configured,
-        // avoiding unnecessary file system reads for purely count-constrained patterns.
+        // avoiding unnecessary container reads for purely count-constrained patterns.
         var hasPerFileChecks = MinSize.HasValue || MaxSize.HasValue ||
                                TextAssert != null || PdfAssert != null ||
                                XmlAssert != null || HtmlAssert != null ||
@@ -227,34 +235,35 @@ internal sealed class FileAssertFile
 
         if (hasPerFileChecks)
         {
-            foreach (var fullPath in files.Select(file => Path.Combine(basePath, file)))
+            foreach (var entryPath in files)
             {
                 // Enforce size constraints when specified
                 if (MinSize.HasValue || MaxSize.HasValue)
                 {
-                    var size = new FileInfo(fullPath).Length;
+                    var size = container.GetEntrySize(entryPath);
+                    var displayPath = container.GetDisplayPath(entryPath);
 
                     if (MinSize.HasValue && size < MinSize.Value)
                     {
                         context.WriteError(
-                            $"File '{fullPath}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
+                            $"File '{displayPath}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
                     }
 
                     if (MaxSize.HasValue && size > MaxSize.Value)
                     {
                         context.WriteError(
-                            $"File '{fullPath}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
+                            $"File '{displayPath}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
                     }
                 }
 
                 // Delegate to each file-type assert unit when declared
-                TextAssert?.Run(context, fullPath);
-                PdfAssert?.Run(context, fullPath);
-                XmlAssert?.Run(context, fullPath);
-                HtmlAssert?.Run(context, fullPath);
-                YamlAssert?.Run(context, fullPath);
-                JsonAssert?.Run(context, fullPath);
-                ZipAssert?.Run(context, fullPath);
+                TextAssert?.Run(context, container, entryPath);
+                PdfAssert?.Run(context, container, entryPath);
+                XmlAssert?.Run(context, container, entryPath);
+                HtmlAssert?.Run(context, container, entryPath);
+                YamlAssert?.Run(context, container, entryPath);
+                JsonAssert?.Run(context, container, entryPath);
+                ZipAssert?.Run(context, container, entryPath);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace DemaConsulting.FileAssert.Cli;
 /// <summary>
 ///     Context class that handles command-line arguments and program output.
 /// </summary>
-internal sealed class Context : IDisposable
+internal sealed class Context : IContext, IDisposable
 {
     /// <summary>
     ///     Log file stream writer (if logging is enabled).
@@ -359,6 +359,26 @@ internal sealed class Context : IDisposable
     }
 
     /// <summary>
+    ///     Returns a new scoped context that prepends <c>"{prefix} > "</c> to every
+    ///     <see cref="WriteError"/> message.
+    /// </summary>
+    /// <remarks>
+    ///     ScopedContext is used by FileAssertZipAssert to route nested asserter errors
+    ///     through a breadcrumb prefix that identifies the zip archive entry being tested.
+    ///     The scoped context delegates state (error flag and counter) to the root Context
+    ///     so that error accumulation remains consistent across nested contexts.
+    /// </remarks>
+    /// <param name="prefix">The prefix to prepend to error messages. Must not be null.</param>
+    /// <returns>A new <see cref="IContext"/> that prepends <paramref name="prefix"/> to errors.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="prefix"/> is null.</exception>
+    public IContext WithPrefix(string prefix)
+    {
+        // Validate the prefix before constructing the scoped context
+        ArgumentNullException.ThrowIfNull(prefix);
+        return new ScopedContext(this, prefix);
+    }
+
+    /// <summary>
     ///     Disposes resources used by the Context.
     /// </summary>
     public void Dispose()
@@ -366,5 +386,82 @@ internal sealed class Context : IDisposable
         // Close and dispose the log file writer if it exists
         _logWriter?.Dispose();
         _logWriter = null;
+    }
+
+    /// <summary>
+    ///     A scoped context wrapper that prepends a path prefix to every
+    ///     <see cref="WriteError"/> message.
+    /// </summary>
+    /// <remarks>
+    ///     ScopedContext delegates all output and state to the parent IContext, ensuring
+    ///     that error counters and exit-code logic remain in the root Context. It is used
+    ///     by FileAssertZipAssert to inject breadcrumb context into error messages without
+    ///     requiring the calling asserter to know about the scoping mechanism.
+    /// </remarks>
+    private sealed class ScopedContext : IContext
+    {
+        /// <summary>
+        ///     The parent context that owns the error flag and counter.
+        /// </summary>
+        private readonly IContext _parent;
+
+        /// <summary>
+        ///     The prefix prepended to every error message.
+        /// </summary>
+        private readonly string _prefix;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ScopedContext"/> class.
+        /// </summary>
+        /// <param name="parent">The parent context. Must not be null.</param>
+        /// <param name="prefix">The prefix to prepend to error messages. Must not be null.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Thrown when <paramref name="parent"/> or <paramref name="prefix"/> is null.
+        /// </exception>
+        internal ScopedContext(IContext parent, string prefix)
+        {
+            // Validate required dependencies before storing them
+            ArgumentNullException.ThrowIfNull(parent);
+            ArgumentNullException.ThrowIfNull(prefix);
+
+            _parent = parent;
+            _prefix = prefix;
+        }
+
+        /// <summary>
+        ///     Writes a line of informational output by delegating to the parent context.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        public void WriteLine(string message)
+        {
+            // Delegate informational output unchanged — prefix applies only to errors
+            _parent.WriteLine(message);
+        }
+
+        /// <summary>
+        ///     Writes an error message to the parent context, prepending the path prefix.
+        /// </summary>
+        /// <param name="message">The error message to write.</param>
+        public void WriteError(string message)
+        {
+            // Prepend the path prefix to give the error a navigation breadcrumb
+            _parent.WriteError($"{_prefix} > {message}");
+        }
+
+        /// <summary>
+        ///     Returns a new scoped context that nests this context's prefix with
+        ///     an additional <paramref name="prefix"/> level.
+        /// </summary>
+        /// <param name="prefix">The additional prefix segment. Must not be null.</param>
+        /// <returns>A new <see cref="IContext"/> with the combined prefix.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="prefix"/> is null.</exception>
+        public IContext WithPrefix(string prefix)
+        {
+            // Validate before chaining a new level
+            ArgumentNullException.ThrowIfNull(prefix);
+
+            // Chain a new ScopedContext that builds on this context's already-prefixed output
+            return new ScopedContext(this, prefix);
+        }
     }
 }

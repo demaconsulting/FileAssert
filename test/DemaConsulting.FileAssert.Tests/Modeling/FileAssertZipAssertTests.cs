@@ -22,6 +22,7 @@ using System.IO.Compression;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -31,6 +32,38 @@ namespace DemaConsulting.FileAssert.Tests.Modeling;
 [Collection("Sequential")]
 public sealed class FileAssertZipAssertTests
 {
+    /// <summary>
+    ///     Sample XML content used across multiple XML assertion tests.
+    /// </summary>
+    private const string SampleXmlContent = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <root>
+          <item>one</item>
+          <item>two</item>
+        </root>
+        """;
+
+    /// <summary>
+    ///     Sample YAML content used across multiple YAML assertion tests.
+    /// </summary>
+    private const string SampleYamlContent = """
+        server:
+          host: localhost
+          port: 8080
+        """;
+
+    /// <summary>
+    ///     Sample JSON content used across multiple JSON assertion tests.
+    /// </summary>
+    private const string SampleJsonContent = """
+        {
+          "server": {
+            "host": "localhost",
+            "port": 8080
+          }
+        }
+        """;
+
     /// <summary>
     ///     Creates a zip file at <paramref name="path"/> containing the specified entry names,
     ///     each with a single placeholder byte of content.
@@ -55,6 +88,114 @@ public sealed class FileAssertZipAssertTests
     }
 
     /// <summary>
+    ///     Creates a zip file at <paramref name="path"/> containing entries with the specified
+    ///     names and text content. Content is written as UTF-8 without BOM so that
+    ///     <see cref="System.IO.Compression.ZipArchiveEntry.Length"/> reflects the exact byte count.
+    /// </summary>
+    /// <param name="path">Destination path for the zip file. Any existing file is removed first.</param>
+    /// <param name="entries">Entry names and text content to add to the zip archive.</param>
+    private static void CreateZipFileWithContent(string path, IEnumerable<(string name, string content)> entries)
+    {
+        // Remove the file first because ZipFile.Open in Create mode requires a non-existent path
+        File.Delete(path);
+
+        using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
+        foreach (var (name, content) in entries)
+        {
+            var archiveEntry = archive.CreateEntry(name);
+            var entryStream = archiveEntry.Open();
+
+            // StreamWriter takes ownership of the stream and closes it on disposal;
+            // UTF-8 without BOM ensures the uncompressed size equals the exact character count
+            using var writer = new StreamWriter(entryStream, new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            writer.Write(content);
+        }
+    }
+
+    /// <summary>
+    ///     Creates an outer zip file at <paramref name="outerPath"/> containing a single inner
+    ///     zip entry named <paramref name="innerEntryName"/>. The inner zip is built in memory
+    ///     and contains the specified text entries.
+    /// </summary>
+    /// <param name="outerPath">Destination path for the outer zip. Any existing file is removed first.</param>
+    /// <param name="innerEntryName">Name of the inner zip entry within the outer archive.</param>
+    /// <param name="innerEntries">Entry names and text content within the inner zip archive.</param>
+    private static void CreateNestedZipFile(
+        string outerPath,
+        string innerEntryName,
+        IEnumerable<(string name, string content)> innerEntries)
+    {
+        // Build the inner zip entirely in memory before writing it to the outer archive
+        using var innerZipStream = new MemoryStream();
+        using (var innerArchive = new ZipArchive(innerZipStream, ZipArchiveMode.Create, leaveOpen: true))
+        {
+            foreach (var (name, content) in innerEntries)
+            {
+                var innerEntry = innerArchive.CreateEntry(name);
+                var innerStream = innerEntry.Open();
+
+                // StreamWriter takes ownership of the stream (leaveOpen: false default)
+                using var writer = new StreamWriter(innerStream, new System.Text.UTF8Encoding(false));
+                writer.Write(content);
+            }
+        }
+
+        var innerZipBytes = innerZipStream.ToArray();
+
+        // Write the outer zip with the in-memory inner zip as a single binary entry
+        File.Delete(outerPath);
+        using var outerArchive = ZipFile.Open(outerPath, ZipArchiveMode.Create);
+        var outerEntry = outerArchive.CreateEntry(innerEntryName);
+        using var outerEntryStream = outerEntry.Open();
+        outerEntryStream.Write(innerZipBytes, 0, innerZipBytes.Length);
+    }
+
+    /// <summary>
+    ///     A test-only <see cref="IContext"/> implementation that captures all error messages
+    ///     written via <see cref="WriteError"/> for inspection in breadcrumb tests.
+    ///     <see cref="WithPrefix"/> chains a scoped wrapper that mirrors the behavior of
+    ///     <c>Context.ScopedContext</c> so that the full breadcrumb path is accumulated.
+    /// </summary>
+    private sealed class CapturingContext : IContext
+    {
+        private readonly List<string> _errors = [];
+
+        /// <summary>Gets all error messages captured since this context was created.</summary>
+        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+
+        /// <inheritdoc/>
+        public void WriteLine(string message) { }
+
+        /// <inheritdoc/>
+        public void WriteError(string message) => _errors.Add(message);
+
+        /// <inheritdoc/>
+        public IContext WithPrefix(string prefix) => new PrefixedContext(this, prefix);
+
+        /// <summary>
+        ///     Scoped wrapper that prepends a prefix to each error before delegating to the
+        ///     parent context. Mirrors the behavior of <c>Context.ScopedContext</c>.
+        /// </summary>
+        private sealed class PrefixedContext : IContext
+        {
+            private readonly IContext _parent;
+            private readonly string _prefix;
+
+            internal PrefixedContext(IContext parent, string prefix)
+            {
+                _parent = parent;
+                _prefix = prefix;
+            }
+
+            public void WriteLine(string message) => _parent.WriteLine(message);
+
+            public void WriteError(string message) => _parent.WriteError($"{_prefix} > {message}");
+
+            public IContext WithPrefix(string prefix) => new PrefixedContext(this, prefix);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that Create succeeds given valid data.
     /// </summary>
     [Fact]
@@ -65,7 +206,7 @@ public sealed class FileAssertZipAssertTests
         {
             Entries =
             [
-                new FileAssertZipEntryData { Pattern = "lib/**/*.dll", Min = 1 }
+                new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
             ]
         };
 
@@ -74,10 +215,10 @@ public sealed class FileAssertZipAssertTests
 
         // Assert
         Assert.NotNull(zipAssert);
-        Assert.Single(zipAssert.Entries);
-        Assert.Equal("lib/**/*.dll", zipAssert.Entries[0].Pattern);
-        Assert.Equal(1, zipAssert.Entries[0].Min);
-        Assert.Null(zipAssert.Entries[0].Max);
+        Assert.Single(zipAssert.Files);
+        Assert.Equal("lib/**/*.dll", zipAssert.Files[0].Pattern);
+        Assert.Equal(1, zipAssert.Files[0].Min);
+        Assert.Null(zipAssert.Files[0].Max);
     }
 
     /// <summary>
@@ -100,7 +241,7 @@ public sealed class FileAssertZipAssertTests
         // Arrange
         var data = new FileAssertZipData
         {
-            Entries = [new FileAssertZipEntryData { Min = 1 }]
+            Entries = [new FileAssertFileData { Min = 1 }]
         };
 
         // Act / Assert
@@ -123,14 +264,18 @@ public sealed class FileAssertZipAssertTests
             {
                 Entries =
                 [
-                    new FileAssertZipEntryData { Pattern = "lib/net8.0/MyLib.dll", Min = 1, Max = 1 }
+                    new FileAssertFileData { Pattern = "lib/net8.0/MyLib.dll", Min = 1, Max = 1 }
                 ]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            zipAssert.Run(context, tempFile);
+            zipAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -158,14 +303,18 @@ public sealed class FileAssertZipAssertTests
             {
                 Entries =
                 [
-                    new FileAssertZipEntryData { Pattern = "lib/**/*.dll", Min = 1 }
+                    new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
                 ]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            zipAssert.Run(context, tempFile);
+            zipAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -193,14 +342,18 @@ public sealed class FileAssertZipAssertTests
             {
                 Entries =
                 [
-                    new FileAssertZipEntryData { Pattern = "lib/**/*.dll", Min = 1 }
+                    new FileAssertFileData { Pattern = "lib/**/*.dll", Min = 1 }
                 ]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            zipAssert.Run(context, tempFile);
+            zipAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -228,14 +381,18 @@ public sealed class FileAssertZipAssertTests
             {
                 Entries =
                 [
-                    new FileAssertZipEntryData { Pattern = "lib/**/*.dll", Max = 1 }
+                    new FileAssertFileData { Pattern = "lib/**/*.dll", Max = 1 }
                 ]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            zipAssert.Run(context, tempFile);
+            zipAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -262,14 +419,18 @@ public sealed class FileAssertZipAssertTests
             {
                 Entries =
                 [
-                    new FileAssertZipEntryData { Pattern = "**/*.dll", Min = 1 }
+                    new FileAssertFileData { Pattern = "**/*.dll", Min = 1 }
                 ]
             };
             var zipAssert = FileAssertZipAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            zipAssert.Run(context, tempFile);
+            zipAssert.Run(context, container, fileName);
 
             // Assert - a single parse error should be reported
             Assert.Equal(1, context.ExitCode);
@@ -287,23 +448,621 @@ public sealed class FileAssertZipAssertTests
     [Fact]
     public void FileAssertZipAssert_Run_NonExistentFile_WritesError()
     {
-        // Arrange - use a path guaranteed not to exist
-        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.zip");
+        // Arrange - use a filename guaranteed not to exist in the temp directory
+        var missingFileName = $"does_not_exist_{Guid.NewGuid():N}.zip";
         var data = new FileAssertZipData
         {
             Entries =
             [
-                new FileAssertZipEntryData { Pattern = "**/*.dll", Min = 1 }
+                new FileAssertFileData { Pattern = "**/*.dll", Min = 1 }
             ]
         };
         var zipAssert = FileAssertZipAssert.Create(data);
         using var context = Context.Create(["--silent"]);
+        using var dirContainer = new DirectoryFileContainer(Path.GetTempPath());
 
         // Act
-        zipAssert.Run(context, missingFile);
+        zipAssert.Run(context, dirContainer, missingFileName);
 
         // Assert - a single I/O error should be reported
         Assert.Equal(1, context.ExitCode);
         Assert.Equal(1, context.ErrorCount);
+    }
+
+    // -----------------------------------------------------------------------
+    // Content assertion tests — text, XML, YAML, JSON, size, nested zip, breadcrumbs
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains the required text.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryContainsRequiredText_NoError()
+    {
+        // Arrange - create a zip archive whose text entry satisfies the contains rule
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("readme.txt", "hello world")]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "readme.txt",
+                        Text = [new FileAssertRuleData { Contains = "hello" }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry does not contain the required text.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryMissingRequiredText_WritesError()
+    {
+        // Arrange - create a zip archive whose text entry does NOT satisfy the contains rule
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("readme.txt", "goodbye world")]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "readme.txt",
+                        Text = [new FileAssertRuleData { Contains = "not-present" }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains XML that satisfies
+    ///     the XPath count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryXmlMatchesXPath_NoError()
+    {
+        // Arrange - create a zip with an XML entry containing exactly 2 item elements
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.xml", SampleXmlContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.xml",
+                        Xml = [new FileAssertQueryData { Query = "//item", Count = 2 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry contains XML that does not satisfy
+    ///     the XPath count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryXmlFailsXPath_WritesError()
+    {
+        // Arrange - XML has 2 items but we assert count = 5
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.xml", SampleXmlContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.xml",
+                        Xml = [new FileAssertQueryData { Query = "//item", Count = 5 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains YAML that satisfies
+    ///     the dot-notation query count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryYamlMatchesQuery_NoError()
+    {
+        // Arrange - create a zip with a YAML entry whose server.host key matches count = 1
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.yaml", SampleYamlContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.yaml",
+                        Yaml = [new FileAssertQueryData { Query = "server.host", Count = 1 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry contains YAML that does not satisfy
+    ///     the dot-notation query count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryYamlFailsQuery_WritesError()
+    {
+        // Arrange - YAML has one server.host value but we assert count = 5
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.yaml", SampleYamlContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.yaml",
+                        Yaml = [new FileAssertQueryData { Query = "server.host", Count = 5 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry contains JSON that satisfies
+    ///     the dot-notation query count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryJsonMatchesQuery_NoError()
+    {
+        // Arrange - create a zip with a JSON entry whose "server" key matches count = 1
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.json", SampleJsonContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.json",
+                        Json = [new FileAssertQueryData { Query = "server", Count = 1 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry contains JSON that does not satisfy
+    ///     the dot-notation query count constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryJsonFailsQuery_WritesError()
+    {
+        // Arrange - JSON has no "missing" key but we assert count = 1
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("config.json", SampleJsonContent)]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "config.json",
+                        Json = [new FileAssertQueryData { Query = "missing", Count = 1 }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry's uncompressed size meets
+    ///     the minimum-size constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryMeetsMinSizeConstraint_NoError()
+    {
+        // Arrange - entry content is "hello world" (11 bytes UTF-8 without BOM)
+        // and min-size is 5, which is satisfied by 11 bytes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
+            var data = new FileAssertZipData
+            {
+                Entries = [new FileAssertFileData { Pattern = "data.bin", MinSize = 5 }]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry's uncompressed size is below
+    ///     the minimum-size constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryBelowMinSizeConstraint_WritesError()
+    {
+        // Arrange - entry content is "hello world" (11 bytes UTF-8 without BOM)
+        // and min-size is 20, which is NOT satisfied by 11 bytes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
+            var data = new FileAssertZipData
+            {
+                Entries = [new FileAssertFileData { Pattern = "data.bin", MinSize = 20 }]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run produces no error when a zip entry's uncompressed size is within
+    ///     the maximum-size constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryMeetsMaxSizeConstraint_NoError()
+    {
+        // Arrange - entry content is "hello world" (11 bytes UTF-8 without BOM)
+        // and max-size is 20, which is satisfied by 11 bytes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
+            var data = new FileAssertZipData
+            {
+                Entries = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 20 }]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run writes an error when a zip entry's uncompressed size exceeds
+    ///     the maximum-size constraint.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_EntryExceedsMaxSizeConstraint_WritesError()
+    {
+        // Arrange - entry content is "hello world" (11 bytes UTF-8 without BOM)
+        // and max-size is 5, which is NOT satisfied by 11 bytes
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("data.bin", "hello world")]);
+            var data = new FileAssertZipData
+            {
+                Entries = [new FileAssertFileData { Pattern = "data.bin", MaxSize = 5 }]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+            Assert.Equal(1, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run recursively evaluates a text-content assertion on an entry inside
+    ///     a zip that is itself an entry in another zip (nested zip-in-zip).
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_NestedZipTextContent_InnerEntryContentMatches_NoError()
+    {
+        // Arrange - outer zip contains inner.zip which contains readme.txt with "hello world"
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateNestedZipFile(tempFile, "inner.zip", [("readme.txt", "hello world")]);
+
+            // The inner zip assert checks the text entry and the outer zip assert locates inner.zip
+            var innerZipData = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "readme.txt",
+                        Min = 1,
+                        Text = [new FileAssertRuleData { Contains = "hello" }]
+                    }
+                ]
+            };
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "inner.zip",
+                        Min = 1,
+                        Zip = innerZipData
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, context.ErrorCount);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that when a content assertion fails inside a zip entry the error message
+    ///     carries breadcrumbs that identify both the zip file and the failing entry path.
+    /// </summary>
+    [Fact]
+    public void FileAssertZipAssert_Run_ContentAssertionFails_ErrorContainsBreadcrumbs()
+    {
+        // Arrange - create a zip with a text entry whose content will NOT satisfy the rule
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            CreateZipFileWithContent(tempFile, [("readme.txt", "goodbye world")]);
+            var data = new FileAssertZipData
+            {
+                Entries =
+                [
+                    new FileAssertFileData
+                    {
+                        Pattern = "readme.txt",
+                        Text = [new FileAssertRuleData { Contains = "not-present" }]
+                    }
+                ]
+            };
+            var zipAssert = FileAssertZipAssert.Create(data);
+            var capturingContext = new CapturingContext();
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            zipAssert.Run(capturingContext, container, fileName);
+
+            // Assert - the error message must contain both the zip filename and the entry path
+            Assert.NotEmpty(capturingContext.Errors);
+            var error = capturingContext.Errors[0];
+            Assert.Contains(fileName, error);
+            Assert.Contains("readme.txt", error);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
     }
 }

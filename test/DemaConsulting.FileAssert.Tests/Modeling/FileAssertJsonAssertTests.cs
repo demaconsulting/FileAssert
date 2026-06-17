@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -85,8 +86,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -112,8 +117,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -139,8 +148,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -166,8 +179,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -193,8 +210,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -220,8 +241,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert - min violation produces an error
             Assert.Equal(1, context.ExitCode);
@@ -247,8 +272,12 @@ public sealed class FileAssertJsonAssertTests
             var jsonAssert = FileAssertJsonAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            jsonAssert.Run(context, tempFile);
+            jsonAssert.Run(context, container, fileName);
 
             // Assert - max violation produces an error
             Assert.Equal(1, context.ExitCode);

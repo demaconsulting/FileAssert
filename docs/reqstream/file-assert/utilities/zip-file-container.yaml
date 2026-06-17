@@ -1,0 +1,28 @@
+---
+# Software Unit Requirements for the ZipFileContainer Class
+#
+# ZipFileContainer is the zip archive implementation of IFileContainer. It wraps a
+# ZipArchive opened from a caller-supplied Stream, exposing archive entries as a
+# virtual container. It supports nested zip assertion (zip-in-zip) by accepting a
+# Stream rather than a file path.
+
+sections:
+  - title: ZipFileContainer Unit Requirements
+    requirements:
+      - id: FileAssert-ZipFileContainer-ZipArchiveAccess
+        title: The ZipFileContainer class shall expose a zip archive stream as an IFileContainer, providing breadcrumb display
+          paths and throwing IOException for missing entries.
+        justification: |
+          FileAssertZipAssert must apply the full assertion suite to zip archive entries
+          using the same IFileContainer API used for on-disk directories. Accepting a
+          Stream rather than a file path enables zip-in-zip assertion where the outer
+          zip entry stream is passed directly. Breadcrumb display paths (displayName >
+          entryPath) give users enough context to identify errors inside nested archives.
+          Throwing IOException for missing entries provides a consistent error type for
+          asserters that catch I/O failures.
+        tests:
+          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+          - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
+          - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
+          - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
+          - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath

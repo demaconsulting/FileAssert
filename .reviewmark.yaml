@@ -285,6 +285,47 @@ reviews:
       - "src/**/Modeling/FileAssertZipAssert.cs"                                # implementation
       - "test/**/Modeling/FileAssertZipAssertTests.cs"                          # unit tests
 
+  # FileAssert-Cli-IContext Review (one per unit)
+  - id: FileAssert-Cli-IContext
+    title: Review that FileAssert Cli IContext Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/cli/i-context.yaml"                        # requirements
+      - "docs/design/file-assert/cli/i-context.md"                             # design
+      - "docs/verification/file-assert/cli/i-context.md"                       # verification
+      - "src/**/Cli/IContext.cs"                                                # implementation
+      - "src/**/Cli/Context.cs"                                                 # implementation
+      - "test/**/Cli/ScopedContextTests.cs"                                    # unit tests
+
+  # FileAssert-Utilities-IFileContainer Review (one per unit)
+  - id: FileAssert-Utilities-IFileContainer
+    title: Review that FileAssert Utilities IFileContainer Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/utilities/i-file-container.yaml"           # requirements
+      - "docs/design/file-assert/utilities/i-file-container.md"                # design
+      - "docs/verification/file-assert/utilities/i-file-container.md"          # verification
+      - "src/**/Utilities/IFileContainer.cs"                                   # implementation
+      - "test/**/Utilities/IFileContainerTests.cs"                             # unit tests
+
+  # FileAssert-Utilities-DirectoryFileContainer Review (one per unit)
+  - id: FileAssert-Utilities-DirectoryFileContainer
+    title: Review that FileAssert Utilities DirectoryFileContainer Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/utilities/directory-file-container.yaml"   # requirements
+      - "docs/design/file-assert/utilities/directory-file-container.md"        # design
+      - "docs/verification/file-assert/utilities/directory-file-container.md"  # verification
+      - "src/**/Utilities/DirectoryFileContainer.cs"                           # implementation
+      - "test/**/Utilities/IFileContainerTests.cs"                             # unit tests
+
+  # FileAssert-Utilities-ZipFileContainer Review (one per unit)
+  - id: FileAssert-Utilities-ZipFileContainer
+    title: Review that FileAssert Utilities ZipFileContainer Implementation is Correct
+    paths:
+      - "docs/reqstream/file-assert/utilities/zip-file-container.yaml"         # requirements
+      - "docs/design/file-assert/utilities/zip-file-container.md"              # design
+      - "docs/verification/file-assert/utilities/zip-file-container.md"        # verification
+      - "src/**/Utilities/ZipFileContainer.cs"                                 # implementation
+      - "test/**/Utilities/IFileContainerTests.cs"                             # unit tests
+
   # FileAssert-OTS-BuildMark Review
   - id: FileAssert-OTS-BuildMark
     title: Review FileAssert OTS BuildMark Requirements and Verification

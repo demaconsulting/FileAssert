@@ -36,7 +36,7 @@ Creates a `FileAssertRule` for each entry in the data list via `FileAssertRule.C
 ##### Run Method
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Reads the entire file content as a UTF-8 string and applies each rule via
@@ -105,7 +105,7 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 | Method                                         | Purpose                                                            |
 | :--------------------------------------------- | :----------------------------------------------------------------- |
 | `Create(IEnumerable<FileAssertRuleData> data)` | Static factory: creates a `FileAssertRule` for each DTO entry.     |
-| `Run(Context context, string fileName)`        | Reads the file as UTF-8 text and applies each rule to the content. |
+| `Run(IContext, IFileContainer, string)`        | Reads the file as UTF-8 text and applies each rule to the content. |
 
 #### Error Handling
 
@@ -118,7 +118,7 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 
 #### Interactions
 
-- **Caller**: `FileAssertFile.Run` calls `TextAssert.Run(context, fileName)` when the `text:`
+- **Caller**: `FileAssertFile.Run` calls `TextAssert.Run(context, container, entryPath)` when the `text:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertTextAssert.Create`.
 - **Delegates to**: `FileAssertRule.Apply` for each content rule.

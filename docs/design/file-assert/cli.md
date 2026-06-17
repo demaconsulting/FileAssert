@@ -8,9 +8,10 @@ and execution decisions.
 
 ### Subsystem Contents
 
-| Unit      | File          | Responsibility                                            |
-| :-------- | :------------ | :-------------------------------------------------------- |
-| `Context` | `Context.cs`  | Parses arguments and owns all I/O operations.             |
+| Unit       | File          | Responsibility                                                       |
+| :--------- | :------------ | :------------------------------------------------------------------- |
+| `IContext` | `IContext.cs` | Output contract interface for reporting messages and errors.         |
+| `Context`  | `Context.cs`  | Parses arguments and owns all I/O operations.                        |
 
 ### Subsystem Responsibilities
 
@@ -22,6 +23,16 @@ and execution decisions.
 - Expose an exit code that reflects whether any errors have been reported.
 
 ### Interfaces
+
+The `IContext` interface exposes the following public members:
+
+#### Methods
+
+| Method       | Signature                             | Description                                                              |
+| :----------- | :------------------------------------ | :----------------------------------------------------------------------- |
+| `WriteLine`  | `void WriteLine(string message)`      | Writes an informational message.                                         |
+| `WriteError` | `void WriteError(string message)`     | Writes an error message and marks the context as having errors.          |
+| `WithPrefix` | `IContext WithPrefix(string prefix)`  | Returns a scoped context prepending `"{prefix} > "` to error messages.   |
 
 The `Context` unit exposes the following public interface:
 
@@ -39,7 +50,7 @@ The `Context` unit exposes the following public interface:
 | `Filters`      | `IReadOnlyList<string>` | Positional name-or-tag filter arguments.                        |
 | `ExitCode`     | `int`                   | `0` when no errors have been reported; `1` otherwise.           |
 
-#### Methods
+#### Context Methods
 
 | Method       | Signature                              | Description                                                  |
 | :----------- | :------------------------------------- | :----------------------------------------------------------- |

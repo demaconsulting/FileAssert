@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.Core;
 using UglyToad.PdfPig.Fonts.Standard14Fonts;
@@ -78,8 +79,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -111,8 +116,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -144,8 +153,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -179,8 +192,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -215,8 +232,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -251,8 +272,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -288,8 +313,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -325,8 +354,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -362,8 +395,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -399,8 +436,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -437,8 +478,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -475,8 +520,12 @@ public sealed class FileAssertPdfAssertTests
             var pdfAssert = FileAssertPdfAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            pdfAssert.Run(context, tempFile);
+            pdfAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);

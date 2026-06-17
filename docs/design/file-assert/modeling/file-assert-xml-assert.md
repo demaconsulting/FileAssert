@@ -37,7 +37,7 @@ internal static FileAssertXmlAssert Create(IEnumerable<FileAssertQueryData> data
 ###### FileAssertXmlAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -113,7 +113,7 @@ Each `XmlQuery` (private nested record) holds:
 | Method                                          | Purpose                                                       |
 | :---------------------------------------------- | :------------------------------------------------------------ |
 | `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `XmlQuery` instances.                  |
-| `Run(Context context, string fileName)`         | Loads the XML file and evaluates each XPath query against it. |
+| `Run(IContext, IFileContainer, string)`         | Loads the XML file and evaluates each XPath query against it. |
 
 #### Error Handling
 
@@ -127,7 +127,7 @@ Each `XmlQuery` (private nested record) holds:
 
 #### Interactions
 
-- **Caller**: `FileAssertFile.Run` calls `XmlAssert.Run(context, fileName)` when the `xml:`
+- **Caller**: `FileAssertFile.Run` calls `XmlAssert.Run(context, container, entryPath)` when the `xml:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertXmlAssert.Create`.
 - **OTS dependency**: `System.Xml.Linq.XDocument` and `System.Xml.XPath` extension methods (BCL).

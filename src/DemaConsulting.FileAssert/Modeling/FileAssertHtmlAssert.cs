@@ -21,6 +21,7 @@
 using System.Xml.XPath;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 using HtmlAgilityPack;
 
 namespace DemaConsulting.FileAssert.Modeling;
@@ -78,28 +79,34 @@ internal sealed class FileAssertHtmlAssert
     }
 
     /// <summary>
-    ///     Parses the HTML file and evaluates all configured XPath queries, reporting violations.
+    ///     Parses the HTML entry and evaluates all configured XPath queries, reporting violations.
     ///     HtmlAgilityPack is intentionally lenient (as browsers are): syntactically imperfect
     ///     HTML is still parsed into a DOM and queries are evaluated against it.
-    ///     I/O errors (file not found, access denied) are reported as parse failures.
+    ///     I/O errors (entry not found, access denied) are reported as parse failures.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="fileName">The full path to the HTML file to validate.</param>
-    internal void Run(Context context, string fileName)
+    /// <param name="container">The container from which the entry is opened.</param>
+    /// <param name="entryPath">The relative path of the entry to validate.</param>
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
+
+        // Compute the display path once for use in error messages
+        var displayPath = container.GetDisplayPath(entryPath);
 
         // Load the HTML document using HtmlAgilityPack; HAP is lenient by design so only
         // I/O failures are treated as parse errors
         var doc = new HtmlDocument();
         try
         {
-            doc.Load(fileName);
+            using var stream = container.OpenEntry(entryPath);
+            doc.Load(stream);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            context.WriteError($"File '{fileName}' could not be parsed as an HTML document");
+            context.WriteError($"File '{displayPath}' could not be parsed as an HTML document");
             return;
         }
 
@@ -113,11 +120,11 @@ internal sealed class FileAssertHtmlAssert
             }
             catch (XPathException)
             {
-                context.WriteError($"File '{fileName}' query '{q.Query}' is not a valid XPath expression");
+                context.WriteError($"File '{displayPath}' query '{q.Query}' is not a valid XPath expression");
                 continue;
             }
 
-            ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, n);
+            ApplyConstraints(context, displayPath, q.Query, q.Count, q.Min, q.Max, n);
         }
     }
 
@@ -132,7 +139,7 @@ internal sealed class FileAssertHtmlAssert
     /// <param name="max">The maximum count constraint, or null.</param>
     /// <param name="n">The actual node count returned by the query.</param>
     private static void ApplyConstraints(
-        Context context, string fileName, string query,
+        IContext context, string fileName, string query,
         int? count, int? min, int? max, int n)
     {
         if (count.HasValue && n != count.Value)

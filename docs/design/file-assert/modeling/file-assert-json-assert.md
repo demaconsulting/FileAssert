@@ -38,7 +38,7 @@ internal static FileAssertJsonAssert Create(IEnumerable<FileAssertQueryData> dat
 ###### FileAssertJsonAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -116,7 +116,7 @@ Each `JsonQuery` (private nested record) holds:
 | Method                                          | Purpose                                                          |
 | :---------------------------------------------- | :--------------------------------------------------------------- |
 | `Create(IEnumerable<FileAssertQueryData> data)` | Factory: converts query DTOs to `JsonQuery` instances.           |
-| `Run(Context context, string fileName)`         | Parses the JSON file and evaluates each dot-notation path query. |
+| `Run(IContext, IFileContainer, string)`         | Parses the JSON file and evaluates each dot-notation path query. |
 
 #### Error Handling
 
@@ -129,7 +129,7 @@ Each `JsonQuery` (private nested record) holds:
 
 #### Interactions
 
-- **Caller**: `FileAssertFile.Run` calls `JsonAssert.Run(context, fileName)` when the `json:`
+- **Caller**: `FileAssertFile.Run` calls `JsonAssert.Run(context, container, entryPath)` when the `json:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertJsonAssert.Create`.
 - **OTS dependency**: `System.Text.Json.JsonDocument` (BCL) for parsing and element traversal.

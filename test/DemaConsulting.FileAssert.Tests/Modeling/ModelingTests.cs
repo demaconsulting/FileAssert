@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.IO.Compression;
+
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
@@ -186,6 +188,126 @@ public class ModelingTests
 
         // Assert - no errors reported because the query matched the expected count
         Assert.Equal(0, context.ExitCode);
+
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem applies a text content assertion to a zip archive
+    ///     entry and reports no error when the constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet()
+    {
+        // Arrange - create a zip file containing a text entry with known content
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("entry.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("hello world");
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "ZipTextContentCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.zip",
+                    Zip = new FileAssertZipData
+                    {
+                        Entries =
+                        [
+                            new FileAssertFileData
+                            {
+                                Pattern = "entry.txt",
+                                Text =
+                                [
+                                    new FileAssertRuleData { Contains = "hello world" }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert - no errors reported; the text constraint was satisfied by the zip entry content
+        Assert.Equal(0, context.ExitCode);
+
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem reports a failure with breadcrumb-style error
+    ///     messages when a text assertion on a zip entry does not pass.
+    /// </summary>
+    [Fact]
+    public void Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs()
+    {
+        // Arrange - create a zip file containing a text entry; the assertion will fail
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("entry.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("hello world");
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "ZipBreadcrumbCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.zip",
+                    Zip = new FileAssertZipData
+                    {
+                        Entries =
+                        [
+                            new FileAssertFileData
+                            {
+                                Pattern = "entry.txt",
+                                Text =
+                                [
+                                    new FileAssertRuleData { Contains = "not-present" }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        var logPath = tempDir.GetFilePath("errors.log");
+
+        // Act - run inside an explicit scope so the context (and its log writer) is disposed
+        // before the log file is read; the exit code is captured before disposal
+        int exitCode;
+        using (var context = Context.Create(["--silent", "--log", logPath]))
+        {
+            test.Run(context, tempDir.DirectoryPath);
+            exitCode = context.ExitCode;
+        }
+
+        // Assert - an error was reported, exit code is non-zero, and the log message carries
+        // both the zip filename and the entry name as breadcrumbs
+        Assert.NotEqual(0, exitCode);
+        var logContents = File.ReadAllText(logPath);
+        Assert.Contains("archive.zip", logContents);
+        Assert.Contains("entry.txt", logContents);
 
     }
 }

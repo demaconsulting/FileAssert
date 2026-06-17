@@ -100,3 +100,24 @@ called with a message.
 - **Error exit code**: Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
 - **Log file output**: Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
 - **Console output**: Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+
+### ScopedContext Verification
+
+The `ScopedContext` implementation (returned by `Context.WithPrefix`) is verified by unit tests
+defined in `ScopedContextTests.cs`. Each test exercises prefix creation, error propagation, and
+multi-level nesting.
+
+#### ScopedContext Test Scenarios
+
+- **Context_WithPrefix_ReturnsNonNullScopedContext** – confirms that `WithPrefix` returns a
+  non-null `IContext` instance.
+- **Context_WithPrefix_NullPrefix_ThrowsArgumentNullException** – confirms `ArgumentNullException`
+  for a null prefix.
+- **ScopedContext_WriteError_PropagatesExitCodeToRoot** – confirms that an error written via a
+  scoped context increments the root context's `ExitCode` and `ErrorCount`.
+- **ScopedContext_WriteLine_DoesNotSetError** – confirms that informational output via a scoped
+  context does not set any error state on the root context.
+- **ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot** – confirms that errors propagate
+  through two levels of `WithPrefix` nesting to the root context.
+- **ScopedContext_MultipleErrors_AllAccumulateOnRoot** – confirms that errors from two separate
+  scoped contexts and a direct root `WriteError` call all accumulate on the root `ErrorCount`.

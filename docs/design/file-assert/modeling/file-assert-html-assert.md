@@ -38,7 +38,7 @@ internal static FileAssertHtmlAssert Create(IEnumerable<FileAssertQueryData> dat
 ###### FileAssertHtmlAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -117,7 +117,7 @@ Each `HtmlQuery` (private nested record) holds:
 | Method                                          |
 | :---------------------------------------------- |
 | `Create(IEnumerable<FileAssertQueryData> data)` |
-| `Run(Context context, string fileName)`         |
+| `Run(IContext, IFileContainer, string)`         |
 
 #### Error Handling
 
@@ -131,7 +131,7 @@ Each `HtmlQuery` (private nested record) holds:
 
 #### Interactions
 
-- **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, fileName)` when the `html:`
+- **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, container, entryPath)` when the `html:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertHtmlAssert.Create`.
 - **OTS dependency**: `HtmlAgilityPack.HtmlDocument` for lenient HTML parsing and

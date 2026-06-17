@@ -96,7 +96,7 @@ Creates metadata rules, page constraints, and text rules from the DTO.
 ###### FileAssertPdfAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -202,7 +202,7 @@ Inner class `PdfPages` holds:
 | Method                                                              | Purpose                                       |
 | :------------------------------------------------------------------ | :-------------------------------------------- |
 | `Create(FileAssertPdfData data)`                                    | Builds metadata/page/text rules from DTO.     |
-| `Run(Context context, string fileName)`                             | Opens PDF; applies metadata/page/text rules.  |
+| `Run(IContext, IFileContainer, string)`                             | Opens PDF; applies metadata/page/text rules.  |
 | `GetMetadataField(PdfDocument doc, string field)` *(private)*       | Maps field to `DocumentInformation` property. |
 | `PdfMetadataRule.FromData(FileAssertPdfMetadataRuleData)` *(inner)* | Creates a `PdfMetadataRule` from DTO.         |
 | `PdfMetadataRule.Apply(Context, string, string?)` *(inner)*         | Applies `Contains`/`Matches` to field value.  |
@@ -222,7 +222,7 @@ Inner class `PdfPages` holds:
 
 #### Interactions
 
-- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, fileName)` when the `pdf:`
+- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, container, entryPath)` when the `pdf:`
   assertion block is declared.
 - **Created by**: `FileAssertFile.Create` via `FileAssertPdfAssert.Create`.
 - **Delegates to**: `FileAssertRule.Apply` for body text validation.

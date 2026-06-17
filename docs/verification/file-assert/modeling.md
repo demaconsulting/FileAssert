@@ -8,7 +8,9 @@ that together verify the `Modeling` subsystem requirements.
 
 The `Modeling` subsystem is verified by integration tests defined in `ModelingTests.cs`. Each test
 exercises the assertion execution pipeline — creating a `FileAssertTest`, resolving file patterns,
-evaluating constraints, and reporting results through a real `Context`.
+evaluating constraints, and reporting results through a real `Context`. All asserters and
+`FileAssertFile` now accept `IContext` and `IFileContainer`, which are satisfied by the real
+`Context` and `DirectoryFileContainer` implementations at the subsystem level.
 
 ### Dependencies and Mocking Strategy
 
@@ -60,9 +62,29 @@ satisfying the query and count constraints is provided.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
+#### Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet
+
+**Scenario**: A `FileAssertTest` is configured with a zip archive pattern and a `zip: entries:` block
+matching a text entry with a `text: contains:` rule. The zip archive in the temporary directory
+contains the entry with content that satisfies the constraint.
+
+**Expected**: No errors are written to the context; exit code is 0.
+
+#### Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs
+
+**Scenario**: A `FileAssertTest` is configured with a zip archive pattern and a `text: contains:`
+rule that the zip entry content does not satisfy. The context is created with a log file to capture
+error messages.
+
+**Expected**: An error is written to the context; exit code is non-zero; the error message in the
+log file contains both the zip filename and the entry name as breadcrumbs.
+
 ### Requirements Coverage
 
 - **Constraint evaluation**: Modeling_ExecuteChain_PassesWhenAllConstraintsMet,
   Modeling_ExecuteChain_ReportsFailuresThroughContext
 - **XML parsing error reporting**: Modeling_FileTypeParsing_InvalidXml_ReportsParseError
 - **XML query assertion**: Modeling_QueryAssertions_XmlQueryMeetsCount_NoError
+- **Zip entry content assertions and breadcrumb propagation**:
+  Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet,
+  Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs
