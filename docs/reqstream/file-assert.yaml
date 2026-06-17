@@ -433,6 +433,6 @@ sections:
           - FileAssert-Platform-Net9
           - FileAssert-Platform-Net10
         tests:
-          - "dotnet8.x@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
-          - "dotnet9.x@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
-          - "dotnet10.x@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net8.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net9.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net10.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
