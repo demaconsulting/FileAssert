@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.ObjectModel;
 using System.IO.Compression;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
@@ -83,8 +84,7 @@ public sealed class FileAssertZipAssertTests
         using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
         foreach (var entry in entries)
         {
-            var archiveEntry = archive.CreateEntry(entry);
-            using var stream = archiveEntry.Open();
+            using var stream = archive.CreateEntry(entry).Open();
 
             // Write a single placeholder byte so the entry is not an empty-stream edge case
             stream.WriteByte(0x00);
@@ -184,7 +184,7 @@ public sealed class FileAssertZipAssertTests
         private readonly List<string> _errors = [];
 
         /// <summary>Gets all error messages captured since this context was created.</summary>
-        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+        public ReadOnlyCollection<string> Errors => _errors.AsReadOnly();
 
         /// <inheritdoc/>
         public void WriteLine(string message) { }

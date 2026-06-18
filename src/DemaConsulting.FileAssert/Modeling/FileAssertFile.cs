@@ -239,34 +239,45 @@ internal sealed class FileAssertFile
         {
             foreach (var entryPath in files)
             {
-                // Enforce size constraints when specified
-                if (MinSize.HasValue || MaxSize.HasValue)
-                {
-                    var size = container.GetEntrySize(entryPath);
-                    var displayPath = container.GetDisplayPath(entryPath);
-
-                    if (MinSize.HasValue && size < MinSize.Value)
-                    {
-                        context.WriteError(
-                            $"File '{displayPath}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
-                    }
-
-                    if (MaxSize.HasValue && size > MaxSize.Value)
-                    {
-                        context.WriteError(
-                            $"File '{displayPath}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
-                    }
-                }
-
-                // Delegate to each file-type assert unit when declared
-                TextAssert?.Run(context, container, entryPath);
-                PdfAssert?.Run(context, container, entryPath);
-                XmlAssert?.Run(context, container, entryPath);
-                HtmlAssert?.Run(context, container, entryPath);
-                YamlAssert?.Run(context, container, entryPath);
-                JsonAssert?.Run(context, container, entryPath);
-                ZipAssert?.Run(context, container, entryPath);
+                RunEntryChecks(context, container, entryPath);
             }
         }
+    }
+
+    /// <summary>
+    ///     Runs size and file-type assertions for a single matched entry, reporting violations.
+    /// </summary>
+    /// <param name="context">The context used for reporting errors.</param>
+    /// <param name="container">The container that holds the entry.</param>
+    /// <param name="entryPath">The relative path of the entry within the container.</param>
+    private void RunEntryChecks(IContext context, IFileContainer container, string entryPath)
+    {
+        // Enforce size constraints when specified
+        if (MinSize.HasValue || MaxSize.HasValue)
+        {
+            var size = container.GetEntrySize(entryPath);
+            var displayPath = container.GetDisplayPath(entryPath);
+
+            if (MinSize.HasValue && size < MinSize.Value)
+            {
+                context.WriteError(
+                    $"File '{displayPath}' is {size} byte(s), which is less than the minimum {MinSize.Value} bytes");
+            }
+
+            if (MaxSize.HasValue && size > MaxSize.Value)
+            {
+                context.WriteError(
+                    $"File '{displayPath}' is {size} byte(s), which exceeds the maximum {MaxSize.Value} bytes");
+            }
+        }
+
+        // Delegate to each file-type assert unit when declared
+        TextAssert?.Run(context, container, entryPath);
+        PdfAssert?.Run(context, container, entryPath);
+        XmlAssert?.Run(context, container, entryPath);
+        HtmlAssert?.Run(context, container, entryPath);
+        YamlAssert?.Run(context, container, entryPath);
+        JsonAssert?.Run(context, container, entryPath);
+        ZipAssert?.Run(context, container, entryPath);
     }
 }

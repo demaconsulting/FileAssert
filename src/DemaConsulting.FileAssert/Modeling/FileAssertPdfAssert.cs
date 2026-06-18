@@ -24,6 +24,7 @@ using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Utilities;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
@@ -275,43 +276,70 @@ internal sealed class FileAssertPdfAssert
 
         using (document)
         {
-            // Apply metadata assertions to the document information
-            foreach (var rule in _metadata)
+            RunDocumentAssertions(context, displayPath, document);
+        }
+    }
+
+    /// <summary>
+    ///     Applies all configured metadata, page-count, and text assertions to an already-opened
+    ///     PDF document, reporting violations via <paramref name="context"/>.
+    /// </summary>
+    /// <param name="context">The context used for reporting errors.</param>
+    /// <param name="displayPath">The display path of the file, used in error messages.</param>
+    /// <param name="document">The opened PDF document to assert against.</param>
+    private void RunDocumentAssertions(IContext context, string displayPath, PdfDocument document)
+    {
+        // Apply metadata assertions to the document information
+        foreach (var rule in _metadata)
+        {
+            var value = GetMetadataField(document, rule.Field);
+            rule.Apply(context, displayPath, value);
+        }
+
+        // Skip page and text checks when no such constraints are configured
+        if (_pages == null && _text.Count == 0)
+        {
+            return;
+        }
+
+        // When text rules are present, materialize pages once for both count and content.
+        // When only a page-count constraint is configured, enumerate without allocating Page objects.
+        if (_text.Count > 0)
+        {
+            var pageList = document.GetPages().ToList();
+            _pages?.Apply(context, displayPath, pageList.Count);
+            var content = BuildPageText(pageList);
+            foreach (var rule in _text)
             {
-                var value = GetMetadataField(document, rule.Field);
-                rule.Apply(context, displayPath, value);
-            }
-
-            // Apply page count constraints and collect pages only when needed
-            if (_pages != null || _text.Count > 0)
-            {
-                var pageList = document.GetPages().ToList();
-                _pages?.Apply(context, displayPath, pageList.Count);
-
-                // Apply text rules to the extracted body text when rules are defined
-                if (_text.Count > 0)
-                {
-                    var sb = new StringBuilder();
-                    for (var i = 0; i < pageList.Count; i++)
-                    {
-                        if (i > 0)
-                        {
-                            // Separate page text with newlines so that text rules don't
-                            // see two adjacent words from different pages glued together.
-                            sb.Append('\n');
-                        }
-
-                        sb.Append(pageList[i].Text);
-                    }
-
-                    var content = sb.ToString();
-                    foreach (var rule in _text)
-                    {
-                        rule.Apply(context, displayPath, content);
-                    }
-                }
+                rule.Apply(context, displayPath, content);
             }
         }
+        else
+        {
+            _pages?.Apply(context, displayPath, document.GetPages().Count());
+        }
+    }
+
+    /// <summary>
+    ///     Concatenates the text from all pages into a single string, separating pages with newlines
+    ///     so that text rules do not see words from adjacent pages merged together.
+    /// </summary>
+    /// <param name="pages">The ordered list of pages from the PDF document.</param>
+    /// <returns>A single string containing all page text joined with newline separators.</returns>
+    private static string BuildPageText(IReadOnlyList<Page> pages)
+    {
+        var sb = new StringBuilder();
+        for (var i = 0; i < pages.Count; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append('\n');
+            }
+
+            sb.Append(pages[i].Text);
+        }
+
+        return sb.ToString();
     }
 
     /// <summary>
