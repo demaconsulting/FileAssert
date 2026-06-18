@@ -40,21 +40,20 @@ public class CliTests
         var logPath = tempDir.GetFilePath("out.log");
 
         // Act - create a context with the silent, validate, and log flags
-        using (var context = Context.Create(
+        using var context = Context.Create(
         [
             "--silent",
             "--validate",
             "--log", logPath
-        ]))
-        {
-            // Assert - all flags are reflected in the context properties
-            Assert.True(context.Silent);
-            Assert.True(context.Validate);
-            Assert.False(context.Version);
-            Assert.False(context.Help);
-            Assert.Equal(".fileassert.yaml", context.ConfigFile);
-            Assert.Equal(0, context.ExitCode);
-        }
+        ]);
+
+        // Assert - all flags are reflected in the context properties
+        Assert.True(context.Silent);
+        Assert.True(context.Validate);
+        Assert.False(context.Version);
+        Assert.False(context.Help);
+        Assert.Equal(".fileassert.yaml", context.ConfigFile);
+        Assert.Equal(0, context.ExitCode);
 
     }
 
@@ -137,8 +136,8 @@ public class CliTests
         // Arrange
         var originalOut = Console.Out;
         var originalError = Console.Error;
-        var outWriter = new System.IO.StringWriter();
-        var errorWriter = new System.IO.StringWriter();
+        using var outWriter = new System.IO.StringWriter();
+        using var errorWriter = new System.IO.StringWriter();
 
         try
         {

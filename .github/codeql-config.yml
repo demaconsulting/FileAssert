@@ -16,3 +16,13 @@ query-filters:
       id: cs/path-combine
     paths:
       - src/DemaConsulting.FileAssert/PathHelpers.cs
+  # Exclude useless-assignment warnings in generated code under obj/ directories
+  - exclude:
+      id: cs/useless-assignment-to-local
+    paths:
+      - "**/obj/**"
+  # Exclude missed-ternary-operator warnings in generated code under obj/ directories
+  - exclude:
+      id: cs/missed-ternary-operator
+    paths:
+      - "**/obj/**"

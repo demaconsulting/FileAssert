@@ -203,7 +203,7 @@ public class ProgramTests
             Program.Run(context);
 
             // Assert
-            var combined = outWriter.ToString() + errWriter.ToString();
+            var combined = $"{outWriter}{errWriter}";
             Assert.Contains("Configuration file not found", combined);
             Assert.Equal(1, context.ExitCode);
         }

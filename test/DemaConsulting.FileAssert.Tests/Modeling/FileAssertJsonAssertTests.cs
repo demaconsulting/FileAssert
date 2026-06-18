@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.ObjectModel;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
@@ -400,7 +401,7 @@ public sealed class FileAssertJsonAssertTests
         private readonly List<string> _errors = [];
 
         /// <summary>Gets all error messages captured since this context was created.</summary>
-        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+        public ReadOnlyCollection<string> Errors => _errors.AsReadOnly();
 
         /// <inheritdoc/>
         public void WriteLine(string message) { }
