@@ -302,20 +302,21 @@ internal sealed class FileAssertPdfAssert
             return;
         }
 
-        // Apply page count constraints and collect pages only when needed
-        var pageList = document.GetPages().ToList();
-        _pages?.Apply(context, displayPath, pageList.Count);
-
-        // Apply text rules to the extracted body text when rules are defined
-        if (_text.Count == 0)
+        // When text rules are present, materialize pages once for both count and content.
+        // When only a page-count constraint is configured, enumerate without allocating Page objects.
+        if (_text.Count > 0)
         {
-            return;
+            var pageList = document.GetPages().ToList();
+            _pages?.Apply(context, displayPath, pageList.Count);
+            var content = BuildPageText(pageList);
+            foreach (var rule in _text)
+            {
+                rule.Apply(context, displayPath, content);
+            }
         }
-
-        var content = BuildPageText(pageList);
-        foreach (var rule in _text)
+        else
         {
-            rule.Apply(context, displayPath, content);
+            _pages?.Apply(context, displayPath, document.GetPages().Count());
         }
     }
 
