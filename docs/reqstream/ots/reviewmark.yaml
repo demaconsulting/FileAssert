@@ -8,14 +8,30 @@ sections:
     sections:
       - title: ReviewMark Requirements
         requirements:
-          - id: FileAssert-OTS-ReviewMark
-            title: ReviewMark shall generate a review plan and review report from the review configuration.
+          - id: FileAssert-OTS-ReviewMark-Plan
+            title: ReviewMark shall generate a review plan from the review configuration.
             justification: |
-              DemaConsulting.ReviewMark reads the .reviewmark.yaml configuration and the review
-              evidence store to produce a review plan and review report documenting file review
-              coverage and currency. It runs in the same CI pipeline that produces the TRX test
-              results, so a successful pipeline run is evidence that ReviewMark executed without error.
+              The plan documents which files require review and the responsible reviewers.
             tags: [ots]
             tests:
               - ReviewMark_ReviewPlanGeneration
+
+          - id: FileAssert-OTS-ReviewMark-Report
+            title: ReviewMark shall generate a review report documenting review coverage and currency.
+            justification: |
+              The report is the auditable record showing which files have been reviewed and
+              whether reviews are current with the source.
+            tags: [ots]
+            tests:
               - ReviewMark_ReviewReportGeneration
+
+          - id: FileAssert-OTS-ReviewMark
+            title: ReviewMark shall generate a review plan and review report from the review configuration.
+            justification: |
+              Composite requirement covering plan and report generation. This is a non-requirement
+              grouping node; verification evidence is carried by the atomic child requirements,
+              each of which covers one behavior (plan generation and report generation).
+            tags: [ots]
+            children:
+              - FileAssert-OTS-ReviewMark-Plan
+              - FileAssert-OTS-ReviewMark-Report

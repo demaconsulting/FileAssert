@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -87,8 +88,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -114,8 +119,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -141,10 +150,54 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run parses syntactically imperfect HTML (missing closing tags) leniently
+    ///     and still evaluates XPath queries successfully.
+    /// </summary>
+    [Fact]
+    public void FileAssertHtmlAssert_Run_MalformedHtml_ParsesAndQueriesSuccessfully_NoError()
+    {
+        // Arrange - HTML with missing closing </li>, </ul>, </body>, and </html> tags
+        const string malformedHtml = """
+            <html>
+            <body>
+            <ul>
+              <li>Item one
+              <li>Item two
+              <li>Item three
+            """;
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, malformedHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//li", Count = 3 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act - the lenient parser repairs the markup so the XPath query can run
+            htmlAssert.Run(context, container, fileName);
+
+            // Assert - all three list items are found despite the missing closing tags
             Assert.Equal(0, context.ExitCode);
         }
         finally
@@ -159,14 +212,15 @@ public sealed class FileAssertHtmlAssertTests
     [Fact]
     public void FileAssertHtmlAssert_Run_NonExistentFile_WritesError()
     {
-        // Arrange - use a path that does not exist to trigger a parse failure
-        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.html");
+        // Arrange - use a filename that does not exist inside the temp directory to trigger a parse failure
+        var missingFileName = $"does_not_exist_{Guid.NewGuid():N}.html";
         var data = new List<FileAssertQueryData> { new() { Query = "//p", Count = 1 } };
         var htmlAssert = FileAssertHtmlAssert.Create(data);
         using var context = Context.Create(["--silent"]);
+        using var container = new DirectoryFileContainer(Path.GetTempPath());
 
         // Act
-        htmlAssert.Run(context, missingFile);
+        htmlAssert.Run(context, container, missingFileName);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -187,8 +241,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -214,8 +272,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -241,8 +303,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -268,8 +334,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -295,8 +365,12 @@ public sealed class FileAssertHtmlAssertTests
             var htmlAssert = FileAssertHtmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            htmlAssert.Run(context, tempFile);
+            htmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -305,5 +379,126 @@ public sealed class FileAssertHtmlAssertTests
         {
             File.Delete(tempFile);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the node count is below the minimum.
+    /// </summary>
+    [Fact]
+    public void FileAssertHtmlAssert_Run_MinCount_BelowMinimum_WritesError()
+    {
+        // Arrange - sample HTML has 2 paragraphs; assert min = 5
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p", Min = 5 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            htmlAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an error when the node count exceeds the maximum.
+    /// </summary>
+    [Fact]
+    public void FileAssertHtmlAssert_Run_MaxCount_ExceedsMaximum_WritesError()
+    {
+        // Arrange - sample HTML has 2 paragraphs; assert max = 1
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(tempFile, SampleHtml);
+            var data = new List<FileAssertQueryData> { new() { Query = "//p", Max = 1 } };
+            var htmlAssert = FileAssertHtmlAssert.Create(data);
+            using var context = Context.Create(["--silent"]);
+
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
+            // Act
+            htmlAssert.Run(context, container, fileName);
+
+            // Assert
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run reports an IO error when the entry cannot be opened.
+    /// </summary>
+    [Fact]
+    public void FileAssertHtmlAssert_Run_UnauthorizedAccess_WritesError()
+    {
+        // Arrange - a container whose OpenEntry raises an access-denied failure
+        var data = new List<FileAssertQueryData> { new() { Query = "//p", Count = 1 } };
+        var htmlAssert = FileAssertHtmlAssert.Create(data);
+        var context = new CapturingContext();
+        var container = new ThrowingFileContainer();
+
+        // Act
+        htmlAssert.Run(context, container, "page.html");
+
+        // Assert: the IO failure is reported
+        Assert.Single(context.Errors);
+        Assert.Contains("could not be parsed as an HTML document", context.Errors[0]);
+    }
+
+    /// <summary>
+    ///     Captures error messages written via <see cref="WriteError"/> for assertion in tests.
+    /// </summary>
+    private sealed class CapturingContext : IContext
+    {
+        private readonly List<string> _errors = [];
+
+        /// <summary>Gets all error messages captured since this context was created.</summary>
+        public IReadOnlyList<string> Errors => _errors.AsReadOnly();
+
+        /// <inheritdoc/>
+        public void WriteLine(string message) { }
+
+        /// <inheritdoc/>
+        public void WriteError(string message) => _errors.Add(message);
+
+        /// <inheritdoc/>
+        public IContext WithPrefix(string prefix) => this;
+    }
+
+    /// <summary>
+    ///     A file container whose <see cref="OpenEntry"/> raises an <see cref="UnauthorizedAccessException"/>
+    ///     to simulate an IO failure while reading an entry.
+    /// </summary>
+    private sealed class ThrowingFileContainer : IFileContainer
+    {
+        /// <inheritdoc/>
+        public IReadOnlyList<string> GetEntries() => ["page.html"];
+
+        /// <inheritdoc/>
+        public Stream OpenEntry(string entryPath) => throw new UnauthorizedAccessException("denied");
+
+        /// <inheritdoc/>
+        public long GetEntrySize(string entryPath) => 0;
+
+        /// <inheritdoc/>
+        public string GetDisplayPath(string entryPath) => entryPath;
     }
 }

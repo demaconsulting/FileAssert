@@ -147,6 +147,74 @@ public class ProgramTests
     }
 
     /// <summary>
+    ///     Test that Run with no arguments and no default config file present prints
+    ///     the "no configuration file found" guidance and exits cleanly.
+    /// </summary>
+    [Fact]
+    public void Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance()
+    {
+        // Arrange
+        var originalOut = Console.Out;
+        var originalCwd = Directory.GetCurrentDirectory();
+        var tempDir = Directory.CreateTempSubdirectory("FileAssertProgramTests-");
+        try
+        {
+            Directory.SetCurrentDirectory(tempDir.FullName);
+            using var outWriter = new StringWriter();
+            Console.SetOut(outWriter);
+            using var context = Context.Create([]);
+
+            // Act
+            Program.Run(context);
+
+            // Assert
+            var output = outWriter.ToString();
+            Assert.Contains("No configuration file found", output);
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Directory.SetCurrentDirectory(originalCwd);
+            tempDir.Delete(recursive: true);
+        }
+    }
+
+    /// <summary>
+    ///     Test that Run with an explicit --config pointing at a non-existent file writes
+    ///     a "Configuration file not found" error and sets a non-zero exit code.
+    /// </summary>
+    [Fact]
+    public void Program_Run_ExplicitConfigMissing_WritesError()
+    {
+        // Arrange
+        var originalOut = Console.Out;
+        var originalErr = Console.Error;
+        try
+        {
+            using var outWriter = new StringWriter();
+            using var errWriter = new StringWriter();
+            Console.SetOut(outWriter);
+            Console.SetError(errWriter);
+            var missing = Path.Combine(Path.GetTempPath(), $"missing-{Guid.NewGuid():N}.yaml");
+            using var context = Context.Create(["--config", missing]);
+
+            // Act
+            Program.Run(context);
+
+            // Assert
+            var combined = outWriter.ToString() + errWriter.ToString();
+            Assert.Contains("Configuration file not found", combined);
+            Assert.Equal(1, context.ExitCode);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Console.SetError(originalErr);
+        }
+    }
+
+    /// <summary>
     ///     Test that version property returns non-empty version string.
     /// </summary>
     [Fact]

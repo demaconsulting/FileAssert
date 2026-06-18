@@ -1,0 +1,32 @@
+---
+# Software Unit Requirements for the IFileContainer Interface
+#
+# IFileContainer is the uniform file-access abstraction used by all asserters in
+# FileAssert. It decouples asserters from the filesystem by hiding whether entries
+# reside on disk inside a directory or as entries inside a zip archive.
+
+sections:
+  - title: IFileContainer Unit Requirements
+    requirements:
+      - id: FileAssert-IFileContainer-UniformAccess
+        title: The IFileContainer interface shall provide a uniform API for enumerating, opening, sizing, and displaying entries
+          regardless of backing storage.
+        justification: |
+          Asserters must be able to validate files whether those files are on disk in a
+          directory or stored as entries in a zip archive. A single interface with four
+          methods (GetEntries, OpenEntry, GetEntrySize, GetDisplayPath) allows each
+          asserter to be written once and reused against both backing stores, eliminating
+          conditional logic and enabling zip-in-zip assertion without any asserter changes.
+        tests:
+          - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
+          - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
+          - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
+          - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
+          - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
+          - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
+          - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
+          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+          - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
+          - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
+          - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
+          - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath

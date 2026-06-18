@@ -17,6 +17,9 @@ sections:
               WeasyPrint and independently confirms file assertion is functioning. Self-validation
               proves the tool itself is operational before ReqStream consumes the results.
             tags: [ots]
+            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
+            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
+            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
             tests:
               - FileAssert_VersionDisplay
               - FileAssert_HelpDisplay

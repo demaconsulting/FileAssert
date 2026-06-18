@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -77,8 +78,12 @@ public sealed class FileAssertTextAssertTests
             var textAssert = FileAssertTextAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            textAssert.Run(context, tempFile);
+            textAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -104,8 +109,12 @@ public sealed class FileAssertTextAssertTests
             var textAssert = FileAssertTextAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            textAssert.Run(context, tempFile);
+            textAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -122,14 +131,15 @@ public sealed class FileAssertTextAssertTests
     [Fact]
     public void FileAssertTextAssert_Run_NonExistentFile_WritesError()
     {
-        // Arrange - use a path that does not exist to trigger an I/O failure
-        var missingFile = Path.Combine(Path.GetTempPath(), $"does_not_exist_{Guid.NewGuid():N}.txt");
+        // Arrange - use a filename that does not exist inside the temp directory to trigger an I/O failure
+        var missingFileName = $"does_not_exist_{Guid.NewGuid():N}.txt";
         var data = new List<FileAssertRuleData> { new() { Contains = "hello" } };
         var textAssert = FileAssertTextAssert.Create(data);
         using var context = Context.Create(["--silent"]);
+        using var container = new DirectoryFileContainer(Path.GetTempPath());
 
         // Act
-        textAssert.Run(context, missingFile);
+        textAssert.Run(context, container, missingFileName);
 
         // Assert - an error was reported
         Assert.Equal(1, context.ExitCode);
@@ -156,8 +166,12 @@ public sealed class FileAssertTextAssertTests
             var textAssert = FileAssertTextAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            textAssert.Run(context, tempFile);
+            textAssert.Run(context, container, fileName);
 
             // Assert - both rules must have been evaluated (no short-circuit)
             Assert.Equal(2, context.ErrorCount);

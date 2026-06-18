@@ -1,0 +1,41 @@
+---
+# HtmlAgilityPack OTS Software Requirements
+#
+# Requirements for the HtmlAgilityPack library functionality consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: HtmlAgilityPack Requirements
+        requirements:
+          - id: FileAssert-OTS-HtmlAgilityPack-LenientParse
+            title: HtmlAgilityPack shall parse syntactically imperfect HTML markup without failing.
+            justification: |
+              FileAssert reads real-world HTML reports that may contain unclosed tags or
+              other minor issues. The parser must not fail on such markup.
+            tags: [ots]
+            tests:
+              - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+              - FileAssertHtmlAssert_Run_MalformedHtml_ParsesAndQueriesSuccessfully_NoError
+
+          - id: FileAssert-OTS-HtmlAgilityPack-XPath
+            title: HtmlAgilityPack shall evaluate XPath node-count and text queries against parsed HTML.
+            justification: |
+              FileAssert's `html:` queries rely on HtmlAgilityPack's `SelectNodes`/`InnerText`
+              to count matching nodes and read their text content.
+            tags: [ots]
+            tests:
+              - FileAssertHtmlAssert_Run_ExactCount_Matches_NoError
+              - FileAssertHtmlAssert_Run_MinMaxCount_WithinBounds_NoError
+              - FileAssertHtmlAssert_Run_XPathContainsText_Matches_NoError
+
+          - id: FileAssert-OTS-HtmlAgilityPack
+            title: HtmlAgilityPack shall parse HTML documents leniently and evaluate XPath queries against them.
+            justification: |
+              Composite requirement covering lenient parsing and XPath evaluation.
+            tags: [ots]
+            children:
+              - FileAssert-OTS-HtmlAgilityPack-LenientParse
+              - FileAssert-OTS-HtmlAgilityPack-XPath
+            tests:
+              - FileAssertHtmlAssert_Run_NonExistentFile_WritesError

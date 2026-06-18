@@ -29,7 +29,7 @@ this document execute and pass in the CI pipeline without any test failures, une
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
 
-### Integration Test Scenarios
+### Test Scenarios
 
 The following integration test scenarios are defined in `ConfigurationTests.cs`.
 
@@ -63,9 +63,22 @@ extension is provided to the context via `--results`.
 **Expected**: `FileAssertConfig.Run` completes and a TRX results file is written to the specified
 path.
 
-### Requirements Coverage
+#### Configuration_Run_WithResultsFile_WritesJUnitResultsFile
 
-- **YAML loading and hierarchy construction**: Configuration_LoadYaml_BuildsCompleteTestHierarchy
-- **Test name filtering**: Configuration_RunWithFilter_ExecutesOnlyMatchingTests
-- **Tag filtering**: Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
-- **Results file output (TRX/JUnit XML)**: Configuration_Run_WithResultsFile_WritesTrxResultsFile
+**Scenario**: A configuration file with one test is loaded. A results file path with an `.xml`
+extension is provided to the context via `--results`.
+
+**Expected**: `FileAssertConfig.Run` completes and a JUnit XML results file (containing a
+`<testsuites` root element) is written to the specified path. This confirms the subsystem selects
+the JUnit format from the file extension, complementing the TRX scenario above.
+
+#### Configuration_LoadYaml_InvalidYaml_ThrowsOrReportsParseError
+
+**Scenario** (negative): A YAML file containing syntactically invalid YAML (for example, an
+unbalanced bracket or a stray tab character that breaks the parser) is supplied to
+`FileAssertConfig.ReadFromFile`.
+
+**Expected**: `FileAssertConfig.ReadFromFile` does not return a partially-constructed configuration.
+A YAML deserialization exception (`YamlDotNet.Core.YamlException`, surfaced through the loader)
+propagates to the caller; no test hierarchy is constructed and no assertions are executed. The
+caller is responsible for translating the exception into the appropriate non-zero exit code.

@@ -30,7 +30,7 @@ supported rule types.
 ##### Abstract Method
 
 ```csharp
-internal abstract void Apply(Context context, string fileName, string content)
+internal abstract void Apply(IContext context, string fileName, string content)
 ```
 
 Each derived class implements `Apply` to perform its specific check against
@@ -137,10 +137,10 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 
 #### Key Methods
 
-| Method                                                                 | Purpose                                    |
-| :--------------------------------------------------------------------- | :----------------------------------------- |
-| `Create(FileAssertRuleData data)` *(static on base)*                   | Returns concrete rule subclass for `data`. |
-| `Apply(Context context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
+| Method                                                                  | Purpose                                    |
+| :---------------------------------------------------------------------  | :----------------------------------------- |
+| `Create(FileAssertRuleData data)` *(static on base)*                    | Returns concrete rule subclass for `data`. |
+| `Apply(IContext context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
 
 #### Error Handling
 
@@ -151,7 +151,12 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 | Regex evaluation timeout (>10 seconds)        | `RegexMatchTimeoutException` propagated to `Apply` caller.           |
 | Rule check fails at `Apply` time              | Error written via `context.WriteError`; no exception thrown.         |
 
-#### Interactions
+#### Dependencies
+
+- **Cli dependency**: `IContext` from the Cli subsystem (used by `Apply` to report failures).
+- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.
+
+#### Callers
 
 - **Created by**:
   - `FileAssertTextAssert.Create` for text content rules.
@@ -159,4 +164,3 @@ Regex objects are compiled at construction with a ten-second evaluation timeout.
 - **Called by**:
   - `FileAssertTextAssert.Run` — iterates rules and calls `Apply(context, fileName, content)`.
   - `FileAssertPdfAssert.Run` — iterates `_text` rules and calls `Apply(context, fileName, pdfText)`.
-- **Configuration dependency**: `FileAssertRuleData` DTOs from the Configuration subsystem.

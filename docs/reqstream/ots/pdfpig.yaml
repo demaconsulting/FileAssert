@@ -1,0 +1,74 @@
+---
+# PdfPig OTS Software Requirements
+#
+# Requirements for the PdfPig library functionality consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: PdfPig Requirements
+        requirements:
+          - id: FileAssert-OTS-PdfPig-Parse
+            title: PdfPig shall open well-formed PDF documents from a byte buffer.
+            justification: |
+              FileAssert depends on PdfPig's `PdfDocument.Open(byte[])` overload to load
+              PDF input from any IFileContainer-supplied stream.
+            tags: [ots]
+            tests:
+              - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+
+          - id: FileAssert-OTS-PdfPig-PageCount
+            title: PdfPig shall expose the page count of an opened PDF document.
+            justification: |
+              FileAssert's `pages.min`/`pages.max` constraints rely on PdfPig's
+              `GetPages()` enumerable to count pages.
+            tags: [ots]
+            tests:
+              - FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError
+              - FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
+              - FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
+
+          - id: FileAssert-OTS-PdfPig-Metadata
+            title: PdfPig shall expose the document information dictionary fields (Title, Author, etc.).
+            justification: |
+              FileAssert's `metadata` rules read Title/Author/Subject/Keywords/Creator/Producer
+              from `PdfDocument.Information`.
+            tags: [ots]
+            tests:
+              - FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
+              - FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
+              - FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
+
+          - id: FileAssert-OTS-PdfPig-Text
+            title: PdfPig shall expose the text content of each page of an opened PDF document.
+            justification: |
+              FileAssert's `text` rules concatenate `Page.Text` across all pages and apply
+              text content rules to the result.
+            tags: [ots]
+            tests:
+              - FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
+              - FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
+              - FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
+
+          - id: FileAssert-OTS-PdfPig-InvalidFile
+            title: PdfPig shall reject files that are not valid PDF documents.
+            justification: |
+              FileAssert's PDF-parse error path relies on PdfPig surfacing an exception for
+              malformed input so the asserter can report a clean parse-failure message.
+            tags: [ots]
+            tests:
+              - FileAssertPdfAssert_Run_InvalidFile_WritesError
+
+          - id: FileAssert-OTS-PdfPig
+            title: PdfPig shall parse PDF documents and expose page count, metadata, and text content.
+            justification: |
+              Composite requirement covering all PdfPig features consumed by FileAssert. This is a
+              non-requirement grouping node; verification evidence is carried by the atomic child
+              requirements below.
+            tags: [ots]
+            children:
+              - FileAssert-OTS-PdfPig-Parse
+              - FileAssert-OTS-PdfPig-PageCount
+              - FileAssert-OTS-PdfPig-Metadata
+              - FileAssert-OTS-PdfPig-Text
+              - FileAssert-OTS-PdfPig-InvalidFile

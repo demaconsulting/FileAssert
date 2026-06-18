@@ -21,66 +21,43 @@
 using System.IO.Compression;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
-using Microsoft.Extensions.FileSystemGlobbing;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
 /// <summary>
-///     Validates zip archive contents by matching entry names against glob patterns and enforcing
-///     count constraints. Invoked by <see cref="FileAssertFile"/> when a <c>zip:</c> assertion
+///     Validates zip archive contents by running the full file assertion suite against each
+///     matching entry. Invoked by <see cref="FileAssertFile"/> when a <c>zip:</c> assertion
 ///     block is declared in the YAML configuration.
 /// </summary>
+/// <remarks>
+///     Unlike the previous implementation that only checked entry counts, this implementation
+///     opens the zip entry as a <see cref="ZipFileContainer"/> and runs each
+///     <see cref="FileAssertFile"/> assertion against the virtual file system exposed by the
+///     archive. This enables the full assertion suite — text, XML, HTML, YAML, JSON, PDF,
+///     and recursively nested zip — to be applied to zip entries without any asserter needing
+///     to know whether the file lives on disk or inside an archive.
+/// </remarks>
 internal sealed class FileAssertZipAssert
 {
     /// <summary>
-    ///     Represents a single glob-pattern entry constraint for a zip archive, carrying the
-    ///     pattern and optional minimum and maximum match counts.
+    ///     The list of file assertions to apply to the zip archive contents.
     /// </summary>
-    internal sealed class Entry
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Entry"/> class.
-        /// </summary>
-        /// <param name="pattern">The glob pattern used to match zip entry names.</param>
-        /// <param name="min">The minimum number of entries that must match, or null for no lower bound.</param>
-        /// <param name="max">The maximum number of entries that may match, or null for no upper bound.</param>
-        internal Entry(string pattern, int? min, int? max)
-        {
-            // Store the validated pattern and count constraints for use during zip inspection
-            Pattern = pattern;
-            Min = min;
-            Max = max;
-        }
-
-        /// <summary>
-        ///     Gets the glob pattern used to match zip entry names.
-        /// </summary>
-        internal string Pattern { get; }
-
-        /// <summary>
-        ///     Gets the minimum number of entries that must match the pattern, or null for no constraint.
-        /// </summary>
-        internal int? Min { get; }
-
-        /// <summary>
-        ///     Gets the maximum number of entries that may match the pattern, or null for no constraint.
-        /// </summary>
-        internal int? Max { get; }
-    }
+    private readonly IReadOnlyList<FileAssertFile> _files;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FileAssertZipAssert"/> class.
     /// </summary>
-    /// <param name="entries">The list of entry constraints to apply to the zip archive.</param>
-    private FileAssertZipAssert(IReadOnlyList<Entry> entries)
+    /// <param name="files">The list of file assertions to apply to the zip archive.</param>
+    private FileAssertZipAssert(IReadOnlyList<FileAssertFile> files)
     {
-        Entries = entries;
+        _files = files;
     }
 
     /// <summary>
-    ///     Gets the list of entry constraints applied to the zip archive.
+    ///     Gets the list of file assertions applied to the zip archive.
     /// </summary>
-    internal IReadOnlyList<Entry> Entries { get; }
+    internal IReadOnlyList<FileAssertFile> Files => _files;
 
     /// <summary>
     ///     Creates a new <see cref="FileAssertZipAssert"/> from the provided YAML data.
@@ -94,90 +71,78 @@ internal sealed class FileAssertZipAssert
         // Validate that data was provided
         ArgumentNullException.ThrowIfNull(data);
 
-        // Convert each entry DTO into a validated Entry domain object
-        var entries = (data.Entries ?? [])
-            .Select(e =>
-            {
-                // Require every entry to specify a glob pattern before any I/O is attempted
-                if (string.IsNullOrWhiteSpace(e.Pattern))
-                {
-                    throw new InvalidOperationException("Zip entry assertion must specify a pattern");
-                }
+        // Require at least one file assertion; a zip: block with no files: list is always a
+        // misconfiguration — it would silently pass every zip without checking any content.
+        if (data.Files is not { Count: > 0 })
+        {
+            throw new InvalidOperationException("Zip assertion must specify at least one entry under 'files:'");
+        }
 
-                return new Entry(e.Pattern, e.Min, e.Max);
-            })
+        // Convert each entry DTO into a FileAssertFile domain object using the shared factory.
+        var files = data.Files
+            .Select(FileAssertFile.Create)
             .ToList();
 
-        return new FileAssertZipAssert(entries.AsReadOnly());
+        return new FileAssertZipAssert(files.AsReadOnly());
     }
 
     /// <summary>
-    ///     Opens the zip archive at <paramref name="fileName"/>, enumerates its entries, and
-    ///     applies all configured entry constraints, reporting violations via the context.
+    ///     Opens the zip entry identified by <paramref name="entryPath"/> inside
+    ///     <paramref name="container"/>, wraps its contents in a <see cref="ZipFileContainer"/>,
+    ///     and runs all configured file assertions against it.
     /// </summary>
     /// <remarks>
-    ///     Directory entries (whose names end with <c>/</c>) are excluded from matching because
-    ///     they represent containers rather than file content. Entry names are normalized to
-    ///     forward slashes so that glob patterns work consistently across platforms.
-    ///
-    ///     If the file cannot be opened as a zip archive, a single error is written and the
-    ///     method returns immediately without evaluating any entry constraints.
+    ///     Each file assertion is run with a scoped context that prepends the zip display path
+    ///     to every error message, providing breadcrumb-style context for nested archives.
+    ///     If the entry cannot be opened or parsed as a zip archive, a single error is written
+    ///     and no further assertions are evaluated.
     /// </remarks>
     /// <param name="context">The context used for reporting errors. Must not be null.</param>
-    /// <param name="fileName">The full path to the zip file to validate. Must not be null.</param>
+    /// <param name="container">The container from which the zip entry is opened. Must not be null.</param>
+    /// <param name="entryPath">The relative path of the zip entry inside the container. Must not be null.</param>
     /// <exception cref="ArgumentNullException">
-    ///     Thrown when <paramref name="context"/> or <paramref name="fileName"/> is null.
+    ///     Thrown when <paramref name="context"/>, <paramref name="container"/>, or
+    ///     <paramref name="entryPath"/> is null.
     /// </exception>
-    internal void Run(Context context, string fileName)
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
 
-        // Attempt to open the zip archive; report and abort on any I/O or format error
-        ZipArchive archive;
+        // Compute the display path for error messages and context scoping
+        var displayPath = container.GetDisplayPath(entryPath);
+
+        // Attempt to open the entry and wrap it as a ZipFileContainer
+        // The stream must be disposed on ZipArchive constructor failure to avoid file locks
+        ZipFileContainer zipContainer;
         try
         {
-            archive = ZipFile.OpenRead(fileName);
+            var stream = container.OpenEntry(entryPath);
+            try
+            {
+                zipContainer = new ZipFileContainer(stream, displayPath);
+            }
+            catch
+            {
+                // Ensure the stream is released even if ZipFileContainer construction fails
+                stream.Dispose();
+                throw;
+            }
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            context.WriteError($"File '{fileName}' could not be read as a zip archive");
+            context.WriteError($"File '{displayPath}' could not be read as a zip archive");
             return;
         }
 
-        using (archive)
+        using (zipContainer)
         {
-            // Collect all file entry names, normalizing to forward slashes and excluding directory markers
-            var allEntries = archive.Entries
-                .Select(e => e.FullName.Replace('\\', '/'))
-                .Where(name => !name.EndsWith('/'))
-                .ToList();
-
-            // Evaluate each entry constraint against the complete list of zip file entries
-            foreach (var entry in Entries)
+            // Run each file assertion against the zip container; breadcrumb context is
+            // already baked into every display path produced by ZipFileContainer.GetDisplayPath
+            foreach (var file in _files)
             {
-                // Use the FileSystemGlobbing Matcher with a virtual root "." so patterns are applied
-                // directly to the normalized entry names without any filesystem path manipulation
-                var matcher = new Matcher();
-                matcher.AddInclude(entry.Pattern);
-                var result = matcher.Match(".", allEntries);
-                var count = result.Files.Count();
-
-                // Enforce the minimum entry count constraint if specified
-                if (entry.Min.HasValue && count < entry.Min.Value)
-                {
-                    context.WriteError(
-                        $"Zip '{fileName}' entry pattern '{entry.Pattern}' matched {count} " +
-                        $"entry(s), but expected at least {entry.Min.Value}");
-                }
-
-                // Enforce the maximum entry count constraint if specified
-                if (entry.Max.HasValue && count > entry.Max.Value)
-                {
-                    context.WriteError(
-                        $"Zip '{fileName}' entry pattern '{entry.Pattern}' matched {count} " +
-                        $"entry(s), but expected at most {entry.Max.Value}");
-                }
+                file.Run(context, zipContainer);
             }
         }
     }

@@ -26,15 +26,11 @@ failure at any step is evidence that SonarMark did not retrieve and render quali
 
 **Expected**: Exits 0 and retrieves quality-gate data.
 
-**Requirement coverage**: `FileAssert-OTS-SonarMark`.
-
 #### SonarMark_IssuesRetrieval
 
 **Scenario**: SonarMark queries the SonarCloud API for issues.
 
 **Expected**: Exits 0 and retrieves issues data.
-
-**Requirement coverage**: `FileAssert-OTS-SonarMark`.
 
 #### SonarMark_HotSpotsRetrieval
 
@@ -42,23 +38,14 @@ failure at any step is evidence that SonarMark did not retrieve and render quali
 
 **Expected**: Exits 0 and retrieves hot-spots data.
 
-**Requirement coverage**: `FileAssert-OTS-SonarMark`.
-
 #### SonarMark_MarkdownReportGeneration
 
 **Scenario**: SonarMark renders quality-gate, issues, and hot-spots data as a markdown report.
 
 **Expected**: Exits 0 and produces a non-empty markdown quality report.
 
-**Requirement coverage**: `FileAssert-OTS-SonarMark`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-SonarMark`**: SonarMark_QualityGateRetrieval, SonarMark_IssuesRetrieval,
-  SonarMark_HotSpotsRetrieval, SonarMark_MarkdownReportGeneration
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

@@ -17,15 +17,17 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertYamlAssert.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency | Usage in Tests                                              |
-|------------|-------------------------------------------------------------|
-| `Context`  | Used directly (not mocked) — created with controlled flags. |
+| Dependency               | Usage in Tests                                                       |
+|--------------------------|----------------------------------------------------------------------|
+| `Context`                | Used directly (not mocked) — created with controlled flags.          |
+| `DirectoryFileContainer` | Used directly to open temporary YAML files as container entries.     |
+| Temporary file system    | Real temporary files written to disk provide controlled YAML inputs. |
 
 #### Test Scenarios
 
@@ -34,8 +36,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertYamlAssert.Create` is called with valid data.
 
 **Expected**: A non-null `FileAssertYamlAssert` instance is returned.
-
-**Requirement coverage**: YAML assert creation requirement.
 
 ##### FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException
 
@@ -85,14 +85,22 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Boundary / error path**: Invalid YAML file error path.
 
+##### FileAssertYamlAssert_Run_InvalidFile_RemainingAssertionsSkipped
+
+**Scenario**: `FileAssertYamlAssert.Run` is called on a malformed YAML file while two queries
+are configured.
+
+**Expected**: Exactly one error is written (the parse failure); the configured query
+assertions are not evaluated.
+
+**Boundary / error path**: Parse-error short-circuit — remaining assertions skipped.
+
 ##### FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called with an exact count assertion and the path
 query returns a sequence with exactly the expected number of items.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Sequence count match requirement.
 
 ##### FileAssertYamlAssert_Run_SequenceCount_Mismatch_WritesError
 
@@ -101,8 +109,6 @@ query returns a different count.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Sequence count mismatch requirement.
-
 ##### FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called with min/max count constraints and the result
@@ -110,16 +116,12 @@ count is within bounds.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Min/max count constraint pass requirement.
-
 ##### FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called on a path that resolves to a scalar value;
 a count of 1 is asserted.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Scalar value counts as one requirement.
 
 ##### FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount
 
@@ -138,30 +140,9 @@ satisfied.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Minimum count constraint requirement.
-
 ##### FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError
 
 **Scenario**: `FileAssertYamlAssert.Run` is called with a maximum count constraint that is
 exceeded.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Maximum count constraint requirement.
-
-#### Requirements Coverage
-
-- **YAML assert creation**: FileAssertYamlAssert_Create_ValidData_CreatesYamlAssert
-- **Null guard**: FileAssertYamlAssert_Create_NullData_ThrowsArgumentNullException
-- **Query validation**: FileAssertYamlAssert_Create_EmptyQuery_ThrowsInvalidOperationException,
-  FileAssertYamlAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException,
-  FileAssertYamlAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException,
-  FileAssertYamlAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException
-- **Invalid file**: FileAssertYamlAssert_Run_InvalidFile_WritesError
-- **Count constraints**: FileAssertYamlAssert_Run_SequenceCount_Matches_NoError,
-  FileAssertYamlAssert_Run_SequenceCount_Mismatch_WritesError,
-  FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError,
-  FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError,
-  FileAssertYamlAssert_Run_MinCount_BelowMinimum_WritesError,
-  FileAssertYamlAssert_Run_MaxCount_ExceedsMaximum_WritesError,
-  FileAssertYamlAssert_Run_EmptyDocument_ReportsZeroCount

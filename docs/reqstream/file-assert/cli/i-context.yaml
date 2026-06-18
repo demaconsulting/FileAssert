@@ -1,0 +1,27 @@
+---
+# Software Unit Requirements for the IContext Interface
+#
+# IContext is the output contract interface for reporting assertion results and
+# errors. It is implemented by Context (the root context) and by
+# Context.ScopedContext (a scoped wrapper that prepends a path prefix to every
+# error message), enabling breadcrumb-style error reporting in nested zip assertions.
+
+sections:
+  - title: IContext Unit Requirements
+    requirements:
+      - id: FileAssert-IContext-OutputContract
+        title: The IContext interface shall define an output contract for reporting informational messages and errors.
+        justification: |
+          All asserters and FileAssertFile must be decoupled from the concrete Context
+          class so that a scoped wrapper can be passed in place of the root context.
+          Defining an interface rather than accepting Context directly allows
+          FileAssertZipAssert to supply a prefix-bearing ScopedContext to nested
+          asserters without those asserters requiring any knowledge of the scoping
+          mechanism.
+        tests:
+          - Context_WithPrefix_ReturnsNonNullScopedContext
+          - Context_WithPrefix_NullPrefix_ThrowsArgumentNullException
+          - ScopedContext_WriteError_PropagatesExitCodeToRoot
+          - ScopedContext_WriteLine_DoesNotSetError
+          - ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot
+          - ScopedContext_MultipleErrors_AllAccumulateOnRoot

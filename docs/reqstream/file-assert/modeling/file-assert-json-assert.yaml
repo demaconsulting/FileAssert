@@ -19,13 +19,17 @@ sections:
       - id: FileAssert-FileAssertJsonAssert-ParseError
         title: |
           The FileAssertJsonAssert class shall report an immediate error and skip remaining
-          assertions when a matched file cannot be parsed as a valid JSON document.
+          assertions when a matched file cannot be parsed as a valid JSON document, and shall
+          report a distinct error when the file cannot be read due to an IO failure.
         justification: |
           Attempting to traverse a JSON document tree against a file that is not valid JSON
-          would produce meaningless or misleading results. Reporting the parse failure
-          immediately gives users a clear, actionable error message.
+          would produce meaningless or misleading results. Distinguishing parse failures from
+          IO failures gives users a clear, actionable error message that identifies the actual
+          cause.
         tests:
           - FileAssertJsonAssert_Run_InvalidFile_WritesError
+          - FileAssertJsonAssert_Run_InvalidJson_WritesParseError
+          - FileAssertJsonAssert_Run_IOError_WritesReadError
 
       - id: FileAssert-FileAssertJsonAssert-QueryAssertions
         title: |

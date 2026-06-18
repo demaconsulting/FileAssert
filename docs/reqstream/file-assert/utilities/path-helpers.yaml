@@ -24,6 +24,18 @@ sections:
           - PathHelpers_SafePathCombine_EmptyRelativePath_ReturnsBasePath
           - PathHelpers_SafePathCombine_DoubleDotInFilename_CombinesCorrectly
 
+      - id: FileAssert-PathHelpers-RejectRootedPaths
+        title: |
+          The PathHelpers class shall reject rooted relative paths up-front, even when the
+          rooted path resolves underneath the base directory.
+        justification: |
+          A rooted second argument to `Path.Combine` replaces the base entirely. Treating
+          such inputs as invalid prevents accidental escape from the base directory and
+          documents that the contract requires a true relative path.
+        tests:
+          - PathHelpers_SafePathCombine_AbsolutePath_ThrowsArgumentException
+          - PathHelpers_SafePathCombine_RootedPathInsideBase_RejectsIt
+
       - id: FileAssert-PathHelpers-NullValidation
         title: The PathHelpers class shall reject null base or relative path arguments.
         justification: |

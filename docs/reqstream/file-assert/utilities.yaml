@@ -33,3 +33,33 @@ sections:
           - FileAssert-TemporaryDirectory-SafePath
         tests:
           - Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
+
+      - id: FileAssert-Utilities-FileContainerAbstraction
+        title: The Utilities subsystem shall provide a uniform file-access abstraction over directories and zip archives.
+        justification: |
+          Asserters must validate files whether those files reside on disk or inside a zip
+          archive. A shared IFileContainer interface with DirectoryFileContainer and
+          ZipFileContainer implementations allows all asserters to be written once and reused
+          against both backing stores, enabling the full assertion suite inside zip entries
+          without duplicating logic.
+        children:
+          - FileAssert-IFileContainer-UniformAccess
+          - FileAssert-DirectoryFileContainer-FileSystemAccess
+          - FileAssert-ZipFileContainer-EntryEnumeration
+          - FileAssert-ZipFileContainer-BreadcrumbDisplayPath
+          - FileAssert-ZipFileContainer-MissingEntryException
+          - FileAssert-ZipFileContainer-EntrySize
+        tests:
+          - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
+          - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
+          - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
+          - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
+          - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
+          - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
+          - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
+          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+          - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
+          - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
+          - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
+          - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
+          - Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd

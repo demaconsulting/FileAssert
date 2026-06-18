@@ -30,15 +30,11 @@ pipeline.
 
 **Expected**: Exits 0 and displays a version string.
 
-**Requirement coverage**: `FileAssert-OTS-FileAssert`.
-
 #### FileAssert_HelpDisplay
 
 **Scenario**: FileAssert self-validation exercises the `--help` flag.
 
 **Expected**: Exits 0 and displays usage information.
-
-**Requirement coverage**: `FileAssert-OTS-FileAssert`.
 
 #### FileAssert_Results
 
@@ -47,16 +43,12 @@ passing test and one deliberately failing test, then verifying that a TRX result
 
 **Expected**: Exits non-zero (due to the failing test) and creates a TRX results file at the specified path.
 
-**Requirement coverage**: `FileAssert-OTS-FileAssert`.
-
 #### FileAssert_Exists
 
 **Scenario**: FileAssert self-validation exercises file-existence checking by matching a glob pattern against
 a temporary directory containing a single `.txt` file.
 
 **Expected**: Exits 0, confirming that the glob-based file-existence assertion passes.
-
-**Requirement coverage**: `FileAssert-OTS-FileAssert`.
 
 #### FileAssert_Contains
 
@@ -65,15 +57,24 @@ file contains a known string.
 
 **Expected**: Exits 0, confirming that the text `contains` assertion passes.
 
-**Requirement coverage**: `FileAssert-OTS-FileAssert`.
+#### FileAssert_StructuralValidity
 
-### Requirements Coverage
+**Scenario**: FileAssert self-validation exercises structural validity by parsing a temporary
+HTML document with `html:` queries and a temporary PDF document with `pdf:` page-count
+constraints.
 
-- **`FileAssert-OTS-FileAssert`**: FileAssert_VersionDisplay, FileAssert_HelpDisplay, FileAssert_Results,
-  FileAssert_Exists, FileAssert_Contains
+**Expected**: Exits 0, confirming that both documents parse successfully and that the
+structured-document queries evaluate against the parsed model.
+
+#### FileAssert_Metadata
+
+**Scenario**: FileAssert self-validation exercises metadata assertions by reading PDF metadata
+fields (Title, Author) and matching them against expected values.
+
+**Expected**: Exits 0, confirming that the metadata assertions resolve and pass.
 
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

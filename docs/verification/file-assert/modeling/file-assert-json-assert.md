@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Each scenario asserts on
+specific `IContext.ExitCode` and `WriteError` outcomes that uniquely determine pass/fail.
 
 #### Dependencies
 
@@ -34,8 +34,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertJsonAssert.Create` is called with valid data.
 
 **Expected**: A non-null `FileAssertJsonAssert` instance is returned.
-
-**Requirement coverage**: JSON assert creation requirement.
 
 ##### FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
 
@@ -85,14 +83,31 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Boundary / error path**: Invalid JSON file error path.
 
+##### FileAssertJsonAssert_Run_InvalidJson_WritesParseError
+
+**Scenario**: `FileAssertJsonAssert.Run` is called on a file whose content is not valid JSON.
+
+**Expected**: Exactly one error is written, and its message identifies a parse failure
+(`could not be parsed as a JSON document`), distinct from an IO failure.
+
+**Boundary / error path**: JSON parse-error reporting.
+
+##### FileAssertJsonAssert_Run_IOError_WritesReadError
+
+**Scenario**: `FileAssertJsonAssert.Run` is called with a container whose `OpenEntry` raises an
+`UnauthorizedAccessException`.
+
+**Expected**: Exactly one error is written, and its message identifies an IO failure
+(`could not be read`), distinct from a parse failure.
+
+**Boundary / error path**: IO-error reporting.
+
 ##### FileAssertJsonAssert_Run_ArrayCount_Matches_NoError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with an exact count assertion and the path
 query returns a JSON array with exactly the expected number of elements.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Array count match requirement.
 
 ##### FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError
 
@@ -101,16 +116,12 @@ query returns a different number of elements.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Array count mismatch requirement.
-
 ##### FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with min/max count constraints and the result
 count is within bounds.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Min/max count constraint pass requirement.
 
 ##### FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError
 
@@ -119,16 +130,12 @@ a count of 1 is asserted.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Scalar value counts as one requirement.
-
 ##### FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError
 
 **Scenario**: `FileAssertJsonAssert.Run` is called with a minimum count constraint that is not
 satisfied.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Minimum count constraint requirement.
 
 ##### FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError
 
@@ -137,20 +144,12 @@ exceeded.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Maximum count constraint requirement.
+##### FileAssertJsonAssert_Run_MultipleQueries_InvalidJson_ShortCircuitsAfterParseError
 
-#### Requirements Coverage
+**Scenario**: `FileAssertJsonAssert.Run` is configured with two or more path queries and is
+invoked against a file whose content is not valid JSON.
 
-- **JSON assert creation**: FileAssertJsonAssert_Create_ValidData_CreatesJsonAssert
-- **Null guard**: FileAssertJsonAssert_Create_NullData_ThrowsArgumentNullException
-- **Query validation**: FileAssertJsonAssert_Create_EmptyQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_TrailingDotQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_LeadingDotQuery_ThrowsInvalidOperationException,
-  FileAssertJsonAssert_Create_ConsecutiveDotsQuery_ThrowsInvalidOperationException
-- **Invalid file**: FileAssertJsonAssert_Run_InvalidFile_WritesError
-- **Count constraints**: FileAssertJsonAssert_Run_ArrayCount_Matches_NoError,
-  FileAssertJsonAssert_Run_ArrayCount_Mismatch_WritesError,
-  FileAssertJsonAssert_Run_MinMaxCount_WithinBounds_NoError,
-  FileAssertJsonAssert_Run_ScalarValue_CountsAsOne_NoError,
-  FileAssertJsonAssert_Run_MinCount_BelowMinimum_WritesError,
-  FileAssertJsonAssert_Run_MaxCount_ExceedsMaximum_WritesError
+**Expected**: Exactly one parse error is written for the file; subsequent queries are
+short-circuited (the parse failure is reported once, not once per query).
+
+**Boundary / error path**: Multi-query parse-error short-circuit.

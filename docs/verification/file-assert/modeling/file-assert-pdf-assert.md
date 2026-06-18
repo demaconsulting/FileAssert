@@ -7,8 +7,8 @@ defines the test scenarios, dependency usage, and requirement coverage for
 #### Verification Approach
 
 `FileAssertPdfAssert` is verified with unit tests defined in `FileAssertPdfAssertTests.cs`. Tests
-use PDF files in test fixtures and assert on page-count constraints, metadata field assertions,
-and text content assertions.
+generate PDF documents dynamically with `PdfDocumentBuilder`, write them to temporary files, and
+assert on page-count constraints, metadata field assertions, and text content assertions.
 
 #### Test Environment
 
@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertPdfAssert.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -35,8 +35,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Expected**: A non-null `FileAssertPdfAssert` instance is returned.
 
-**Requirement coverage**: PDF assert creation requirement.
-
 ##### FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertPdfAssert.Create` is called with `null` data.
@@ -44,6 +42,25 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Expected**: An `ArgumentNullException` is thrown.
 
 **Boundary / error path**: Null data guard.
+
+##### FileAssertPdfAssert_Create_MetadataRuleMissingField_ThrowsInvalidOperationException
+
+**Scenario**: `FileAssertPdfAssert.Create` is called with a metadata rule that declares a constraint
+but no field name, exercising the negative validation path of `PdfMetadataRule.FromData`.
+
+**Expected**: An `InvalidOperationException` is thrown.
+
+**Boundary / error path**: Missing metadata field guard.
+
+##### FileAssertPdfAssert_Create_MetadataRuleMissingContainsAndMatches_ThrowsInvalidOperationException
+
+**Scenario**: `FileAssertPdfAssert.Create` is called with a metadata rule that declares a field name
+but neither a `contains` nor a `matches` constraint, exercising the negative validation path of
+`PdfMetadataRule.FromData`.
+
+**Expected**: An `InvalidOperationException` is thrown.
+
+**Boundary / error path**: Missing metadata constraint guard.
 
 ##### FileAssertPdfAssert_Run_InvalidFile_WritesError
 
@@ -60,23 +77,17 @@ constraints.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Page count constraint pass requirement.
-
 ##### FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called on a valid PDF with fewer pages than the minimum.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Minimum page count constraint requirement.
-
 ##### FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called on a valid PDF with more pages than the maximum.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Maximum page count constraint requirement.
 
 ##### FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError
 
@@ -85,16 +96,12 @@ does not exist in the PDF metadata.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Metadata field missing error requirement.
-
 ##### FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `contains` rule on the Title
 field, and the Title contains the expected value.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Metadata title match requirement.
 
 ##### FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError
 
@@ -103,16 +110,12 @@ field, and the Author contains the expected value.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Metadata author match requirement.
-
 ##### FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a metadata `matches` regex rule that
 matches the field value.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: Metadata regex match pass requirement.
 
 ##### FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
 
@@ -121,16 +124,12 @@ not match the field value.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: Metadata regex match fail requirement.
-
 ##### FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a text `contains` rule and the PDF text
 contains the expected value.
 
 **Expected**: No errors are written to the context; exit code is 0.
-
-**Requirement coverage**: PDF text content assertion pass requirement.
 
 ##### FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError
 
@@ -139,8 +138,6 @@ satisfy the rule.
 
 **Expected**: An error is written to the context; exit code is non-zero.
 
-**Requirement coverage**: PDF text content assertion fail requirement.
-
 ##### FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
 
 **Scenario**: `FileAssertPdfAssert.Run` is called with a text `matches` regex rule and the PDF
@@ -148,21 +145,12 @@ text matches the pattern.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: PDF text regex match requirement.
+##### FileAssertPdfAssert_Run_MultiPageText_PageBoundarySeparated_NoError
 
-#### Requirements Coverage
+**Scenario**: `FileAssertPdfAssert.Run` is called on a dynamically generated two-page PDF where the
+first page ends with the token `concat` and the second begins with `enation`. A `contains` rule for
+`concat` and a `does-not-contain` rule for `concatenation` are applied to the joined page text.
 
-- **PDF assert creation**: FileAssertPdfAssert_Create_ValidData_CreatesPdfAssert
-- **Null guard**: FileAssertPdfAssert_Create_NullData_ThrowsArgumentNullException
-- **Invalid file**: FileAssertPdfAssert_Run_InvalidFile_WritesError
-- **Page count constraints**: FileAssertPdfAssert_Run_ValidPdf_PageCountSatisfied_NoError,
-  FileAssertPdfAssert_Run_ValidPdf_TooFewPages_WritesError,
-  FileAssertPdfAssert_Run_ValidPdf_TooManyPages_WritesError
-- **Metadata assertions**: FileAssertPdfAssert_Run_MetadataContainsRule_FieldMissing_WritesError,
-  FileAssertPdfAssert_Run_MetadataContainsRule_TitleMatches_NoError,
-  FileAssertPdfAssert_Run_MetadataContainsRule_AuthorField_NoError,
-  FileAssertPdfAssert_Run_MetadataMatchesRule_Matches_NoError,
-  FileAssertPdfAssert_Run_MetadataMatchesRule_NoMatch_WritesError
-- **Text assertions**: FileAssertPdfAssert_Run_TextContainsRule_ContentPresent_NoError,
-  FileAssertPdfAssert_Run_TextRule_ContentMissing_WritesError,
-  FileAssertPdfAssert_Run_TextMatchesRule_PatternMatches_NoError
+**Expected**: Both rules pass and exit code is 0, demonstrating that the `\n` separator inserted
+between page texts prevents the trailing token of one page from merging with the leading token of
+the next.

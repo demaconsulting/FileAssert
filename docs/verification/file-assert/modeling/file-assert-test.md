@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertTest.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -35,8 +35,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertTest.Create` is called with valid data containing a name and files list.
 
 **Expected**: A non-null `FileAssertTest` instance is returned with correct properties.
-
-**Requirement coverage**: Test creation requirement.
 
 ##### FileAssertTest_Create_NullData_ThrowsArgumentNullException
 
@@ -68,15 +66,11 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Expected**: Returns `true` (no filter means run all tests).
 
-**Requirement coverage**: Empty filter match requirement.
-
 ##### FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter list containing the test name.
 
 **Expected**: Returns `true`.
-
-**Requirement coverage**: Name-based filter match requirement.
 
 ##### FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue
 
@@ -85,16 +79,12 @@ test's tags.
 
 **Expected**: Returns `true`.
 
-**Requirement coverage**: Tag-based filter match requirement.
-
 ##### FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter list containing neither the
 test name nor any of its tags.
 
 **Expected**: Returns `false`.
-
-**Requirement coverage**: Non-matching filter requirement.
 
 ##### FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
 
@@ -103,8 +93,6 @@ from the test name.
 
 **Expected**: Returns `true`.
 
-**Requirement coverage**: Case-insensitive name matching requirement.
-
 ##### FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
 
 **Scenario**: `FileAssertTest.MatchesFilter` is called with a filter that differs only in case
@@ -112,15 +100,19 @@ from a test tag.
 
 **Expected**: Returns `true`.
 
-**Requirement coverage**: Case-insensitive tag matching requirement.
+##### FileAssertTest_Create_NullFilters_ThrowsArgumentNullException
+
+**Scenario**: `FileAssertTest.MatchesFilter` is called with a `null` filters argument.
+
+**Expected**: An `ArgumentNullException` is thrown.
+
+**Boundary / error path**: Null filters guard.
 
 ##### FileAssertTest_Run_RunsAllFiles
 
 **Scenario**: `FileAssertTest.Run` is called on a test with multiple file entries.
 
 **Expected**: All file entries are evaluated.
-
-**Requirement coverage**: Run-all-files requirement.
 
 ##### FileAssertTest_Run_NullContext_ThrowsArgumentNullException
 
@@ -137,19 +129,3 @@ from a test tag.
 **Expected**: An `ArgumentNullException` is thrown.
 
 **Boundary / error path**: Null base path guard.
-
-#### Requirements Coverage
-
-- **Test creation**: FileAssertTest_Create_ValidData_CreatesTest
-- **Null data guard**: FileAssertTest_Create_NullData_ThrowsArgumentNullException
-- **Null/whitespace name guard**: FileAssertTest_Create_NullName_ThrowsInvalidOperationException,
-  FileAssertTest_Create_WhitespaceName_ThrowsInvalidOperationException
-- **Empty filter match**: FileAssertTest_MatchesFilter_EmptyFilters_ReturnsTrue
-- **Name filter**: FileAssertTest_MatchesFilter_MatchingName_ReturnsTrue,
-  FileAssertTest_MatchesFilter_CaseInsensitiveName_ReturnsTrue
-- **Tag filter**: FileAssertTest_MatchesFilter_MatchingTag_ReturnsTrue,
-  FileAssertTest_MatchesFilter_CaseInsensitiveTag_ReturnsTrue
-- **Non-matching filter**: FileAssertTest_MatchesFilter_NonMatchingFilter_ReturnsFalse
-- **Run all files**: FileAssertTest_Run_RunsAllFiles
-- **Null context guard**: FileAssertTest_Run_NullContext_ThrowsArgumentNullException
-- **Null base path guard**: FileAssertTest_Run_NullBasePath_ThrowsArgumentNullException

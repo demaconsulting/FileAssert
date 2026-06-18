@@ -18,11 +18,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.IO.Compression;
+
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
 
 using DemaConsulting.FileAssert.Utilities;
+
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
+using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -187,5 +194,287 @@ public class ModelingTests
         // Assert - no errors reported because the query matched the expected count
         Assert.Equal(0, context.ExitCode);
 
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem applies a text content assertion to a zip archive
+    ///     entry and reports no error when the constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_ZipEntryContentAssertions_TextContentPassesWhenConstraintsMet()
+    {
+        // Arrange - create a zip file containing a text entry with known content
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("entry.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("hello world");
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "ZipTextContentCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.zip",
+                    Zip = new FileAssertZipData
+                    {
+                        Files =
+                        [
+                            new FileAssertFileData
+                            {
+                                Pattern = "entry.txt",
+                                Text =
+                                [
+                                    new FileAssertRuleData { Contains = "hello world" }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert - no errors reported; the text constraint was satisfied by the zip entry content
+        Assert.Equal(0, context.ExitCode);
+
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem reports a failure with breadcrumb-style error
+    ///     messages when a text assertion on a zip entry does not pass.
+    /// </summary>
+    [Fact]
+    public void Modeling_ZipEntryContentAssertions_FailureReportsWithBreadcrumbs()
+    {
+        // Arrange - create a zip file containing a text entry; the assertion will fail
+        using var tempDir = new TemporaryDirectory();
+        var zipPath = tempDir.GetFilePath("archive.zip");
+        using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+        {
+            var entry = zip.CreateEntry("entry.txt");
+            using var stream = entry.Open();
+            using var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+            writer.Write("hello world");
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "ZipBreadcrumbCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.zip",
+                    Zip = new FileAssertZipData
+                    {
+                        Files =
+                        [
+                            new FileAssertFileData
+                            {
+                                Pattern = "entry.txt",
+                                Text =
+                                [
+                                    new FileAssertRuleData { Contains = "not-present" }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        var logPath = tempDir.GetFilePath("errors.log");
+
+        // Act - run inside an explicit scope so the context (and its log writer) is disposed
+        // before the log file is read; the exit code is captured before disposal
+        int exitCode;
+        using (var context = Context.Create(["--silent", "--log", logPath]))
+        {
+            test.Run(context, tempDir.DirectoryPath);
+            exitCode = context.ExitCode;
+        }
+
+        // Assert - an error was reported, exit code is non-zero, and the log message carries
+        // both the zip filename and the entry name as breadcrumbs
+        Assert.NotEqual(0, exitCode);
+        var logContents = File.ReadAllText(logPath);
+        Assert.Contains("archive.zip", logContents);
+        Assert.Contains("entry.txt", logContents);
+
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a matched file as a PDF document (a file-type
+    ///     parse distinct from a query assertion) and applies a page-count constraint successfully.
+    /// </summary>
+    [Fact]
+    public void Modeling_FileTypeParsing_ValidPdf_ParsesAndAppliesPageCount_NoError()
+    {
+        // Arrange - generate a single-page PDF so the pdf: block exercises real PDF parsing
+        using var tempDir = new TemporaryDirectory();
+        using (var builder = new PdfDocumentBuilder())
+        {
+            var page = builder.AddPage(PageSize.A4);
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            page.AddText("Report Body", 12, new PdfPoint(50, 700), font);
+            File.WriteAllBytes(tempDir.GetFilePath("report.pdf"), builder.Build());
+        }
+
+        var testData = new FileAssertTestData
+        {
+            Name = "PdfParseCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.pdf",
+                    Pdf = new FileAssertPdfData
+                    {
+                        Pages = new FileAssertPdfPagesData { Min = 1, Max = 1 }
+                    }
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert - the file parsed as a PDF and satisfied the page-count constraint
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses an HTML document and evaluates an XPath node
+    ///     count query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_HtmlQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid HTML file with two paragraph elements
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("report.html"), """
+            <!DOCTYPE html>
+            <html>
+            <head><title>Report</title></head>
+            <body><p>one</p><p>two</p></body>
+            </html>
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "HtmlQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.html",
+                    Html = [new FileAssertQueryData { Query = "//p", Count = 2 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a YAML document and evaluates a dot-notation
+    ///     query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_YamlQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid YAML file with a server mapping
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.yaml"), """
+            server:
+              host: localhost
+              port: 8080
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "YamlQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.yaml",
+                    Yaml = [new FileAssertQueryData { Query = "server.host", Count = 1 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Modeling subsystem parses a JSON document and evaluates a dot-notation
+    ///     query, reporting no error when the count constraint is satisfied.
+    /// </summary>
+    [Fact]
+    public void Modeling_QueryAssertions_JsonQueryMeetsCount_NoError()
+    {
+        // Arrange - a valid JSON file with a server object
+        using var tempDir = new TemporaryDirectory();
+        File.WriteAllText(tempDir.GetFilePath("config.json"), """
+            {
+              "server": {
+                "host": "localhost",
+                "port": 8080
+              }
+            }
+            """);
+
+        var testData = new FileAssertTestData
+        {
+            Name = "JsonQueryCheck",
+            Files =
+            [
+                new FileAssertFileData
+                {
+                    Pattern = "*.json",
+                    Json = [new FileAssertQueryData { Query = "server.host", Count = 1 }]
+                }
+            ]
+        };
+
+        var test = FileAssertTest.Create(testData);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        test.Run(context, tempDir.DirectoryPath);
+
+        // Assert
+        Assert.Equal(0, context.ExitCode);
     }
 }

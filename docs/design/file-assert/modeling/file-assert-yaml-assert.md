@@ -37,7 +37,7 @@ internal static FileAssertYamlAssert Create(IEnumerable<FileAssertQueryData> dat
 ###### FileAssertYamlAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -118,7 +118,7 @@ Each `YamlQuery` (private nested record) holds:
 | Method                                          | Purpose                                                          |
 | :---------------------------------------------- | :--------------------------------------------------------------- |
 | `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `YamlQuery` instances.                    |
-| `Run(Context context, string fileName)`         | Parses the YAML file and evaluates each dot-notation path query. |
+| `Run(IContext, IFileContainer, string)`         | Parses the YAML file and evaluates each dot-notation path query. |
 
 #### Error Handling
 
@@ -129,10 +129,13 @@ Each `YamlQuery` (private nested record) holds:
 | Query result above `Max`                                            | Error written via `context.WriteError`; subsequent queries continue.  |
 | Query result not equal to `Count`                                   | Error written via `context.WriteError`; subsequent queries continue.  |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertFile.Run` calls `YamlAssert.Run(context, fileName)` when the `yaml:`
-  assertion block is declared.
-- **Created by**: `FileAssertFile.Create` via `FileAssertYamlAssert.Create`.
 - **OTS dependency**: `YamlDotNet.RepresentationModel.YamlStream` for parsing and traversal.
 - **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
+
+- **Caller**: `FileAssertFile.Run` calls `YamlAssert.Run(context, container, entryPath)` when the `yaml:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertYamlAssert.Create`.

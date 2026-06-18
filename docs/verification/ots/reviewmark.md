@@ -28,8 +28,6 @@ evidence that ReviewMark did not produce the required review documents.
 
 **Expected**: Exits 0 and produces a non-empty review plan markdown file.
 
-**Requirement coverage**: `FileAssert-OTS-ReviewMark`.
-
 #### ReviewMark_ReviewReportGeneration
 
 **Scenario**: ReviewMark is invoked with `--report` to generate a review report from the
@@ -37,14 +35,8 @@ evidence that ReviewMark did not produce the required review documents.
 
 **Expected**: Exits 0 and produces a non-empty review report.
 
-**Requirement coverage**: `FileAssert-OTS-ReviewMark`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-ReviewMark`**: ReviewMark_ReviewPlanGeneration, ReviewMark_ReviewReportGeneration
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

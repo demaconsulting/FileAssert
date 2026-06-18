@@ -15,6 +15,7 @@ document does not restate requirements; it explains how they are realized.
 This document covers the detailed design of the following software units:
 
 - **Program** — entry point and execution orchestrator (`Program.cs`)
+- **IContext** — output contract interface for reporting assertion results (`IContext.cs`)
 - **Context** — command-line argument parser and I/O owner (`Context.cs`)
 - **FileAssertConfig** — top-level configuration loader and test runner (`FileAssertConfig.cs`)
 - **FileAssertData** — YAML data transfer objects for configuration deserialization (`FileAssertData.cs`)
@@ -28,6 +29,9 @@ This document covers the detailed design of the following software units:
 - **FileAssertYamlAssert** — YAML document assertions (`FileAssertYamlAssert.cs`)
 - **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
 - **FileAssertZipAssert** — zip archive entry assertions (`FileAssertZipAssert.cs`)
+- **IFileContainer** — uniform file-access abstraction over directories and zip archives (`IFileContainer.cs`)
+- **DirectoryFileContainer** — filesystem implementation of IFileContainer (`DirectoryFileContainer.cs`)
+- **ZipFileContainer** — zip archive implementation of IFileContainer (`ZipFileContainer.cs`)
 - **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
 - **TemporaryDirectory** — disposable temporary directory utility (`TemporaryDirectory.cs`)
 - **Validation** — self-validation test runner (`Validation.cs`)
@@ -42,6 +46,7 @@ The following topics are out of scope:
   DemaConsulting.TestResults)
 - Build pipeline configuration
 - Deployment and packaging
+- Test projects are out of scope.
 
 ## Software Structure
 
@@ -52,6 +57,7 @@ subsystem, and unit levels:
 FileAssert (System)
 ├── Program (Unit)
 ├── Cli (Subsystem)
+│   ├── IContext (Unit)
 │   └── Context (Unit)
 ├── Configuration (Subsystem)
 │   ├── FileAssertConfig (Unit)
@@ -68,6 +74,9 @@ FileAssert (System)
 │   ├── FileAssertJsonAssert (Unit)
 │   └── FileAssertZipAssert (Unit)
 ├── Utilities (Subsystem)
+│   ├── IFileContainer (Unit)
+│   ├── DirectoryFileContainer (Unit)
+│   ├── ZipFileContainer (Unit)
 │   ├── PathHelpers (Unit)
 │   └── TemporaryDirectory (Unit)
 └── SelfTest (Subsystem)
@@ -85,6 +94,7 @@ reviewers an explicit navigation aid from design to code:
 src/DemaConsulting.FileAssert/
 ├── Program.cs                      — entry point and execution orchestrator
 ├── Cli/
+│   ├── IContext.cs                 — output contract interface for asserters and scoping
 │   └── Context.cs                  — command-line argument parser and I/O owner
 ├── Configuration/
 │   ├── FileAssertConfig.cs         — top-level configuration loader and test runner
@@ -101,6 +111,9 @@ src/DemaConsulting.FileAssert/
 │   ├── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
 │   └── FileAssertZipAssert.cs      — zip archive entry assertions (System.IO.Compression)
 ├── Utilities/
+│   ├── IFileContainer.cs           — uniform file-access abstraction interface
+│   ├── DirectoryFileContainer.cs   — filesystem implementation of IFileContainer
+│   ├── ZipFileContainer.cs         — zip archive implementation of IFileContainer
 │   ├── PathHelpers.cs              — safe path-combination utility
 │   └── TemporaryDirectory.cs       — disposable temporary directory utility
 └── SelfTest/
@@ -129,17 +142,16 @@ Each in-house software item has corresponding artifacts in parallel directory tr
 - Source code: `src/{SystemName}/.../{Item}.cs` (PascalCase for C#)
 - Tests: `test/{SystemName}.Tests/.../{Item}Tests.cs` (PascalCase for C#)
 
-OTS items have no design documentation; their artifacts sit parallel to system folders:
+OTS items have integration/usage design docs at `docs/design/ots/{ots-name}.md` describing how
+FileAssert integrates the third-party library; their artifacts sit parallel to system folders:
 
 - Requirements: `docs/reqstream/ots/{ots-name}.yaml`
+- Design: `docs/design/ots/{ots-name}.md`
 - Verification: `docs/verification/ots/{ots-name}.md`
 
 Review-sets: defined in `.reviewmark.yaml`
 
 ## References
 
-- [FileAssert User Guide][guide]
-- [FileAssert Repository][repo]
-
-[guide]: https://github.com/demaconsulting/FileAssert/blob/main/README.md
-[repo]: https://github.com/demaconsulting/FileAssert
+- FileAssert User Guide — the `README.md` document at the root of the FileAssert repository.
+- FileAssert Repository — the `demaconsulting/FileAssert` source repository hosted on GitHub.

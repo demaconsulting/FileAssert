@@ -125,14 +125,16 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 | Temporary directory creation failure    |
 | Temporary directory deletion failure    |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `Program.Run` calls `Validation.Run(context)` when `context.Validate` is `true`.
 - **Calls internally**:
   - `Program.Run(Context)` to execute each built-in test scenario in-process.
   - `Context.Create(string[])` to construct per-test contexts with `--silent` and `--config`.
   - `TemporaryDirectory.GetFilePath` to build all fixture and log file paths safely.
   - `DemaConsulting.TestResults.IO.TrxSerializer.Serialize` and `JUnitSerializer.Serialize` for
     results serialization.
-- **OTS dependencies**: `System.Runtime.InteropServices.RuntimeInformation` for system info
-  output; `System.Text.RegularExpressions.Regex` (source-generated) for version string matching.
+- **OTS dependencies**: `DemaConsulting.TestResults` for TRX/JUnit serialization.
+
+#### Callers
+
+- **Caller**: `Program.Run` calls `Validation.Run(context)` when `context.Validate` is `true`.

@@ -19,7 +19,7 @@ executable domain objects and drives the assertion logic.
 | `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
 | `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
 | `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
-| `FileAssertZipAssert`   | `FileAssertZipAssert.cs`    | Opens zip archive; applies entry glob count checks.    |
+| `FileAssertZipAssert`   | `FileAssertZipAssert.cs`    | Opens zip; applies full assertion suite to entries.    |
 
 ### Subsystem Responsibilities
 
@@ -31,8 +31,8 @@ executable domain objects and drives the assertion logic.
 - Parse matched files as PDF, XML, HTML, YAML, or JSON documents when the corresponding assertion block is declared.
 - Report an immediate error when a file cannot be parsed as the declared format.
 - Apply structured-document query assertions (XPath or dot-notation) to parsed document nodes.
-- Open zip archives and match entry names against glob patterns, enforcing count constraints.
-- Report assertion failures via the `Context` from the Cli subsystem.
+- Open zip archives, wrap them in `ZipFileContainer`, and apply the full assertion suite to their entries.
+- Report assertion failures via the `IContext` interface from the Cli subsystem, enabling scoped breadcrumb error messages for nested zip assertions.
 
 ### Object Hierarchy
 
@@ -69,7 +69,8 @@ FileAssertTest
 
 | Dependency                                                                                    | Usage                                                                          |
 | :-------------------------                                                                    | :----------------------------------------------------------------------------- |
-| `Context` (Cli subsystem)                                                                     | Receives assertion failure messages and error exit code.                       |
+| `IContext` (Cli subsystem)                                                                    | Receives assertion failure messages and error exit code.                       |
+| `IFileContainer` (Utilities subsystem)                                                        | Uniform file-access abstraction; enables assertions over directories and zips. |
 | `FileAssertData` DTOs                                                                         | Input types for all `Create` factory methods.                                  |
 | Microsoft.Extensions.FileSystemGlobbing                                                       | Cross-platform glob evaluation for file discovery.                             |
 | YamlDotNet, PdfPig, HtmlAgilityPack, System.Xml.Linq, System.Text.Json, System.IO.Compression | Format-specific parsing libraries.                                             |
@@ -84,18 +85,30 @@ Domain objects are constructed and executed in the following layers:
 2. `FileAssertTextAssert.Create` iterates rule data, calling `FileAssertRule.Create` for
    each entry to produce the correct concrete rule subclass.
 3. During execution, `FileAssertConfig.Run` calls `FileAssertTest.Run` → `FileAssertFile.Run`
-   → assert unit `Run` methods, threading `Context` through every layer so all failures are
-   reported via a single path.
+   → assert unit `Run` methods, threading `IContext` through every layer so all failures are
+   reported via a single path. `FileAssertTest.Run` wraps the base path in a
+   `DirectoryFileContainer` before passing it down. `FileAssertZipAssert.Run` calls
+   `context.WithPrefix(displayPath)` to create a scoped `IContext` that prepends the archive
+   path as a breadcrumb to every nested error message.
 
-### Interactions with Other Subsystems
+### Dependencies
 
-| Dependency    | Usage                                                    |
-| :------------ | :------------------------------------------------------- |
-| Cli           | Receives `Context` to report assertion failures.         |
-| Configuration | Accepts DTO types for test, file, and rule construction. |
+| Dependency    | Usage                                                          |
+| :------------ | :------------------------------------------------------------- |
+| Cli           | Receives `IContext` to report assertion failures.              |
+| Utilities     | Accesses files via `IFileContainer` and `ZipFileContainer`.    |
+| Configuration | Accepts DTO types for test, file, and rule construction.       |
+
+### Callers
+
+- `FileAssertConfig` — instantiates `FileAssertTest` items and drives the modeling subsystem
+  through `FileAssertTest.Run`.
 
 ### Design Decisions
 
+- **`IContext` over `Context`**: All asserters and `FileAssertFile` accept `IContext` rather than
+  the concrete `Context` class. This allows `FileAssertZipAssert` to pass a scoped prefix context
+  to nested asserters without those asserters requiring any knowledge of the scoping mechanism.
 - **Factory methods over constructors**: Each domain class provides an `internal static Create`
   method that validates the DTO and constructs the domain object, keeping constructors private.
 - **Error accumulation**: Failures are reported via `context.WriteError` rather than exceptions,
@@ -109,3 +122,7 @@ Domain objects are constructed and executed in the following layers:
 - **Immediate failure on parse error**: If a file-type assertion block is declared and the file
   cannot be parsed, an error is written immediately and no further assertions for that file are
   evaluated.
+- **Full assertion suite in zip archives**: `FileAssertZipAssert` wraps the zip entry stream in
+  a `ZipFileContainer`, then runs `FileAssertFile` against it. This means every asserter (text,
+  xml, html, yaml, json, pdf, and recursive zip) is available for zip entry validation without
+  any per-asserter changes.

@@ -4,12 +4,13 @@ This document describes the subsystem-level verification design for the `Cli` su
 defines the integration test approach, subsystem boundary, mocking strategy, and test scenarios
 that together verify the `Cli` subsystem requirements.
 
-### Verification Strategy
+### Verification Approach
 
-The `Cli` subsystem boundary at `Program` is verified by integration tests defined in
-`CliTests.cs`. Each test exercises `Context.Create` and `Program.Run` together, treating the pair
-as the observable subsystem interface. Tests pass controlled argument arrays and assert on captured
-console output, file system side-effects, and exit codes.
+The `Cli` subsystem boundary is verified by integration tests defined in `CliTests.cs`. Each
+test exercises the `Cli` subsystem's public surface — primarily `Context.Create` and the
+`Context` instance methods (`WriteLine`, `WriteError`, `WithPrefix`) — rather than
+`Program.Run`. Tests pass controlled argument arrays and assert on captured console output,
+file system side-effects, and exit codes.
 
 ### Dependencies and Mocking Strategy
 
@@ -34,7 +35,7 @@ this document execute and pass in the CI pipeline without any test failures, une
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
 and platform combinations.
 
-### Integration Test Scenarios
+### Test Scenarios
 
 The following integration test scenarios are defined in `CliTests.cs`.
 
@@ -90,13 +91,23 @@ called with a message.
 
 **Expected**: The message appears on standard output; exit code is 0.
 
-### Requirements Coverage
+### ScopedContext Verification
 
-- **Argument parsing**: Cli_CreateContext_ParsesSilentValidateAndLogFlags,
-  Cli_CreateContext_ParsesVersionHelpConfigResultsFlags,
-  Cli_CreateContext_WithFilters_ParsesPositionalArguments
-- **Unknown argument rejection**: Cli_CreateContext_UnknownArgument_ThrowsArgumentException
-- **Typed property exposure (depth)**: Cli_CreateContext_ParsesDepthFlag
-- **Error exit code**: Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
-- **Log file output**: Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
-- **Console output**: Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+The `ScopedContext` implementation (returned by `Context.WithPrefix`) is verified by unit tests
+defined in `ScopedContextTests.cs`. Each test exercises prefix creation, error propagation, and
+multi-level nesting.
+
+#### ScopedContext Test Scenarios
+
+- **Context_WithPrefix_ReturnsNonNullScopedContext** – confirms that `WithPrefix` returns a
+  non-null `IContext` instance.
+- **Context_WithPrefix_NullPrefix_ThrowsArgumentNullException** – confirms `ArgumentNullException`
+  for a null prefix.
+- **ScopedContext_WriteError_PropagatesExitCodeToRoot** – confirms that an error written via a
+  scoped context increments the root context's `ExitCode` and `ErrorCount`.
+- **ScopedContext_WriteLine_DoesNotSetError** – confirms that informational output via a scoped
+  context does not set any error state on the root context.
+- **ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot** – confirms that errors propagate
+  through two levels of `WithPrefix` nesting to the root context.
+- **ScopedContext_MultipleErrors_AllAccumulateOnRoot** – confirms that errors from two separate
+  scoped contexts and a direct root `WriteError` call all accumulate on the root `ErrorCount`.

@@ -1,0 +1,26 @@
+---
+# YamlDotNet OTS Software Requirements
+#
+# Requirements for the YamlDotNet library functionality consumed by FileAssert.
+
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: YamlDotNet Requirements
+        requirements:
+          - id: FileAssert-OTS-YamlDotNet
+            title: YamlDotNet shall deserialize YAML documents into the configuration and assertion data model.
+            justification: |
+              YamlDotNet is the YAML parser used by FileAssert to deserialize the `.fileassert.yaml`
+              configuration into DTOs and to parse YAML documents under test for `yaml:` dot-notation
+              path assertions. FileAssert relies on YamlDotNet for correct YAML parsing, scalar and
+              sequence handling, and detection of malformed documents.
+            tags: [ots]
+            # Test IDs below are FileAssert's own tests that exercise YamlDotNet through the
+            # assertion pipeline. Each ID matches a TestCase Name in the test TRX output
+            # (artifacts/**/*.trx in CI); ReqStream consumes the artifacts/**/*.trx glob.
+            tests:
+              - FileAssertYamlAssert_Run_SequenceCount_Matches_NoError
+              - FileAssertYamlAssert_Run_ScalarValue_CountsAsOne_NoError
+              - FileAssertYamlAssert_Run_MinMaxCount_WithinBounds_NoError
+              - FileAssertYamlAssert_Run_InvalidFile_WritesError

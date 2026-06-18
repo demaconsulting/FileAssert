@@ -1,0 +1,77 @@
+---
+# Software Unit Requirements for the ZipFileContainer Class
+#
+# ZipFileContainer is the zip archive implementation of IFileContainer. It wraps a
+# ZipArchive opened from a caller-supplied Stream, exposing archive entries as a
+# virtual container. It supports nested zip assertion (zip-in-zip) by accepting a
+# Stream rather than a file path.
+
+sections:
+  - title: ZipFileContainer Unit Requirements
+    requirements:
+      - id: FileAssert-ZipFileContainer-EntryEnumeration
+        title: |
+          The ZipFileContainer class shall enumerate the files contained in the zip archive.
+        justification: |
+          Asserters discover candidate files by enumerating container entries.
+        children:
+          - FileAssert-ZipFileContainer-SlashNormalization
+          - FileAssert-ZipFileContainer-DirectoryMarkerExclusion
+        tests:
+          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+
+      - id: FileAssert-ZipFileContainer-SlashNormalization
+        title: |
+          The ZipFileContainer class shall normalize entry separators to forward slashes
+          when enumerating archive entries and when looking entries up by path.
+        justification: |
+          Forward-slash normalization gives platform-independent entry names and lets
+          callers use either separator when looking up entries (`OpenEntry`/`GetEntrySize`).
+        tests:
+          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+          - ZipFileContainer_BackslashEntryPath_OpensAndSizesAfterNormalization
+
+      - id: FileAssert-ZipFileContainer-DirectoryMarkerExclusion
+        title: |
+          The ZipFileContainer class shall exclude zip directory-marker entries (entries
+          whose names end with `/`) from the result of `GetEntries`.
+        justification: |
+          Directory markers carry no file content and would produce spurious matches if
+          presented to the glob matcher.
+        tests:
+          - ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
+
+      - id: FileAssert-ZipFileContainer-BreadcrumbDisplayPath
+        title: The ZipFileContainer class shall provide a breadcrumb display path that prefixes an entry path with the container's
+          display name.
+        justification: |
+          Breadcrumb display paths (displayName > entryPath) give users enough context to
+          identify which archive an error occurred in, which is essential for nested archives.
+        tests:
+          - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
+
+      - id: FileAssert-ZipFileContainer-OpenEntry
+        title: The ZipFileContainer class shall open a readable stream for a named archive entry.
+        justification: |
+          Accepting a Stream rather than a file path enables zip-in-zip assertion where the
+          outer zip entry stream is passed directly to the inner container.
+        tests:
+          - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
+
+      - id: FileAssert-ZipFileContainer-MissingEntryException
+        title: The ZipFileContainer class shall throw an IOException when a named entry does not exist.
+        justification: |
+          Throwing IOException for missing entries provides a consistent error type for
+          asserters that catch I/O failures, distinct from `FileNotFoundException` (which
+          implies a file-system file).
+        tests:
+          - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
+
+      - id: FileAssert-ZipFileContainer-EntrySize
+        title: The ZipFileContainer class shall report the uncompressed size of a named archive entry.
+        justification: |
+          Size constraints (min-size, max-size) on zip entries require the uncompressed length of
+          each entry so asserters can validate file sizes without extracting the archive.
+        tests:
+          - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
+          - ZipFileContainer_BackslashEntryPath_OpensAndSizesAfterNormalization

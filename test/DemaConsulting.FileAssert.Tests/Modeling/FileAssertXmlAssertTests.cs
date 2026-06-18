@@ -21,6 +21,7 @@
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Tests.Modeling;
 
@@ -69,6 +70,22 @@ public sealed class FileAssertXmlAssertTests
     }
 
     /// <summary>
+    ///     Verifies that Create throws <see cref="InvalidOperationException"/> when a query is blank.
+    /// </summary>
+    [Fact]
+    public void FileAssertXmlAssert_Create_BlankQuery_ThrowsInvalidOperationException()
+    {
+        // Arrange: query data whose query string is blank (whitespace)
+        var data = new List<FileAssertQueryData>
+        {
+            new() { Query = "   ", Count = 1 }
+        };
+
+        // Act / Assert: a blank query is rejected
+        Assert.Throws<InvalidOperationException>(() => FileAssertXmlAssert.Create(data));
+    }
+
+    /// <summary>
     ///     Verifies that Run reports an error when the file cannot be parsed as XML.
     /// </summary>
     [Fact]
@@ -83,8 +100,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -110,8 +131,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -137,8 +162,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -164,8 +193,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -191,8 +224,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -218,8 +255,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -245,8 +286,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -272,8 +317,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -299,8 +348,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);
@@ -326,8 +379,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(0, context.ExitCode);
@@ -353,8 +410,12 @@ public sealed class FileAssertXmlAssertTests
             var xmlAssert = FileAssertXmlAssert.Create(data);
             using var context = Context.Create(["--silent"]);
 
+            var dir = Path.GetDirectoryName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile)!;
+            using var container = new DirectoryFileContainer(dir);
+
             // Act
-            xmlAssert.Run(context, tempFile);
+            xmlAssert.Run(context, container, fileName);
 
             // Assert
             Assert.Equal(1, context.ExitCode);

@@ -16,9 +16,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertTextAssert.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -35,8 +35,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Expected**: A non-null `FileAssertTextAssert` instance is returned.
 
-**Requirement coverage**: Text assert creation requirement.
-
 ##### FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
 
 **Scenario**: `FileAssertTextAssert.Create` is called with `null` data.
@@ -51,16 +49,12 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Expected**: No errors are written to the context; exit code is 0.
 
-**Requirement coverage**: Text assertion pass requirement.
-
 ##### FileAssertTextAssert_Run_FileMissingText_WritesError
 
 **Scenario**: `FileAssertTextAssert.Run` is called on a file whose content does not satisfy a
 `contains` rule.
 
 **Expected**: An error is written to the context; exit code is non-zero.
-
-**Requirement coverage**: Text assertion fail requirement.
 
 ##### FileAssertTextAssert_Run_NonExistentFile_WritesError
 
@@ -75,14 +69,3 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertTextAssert.Run` is called on a file that violates multiple rules.
 
 **Expected**: A separate error is written for each violation; exit code is non-zero.
-
-**Requirement coverage**: Multiple-rule violation reporting requirement.
-
-#### Requirements Coverage
-
-- **FileAssert-FileAssertTextAssert-Creation**: FileAssertTextAssert_Create_ValidData_CreatesTextAssert,
-  FileAssertTextAssert_Create_NullData_ThrowsArgumentNullException
-- **FileAssert-FileAssertTextAssert-RuleApplication**: FileAssertTextAssert_Run_FileContainsText_NoError,
-  FileAssertTextAssert_Run_FileMissingText_WritesError,
-  FileAssertTextAssert_Run_MultipleRulesMultipleViolations_WritesMultipleErrors
-- **FileAssert-FileAssertTextAssert-IOError**: FileAssertTextAssert_Run_NonExistentFile_WritesError

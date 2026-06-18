@@ -17,16 +17,15 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertConfig.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
 | Dependency     | Usage in Tests                                               |
 |----------------|--------------------------------------------------------------|
 | `Context`      | Used directly (not mocked) — created with controlled flags.  |
-| `PathHelpers`  | Used internally by `FileAssertConfig`; not mocked.           |
 
 #### Test Scenarios
 
@@ -35,8 +34,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertConfig.ReadFromFile` is called with a valid YAML file path.
 
 **Expected**: A non-null `FileAssertConfig` instance is returned with the correct properties.
-
-**Requirement coverage**: Configuration file reading requirement.
 
 ##### FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
 
@@ -60,23 +57,17 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 
 **Expected**: All tests in the configuration are executed; exit code reflects pass or fail.
 
-**Requirement coverage**: Run-all-tests requirement.
-
 ##### FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
 
 **Scenario**: `FileAssertConfig.Run` is called with a filter that matches one test name.
 
 **Expected**: Only the matching test runs; exit code reflects the result of that test.
 
-**Requirement coverage**: Test name filtering requirement.
-
 ##### FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
 
 **Scenario**: `FileAssertConfig.Run` is called with a filter that matches no tests.
 
 **Expected**: No tests run; exit code is 0.
-
-**Requirement coverage**: Non-matching filter skips all tests requirement.
 
 ##### FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
 
@@ -85,8 +76,6 @@ temporary `.trx` path, and all assertions pass.
 
 **Expected**: A TRX file is created; it contains a passing result entry.
 
-**Requirement coverage**: TRX results output requirement.
-
 ##### FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
 
 **Scenario**: `FileAssertConfig.Run` is called with a context whose `ResultsFile` points to a
@@ -94,25 +83,9 @@ temporary `.xml` path, and at least one assertion fails.
 
 **Expected**: A JUnit XML file is created; it contains a failing result entry.
 
-**Requirement coverage**: JUnit results output requirement.
-
 ##### FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
 
 **Scenario**: `FileAssertConfig.ReadFromFile` is called with a YAML file that includes PDF
 assertion configuration (pages, metadata, text rules).
 
 **Expected**: The PDF assertion config is correctly deserialized with all fields populated.
-
-**Requirement coverage**: PDF assertion configuration parsing requirement.
-
-#### Requirements Coverage
-
-- **Configuration file reading**: FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
-- **Missing file error path**: FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
-- **Null path guard**: FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException
-- **Run all tests**: FileAssertConfig_Run_WithNoFilter_RunsAllTests
-- **Name filter**: FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
-- **Non-matching filter**: FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
-- **TRX results output**: FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
-- **JUnit results output**: FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
-- **Configuration file reading (PDF variant)**: FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly

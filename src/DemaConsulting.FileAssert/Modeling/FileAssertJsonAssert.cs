@@ -21,6 +21,7 @@
 using System.Text.Json;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
@@ -84,25 +85,37 @@ internal sealed class FileAssertJsonAssert
     }
 
     /// <summary>
-    ///     Parses the JSON file and evaluates all configured dot-notation path queries, reporting violations.
+    ///     Parses the JSON entry and evaluates all configured dot-notation path queries, reporting violations.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="fileName">The full path to the JSON file to validate.</param>
-    internal void Run(Context context, string fileName)
+    /// <param name="container">The container from which the entry is opened.</param>
+    /// <param name="entryPath">The relative path of the entry to validate.</param>
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
 
-        // Attempt to parse the file as a JSON document
+        // Compute the display path once for use in error messages
+        var displayPath = container.GetDisplayPath(entryPath);
+
+        // Attempt to parse the entry as a JSON document
         JsonDocument document;
         try
         {
-            var json = File.ReadAllText(fileName);
+            using var stream = container.OpenEntry(entryPath);
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            var json = reader.ReadToEnd();
             document = JsonDocument.Parse(json);
         }
-        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        catch (JsonException)
         {
-            context.WriteError($"File '{fileName}' could not be parsed as a JSON document");
+            context.WriteError($"File '{displayPath}' could not be parsed as a JSON document");
+            return;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            context.WriteError($"File '{displayPath}' could not be read");
             return;
         }
 
@@ -112,7 +125,7 @@ internal sealed class FileAssertJsonAssert
             foreach (var q in _queries)
             {
                 var n = CountJsonNodes(document.RootElement, q.Query);
-                ApplyConstraints(context, fileName, q.Query, q.Count, q.Min, q.Max, n);
+                ApplyConstraints(context, displayPath, q.Query, q.Count, q.Min, q.Max, n);
             }
         }
     }
@@ -178,7 +191,7 @@ internal sealed class FileAssertJsonAssert
     /// <param name="max">The maximum count constraint, or null.</param>
     /// <param name="n">The actual element count returned by the query.</param>
     private static void ApplyConstraints(
-        Context context, string fileName, string query,
+        IContext context, string fileName, string query,
         int? count, int? min, int? max, int n)
     {
         if (count.HasValue && n != count.Value)

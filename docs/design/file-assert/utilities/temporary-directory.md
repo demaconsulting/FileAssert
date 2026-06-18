@@ -122,10 +122,13 @@ directory.
 | Null or traversal-escaping `relativePath`         |
 | Temporary directory deletion failure (suppressed) |
 
-#### Interactions
+#### Dependencies
 
 - **Uses**: `PathHelpers.SafePathCombine` for all path construction, ensuring traversal
   safety on both the directory name and every relative path passed to `GetFilePath`.
+
+#### Callers
+
 - **Callers**:
   - `Validation` built-in tests — each test creates a `TemporaryDirectory` instance,
     writes fixture files via `GetFilePath`, and disposes it at the end of the test body.

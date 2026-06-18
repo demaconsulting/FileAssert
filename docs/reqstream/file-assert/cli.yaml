@@ -24,11 +24,13 @@ sections:
           - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
 
       - id: FileAssert-Cli-ArgumentExposure
-        title: The Cli subsystem shall expose parsed argument values as typed properties on the Context object.
+        title: The Cli subsystem shall make each parsed command-line option's value observable to downstream subsystems so
+          that subsequent execution decisions reflect the user-supplied flags.
         justification: |
-          Exposing parsed arguments as typed properties provides a strongly-typed interface
-          for downstream subsystems, eliminating repeated string parsing and making argument
-          access self-documenting.
+          Downstream subsystems must be able to read the effective value of every command-line
+          option to decide what work to perform. Exposing parsed option values to those
+          subsystems eliminates repeated string parsing and ensures execution behavior matches
+          what the user requested.
         children:
           - FileAssert-Context-ConfigFile
           - FileAssert-Context-Filters
@@ -64,3 +66,19 @@ sections:
         tests:
           - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
           - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+
+      - id: FileAssert-Cli-ScopedContext
+        title: The Cli subsystem shall provide breadcrumb-style context scoping so that error messages produced inside a nested
+          assertion identify the enclosing container path.
+        justification: |
+          When asserting files inside a zip archive, error messages must identify both the
+          archive and the entry that failed. Breadcrumb-style context scoping prepends the
+          enclosing container path to error messages, giving users immediate context without
+          requiring each asserter to format breadcrumb paths explicitly. Nested scopes support
+          zip-in-zip scenarios.
+        children:
+          - FileAssert-IContext-OutputContract
+        tests:
+          - Context_WithPrefix_ReturnsNonNullScopedContext
+          - ScopedContext_WriteError_PropagatesExitCodeToRoot
+          - ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot

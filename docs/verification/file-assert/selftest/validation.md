@@ -17,16 +17,17 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `Validation.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency    | Usage in Tests                                                            |
-|---------------|---------------------------------------------------------------------------|
-| `Context`     | Used directly (not mocked) — created with controlled flags for each test. |
-| `PathHelpers` | Used internally by `Validation` for temp-path construction; not mocked.   |
+| Dependency                   | Usage in Tests                                                            |
+|------------------------------|---------------------------------------------------------------------------|
+| `Context`                    | Used directly (not mocked) — created with controlled flags for each test. |
+| `PathHelpers`                | Used internally by `Validation` for temp-path construction; not mocked.   |
+| `DemaConsulting.TestResults` | Real TRX/JUnit serializers; their output files are inspected by tests.    |
 
 No test doubles are introduced at the `Validation` unit level.
 
@@ -40,15 +41,11 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Boundary / error path**: Null guard at the unit boundary.
 
-**Requirement coverage**: `FileAssert-Validation-NullContext` — null context rejection requirement.
-
 ##### Validation_Run_WithSilentContext_PrintsSummary
 
 **Scenario**: `Validation.Run` is called with a silent context (output captured separately).
 
 **Expected**: Summary output contains "Total Tests:", "Passed:", and "Failed:".
-
-**Requirement coverage**: Summary output requirement.
 
 ##### Validation_Run_WithSilentContext_ExitCodeIsZero
 
@@ -56,16 +53,13 @@ No test doubles are introduced at the `Validation` unit level.
 
 **Expected**: `context.ExitCode` is 0 after the run, confirming all sub-tests pass.
 
-**Requirement coverage**: Successful exit code requirement.
-
 ##### Validation_Run_WithTrxResultsFile_WritesTrxFile
 
 **Scenario**: `Validation.Run` is called with a context whose `ResultsFile` points to a temporary
 `.trx` path.
 
-**Expected**: The file is created at the specified path; it contains a `<TestRun` XML element.
-
-**Requirement coverage**: TRX results output requirement.
+**Expected**: The file is created at the specified path; it contains a `<TestRun` XML element;
+exit code is 0 (the validation suite itself passes).
 
 ##### Validation_Run_WithXmlResultsFile_WritesXmlFile
 
@@ -73,8 +67,6 @@ No test doubles are introduced at the `Validation` unit level.
 `.xml` path.
 
 **Expected**: The file is created at the specified path; it contains a `<testsuites` XML element.
-
-**Requirement coverage**: JUnit results output requirement.
 
 ##### Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
 
@@ -86,7 +78,6 @@ is written to `context` indicating the unsupported format.
 
 **Boundary / error path**: Tests the unsupported-format error path.
 
-**Requirement coverage**: `FileAssert-Validation-Results` — results file output requirement
 (boundary condition: unsupported extension is rejected without creating a file).
 
 ##### Validation_Run_WithSilentContext_LogContainsFileAssertResults
@@ -95,15 +86,11 @@ is written to `context` indicating the unsupported format.
 
 **Expected**: The log contains FileAssert results output.
 
-**Requirement coverage**: Logging requirement.
-
 ##### Validation_Run_WithSilentContext_LogContainsFileAssertExists
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
 **Expected**: The log contains output from the FileAssert "exists" self-validation test.
-
-**Requirement coverage**: Self-validation content requirement.
 
 ##### Validation_Run_WithSilentContext_LogContainsFileAssertContains
 
@@ -111,27 +98,19 @@ is written to `context` indicating the unsupported format.
 
 **Expected**: The log contains output from the FileAssert "contains" self-validation test.
 
-**Requirement coverage**: Self-validation content requirement.
-
 ##### Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 
-**Scenario**: `Validation.Run` is called with a context created with `["--depth", "2"]`.
+**Scenario**: `Validation.Run` is called with a context created with `["--depth", "3"]`.
 
 **Expected**: The output uses headings at the specified depth level.
 
-**Requirement coverage**: Heading depth requirement.
+##### Validation_Run_HeaderFields
 
-#### Requirements Coverage
+**Scenario**: `Validation.Run` is called with a real context.
 
-| Requirement                          | Test Scenario                                                   |
-|--------------------------------------|-----------------------------------------------------------------|
-| FileAssert-Validation-NullContext    | Validation_Run_NullContext_ThrowsArgumentNullException          |
-| FileAssert-Validation-Run            | Validation_Run_WithSilentContext_PrintsSummary                  |
-| FileAssert-Validation-Run            | Validation_Run_WithSilentContext_ExitCodeIsZero                 |
-| FileAssert-Validation-Results        | Validation_Run_WithTrxResultsFile_WritesTrxFile                 |
-| FileAssert-Validation-Results        | Validation_Run_WithXmlResultsFile_WritesXmlFile                 |
-| FileAssert-Validation-Results        | Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile    |
-| FileAssert-Validation-ResultsTest    | Validation_Run_WithSilentContext_LogContainsFileAssertResults   |
-| FileAssert-Validation-ExistsTest     | Validation_Run_WithSilentContext_LogContainsFileAssertExists    |
-| FileAssert-Validation-ContainsTest   | Validation_Run_WithSilentContext_LogContainsFileAssertContains  |
-| FileAssert-Validation-Depth          | Validation_Run_WithDepth_UsesSpecifiedHeadingDepth              |
+**Expected**: The captured output contains the system information header. Only the "FileAssert"
+banner and copyright lines are asserted directly; the additional header fields produced by the
+implementation (such as `DotNet Runtime` and `Time Stamp`) are observable in the log but are not
+individually asserted because their values are environment-dependent. This is documented here so
+that reviewers know the verification covers a representative subset rather than an exhaustive
+match of every header field.

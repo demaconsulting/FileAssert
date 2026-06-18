@@ -13,10 +13,12 @@ The published document is included in the Build Notes release artifact.
 VersionMark is verified by two complementary layers of evidence. Each CI job runs
 `versionmark --capture` to collect tool-version JSON files, and the build-docs job runs
 `versionmark --publish` to produce `docs/build_notes/generated/versions.md`. This file is included
-in the Build Notes document compiled by Pandoc. If VersionMark failed to produce the versions
-document, the Build Notes compilation would be incomplete. WeasyPrint renders the result to PDF
-and FileAssert asserts its content (`WeasyPrint_BuildNotesPdf`). A CI build failure at any step is
-evidence that VersionMark did not execute correctly.
+in the Build Notes document compiled by Pandoc. WeasyPrint renders the result to PDF and FileAssert
+asserts its content (`WeasyPrint_BuildNotesPdf`). A failure that is directly attributable to
+VersionMark output validation — a missing or malformed `versions.md`, or a failed VersionMark
+self-validation result — is evidence that VersionMark did not execute correctly. Unrelated pipeline
+failures (for example, a Pandoc template error or a network outage) are not attributed to
+VersionMark.
 
 ### Test Scenarios
 
@@ -26,22 +28,14 @@ evidence that VersionMark did not execute correctly.
 
 **Expected**: Exits 0 and captures version data for every tool.
 
-**Requirement coverage**: `FileAssert-OTS-VersionMark`.
-
 #### VersionMark_GeneratesMarkdownReport
 
 **Scenario**: VersionMark writes a versions markdown document to the release artifacts.
 
 **Expected**: Exits 0 and produces a non-empty versions markdown file.
 
-**Requirement coverage**: `FileAssert-OTS-VersionMark`.
-
-### Requirements Coverage
-
-- **`FileAssert-OTS-VersionMark`**: VersionMark_CapturesVersions, VersionMark_GeneratesMarkdownReport
-
 ### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the system integration level. This OTS item is
+N/A - Acceptance criteria are managed at the system integration level. This OTS item is
 considered verified when the integration test scenarios that exercise its functionality
 pass in the CI pipeline.

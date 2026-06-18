@@ -134,6 +134,14 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
+### IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero
+
+**Scenario**: The tool is invoked with no arguments from a working directory containing a
+`.fileassert.yaml` file whose assertions are satisfied.
+
+**Expected**: Exit code 0; the default-named configuration is loaded and executed from the
+current working directory without an explicit `--config` argument.
+
 ### IntegrationTest_PassingAssertions_WritesTrxWithPassedResults
 
 **Scenario**: All assertions pass and `--results <path>.trx` is specified.
@@ -236,6 +244,13 @@ a positional filter argument.
 
 **Expected**: Exit code non-zero.
 
+### IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
+
+**Scenario**: A PDF assertion is configured against a valid PDF, but the asserted condition
+(e.g., page count or text content) is not satisfied.
+
+**Expected**: Exit code non-zero.
+
 ### IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
 
 **Scenario**: A zip assertion is configured and the archive contains entries that satisfy
@@ -249,7 +264,42 @@ the declared constraints.
 
 **Expected**: Exit code non-zero.
 
-### IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
+### IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero
+
+**Scenario**: A zip assertion declares a text content rule against an entry whose content
+satisfies the rule.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero
+
+**Scenario**: A zip assertion declares a text content rule against an entry whose content does
+not satisfy the rule.
+
+**Expected**: Exit code non-zero.
+
+### IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero
+
+**Scenario**: A zip assertion declares an XML XPath assertion against a zip entry whose XML
+satisfies the query constraint.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero
+
+**Scenario**: A zip assertion targets an entry that is itself a zip archive (zip-in-zip), and a
+text content rule against the nested entry is satisfied.
+
+**Expected**: Exit code 0.
+
+### IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
+
+**Scenario**: A zip assertion's content rule fails for an entry inside the archive.
+
+**Expected**: Exit code non-zero; the error message contains the breadcrumb-style entry path
+identifying the enclosing archive and the failing entry.
+
+### IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero
 
 **Scenario**: An HTML assertion is configured with an XPath query that yields no matching elements
 and a `min: 1` constraint. Note: HtmlAgilityPack is intentionally lenient and does not raise a
@@ -270,39 +320,14 @@ elements) rather than a parse-failure path.
 
 **Expected**: Exit code non-zero.
 
-## Requirements Coverage
+### IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
 
-- **Version display**: IntegrationTest_VersionFlag_OutputsVersion
-- **Help display**: IntegrationTest_HelpFlag_OutputsUsageInformation
-- **Self-validation**: IntegrationTest_ValidateFlag_RunsValidation,
-  IntegrationTest_ValidateWithResults_GeneratesTrxFile,
-  IntegrationTest_ValidateWithResults_GeneratesJUnitFile
-- **Silent mode**: IntegrationTest_SilentFlag_SuppressesOutput
-- **Log file output**: IntegrationTest_LogFlag_WritesOutputToFile
-- **Invalid argument rejection**: IntegrationTest_UnknownArgument_ReturnsError
-- **Test filtering**: IntegrationTest_TestFiltering_OnlyRunsMatchingTests
-- **File assertions**: IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero,
-  IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
-- **Results output**: IntegrationTest_PassingAssertions_WritesTrxWithPassedResults,
-  IntegrationTest_FailingAssertions_WritesJUnitWithFailedResults
-- **Count/size constraints**: IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero,
-  IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero,
-  IntegrationTest_ExactCountConstraint_WrongCount_ReturnsNonZero,
-  IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero,
-  IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
-- **Text rules**: IntegrationTest_RegexRule_MatchingContent_ReturnsZero,
-  IntegrationTest_RegexRule_NonMatchingContent_ReturnsNonZero,
-  IntegrationTest_DoesNotContainRule_ForbiddenTextPresent_ReturnsNonZero,
-  IntegrationTest_DoesNotContainRegexRule_ForbiddenPatternMatches_ReturnsNonZero
-- **Structured file assertions**: IntegrationTest_XmlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_XmlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_YamlAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_YamlAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_JsonAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_JsonAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero,
-  IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
-- **Zip archive assertions**: IntegrationTest_ZipAssert_PassingQuery_ReturnsZero,
-  IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+**Scenario**: The tool is invoked with `--validate --depth 3` so that the self-validation report is
+emitted with its headings shifted to the requested depth. The combined output is captured. Detailed
+unit-level coverage for the heading-depth behavior is provided by
+`Validation_Run_WithDepth_UsesSpecifiedHeadingDepth` in the SelfTest verification set
+(`docs/verification/file-assert/selftest/validation.md`).
+
+**Expected**: Exit code 0; the combined output contains the top-level validation heading at the
+requested depth (`### DEMA Consulting FileAssert`), confirming the `--depth` flag is recognized at
+the system boundary and applied to the validation output.

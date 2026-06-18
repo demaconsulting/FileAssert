@@ -21,18 +21,22 @@ sections:
           - FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException
           - FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException
 
-      - id: FileAssert-FileAssertFile-CountConstraints
-        title: The FileAssertFile class shall enforce optional minimum and maximum file count constraints.
+      - id: FileAssert-FileAssertFile-MinCountConstraint
+        title: The FileAssertFile class shall enforce an optional minimum file count constraint.
         justification: |
-          Count constraints allow tests to assert that a glob pattern matches the expected
-          number of files, catching configuration drift such as missing required artifacts
-          or unexpected duplicate outputs. Reporting a count mismatch before content checks
-          avoids misleading downstream errors.
+          The minimum-count constraint catches missing required artifacts (such as a build
+          output that should always be produced).
         tests:
-          - FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError
-          - FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError
           - FileAssertFile_Run_TooFewFiles_WritesError
+          - FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError
+
+      - id: FileAssert-FileAssertFile-MaxCountConstraint
+        title: The FileAssertFile class shall enforce an optional maximum file count constraint.
+        justification: |
+          The maximum-count constraint catches unexpected duplicate or extra outputs.
+        tests:
           - FileAssertFile_Run_TooManyFiles_WritesError
+          - FileAssertFile_Run_WithMatchingFiles_NoConstraints_NoError
 
       - id: FileAssert-FileAssertFile-ContentRules
         title: The FileAssertFile class shall apply content rules to every matched file when rules are defined.
@@ -48,25 +52,26 @@ sections:
       - id: FileAssert-FileAssertFile-ExactCount
         title: The FileAssertFile class shall enforce an exact file count constraint when declared.
         justification: |
-          The exact count constraint is a strict variant of the min/max bounds and is
-          needed when the user must assert that a pattern matches precisely the declared
-          number of files. It is checked after the min/max constraints and before per-file
-          rules to provide a clear, early failure when the count is wrong.
+          The exact-count constraint is needed when the user must assert that a pattern
+          matches precisely the declared number of files, catching both missing and extra
+          files in a single rule.
         tests:
           - FileAssertFile_Run_WrongCount_WritesError
 
-      - id: FileAssert-FileAssertFile-SizeConstraints
-        title: |
-          The FileAssertFile class shall enforce min-size and max-size constraints on
-          each matched file.
+      - id: FileAssert-FileAssertFile-MinSize
+        title: The FileAssertFile class shall enforce an optional minimum-size constraint on each matched file.
         justification: |
-          Size constraints guard against empty outputs (min-size) and unexpectedly large
-          files (max-size). Checking sizes per matched file ensures every file in the
-          matched set individually satisfies the declared bounds. Size checks are
-          performed before reading file content to avoid unnecessary I/O when a size
-          violation is present.
+          The minimum-size constraint guards against empty or near-empty outputs (for example,
+          a generated report that compiled successfully but produced no content).
         tests:
           - FileAssertFile_Run_TooSmall_WritesError
+          - FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation
+
+      - id: FileAssert-FileAssertFile-MaxSize
+        title: The FileAssertFile class shall enforce an optional maximum-size constraint on each matched file.
+        justification: |
+          The maximum-size constraint catches unexpectedly large outputs.
+        tests:
           - FileAssertFile_Run_TooLarge_WritesError
           - FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation
 

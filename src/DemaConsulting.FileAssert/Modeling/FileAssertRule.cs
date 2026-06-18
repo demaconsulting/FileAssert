@@ -88,7 +88,7 @@ internal abstract class FileAssertRule
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The name of the file being validated, used in error messages.</param>
     /// <param name="content">The full text content of the file to validate.</param>
-    internal abstract void Apply(Context context, string fileName, string content);
+    internal abstract void Apply(IContext context, string fileName, string content);
 }
 
 /// <summary>
@@ -117,7 +117,7 @@ internal sealed class FileAssertContainsRule : FileAssertRule
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The name of the file being validated.</param>
     /// <param name="content">The full text content of the file to validate.</param>
-    internal override void Apply(Context context, string fileName, string content)
+    internal override void Apply(IContext context, string fileName, string content)
     {
         // Validate that we have a context to report errors to
         ArgumentNullException.ThrowIfNull(context);
@@ -164,7 +164,7 @@ internal sealed class FileAssertMatchesRule : FileAssertRule
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The name of the file being validated.</param>
     /// <param name="content">The full text content of the file to validate.</param>
-    internal override void Apply(Context context, string fileName, string content)
+    internal override void Apply(IContext context, string fileName, string content)
     {
         // Validate that we have a context to report errors to
         ArgumentNullException.ThrowIfNull(context);
@@ -203,7 +203,7 @@ internal sealed class FileAssertDoesNotContainRule : FileAssertRule
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The name of the file being validated.</param>
     /// <param name="content">The full text content of the file to validate.</param>
-    internal override void Apply(Context context, string fileName, string content)
+    internal override void Apply(IContext context, string fileName, string content)
     {
         // Validate that we have a context to report errors to
         ArgumentNullException.ThrowIfNull(context);
@@ -250,7 +250,7 @@ internal sealed class FileAssertDoesNotMatchRule : FileAssertRule
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="fileName">The name of the file being validated.</param>
     /// <param name="content">The full text content of the file to validate.</param>
-    internal override void Apply(Context context, string fileName, string content)
+    internal override void Apply(IContext context, string fileName, string content)
     {
         // Validate that we have a context to report errors to
         ArgumentNullException.ThrowIfNull(context);

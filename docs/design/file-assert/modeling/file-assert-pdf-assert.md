@@ -29,7 +29,7 @@ internal static PdfMetadataRule FromData(FileAssertPdfMetadataRuleData data)
 ###### PdfMetadataRule Apply
 
 ```csharp
-internal void Apply(Context context, string fileName, string? value)
+internal void Apply(IContext context, string fileName, string? value)
 ```
 
 Checks `Contains` substring presence (ordinal) and `Matches` regex against `fieldValue`.
@@ -61,7 +61,7 @@ internal static PdfPages FromData(FileAssertPdfPagesData data)
 ###### PdfPages Apply
 
 ```csharp
-internal void Apply(Context context, string fileName, int n)
+internal void Apply(IContext context, string fileName, int n)
 ```
 
 Reports an error if `n < Min` or `n > Max`.
@@ -96,17 +96,24 @@ Creates metadata rules, page constraints, and text rules from the DTO.
 ###### FileAssertPdfAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
 
 1. Attempts to open the file as a PDF using `PdfDocument.Open`.
-2. If an exception is thrown, writes the error below and returns immediately.
+2. If an exception is thrown during open/read, the appropriate error is written and `Run`
+   returns immediately. Three layered catch clauses are used:
+   - `catch (IOException ex)` — writes `"File '<displayPath>' could not be read: {ex.Message}"`.
+   - `catch (UnauthorizedAccessException ex)` — writes the same `"could not be read"` message.
+   - `catch (Exception)` — fallback for any unrecognized PdfPig parse exception (PdfPig
+     surfaces a wide variety of types for malformed input). Writes
+     `"File '<displayPath>' could not be parsed as a PDF document"`.
 3. Applies each metadata rule for each declared field.
 4. If `Pages` is defined, applies page count assertions.
-5. If `Text` rules are defined, extracts page text via PdfPig, concatenates, and applies
-   each rule.
+5. If `Text` rules are defined, extracts page text via PdfPig, concatenates each page's text
+   with a newline (`"\n"`) separator between pages so adjacent words from different pages do
+   not run together, and applies each rule to the resulting string.
 
 ###### FileAssertPdfAssert Parse Error Message
 
@@ -202,12 +209,12 @@ Inner class `PdfPages` holds:
 | Method                                                              | Purpose                                       |
 | :------------------------------------------------------------------ | :-------------------------------------------- |
 | `Create(FileAssertPdfData data)`                                    | Builds metadata/page/text rules from DTO.     |
-| `Run(Context context, string fileName)`                             | Opens PDF; applies metadata/page/text rules.  |
+| `Run(IContext, IFileContainer, string)`                             | Opens PDF; applies metadata/page/text rules.  |
 | `GetMetadataField(PdfDocument doc, string field)` *(private)*       | Maps field to `DocumentInformation` property. |
 | `PdfMetadataRule.FromData(FileAssertPdfMetadataRuleData)` *(inner)* | Creates a `PdfMetadataRule` from DTO.         |
-| `PdfMetadataRule.Apply(Context, string, string?)` *(inner)*         | Applies `Contains`/`Matches` to field value.  |
+| `PdfMetadataRule.Apply(IContext, string, string?)` *(inner)*        | Applies `Contains`/`Matches` to field value.  |
 | `PdfPages.FromData(FileAssertPdfPagesData)` *(inner)*               | Creates `PdfPages` from DTO.                  |
-| `PdfPages.Apply(Context, string, int)` *(inner)*                    | Checks `Min`/`Max` against actual page count. |
+| `PdfPages.Apply(IContext, string, int)` *(inner)*                   | Checks `Min`/`Max` against actual page count. |
 
 #### Error Handling
 
@@ -220,12 +227,15 @@ Inner class `PdfPages` holds:
 | Body text rule failure                      | Delegated to `FileAssertRule.Apply`; errors reported individually.   |
 | Unrecognised metadata field name            | Result is `null`; `Contains`/`Matches` run against null.             |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, fileName)` when the `pdf:`
-  assertion block is declared.
-- **Created by**: `FileAssertFile.Create` via `FileAssertPdfAssert.Create`.
 - **Delegates to**: `FileAssertRule.Apply` for body text validation.
 - **OTS dependency**: `PdfPig.PdfDocument` for PDF parsing and text extraction.
 - **Configuration dependency**: `FileAssertPdfData`, `FileAssertPdfMetadataRuleData`,
   `FileAssertPdfPagesData`, and `FileAssertRuleData` DTOs from the Configuration subsystem.
+
+#### Callers
+
+- **Caller**: `FileAssertFile.Run` calls `PdfAssert.Run(context, container, entryPath)` when the `pdf:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertPdfAssert.Create`.

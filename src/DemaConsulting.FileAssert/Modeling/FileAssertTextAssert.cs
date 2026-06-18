@@ -20,6 +20,7 @@
 
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
@@ -56,34 +57,42 @@ internal sealed class FileAssertTextAssert
     }
 
     /// <summary>
-    ///     Reads the file as UTF-8 text and applies all configured rules, reporting violations.
+    ///     Reads the entry content as UTF-8 text and applies all configured rules, reporting violations.
     /// </summary>
     /// <param name="context">The context used for reporting errors.</param>
-    /// <param name="fileName">The full path to the file to validate.</param>
+    /// <param name="container">The container from which the entry is opened.</param>
+    /// <param name="entryPath">The relative path of the entry to validate.</param>
     /// <exception cref="ArgumentNullException">
-    ///     Thrown when <paramref name="context"/> or <paramref name="fileName"/> is null.
+    ///     Thrown when <paramref name="context"/>, <paramref name="container"/>, or
+    ///     <paramref name="entryPath"/> is null.
     /// </exception>
-    internal void Run(Context context, string fileName)
+    internal void Run(IContext context, IFileContainer container, string entryPath)
     {
         ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(fileName);
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(entryPath);
 
-        // Read the file content as UTF-8 text for rule evaluation
+        // Compute the display path once for use in error messages
+        var displayPath = container.GetDisplayPath(entryPath);
+
+        // Read the entry content as UTF-8 text for rule evaluation
         string content;
         try
         {
-            content = File.ReadAllText(fileName, System.Text.Encoding.UTF8);
+            using var stream = container.OpenEntry(entryPath);
+            using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+            content = reader.ReadToEnd();
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            context.WriteError($"File '{fileName}' could not be read as text");
+            context.WriteError($"File '{displayPath}' could not be read as text");
             return;
         }
 
         // Apply each rule to validate the file content
         foreach (var rule in Rules)
         {
-            rule.Apply(context, fileName, content);
+            rule.Apply(context, displayPath, content);
         }
     }
 }

@@ -35,11 +35,33 @@ sections:
 
       - id: FileAssert-Program-DefaultBehavior
         title: |
-          The Program class shall display version and copyright information when invoked
-          with no recognized flags or configuration file arguments.
+          The Program class shall, when invoked with no arguments, print the application banner
+          and then load and execute the default `.fileassert.yaml` configuration.
         justification: |
-          When no arguments are supplied the tool has no test suite to run. Displaying the
-          version and copyright banner gives the user a quick visual confirmation that the
-          tool is installed and operational without producing an unexpected error.
+          When no arguments are supplied the tool prints the version and copyright banner to give
+          the user a quick visual confirmation that the tool is installed and operational, then
+          proceeds to load and run the default-named configuration from the current working
+          directory so the project can be validated with zero configuration.
         tests:
           - Program_Run_NoArguments_DisplaysDefaultBehavior
+
+      - id: FileAssert-Program-MissingDefaultConfig
+        title: |
+          The Program class shall, when invoked with no `--config` and no `.fileassert.yaml`
+          in the current directory, print user guidance and exit with success.
+        justification: |
+          Treating an absent default configuration as an informational state (rather than an
+          error) lets first-time users discover how to create a config without seeing a
+          confusing failure exit code.
+        tests:
+          - Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance
+
+      - id: FileAssert-Program-MissingExplicitConfig
+        title: |
+          The Program class shall, when an explicit `--config <file>` argument refers to a
+          non-existent file, write an error and set a non-zero exit code.
+        justification: |
+          When the user names a configuration file explicitly, a missing file is unambiguously
+          an error and must surface as such so CI pipelines fail fast.
+        tests:
+          - Program_Run_ExplicitConfigMissing_WritesError

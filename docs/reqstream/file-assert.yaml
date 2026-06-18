@@ -114,7 +114,7 @@ sections:
           artifacts that should always be present. Users declare the lower bound they expect;
           the tool reports a violation when fewer files are found.
         children:
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MinCountConstraint
         tests:
           - IntegrationTest_MinCountConstraint_TooFewFiles_ReturnsNonZero
 
@@ -127,7 +127,7 @@ sections:
           configuration files from silently passing validation. Users declare the upper
           bound they expect; the tool reports a violation when more files are found.
         children:
-          - FileAssert-FileAssertFile-CountConstraints
+          - FileAssert-FileAssertFile-MaxCountConstraint
         tests:
           - IntegrationTest_MaxCountConstraint_TooManyFiles_ReturnsNonZero
 
@@ -171,7 +171,8 @@ sections:
           YAML configuration, deserialization, and file system inspection all integrate
           correctly.
         children:
-          - FileAssert-FileAssertFile-SizeConstraints
+          - FileAssert-FileAssertFile-MinSize
+          - FileAssert-FileAssertFile-MaxSize
         tests:
           - IntegrationTest_FileSizeConstraints_TooSmall_ReturnsNonZero
           - IntegrationTest_FileSizeConstraints_TooLarge_ReturnsNonZero
@@ -276,6 +277,7 @@ sections:
           misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParseError
         tests:
           - IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
           - IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
@@ -292,6 +294,7 @@ sections:
           parsers. An immediate failure on invalid XML prevents misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParseError
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_XmlAssert_PassingQuery_ReturnsZero
@@ -301,18 +304,19 @@ sections:
         title: |
           The FileAssert tool shall evaluate HTML document assertions declared in an `html:` block
           using XPath expressions and return a non-zero exit code when any assertion fails or
-          when the file cannot be parsed as valid HTML.
+          when an IO error occurs reading the file.
         justification: |
           HTML documents are common outputs of documentation generators, static site builders,
           and report tools. XPath-based node count assertions allow users to verify page
-          structure such as title presence and link counts. An immediate failure on invalid
-          HTML prevents misleading partial results.
+          structure such as title presence and link counts. Because the parser is lenient and
+          tolerates syntactically imperfect markup, only IO failures (not parse failures) are
+          treated as errors.
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
-          - IntegrationTest_HtmlAssert_InvalidFile_ReturnsNonZero
+          - IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero
 
       - id: FileAssert-System-YamlAssertions
         title: |
@@ -326,6 +330,7 @@ sections:
           An immediate failure on invalid YAML prevents misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParseError
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_YamlAssert_PassingQuery_ReturnsZero
@@ -343,6 +348,7 @@ sections:
           invalid JSON prevents misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParseError
           - FileAssert-Modeling-QueryAssertions
         tests:
           - IntegrationTest_JsonAssert_PassingQuery_ReturnsZero
@@ -350,32 +356,42 @@ sections:
 
       - id: FileAssert-System-ZipAssertions
         title: |
-          The FileAssert tool shall evaluate zip archive entry assertions declared in a `zip:` block
-          and return a non-zero exit code when any entry count constraint fails or when the file
-          cannot be opened as a valid zip archive.
+          The FileAssert tool shall evaluate the full content assertion suite on matched zip archive
+          entries declared in a `zip:` block, enforcing count constraints and recursive nesting, and
+          return a non-zero exit code when any assertion fails or when the file cannot be opened as
+          a valid zip archive.
         justification: |
           Zip archives are a common packaging format for build outputs, distribution packages, and
-          compliance artifacts. Entry count constraints allow users to assert that required files
-          are present in the archive without unpacking it. An immediate failure on an invalid zip
-          archive prevents misleading partial results.
+          compliance artifacts. Entry count constraints allow users to assert that required files are
+          present in the archive without unpacking it. Content assertions (text, XML, YAML, JSON) on
+          individual entries allow users to validate the content of packaged files directly from the
+          archive. Recursive nesting lets users validate archives embedded inside other archives. An
+          immediate failure on an invalid zip archive prevents misleading partial results.
         children:
           - FileAssert-Modeling-FileTypeParsing
+          - FileAssert-Modeling-FileTypeParseError
           - FileAssert-FileAssertZipAssert-EntryMatching
         tests:
           - IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
           - IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
+          - IntegrationTest_ZipAssert_TextAssertionPassing_ReturnsZero
+          - IntegrationTest_ZipAssert_TextAssertionFailing_ReturnsNonZero
+          - IntegrationTest_ZipAssert_XmlAssertionPassing_ReturnsZero
+          - IntegrationTest_ZipAssert_NestedZipTextContent_ReturnsZero
+          - IntegrationTest_ZipAssert_FailingContentAssertion_ErrorContainsEntryPath
 
       - id: FileAssert-System-DefaultBehavior
         title: |
-          The FileAssert tool shall display version and copyright information when invoked
-          with no recognized flags.
+          The FileAssert tool shall load and execute the `.fileassert.yaml` configuration file
+          from the current working directory when invoked with no arguments.
         justification: |
-          Displaying the application banner on default invocation follows standard CLI conventions
-          and confirms to users that the tool is installed and running correctly.
+          Running the default-named configuration from the current directory with no arguments
+          provides a zero-configuration entry point for users and CI/CD pipelines, allowing a
+          project to be validated simply by invoking the tool from its root.
         children:
           - FileAssert-Program-DefaultBehavior
         tests:
-          - Program_Run_NoArguments_DisplaysDefaultBehavior
+          - IntegrationTest_DefaultBehavior_RunsConfigFromWorkingDirectory_ReturnsZero
 
       - id: FileAssert-System-DepthFlag
         title: |
@@ -388,6 +404,7 @@ sections:
         children:
           - FileAssert-Context-Depth
         tests:
+          - IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
           - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 
       - id: FileAssert-System-MultiPlatform
@@ -401,7 +418,9 @@ sections:
           - FileAssert-Platform-Linux
           - FileAssert-Platform-MacOS
         tests:
-          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - "windows@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "ubuntu@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "macos@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
 
       - id: FileAssert-System-MultiRuntime
         title: |
@@ -414,4 +433,6 @@ sections:
           - FileAssert-Platform-Net9
           - FileAssert-Platform-Net10
         tests:
-          - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
+          - "net8.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net9.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net10.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"

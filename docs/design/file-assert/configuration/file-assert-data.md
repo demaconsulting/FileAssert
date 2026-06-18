@@ -105,19 +105,12 @@ assertion blocks.
 
 Represents the `zip:` assertion block for a file entry.
 
-| Property   | YAML alias  | Type                               | Description                            |
-| :--------- | :---------- | :--------------------------------- | :------------------------------------- |
-| `Entries`  | `entries`   | `List<FileAssertZipEntryData>?`    | Entry glob pattern constraints.        |
+| Property   | YAML alias  | Type                          | Description                                               |
+| :--------- | :---------- | :---------------------------- | :-------------------------------------------------------- |
+| `Files`    | `files`     | `List<FileAssertFileData>?`   | Full file assertions applied to the zip archive contents. |
 
-##### FileAssertZipEntryData
-
-Represents a single zip archive entry count constraint.
-
-| Property  | YAML alias | Type      | Description                                              |
-| :-------- | :--------- | :-------- | :------------------------------------------------------  |
-| `Pattern` | `pattern`  | `string?` | Glob pattern matched against normalized entry names.     |
-| `Min`     | `min`      | `int?`    | Minimum number of matching entries; null means no bound. |
-| `Max`     | `max`      | `int?`    | Maximum number of matching entries; null means no bound. |
+The `Files` property maps to the `files:` YAML key inside a `zip:` block. Each entry uses the
+same `FileAssertFileData` schema as top-level file assertions.
 
 #### Design Decisions
 
@@ -155,8 +148,7 @@ by YamlDotNet.
 | `FileAssertPdfMetadataRuleData` | `Field?, Contains?, Matches?`                                               |
 | `FileAssertPdfPagesData`        | `Min: int?`, `Max: int?`                                                    |
 | `FileAssertQueryData`           | `Query?, Count?, Min?, Max?`                                                |
-| `FileAssertZipData`             | `Entries: List<FileAssertZipEntryData>?`                                    |
-| `FileAssertZipEntryData`        | `Pattern?, Min?, Max?`                                                      |
+| `FileAssertZipData`             | `Files: List<FileAssertFileData>?` (deserialized from the YAML `files:` key)|
 
 All properties are nullable so that absent YAML keys deserialize cleanly to `null`.
 
@@ -172,7 +164,11 @@ a `YamlException` that propagates directly to `FileAssertConfig.ReadFromFile`. C
 validation (e.g. exactly one rule type per `FileAssertRuleData`) is the responsibility of
 the Modeling subsystem factory methods.
 
-#### Interactions
+#### Dependencies
+
+- None.
+
+#### Callers
 
 - **Populated by**: `YamlDotNet.Serialization.Deserializer` inside `FileAssertConfig.ReadFromFile`
   via `DeserializerBuilder().IgnoreUnmatchedProperties().Build()`.

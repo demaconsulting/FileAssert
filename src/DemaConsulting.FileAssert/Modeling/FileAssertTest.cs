@@ -20,6 +20,7 @@
 
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
+using DemaConsulting.FileAssert.Utilities;
 
 namespace DemaConsulting.FileAssert.Modeling;
 
@@ -122,20 +123,28 @@ internal sealed class FileAssertTest
     /// <summary>
     ///     Executes all file assertions in this test against the specified base directory.
     /// </summary>
+    /// <remarks>
+    ///     The base directory is wrapped in a <see cref="DirectoryFileContainer"/> to provide
+    ///     a uniform file-access abstraction. This allows all file assertions to work identically
+    ///     whether they are applied to a directory or (when called recursively) to a zip archive.
+    /// </remarks>
     /// <param name="context">The context used for reporting errors.</param>
     /// <param name="basePath">The base directory path against which file patterns are evaluated.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="basePath"/> is null.</exception>
-    internal void Run(Context context, string basePath)
+    internal void Run(IContext context, string basePath)
     {
         // Validate required parameters
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(basePath);
 
+        // Wrap the base directory in a container to provide uniform file-access semantics
+        using var container = new DirectoryFileContainer(basePath);
+
         // Execute each file assertion in sequence
         foreach (var file in Files)
         {
-            file.Run(context, basePath);
+            file.Run(context, container);
         }
     }
 }

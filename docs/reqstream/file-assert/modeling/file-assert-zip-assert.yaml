@@ -1,9 +1,10 @@
 ---
 # Software Unit Requirements for the FileAssertZipAssert Class
 #
-# The FileAssertZipAssert class validates zip archive contents by matching entry names against
-# glob patterns and enforcing count constraints. It is invoked by FileAssertFile when a
-# `zip:` assertion block is declared.
+# The FileAssertZipAssert class validates zip archive contents against the full
+# FileAssert assertion suite. It opens a zip entry via IFileContainer, wraps it in
+# a ZipFileContainer, and runs all configured FileAssertFile assertions against the
+# archive contents using a scoped IContext for breadcrumb-style error messages.
 
 sections:
   - title: FileAssertZipAssert Unit Requirements
@@ -11,10 +12,10 @@ sections:
       - id: FileAssert-FileAssertZipAssert-Creation
         title: |
           The FileAssertZipAssert class shall be constructed from a zip assertion data object
-          containing a list of entry pattern constraints.
+          containing a list of file assertions.
         justification: |
-          Constructing entry constraints at creation time rather than at evaluation time avoids
-          repeated per-file construction overhead and allows validation errors (such as missing
+          Constructing file assertions at creation time rather than at evaluation time avoids
+          repeated per-run construction overhead and allows validation errors (such as missing
           patterns) to be reported before any file system operations are attempted.
         tests:
           - FileAssertZipAssert_Create_ValidData_CreatesZipAssert
@@ -23,19 +24,45 @@ sections:
 
       - id: FileAssert-FileAssertZipAssert-EntryMatching
         title: |
-          The FileAssertZipAssert class shall match zip archive entry names against each
-          configured glob pattern and report an error when the match count violates the
-          declared minimum or maximum constraint.
+          The FileAssertZipAssert class shall apply all configured file assertions to the
+          contents of a zip archive entry.
         justification: |
-          Count constraints on zip entry patterns allow users to assert that required
-          artifacts are present in a package archive (minimum) or that unexpected extra
-          entries have not been included (maximum). Both bounds must be checked and reported
-          independently so that all violations are visible in a single pass.
+          Running the full assertion suite (text, xml, html, yaml, json, pdf, recursive zip)
+          against zip entry contents enables the same level of validation inside archives as
+          is possible for on-disk files.
+        children:
+          - FileAssert-FileAssertZipAssert-BreadcrumbErrors
         tests:
           - FileAssertZipAssert_Run_MatchingEntriesMeetConstraints_NoError
           - FileAssertZipAssert_Run_GlobPatternMatchesMultipleEntries_NoError
           - FileAssertZipAssert_Run_TooFewMatchingEntries_WritesError
           - FileAssertZipAssert_Run_TooManyMatchingEntries_WritesError
+          - FileAssertZipAssert_Run_EntryContainsRequiredText_NoError
+          - FileAssertZipAssert_Run_EntryMissingRequiredText_WritesError
+          - FileAssertZipAssert_Run_EntryXmlMatchesXPath_NoError
+          - FileAssertZipAssert_Run_EntryXmlFailsXPath_WritesError
+          - FileAssertZipAssert_Run_EntryHtmlMatchesXPath_NoError
+          - FileAssertZipAssert_Run_EntryPdfMatchesConstraint_NoError
+          - FileAssertZipAssert_Run_EntryYamlMatchesQuery_NoError
+          - FileAssertZipAssert_Run_EntryYamlFailsQuery_WritesError
+          - FileAssertZipAssert_Run_EntryJsonMatchesQuery_NoError
+          - FileAssertZipAssert_Run_EntryJsonFailsQuery_WritesError
+          - FileAssertZipAssert_Run_EntryMeetsMinSizeConstraint_NoError
+          - FileAssertZipAssert_Run_EntryBelowMinSizeConstraint_WritesError
+          - FileAssertZipAssert_Run_EntryMeetsMaxSizeConstraint_NoError
+          - FileAssertZipAssert_Run_EntryExceedsMaxSizeConstraint_WritesError
+          - FileAssertZipAssert_Run_NestedZipTextContent_InnerEntryContentMatches_NoError
+
+      - id: FileAssert-FileAssertZipAssert-BreadcrumbErrors
+        title: |
+          The FileAssertZipAssert class shall prepend the archive entry's display path to
+          every error reported by nested file assertions, producing breadcrumb-style messages.
+        justification: |
+          A scoped IContext prepends the archive entry's display path to every error message,
+          giving users unambiguous breadcrumb-style context that identifies exactly which
+          archive entry failed which assertion.
+        tests:
+          - FileAssertZipAssert_Run_ContentAssertionFails_ErrorContainsBreadcrumbs
 
       - id: FileAssert-FileAssertZipAssert-ParseError
         title: |

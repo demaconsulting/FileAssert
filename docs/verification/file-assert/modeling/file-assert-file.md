@@ -17,9 +17,9 @@ special hardware, peripherals, or environment configuration is required.
 
 #### Acceptance Criteria
 
-N/A – Acceptance criteria are managed at the subsystem and system integration levels.
-Unit tests provide fine-grained coverage evidence; formal acceptance is declared at the
-subsystem level when all unit tests supporting a subsystem requirement pass.
+All listed unit test scenarios pass on every supported platform and runtime combination. No
+test failures, unhandled exceptions, or assertion errors occur. Code coverage for `FileAssertFile.cs`
+meets the project minimum threshold.
 
 #### Dependencies
 
@@ -34,8 +34,6 @@ subsystem level when all unit tests supporting a subsystem requirement pass.
 **Scenario**: `FileAssertFile.Create` is called with valid data containing a pattern.
 
 **Expected**: A non-null `FileAssertFile` instance is returned.
-
-**Requirement coverage**: File entry creation requirement.
 
 ##### FileAssertFile_Create_NullData_ThrowsArgumentNullException
 
@@ -135,21 +133,3 @@ file is larger than the maximum.
 **Scenario**: Multiple files match the pattern; more than one fails a content rule.
 
 **Expected**: A separate error is written for each violation; exit code is non-zero.
-
-#### Requirements Coverage
-
-- **File entry creation**: FileAssertFile_Create_ValidData_CreatesFile
-- **Null/blank pattern guards**: FileAssertFile_Create_NullData_ThrowsArgumentNullException,
-  FileAssertFile_Create_NullPattern_ThrowsInvalidOperationException,
-  FileAssertFile_Create_BlankPattern_ThrowsInvalidOperationException
-- **Count constraints**: FileAssertFile_Run_TooFewFiles_WritesError,
-  FileAssertFile_Run_TooManyFiles_WritesError, FileAssertFile_Run_WrongCount_WritesError
-- **Size constraints**: FileAssertFile_Run_TooSmall_WritesError,
-  FileAssertFile_Run_TooLarge_WritesError,
-  FileAssertFile_Run_MultipleFiles_MultipleViolateSizeConstraints_WritesErrorForEachViolation
-- **Content rules**: FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
-  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError,
-  FileAssertFile_Run_MultipleFiles_MultipleFailContentRule_WritesErrorForEachViolation
-- **File-type assert delegation**: FileAssertFile_Create_ValidData_CreatesFile,
-  FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError,
-  FileAssertFile_Run_WithContentRule_ContentMissingValue_WritesError

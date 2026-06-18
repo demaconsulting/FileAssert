@@ -102,7 +102,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(0, context.ExitCode);
@@ -123,7 +124,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(0, context.ExitCode);
@@ -143,7 +145,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -165,7 +168,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -190,7 +194,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(0, context.ExitCode);
@@ -215,7 +220,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -237,7 +243,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -258,7 +265,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -279,7 +287,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert
         Assert.Equal(1, context.ExitCode);
@@ -303,7 +312,8 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert - both invalid files should trigger errors regardless of enumeration order
         Assert.Equal(1, context.ExitCode);
@@ -332,11 +342,35 @@ public class FileAssertFileTests
         using var context = Context.Create(["--silent"]);
 
         // Act
-        file.Run(context, tempDir.DirectoryPath);
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
 
         // Assert - both bad files should trigger errors regardless of enumeration order
         Assert.Equal(1, context.ExitCode);
         Assert.Equal(2, context.ErrorCount);
+    }
 
+    /// <summary>
+    ///     Verifies that a glob pattern containing backslash separators (common on Windows) still
+    ///     matches container entries whose paths are normalized to forward slashes.
+    /// </summary>
+    [Fact]
+    public void FileAssertFile_Run_BackslashPattern_MatchesForwardSlashEntries_NoError()
+    {
+        // Arrange - a file in a subdirectory; the pattern uses backslash separators
+        using var tempDir = new TemporaryDirectory();
+        var subDir = Path.Combine(tempDir.DirectoryPath, "sub");
+        Directory.CreateDirectory(subDir);
+        File.WriteAllText(Path.Combine(subDir, "file.txt"), "content");
+        var data = new FileAssertFileData { Pattern = @"sub\file.txt", Count = 1 };
+        var file = FileAssertFile.Create(data);
+        using var context = Context.Create(["--silent"]);
+
+        // Act
+        using var container = new DirectoryFileContainer(tempDir.DirectoryPath);
+        file.Run(context, container);
+
+        // Assert - backslash pattern must match the forward-slash normalized entry
+        Assert.Equal(0, context.ExitCode);
     }
 }

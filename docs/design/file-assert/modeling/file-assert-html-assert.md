@@ -14,20 +14,20 @@ matching nodes.
 
 The main class coordinating XPath-based node count assertions for an HTML file.
 
-###### FileAssertHtmlAssert Properties
+###### FileAssertHtmlAssert Fields
 
-| Property  |
-| :-------- |
-| `Queries` |
+| Field      | Type                       | Description             |
+| :--------- | :------------------------- | :---------------------- |
+| `_queries` | `IReadOnlyList<HtmlQuery>` | XPath query assertions. |
 
-Each `HtmlQuery` entry holds:
+Each `HtmlQuery` private nested record holds:
 
-| Property |
-| :------- |
-| `Query`  |
-| `Count`  |
-| `Min`    |
-| `Max`    |
+| Property | Type     | Description                      |
+| :------- | :------- | :------------------------------- |
+| `Query`  | `string` | XPath query to evaluate.         |
+| `Count`  | `int?`   | Exact number of matched nodes.   |
+| `Min`    | `int?`   | Minimum number of matched nodes. |
+| `Max`    | `int?`   | Maximum number of matched nodes. |
 
 ###### FileAssertHtmlAssert Factory
 
@@ -38,7 +38,7 @@ internal static FileAssertHtmlAssert Create(IEnumerable<FileAssertQueryData> dat
 ###### FileAssertHtmlAssert Run
 
 ```csharp
-internal void Run(Context context, string fileName)
+internal void Run(IContext context, IFileContainer container, string entryPath)
 ```
 
 Execution proceeds in the following steps:
@@ -99,41 +99,44 @@ constraints per query.
 
 #### Data Model
 
-| Field / Property |
-| :--------------- |
-| `Queries`        |
+| Field / Property | Type                       | Description                             |
+| :--------------- | :------------------------- | :-------------------------------------- |
+| `_queries`       | `IReadOnlyList<HtmlQuery>` | Ordered list of XPath query assertions. |
 
 Each `HtmlQuery` (private nested record) holds:
 
-| Property |
-| :------- |
-| `Query`  |
-| `Count`  |
-| `Min`    |
-| `Max`    |
+| Property | Type     | Description                              |
+| :------- | :------- | :--------------------------------------- |
+| `Query`  | `string` | XPath query to evaluate.                 |
+| `Count`  | `int?`   | Expected exact node count; `null` = N/A. |
+| `Min`    | `int?`   | Minimum node count; `null` = no bound.   |
+| `Max`    | `int?`   | Maximum node count; `null` = no bound.   |
 
 #### Key Methods
 
-| Method                                          |
-| :---------------------------------------------- |
-| `Create(IEnumerable<FileAssertQueryData> data)` |
-| `Run(Context context, string fileName)`         |
+| Method                                          | Purpose                                              |
+| :---------------------------------------------- | :--------------------------------------------------- |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `HtmlQuery` instances.        |
+| `Run(IContext, IFileContainer, string)`         | Parses the HTML file and evaluates each XPath query. |
 
 #### Error Handling
 
-| Scenario                                                                 |
-| :----------------------------------------------------------------------- |
-| `IOException` or `UnauthorizedAccessException` while loading the file    |
-| Query XPath expression is invalid (`XPathException`)                     |
-| Query result below `Min`                                                 |
-| Query result above `Max`                                                 |
-| Query result not equal to `Count`                                        |
+| Scenario                                                              | Handling                                                             |
+| :-------------------------------------------------------------------- | :------------------------------------------------------------------- |
+| `IOException` or `UnauthorizedAccessException` while loading the file | Error written via `context.WriteError`; `Run` returns immediately.   |
+| Query XPath expression is invalid (`XPathException`)                  | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result below `Min`                                              | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result above `Max`                                              | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result not equal to `Count`                                     | Error written via `context.WriteError`; subsequent queries continue. |
 
-#### Interactions
+#### Dependencies
 
-- **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, fileName)` when the `html:`
-  assertion block is declared.
-- **Created by**: `FileAssertFile.Create` via `FileAssertHtmlAssert.Create`.
 - **OTS dependency**: `HtmlAgilityPack.HtmlDocument` for lenient HTML parsing and
   `HtmlDocument.DocumentNode.SelectNodes` for XPath evaluation.
 - **Configuration dependency**: `FileAssertQueryData` DTOs from the Configuration subsystem.
+
+#### Callers
+
+- **Caller**: `FileAssertFile.Run` calls `HtmlAssert.Run(context, container, entryPath)` when the `html:`
+  assertion block is declared.
+- **Created by**: `FileAssertFile.Create` via `FileAssertHtmlAssert.Create`.

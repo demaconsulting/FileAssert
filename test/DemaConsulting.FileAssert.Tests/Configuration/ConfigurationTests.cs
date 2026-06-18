@@ -174,4 +174,51 @@ public class ConfigurationTests
         Assert.True(File.Exists(resultsPath),
             "TRX results file should be written when --results is provided.");
     }
+
+    /// <summary>
+    ///     Verifies that the Configuration subsystem writes a JUnit XML results file
+    ///     when a results path with an `.xml` extension is provided to the context.
+    /// </summary>
+    [Fact]
+    public void Configuration_Run_WithResultsFile_WritesJUnitResultsFile()
+    {
+        // Arrange
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("config.yaml");
+        var resultsPath = tempDir.GetFilePath("results.xml");
+        File.WriteAllText(configPath, """
+            tests:
+              - name: "Exists Check"
+                files:
+                  - pattern: "*.yaml"
+                    min: 1
+            """);
+
+        var config = FileAssertConfig.ReadFromFile(configPath);
+        using var context = Context.Create(["--silent", "--results", resultsPath]);
+
+        // Act
+        config.Run(context, []);
+
+        // Assert - a JUnit XML results file was written with the expected root element
+        Assert.True(File.Exists(resultsPath),
+            "JUnit results file should be written when --results with an .xml path is provided.");
+        var contents = File.ReadAllText(resultsPath);
+        Assert.Contains("<testsuites", contents);
+    }
+
+    /// <summary>
+    ///     Verifies that ReadFromFile throws when the YAML is syntactically invalid.
+    /// </summary>
+    [Fact]
+    public void Configuration_ReadFromFile_InvalidYaml_ThrowsException()
+    {
+        // Arrange - write syntactically broken YAML
+        using var tempDir = new TemporaryDirectory();
+        var configPath = tempDir.GetFilePath("bad.yaml");
+        File.WriteAllText(configPath, "tests: [unclosed bracket");
+
+        // Act / Assert - invalid YAML must not silently produce an empty config
+        Assert.ThrowsAny<Exception>(() => FileAssertConfig.ReadFromFile(configPath));
+    }
 }
