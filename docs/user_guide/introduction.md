@@ -130,10 +130,10 @@ Example validation report:
 
 | Information         | Value                                              |
 | :------------------ | :------------------------------------------------- |
-| Tool Version        | 0.0.0+1595b5c3a7673e262cfbfeed874b23c1384233a3     |
-| Machine Name        | runnervm7b5n9                                      |
-| OS Version          | Ubuntu 24.04.4 LTS                                 |
-| DotNet Runtime      | .NET 10.0.9                                        |
+| Tool Version        | <version>                                          |
+| Machine Name        | <machine-name>                                     |
+| OS Version          | <os-version>                                       |
+| DotNet Runtime      | <dotnet-runtime-version>                           |
 | Time Stamp          | 2026-06-21 15:48:28 UTC                            |
 
 ✓ FileAssert_VersionDisplay - Passed
