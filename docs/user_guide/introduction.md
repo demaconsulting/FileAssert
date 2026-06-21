@@ -130,20 +130,26 @@ Example validation report:
 
 | Information         | Value                                              |
 | :------------------ | :------------------------------------------------- |
-| Tool Version        | 1.0.0                                              |
-| Machine Name        | BUILD-SERVER                                       |
-| OS Version          | Ubuntu 22.04.3 LTS                                 |
-| DotNet Runtime      | .NET 10.0.0                                        |
-| Time Stamp          | 2024-01-15 10:30:00 UTC                            |
+| Tool Version        | <version>                                          |
+| Machine Name        | <machine-name>                                     |
+| OS Version          | <os-version>                                       |
+| DotNet Runtime      | <dotnet-runtime-version>                           |
+| Time Stamp          | <timestamp>                                        |
 
 ✓ FileAssert_VersionDisplay - Passed
 ✓ FileAssert_HelpDisplay - Passed
 ✓ FileAssert_Results - Passed
-✓ FileAssert_Exists - Passed
-✓ FileAssert_Contains - Passed
+✓ FileAssert_File - Passed
+✓ FileAssert_Text - Passed
+✓ FileAssert_Html - Passed
+✓ FileAssert_Xml - Passed
+✓ FileAssert_Yaml - Passed
+✓ FileAssert_Json - Passed
+✓ FileAssert_Pdf - Passed
+✓ FileAssert_Zip - Passed
 
-Total Tests: 5
-Passed: 5
+Total Tests: 11
+Passed: 11
 Failed: 0
 ```
 
@@ -154,8 +160,14 @@ Each test proves specific functionality works correctly:
 - **`FileAssert_VersionDisplay`** - `--version` outputs a valid version string.
 - **`FileAssert_HelpDisplay`** - `--help` outputs usage and options information.
 - **`FileAssert_Results`** - `--results` generates test results with pass and fail outcomes.
-- **`FileAssert_Exists`** - `--config` verifies file-existence via glob pattern.
-- **`FileAssert_Contains`** - `--config` verifies file content with contains assertions.
+- **`FileAssert_File`** - `--config` verifies file-existence via glob pattern.
+- **`FileAssert_Text`** - `--config` verifies file content with contains assertions.
+- **`FileAssert_Html`** - `--config` verifies HTML XPath assertions.
+- **`FileAssert_Xml`** - `--config` verifies XML XPath assertions.
+- **`FileAssert_Yaml`** - `--config` verifies YAML key-path assertions.
+- **`FileAssert_Json`** - `--config` verifies JSON key-path assertions.
+- **`FileAssert_Pdf`** - `--config` verifies PDF metadata and text assertions.
+- **`FileAssert_Zip`** - `--config` verifies zip archive entry assertions.
 
 ## Silent Mode
 

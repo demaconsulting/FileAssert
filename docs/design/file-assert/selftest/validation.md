@@ -9,6 +9,12 @@ file.
 
 #### Class Structure
 
+`Validation` is implemented as a `partial class` spread across 9 source files:
+`Validation.cs`, `ValidationFile.cs`, `ValidationText.cs`, `ValidationHtml.cs`,
+`ValidationXml.cs`, `ValidationYaml.cs`, `ValidationJson.cs`, `ValidationPdf.cs`,
+and `ValidationZip.cs`. The orchestrating `Run()` method and shared utilities remain
+in `Validation.cs`; each per-type test method lives in its own file.
+
 ##### Run Method
 
 ```csharp
@@ -31,8 +37,14 @@ Entry point for self-validation. Executes the following steps:
 | `FileAssert_VersionDisplay` |
 | `FileAssert_HelpDisplay`    |
 | `FileAssert_Results`        |
-| `FileAssert_Exists`         |
-| `FileAssert_Contains`       |
+| `FileAssert_File`           |
+| `FileAssert_Text`           |
+| `FileAssert_Html`           |
+| `FileAssert_Xml`            |
+| `FileAssert_Yaml`           |
+| `FileAssert_Json`           |
+| `FileAssert_Pdf`            |
+| `FileAssert_Zip`            |
 
 Each test is dispatched via `RunValidationTest`, which handles the common boilerplate:
 
@@ -108,8 +120,14 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 | `RunVersionTest(Context, TestResults)` *(private)*                           |
 | `RunHelpTest(Context, TestResults)` *(private)*                              |
 | `RunResultsTest(Context, TestResults)` *(private)*                           |
-| `RunExistsTest(Context, TestResults)` *(private)*                            |
-| `RunContainsTest(Context, TestResults)` *(private)*                          |
+| `RunFileTest(Context, TestResults)` *(private)*                              |
+| `RunTextTest(Context, TestResults)` *(private)*                              |
+| `RunHtmlTest(Context, TestResults)` *(private)*                              |
+| `RunXmlTest(Context, TestResults)` *(private)*                               |
+| `RunYamlTest(Context, TestResults)` *(private)*                              |
+| `RunJsonTest(Context, TestResults)` *(private)*                              |
+| `RunPdfTest(Context, TestResults)` *(private)*                               |
+| `RunZipTest(Context, TestResults)` *(private)*                               |
 | `RunValidationTest(Context, TestResults, string, Func<string?>)` *(private)* |
 | `WriteResultsFile(Context, TestResults)` *(private)*                         |
 | `CreateTestResult(string)` *(private)*                                       |

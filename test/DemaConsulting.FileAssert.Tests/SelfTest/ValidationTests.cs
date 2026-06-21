@@ -194,25 +194,91 @@ public class ValidationTests
     }
 
     /// <summary>
-    ///     Test that Run logs a passing FileAssert_Exists result.
+    ///     Test that Run logs a passing FileAssert_File result.
     /// </summary>
     [Fact]
-    public void Validation_Run_WithSilentContext_LogContainsFileAssertExists()
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertFile()
     {
         // Act & Assert
-        // Proves that the FileAssert_Exists self-validation test is executed and passes.
-        AssertLogContains("✓ FileAssert_Exists - Passed");
+        // Proves that the FileAssert_File self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_File - Passed");
     }
 
     /// <summary>
-    ///     Test that Run logs a passing FileAssert_Contains result.
+    ///     Test that Run logs a passing FileAssert_Text result.
     /// </summary>
     [Fact]
-    public void Validation_Run_WithSilentContext_LogContainsFileAssertContains()
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertText()
     {
         // Act & Assert
-        // Proves that the FileAssert_Contains self-validation test is executed and passes.
-        AssertLogContains("✓ FileAssert_Contains - Passed");
+        // Proves that the FileAssert_Text self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Text - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Html result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertHtml()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Html self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Html - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Xml result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertXml()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Xml self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Xml - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Yaml result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertYaml()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Yaml self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Yaml - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Json result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertJson()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Json self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Json - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Pdf result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertPdf()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Pdf self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Pdf - Passed");
+    }
+
+    /// <summary>
+    ///     Test that Run logs a passing FileAssert_Zip result.
+    /// </summary>
+    [Fact]
+    public void Validation_Run_WithSilentContext_LogContainsFileAssertZip()
+    {
+        // Act & Assert
+        // Proves that the FileAssert_Zip self-validation test is executed and passes.
+        AssertLogContains("✓ FileAssert_Zip - Passed");
     }
 
     /// <summary>

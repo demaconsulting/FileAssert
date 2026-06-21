@@ -19,8 +19,14 @@ sections:
           - FileAssert-Validation-Run
           - FileAssert-Validation-Results
           - FileAssert-Validation-ResultsTest
-          - FileAssert-Validation-ExistsTest
-          - FileAssert-Validation-ContainsTest
+          - FileAssert-Validation-FileTest
+          - FileAssert-Validation-TextTest
+          - FileAssert-Validation-HtmlTest
+          - FileAssert-Validation-XmlTest
+          - FileAssert-Validation-YamlTest
+          - FileAssert-Validation-JsonTest
+          - FileAssert-Validation-PdfTest
+          - FileAssert-Validation-ZipTest
           - FileAssert-Validation-NullContext
           - FileAssert-Validation-Depth
         tests:
