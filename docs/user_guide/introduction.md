@@ -134,7 +134,7 @@ Example validation report:
 | Machine Name        | <machine-name>                                     |
 | OS Version          | <os-version>                                       |
 | DotNet Runtime      | <dotnet-runtime-version>                           |
-| Time Stamp          | 2026-06-21 15:48:28 UTC                            |
+| Time Stamp          | <timestamp>                                        |
 
 ✓ FileAssert_VersionDisplay - Passed
 ✓ FileAssert_HelpDisplay - Passed
