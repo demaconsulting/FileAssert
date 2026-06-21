@@ -86,17 +86,53 @@ is written to `context` indicating the unsupported format.
 
 **Expected**: The log contains FileAssert results output.
 
-##### Validation_Run_WithSilentContext_LogContainsFileAssertExists
+##### Validation_Run_WithSilentContext_LogContainsFileAssertFile
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
-**Expected**: The log contains output from the FileAssert "exists" self-validation test.
+**Expected**: The log contains output from the `FileAssert_File` self-validation test.
 
-##### Validation_Run_WithSilentContext_LogContainsFileAssertContains
+##### Validation_Run_WithSilentContext_LogContainsFileAssertText
 
 **Scenario**: `Validation.Run` is called with a context that has logging enabled.
 
-**Expected**: The log contains output from the FileAssert "contains" self-validation test.
+**Expected**: The log contains output from the `FileAssert_Text` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertHtml
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Html` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertXml
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Xml` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertYaml
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Yaml` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertJson
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Json` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertPdf
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Pdf` self-validation test.
+
+##### Validation_Run_WithSilentContext_LogContainsFileAssertZip
+
+**Scenario**: `Validation.Run` is called with a context that has logging enabled.
+
+**Expected**: The log contains output from the `FileAssert_Zip` self-validation test.
 
 ##### Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
 

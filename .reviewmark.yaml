@@ -143,7 +143,7 @@ reviews:
       - "docs/reqstream/file-assert/selftest/validation.yaml"        # requirements
       - "docs/design/file-assert/selftest/validation.md"             # design
       - "docs/verification/file-assert/selftest/validation.md"       # verification
-      - "src/**/SelfTest/Validation.cs"                              # implementation
+      - "src/**/SelfTest/Validation*.cs"                             # implementation
       - "test/**/SelfTest/ValidationTests.cs"                        # unit tests
 
   # FileAssert-Utilities-PathHelpers Review (one per unit)

@@ -36,23 +36,77 @@ sections:
         tests:
           - Validation_Run_WithSilentContext_LogContainsFileAssertResults
 
-      - id: FileAssert-Validation-ExistsTest
+      - id: FileAssert-Validation-FileTest
         title: The Validation class shall include a self-test that verifies file-existence checking.
         justification: |
           Demonstrates that glob-pattern file-existence assertions work correctly in the
           deployment environment, providing evidence that the core file-matching feature
           is functioning as expected.
         tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertExists
+          - Validation_Run_WithSilentContext_LogContainsFileAssertFile
 
-      - id: FileAssert-Validation-ContainsTest
-        title: The Validation class shall include a self-test that verifies file-content checking.
+      - id: FileAssert-Validation-TextTest
+        title: The Validation class shall include a self-test that verifies text-content checking.
         justification: |
           Demonstrates that text-contains assertions work correctly in the deployment
           environment, providing evidence that the file content inspection feature
           is functioning as expected.
         tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertContains
+          - Validation_Run_WithSilentContext_LogContainsFileAssertText
+
+      - id: FileAssert-Validation-HtmlTest
+        title: The Validation class shall include a self-test that verifies HTML assertion checking.
+        justification: |
+          Demonstrates that HTML XPath assertions work correctly in the deployment
+          environment, providing evidence that the HTML content inspection feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertHtml
+
+      - id: FileAssert-Validation-XmlTest
+        title: The Validation class shall include a self-test that verifies XML assertion checking.
+        justification: |
+          Demonstrates that XML XPath assertions work correctly in the deployment
+          environment, providing evidence that the XML content inspection feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertXml
+
+      - id: FileAssert-Validation-YamlTest
+        title: The Validation class shall include a self-test that verifies YAML assertion checking.
+        justification: |
+          Demonstrates that YAML dot-path assertions work correctly in the deployment
+          environment, providing evidence that the YAML content inspection feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertYaml
+
+      - id: FileAssert-Validation-JsonTest
+        title: The Validation class shall include a self-test that verifies JSON assertion checking.
+        justification: |
+          Demonstrates that JSON dot-path assertions work correctly in the deployment
+          environment, providing evidence that the JSON content inspection feature
+          is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertJson
+
+      - id: FileAssert-Validation-PdfTest
+        title: The Validation class shall include a self-test that verifies PDF assertion checking.
+        justification: |
+          Demonstrates that PDF metadata and text assertions work correctly in the
+          deployment environment, providing evidence that the PDF content inspection
+          feature is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertPdf
+
+      - id: FileAssert-Validation-ZipTest
+        title: The Validation class shall include a self-test that verifies ZIP assertion checking.
+        justification: |
+          Demonstrates that ZIP nested file assertions work correctly in the
+          deployment environment, providing evidence that the ZIP archive inspection
+          feature is functioning as expected.
+        tests:
+          - Validation_Run_WithSilentContext_LogContainsFileAssertZip
 
       - id: FileAssert-Validation-NullContext
         title: The Validation class shall reject a null context argument.

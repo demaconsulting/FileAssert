@@ -53,8 +53,16 @@ internal static partial class Validation
         RunVersionTest(context, testResults);
         RunHelpTest(context, testResults);
         RunResultsTest(context, testResults);
-        RunExistsTest(context, testResults);
-        RunContainsTest(context, testResults);
+
+        // Run per-assertion-type tests
+        RunFileTest(context, testResults);
+        RunTextTest(context, testResults);
+        RunHtmlTest(context, testResults);
+        RunXmlTest(context, testResults);
+        RunYamlTest(context, testResults);
+        RunJsonTest(context, testResults);
+        RunPdfTest(context, testResults);
+        RunZipTest(context, testResults);
 
         // Calculate totals
         var totalTests = testResults.Results.Count;
@@ -210,81 +218,6 @@ internal static partial class Validation
             }
 
             return File.Exists(resultsFile) ? null : "Results file was not created";
-        });
-    }
-
-    /// <summary>
-    ///     Runs a test for file-existence checking via glob pattern.
-    /// </summary>
-    /// <param name="context">The context for output.</param>
-    /// <param name="testResults">The test results collection.</param>
-    private static void RunExistsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
-    {
-        RunValidationTest(context, testResults, "FileAssert_Exists", () =>
-        {
-            using var tempDir = new TemporaryDirectory();
-            var configFile = tempDir.GetFilePath(".fileassert.yaml");
-
-            // Create a text file that the glob pattern should match
-            File.WriteAllText(tempDir.GetFilePath("hello.txt"), "Hello World");
-
-            // Write a config that verifies exactly one .txt file exists in the directory
-            File.WriteAllText(configFile,
-                """
-                tests:
-                  - name: FileAssert_Exists_Test
-                    files:
-                      - pattern: "*.txt"
-                        count: 1
-                """);
-
-            // Run the program
-            int exitCode;
-            using (var testContext = Context.Create(["--silent", "--config", configFile]))
-            {
-                Program.Run(testContext);
-                exitCode = testContext.ExitCode;
-            }
-
-            return exitCode == 0 ? null : $"Program exited with code {exitCode}";
-        });
-    }
-
-    /// <summary>
-    ///     Runs a test for file-contains checking.
-    /// </summary>
-    /// <param name="context">The context for output.</param>
-    /// <param name="testResults">The test results collection.</param>
-    private static void RunContainsTest(Context context, DemaConsulting.TestResults.TestResults testResults)
-    {
-        RunValidationTest(context, testResults, "FileAssert_Contains", () =>
-        {
-            using var tempDir = new TemporaryDirectory();
-            var configFile = tempDir.GetFilePath(".fileassert.yaml");
-
-            // Create a text file with known content for the contains assertion
-            File.WriteAllText(tempDir.GetFilePath("hello.txt"), "Hello World");
-
-            // Write a config that verifies the file contains the expected text
-            File.WriteAllText(configFile,
-                """
-                tests:
-                  - name: FileAssert_Contains_Test
-                    files:
-                      - pattern: "*.txt"
-                        text:
-                          - contains: "Hello World"
-                """);
-
-            // Run the program
-            int exitCode;
-            using (var testContext = Context.Create(["--silent", "--config", configFile]))
-            {
-                Program.Run(testContext);
-                exitCode = testContext.ExitCode;
-            }
-
-            return exitCode == 0 ? null : $"Program exited with code {exitCode}";
         });
     }
 
