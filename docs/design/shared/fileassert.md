@@ -1,53 +1,42 @@
 ## FileAssert Shared Package Design
 
 DemaConsulting.FileAssert is the tool developed by this project. An earlier released version of it
-is also consumed within this project's own CI pipeline to validate generated documents and to
-produce self-validation evidence. Because this repository uses its own published package, it is
-classified as a **Shared Package** rather than OTS.
+is consumed within this project's own CI pipeline to validate generated documents and to produce
+self-validation evidence. Because this repository uses its own published package, it is classified
+as a **Shared Package** rather than OTS.
 
-### Purpose
+### Advertised Features Consumed
 
-FileAssert validates HTML and PDF documents produced during the build pipeline, asserting that
-each document exists, has a non-trivial size, is structurally valid, and contains expected
-content. Its built-in self-validation suite (`--validate`) is run as a CI step to produce TRX
-test evidence satisfying the `FileAssert-Shared-FileAssert` requirement.
+The following advertised features of the released FileAssert package are consumed by this project,
+each corresponding to a requirement in the FileAssert Shared Package Software Requirements:
 
-FileAssert is chosen because it directly implements the project's own document-assertion
-capability, making its CI use a natural dogfooding exercise that simultaneously validates the
-tool and provides compliance evidence for the document pipeline.
+| Requirement                            | Feature Consumed                                               |
+| :------------------------------------- | :------------------------------------------------------------- |
+| `FileAssert-Shared-FileAssert-Results` | `--results <file>` writes TRX test result files for ReqStream  |
+| `FileAssert-Shared-FileAssert-File`    | `count:` assertion confirms file existence via glob patterns   |
+| `FileAssert-Shared-FileAssert-Text`    | `text: contains:` asserts text content of generated HTML files |
+| `FileAssert-Shared-FileAssert-Html`    | `html: query:` asserts HTML document structure via XPath       |
+| `FileAssert-Shared-FileAssert-Pdf`     | `pdf:` asserts PDF metadata fields, page count, and body text  |
 
-### Integration
+### Integration Pattern
 
 FileAssert is installed as a .NET local tool defined in `.config/dotnet-tools.json` under the
-package name `demaconsulting.fileassert` and restored with `dotnet tool restore`. The CI
-pipeline uses it in two ways:
+package name `demaconsulting.fileassert` and restored with `dotnet tool restore` at the start of
+each CI job. No wrapper code is written; the tool is invoked directly via two command patterns:
 
-- **Self-validation**: `fileassert --validate --results artifacts/fileassert-self-validation.trx`
-  runs the built-in self-validation suite and writes TRX output for ReqStream consumption.
-- **Document assertion**: `fileassert --config <file> --results <trx-file>` validates specific
-  generated HTML and PDF files throughout the pipeline using YAML configuration files.
+- `dotnet fileassert --validate --results <trx-file>` — runs the built-in self-validation suite
+  and writes TRX output consumed by ReqStream to satisfy the shared-package requirements.
+- `dotnet fileassert --config <file> --results <trx-file>` — runs document assertions defined in
+  `.fileassert.yaml` YAML configuration files checked in alongside the generated documents.
 
-### Configuration
+A non-zero exit code from either invocation causes the CI job to fail immediately.
 
-When used for document validation, FileAssert reads `.fileassert.yaml` configuration files that
-define the glob patterns and acceptance criteria for each document type. These YAML files are
-checked in alongside the documents they validate. When run with `--validate`, no configuration
-file is required; the built-in test suite is used.
+### Assumptions
 
-### Interfaces
-
-The project uses the following FileAssert command-line interfaces:
-
-| Invocation                                                   | Effect                                             |
-| :----------------------------------------------------------- | :------------------------------------------------- |
-| `dotnet fileassert --validate --results <trx-file>`          | Runs self-validation and writes TRX results        |
-| `dotnet fileassert --config <file> --results <trx-file>`     | Runs document assertions from a YAML configuration |
-
-The TRX output from `--results` is consumed by ReqStream to satisfy `FileAssert-Shared-FileAssert`.
-
-### Dependencies
-
-FileAssert operates as an isolated tool process. Its NuGet dependencies — PdfPig,
-HtmlAgilityPack, YamlDotNet, Microsoft.Extensions.FileSystemGlobbing, and
-DemaConsulting.TestResults — are bundled within the tool and do not affect the main project's
-dependency graph or the published NuGet package.
+- The released package's self-validation test names (`FileAssert_Results`, `FileAssert_File`,
+  `FileAssert_Text`, `FileAssert_Html`, `FileAssert_Pdf`) remain stable across patch versions and
+  are present in the TRX output produced by `--validate`.
+- The `--results` flag produces a valid TRX file parseable by ReqStream.
+- The `count:`, `text:`, `html:`, and `pdf:` YAML assertion keys behave as documented in the
+  FileAssert User Guide for the pinned version.
+- The tool exits non-zero when any assertion fails, causing CI to fail immediately.
