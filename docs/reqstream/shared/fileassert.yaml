@@ -1,0 +1,35 @@
+---
+# FileAssert Shared Package Software Requirements
+#
+# Requirements for the FileAssert document assertion tool functionality.
+# FileAssert is classified as a Shared Package because this repository uses an earlier
+# released version of itself in CI - a project cannot treat its own package as OTS.
+
+sections:
+  - title: Shared Package Software Requirements
+    sections:
+      - title: FileAssert Requirements
+        requirements:
+          - id: FileAssert-Shared-FileAssert
+            title: FileAssert shall validate generated documents against acceptance criteria.
+            justification: |
+              DemaConsulting.FileAssert validates HTML and PDF documents produced during the
+              build, asserting that each document exists, is structurally valid, has correct
+              metadata, and contains expected content. It provides verification evidence for
+              Pandoc and WeasyPrint and independently confirms file assertion is functioning.
+              Self-validation proves the tool itself is operational before ReqStream consumes
+              the results.
+            tags: [shared]
+            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
+            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
+            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
+            # Tests are selected to cover the specific assertion types used by this project:
+            # file existence (count), text content, HTML structure, and PDF metadata/pages/text.
+            tests:
+              - FileAssert_VersionDisplay
+              - FileAssert_HelpDisplay
+              - FileAssert_Results
+              - FileAssert_File
+              - FileAssert_Text
+              - FileAssert_Html
+              - FileAssert_Pdf

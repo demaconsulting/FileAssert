@@ -25,7 +25,6 @@ builds and provides an audit record of which tool version produced each release 
 | OTS Item    | Role                                                                         |
 | :---------- | :--------------------------------------------------------------------------- |
 | BuildMark   | Generates build-notes documentation from GitHub Actions metadata             |
-| FileAssert  | Validates generated HTML and PDF documents against acceptance criteria       |
 | Pandoc      | Converts Markdown source documents to HTML for each document collection      |
 | ReqStream   | Enforces requirements traceability against TRX test-result files             |
 | ReviewMark  | Generates review plan and review report from the review configuration        |
@@ -35,12 +34,15 @@ builds and provides an audit record of which tool version produced each release 
 | WeasyPrint  | Converts HTML documents to PDF for release artifact archiving                |
 | xUnit       | Discovers, executes, and reports unit tests; produces TRX output             |
 
+> **Note**: FileAssert is not an OTS item for this project. Because this project consumes an
+> earlier released version of its own package in CI, it is classified as a **Shared Package**.
+> See the _Shared Package Integration Design_ section for details.
+
 ## Per-Item Design
 
 Detailed design for each OTS item is provided in the following sections of this document:
 
 - See _BuildMark OTS Design_ for the build-notes generation tool.
-- See _FileAssert OTS Design_ for the document assertion tool.
 - See _Pandoc OTS Design_ for the Markdown-to-HTML conversion tool.
 - See _ReqStream OTS Design_ for the requirements traceability enforcement tool.
 - See _ReviewMark OTS Design_ for the review plan and report generation tool.
@@ -83,7 +85,7 @@ manifest outside of the design artifact set.
 
 OTS items in this project fall into two integration categories:
 
-- **dotnet global tools** (BuildMark, FileAssert, Pandoc, ReqStream, ReviewMark, SarifMark,
+- **dotnet global tools** (BuildMark, Pandoc, ReqStream, ReviewMark, SarifMark,
   SonarMark, VersionMark, WeasyPrint) — installed globally in the CI environment via
   `dotnet tool restore` from `.config/dotnet-tools.json` and invoked as command-line executables
   within GitHub Actions workflow steps. No wrapper code is written; tools are invoked directly

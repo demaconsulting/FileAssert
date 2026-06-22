@@ -335,13 +335,13 @@ reviews:
       - "docs/design/ots/buildmark.md"                               # OTS design
       - "docs/verification/ots/buildmark.md"                         # OTS verification
 
-  # FileAssert-OTS-FileAssert Review
-  - id: FileAssert-OTS-FileAssert
-    title: Review FileAssert OTS FileAssert Requirements and Verification
+  # FileAssert-Shared-FileAssert Review
+  - id: FileAssert-Shared-FileAssert
+    title: Review FileAssert Shared Package FileAssert Requirements and Verification
     paths:
-      - "docs/reqstream/ots/fileassert.yaml"                         # OTS requirements
-      - "docs/design/ots/fileassert.md"                              # OTS design
-      - "docs/verification/ots/fileassert.md"                        # OTS verification
+      - "docs/reqstream/shared/fileassert.yaml"                      # Shared Package requirements
+      - "docs/design/shared/fileassert.md"                           # Shared Package design
+      - "docs/verification/shared/fileassert.md"                     # Shared Package verification
 
   # FileAssert-OTS-Pandoc Review
   - id: FileAssert-OTS-Pandoc

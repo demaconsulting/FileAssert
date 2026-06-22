@@ -1,15 +1,16 @@
-## FileAssert OTS Design
+## FileAssert Shared Package Design
 
-DemaConsulting.FileAssert is the tool developed by this project and is also consumed as an OTS
-item within its own CI pipeline to validate the correctness of the documents it generates and to
-produce self-validation evidence.
+DemaConsulting.FileAssert is the tool developed by this project. An earlier released version of it
+is also consumed within this project's own CI pipeline to validate generated documents and to
+produce self-validation evidence. Because this repository uses its own published package, it is
+classified as a **Shared Package** rather than OTS.
 
 ### Purpose
 
 FileAssert validates HTML and PDF documents produced during the build pipeline, asserting that
 each document exists, has a non-trivial size, is structurally valid, and contains expected
 content. Its built-in self-validation suite (`--validate`) is run as a CI step to produce TRX
-test evidence satisfying the `FileAssert-OTS-FileAssert` requirement.
+test evidence satisfying the `FileAssert-Shared-FileAssert` requirement.
 
 FileAssert is chosen because it directly implements the project's own document-assertion
 capability, making its CI use a natural dogfooding exercise that simultaneously validates the
@@ -42,7 +43,7 @@ The project uses the following FileAssert command-line interfaces:
 | `dotnet fileassert --validate --results <trx-file>`          | Runs self-validation and writes TRX results        |
 | `dotnet fileassert --config <file> --results <trx-file>`     | Runs document assertions from a YAML configuration |
 
-The TRX output from `--results` is consumed by ReqStream to satisfy `FileAssert-OTS-FileAssert`.
+The TRX output from `--results` is consumed by ReqStream to satisfy `FileAssert-Shared-FileAssert`.
 
 ### Dependencies
 
