@@ -5,13 +5,9 @@ for this shared package are defined in the FileAssert Shared Package Software Re
 
 ### Required Functionality
 
-DemaConsulting.FileAssert validates HTML and PDF documents produced during the build, asserting that
-each document exists, has a non-trivial size, is structurally valid, and contains expected content.
-Self-validation proves the tool itself is operational before ReqStream consumes the results.
-
-The assertion types used by this project are: file existence and count (`FileAssert_File`), text
-content assertions (`FileAssert_Text`), HTML structure assertions (`FileAssert_Html`), and PDF
-metadata, page count, and body text assertions (`FileAssert_Pdf`).
+DemaConsulting.FileAssert validates HTML and PDF documents produced during the build. The
+specific capabilities required are: TRX result file output, file count via glob patterns, text
+content assertions, HTML structure assertions, and PDF document content assertions.
 
 ### Verification Approach
 
@@ -28,19 +24,9 @@ pipeline.
 
 ### Test Scenarios
 
-#### FileAssert_VersionDisplay
-
-**Scenario**: FileAssert self-validation exercises the `--version` flag.
-
-**Expected**: Exits 0 and displays a version string matching the `N.N.N` semantic version format.
-
-#### FileAssert_HelpDisplay
-
-**Scenario**: FileAssert self-validation exercises the `--help` flag.
-
-**Expected**: Exits 0 and displays usage information containing `Usage:` and `Options:` headings.
-
 #### FileAssert_Results
+
+**Covers**: `FileAssert-Shared-FileAssert-Results`
 
 **Scenario**: FileAssert self-validation exercises the `--results` flag by running a configuration
 with one passing test and one deliberately failing test, then verifying that a TRX results file
@@ -51,12 +37,16 @@ specified path.
 
 #### FileAssert_File
 
+**Covers**: `FileAssert-Shared-FileAssert-File`
+
 **Scenario**: FileAssert self-validation exercises file glob matching and count assertions by
 matching a glob pattern against a temporary directory containing a known set of files.
 
-**Expected**: Exits 0, confirming that glob-based file existence and count assertions pass.
+**Expected**: Exits 0, confirming that glob-based file count assertions pass.
 
 #### FileAssert_Text
+
+**Covers**: `FileAssert-Shared-FileAssert-Text`
 
 **Scenario**: FileAssert self-validation exercises text content assertions by asserting that a
 temporary file contains a known string and does not contain an absent string.
@@ -65,20 +55,24 @@ temporary file contains a known string and does not contain an absent string.
 
 #### FileAssert_Html
 
+**Covers**: `FileAssert-Shared-FileAssert-Html`
+
 **Scenario**: FileAssert self-validation exercises HTML structure assertions by parsing a
 temporary HTML document with `html:` XPath queries and verifying node counts.
 
-**Expected**: Exits 0, confirming that the HTML document parses successfully and the structured
-XPath queries evaluate against the parsed model.
+**Expected**: Exits 0, confirming that the HTML document parses successfully and the XPath
+queries evaluate against the parsed document model.
 
 #### FileAssert_Pdf
 
-**Scenario**: FileAssert self-validation exercises PDF assertions by reading metadata fields
-(Title, Author), checking page count constraints, and asserting PDF body text content against
-a temporary PDF document.
+**Covers**: `FileAssert-Shared-FileAssert-Pdf`
 
-**Expected**: Exits 0, confirming that metadata assertions, page count constraints, and body
-text assertions all resolve and pass.
+**Scenario**: FileAssert self-validation exercises PDF content assertions by reading metadata
+fields (Title, Author), checking page count constraints, and asserting PDF body text content
+against a temporary PDF document.
+
+**Expected**: Exits 0, confirming that metadata field assertions, page count constraints, and
+body text assertions all resolve and pass.
 
 ### Acceptance Criteria
 

@@ -10,26 +10,55 @@ sections:
     sections:
       - title: FileAssert Requirements
         requirements:
-          - id: FileAssert-Shared-FileAssert
-            title: FileAssert shall validate generated documents against acceptance criteria.
+          - id: FileAssert-Shared-FileAssert-Results
+            title: FileAssert shall write TRX test result files.
             justification: |
-              DemaConsulting.FileAssert validates HTML and PDF documents produced during the
-              build, asserting that each document exists, is structurally valid, has correct
-              metadata, and contains expected content. It provides verification evidence for
-              Pandoc and WeasyPrint and independently confirms file assertion is functioning.
-              Self-validation proves the tool itself is operational before ReqStream consumes
-              the results.
+              The CI pipeline passes --results <file> to FileAssert on every invocation;
+              the produced TRX file is consumed by ReqStream to verify requirements
+              traceability. Without TRX output, no test evidence is recorded and
+              ReqStream enforcement fails the build.
             tags: [shared]
-            # Test IDs below are sourced from the tool's `--validate` self-validation TRX output
-            # (artifacts/<tool>-self-validation*.trx in CI). Each ID matches a TestCase Name in
-            # the TRX; ReqStream consumes the artifacts/**/*.trx glob.
-            # Tests are selected to cover the specific assertion types used by this project:
-            # file existence (count), text content, HTML structure, and PDF metadata/pages/text.
             tests:
-              - FileAssert_VersionDisplay
-              - FileAssert_HelpDisplay
               - FileAssert_Results
+
+          - id: FileAssert-Shared-FileAssert-File
+            title: FileAssert shall assert file count via glob patterns.
+            justification: |
+              Every test in .fileassert.yaml uses count: 1 to confirm that exactly one
+              generated file matches the expected path. This proves that Pandoc and
+              WeasyPrint each produced the expected output file.
+            tags: [shared]
+            tests:
               - FileAssert_File
+
+          - id: FileAssert-Shared-FileAssert-Text
+            title: FileAssert shall assert text content of files.
+            justification: |
+              HTML document tests use text: contains: to confirm that generated HTML
+              files contain expected document headings and content keywords, providing
+              a basic content sanity check independent of HTML structure parsing.
+            tags: [shared]
+            tests:
               - FileAssert_Text
+
+          - id: FileAssert-Shared-FileAssert-Html
+            title: FileAssert shall assert HTML document structure.
+            justification: |
+              Pandoc HTML output is validated using html: query: XPath expressions to
+              confirm each document has a valid head/title element, proving the HTML is
+              structurally well-formed.
+            tags: [shared]
+            tests:
               - FileAssert_Html
+
+          - id: FileAssert-Shared-FileAssert-Pdf
+            title: FileAssert shall assert PDF document contents.
+            justification: |
+              WeasyPrint PDF output is validated using pdf: assertions. The justification
+              covers metadata fields (Title, Author, Subject confirming correct document
+              identity), page count constraints (confirming the document rendered with
+              substantive content), and body text content (confirming the expected
+              document text was included in the rendered output).
+            tags: [shared]
+            tests:
               - FileAssert_Pdf
