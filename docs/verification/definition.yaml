@@ -29,7 +29,6 @@ input-files:
   - docs/verification/file-assert/selftest/validation.md
   - docs/verification/ots.md
   - docs/verification/ots/buildmark.md
-  - docs/verification/ots/fileassert.md
   - docs/verification/ots/pandoc.md
   - docs/verification/ots/reqstream.md
   - docs/verification/ots/reviewmark.md
@@ -38,6 +37,8 @@ input-files:
   - docs/verification/ots/versionmark.md
   - docs/verification/ots/weasyprint.md
   - docs/verification/ots/xunit.md
+  - docs/verification/shared.md
+  - docs/verification/shared/fileassert.md
 template: template.html
 table-of-contents: true
 number-sections: true

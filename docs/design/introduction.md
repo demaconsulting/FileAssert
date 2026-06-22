@@ -149,6 +149,14 @@ FileAssert integrates the third-party library; their artifacts sit parallel to s
 - Design: `docs/design/ots/{ots-name}.md`
 - Verification: `docs/verification/ots/{ots-name}.md`
 
+Shared packages (earlier releases of the same program's own packages consumed in CI) have
+integration/usage design docs at `docs/design/shared/{package-name}.md`; their artifacts also
+sit parallel to system and OTS folders:
+
+- Requirements: `docs/reqstream/shared/{package-name}.yaml`
+- Design: `docs/design/shared/{package-name}.md`
+- Verification: `docs/verification/shared/{package-name}.md`
+
 Review-sets: defined in `.reviewmark.yaml`
 
 ## References
