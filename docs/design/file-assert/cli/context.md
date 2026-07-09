@@ -1,5 +1,7 @@
 ### Context Design
 
+![Cli Structure](CliView.svg)
+
 #### Overview
 
 `Context` is the command-line argument parser and I/O owner for FileAssert. It translates the

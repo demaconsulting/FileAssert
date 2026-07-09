@@ -28,7 +28,9 @@ words:
   - dogfooding
   - enation
   - fileassert
+  - filesystemglobbing
   - fontconfig
+  - htmlagilitypack
   - initialise
   - initialized
   - initialisation
@@ -38,6 +40,7 @@ words:
   - Pango
   - pandoc
   - pandoctool
+  - pdfpig
   - recognized
   - recognise
   - recognises
@@ -53,12 +56,15 @@ words:
   - serialises
   - sonarcloud
   - sonarmark
+  - sysml
+  - sysml2tools
   - unrecognized
   - unrecognised
   - versionmark
   - Weasyprint
   - weasyprinttool
   - xunit
+  - yamldotnet
   - yamlfix
 
 # Exclude common build artifacts, dependencies, and vendored third-party code

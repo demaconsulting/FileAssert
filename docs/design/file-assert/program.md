@@ -1,5 +1,7 @@
 ## Program Design
 
+![FileAssert System Structure](FileAssertView.svg)
+
 ### Purpose
 
 `Program` is the static entry-point class for the FileAssert tool. It constructs the execution

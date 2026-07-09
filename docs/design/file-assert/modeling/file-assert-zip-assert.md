@@ -1,5 +1,7 @@
 ### FileAssertZipAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertZipAssert` class validates the contents of a zip archive by applying the full

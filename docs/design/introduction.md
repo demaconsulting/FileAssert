@@ -1,126 +1,72 @@
 # Introduction
 
-This document provides the detailed design for the FileAssert tool, a .NET command-line application
-for asserting file properties using YAML-defined test suites.
+This document provides the detailed design for FileAssert — a .NET command-line application for
+asserting file properties using YAML-defined test suites. It covers local software items (systems,
+subsystems, and units), the OTS software items they consume, and the FileAssert shared package
+consumed by this project's own build pipeline.
 
 ## Purpose
 
-The purpose of this document is to describe the internal design of each software unit that comprises
-FileAssert. It captures data models, algorithms, key methods, and inter-unit interactions at a level
-of detail sufficient for formal code review, compliance verification, and future maintenance. The
-document does not restate requirements; it explains how they are realized.
+The purpose of this document is to define the design for each software item in FileAssert — full
+architectural and detailed design for local items (systems, subsystems, and units), and integration
+and usage design for OTS software items and the shared package. A reviewer should be able to
+understand how each item satisfies its requirements without reading source code. The document does
+not restate requirements; it explains how they are realized.
 
 ## Scope
 
-This document covers the detailed design of the following software units:
+This document covers the following software items:
 
-- **Program** — entry point and execution orchestrator (`Program.cs`)
-- **IContext** — output contract interface for reporting assertion results (`IContext.cs`)
-- **Context** — command-line argument parser and I/O owner (`Context.cs`)
-- **FileAssertConfig** — top-level configuration loader and test runner (`FileAssertConfig.cs`)
-- **FileAssertData** — YAML data transfer objects for configuration deserialization (`FileAssertData.cs`)
-- **FileAssertTest** — named test with file assertions and tag filtering (`FileAssertTest.cs`)
-- **FileAssertFile** — glob pattern matcher with count constraints and content rules (`FileAssertFile.cs`)
-- **FileAssertRule** — abstract content validation rule hierarchy (`FileAssertRule.cs`)
-- **FileAssertTextAssert** — text content assertions (`FileAssertTextAssert.cs`)
-- **FileAssertPdfAssert** — PDF document assertions (`FileAssertPdfAssert.cs`)
-- **FileAssertXmlAssert** — XML document assertions (`FileAssertXmlAssert.cs`)
-- **FileAssertHtmlAssert** — HTML document assertions (`FileAssertHtmlAssert.cs`)
-- **FileAssertYamlAssert** — YAML document assertions (`FileAssertYamlAssert.cs`)
-- **FileAssertJsonAssert** — JSON document assertions (`FileAssertJsonAssert.cs`)
-- **FileAssertZipAssert** — zip archive entry assertions (`FileAssertZipAssert.cs`)
-- **IFileContainer** — uniform file-access abstraction over directories and zip archives (`IFileContainer.cs`)
-- **DirectoryFileContainer** — filesystem implementation of IFileContainer (`DirectoryFileContainer.cs`)
-- **ZipFileContainer** — zip archive implementation of IFileContainer (`ZipFileContainer.cs`)
-- **PathHelpers** — safe path-combination utility (`PathHelpers.cs`)
-- **TemporaryDirectory** — disposable temporary directory utility (`TemporaryDirectory.cs`)
-- **Validation** — self-validation test runner (`Validation.cs`)
+Local items:
 
-The following cross-cutting design topics are also covered:
+- **FileAssert**: system, subsystem, and unit design for all local components.
 
-- **OTS Dependencies** — off-the-shelf tool dependencies and their roles (`file-assert/ots-dependencies.md`)
+OTS items:
+
+- **BuildMark**: integration and usage design.
+- **FileSystemGlobbing**: integration and usage design.
+- **HtmlAgilityPack**: integration and usage design.
+- **Pandoc**: integration and usage design.
+- **PdfPig**: integration and usage design.
+- **ReqStream**: integration and usage design.
+- **ReviewMark**: integration and usage design.
+- **SarifMark**: integration and usage design.
+- **SonarMark**: integration and usage design.
+- **SysML2Tools**: integration and usage design.
+- **VersionMark**: integration and usage design.
+- **WeasyPrint**: integration and usage design.
+- **XUnit**: integration and usage design.
+- **YamlDotNet**: integration and usage design.
+
+Shared packages:
+
+- **FileAssert**: integration and usage design.
 
 The following topics are out of scope:
 
-- External library internals (YamlDotNet, Microsoft.Extensions.FileSystemGlobbing,
-  DemaConsulting.TestResults)
+- External library internals
 - Build pipeline configuration
 - Deployment and packaging
-- Test projects are out of scope.
+- Test projects
 
 ## Software Structure
 
-The following tree shows how the FileAssert software items are organized across the system,
-subsystem, and unit levels:
+The software structure is modeled in SysML2 under `docs/sysml2/` and rendered to the
+diagram below by SysML2Tools as part of the build pipeline. AI agents should query the
+SysML2 model directly (see the `sysml2tools-query` skill) rather than parsing this
+diagram or the prose below.
 
-```text
-FileAssert (System)
-├── Program (Unit)
-├── Cli (Subsystem)
-│   ├── IContext (Unit)
-│   └── Context (Unit)
-├── Configuration (Subsystem)
-│   ├── FileAssertConfig (Unit)
-│   └── FileAssertData (Unit)
-├── Modeling (Subsystem)
-│   ├── FileAssertTest (Unit)
-│   ├── FileAssertFile (Unit)
-│   ├── FileAssertRule (Unit)
-│   ├── FileAssertTextAssert (Unit)
-│   ├── FileAssertPdfAssert (Unit)
-│   ├── FileAssertXmlAssert (Unit)
-│   ├── FileAssertHtmlAssert (Unit)
-│   ├── FileAssertYamlAssert (Unit)
-│   ├── FileAssertJsonAssert (Unit)
-│   └── FileAssertZipAssert (Unit)
-├── Utilities (Subsystem)
-│   ├── IFileContainer (Unit)
-│   ├── DirectoryFileContainer (Unit)
-│   ├── ZipFileContainer (Unit)
-│   ├── PathHelpers (Unit)
-│   └── TemporaryDirectory (Unit)
-└── SelfTest (Subsystem)
-    └── Validation (Unit)
-```
-
-Each unit is described in detail in its own chapter within this document.
+![Software Structure](SoftwareStructureView.svg)
 
 ## Folder Layout
 
-The source code folder structure mirrors the top-level subsystem breakdown above, giving
-reviewers an explicit navigation aid from design to code:
-
-```text
-src/DemaConsulting.FileAssert/
-├── Program.cs                      — entry point and execution orchestrator
-├── Cli/
-│   ├── IContext.cs                 — output contract interface for asserters and scoping
-│   └── Context.cs                  — command-line argument parser and I/O owner
-├── Configuration/
-│   ├── FileAssertConfig.cs         — top-level configuration loader and test runner
-│   └── FileAssertData.cs           — YAML data transfer objects
-├── Modeling/
-│   ├── FileAssertTest.cs           — named test with file assertions and tag filtering
-│   ├── FileAssertFile.cs           — glob pattern matcher with count constraints and rules
-│   ├── FileAssertRule.cs           — abstract content validation rule hierarchy
-│   ├── FileAssertTextAssert.cs     — text content assertions
-│   ├── FileAssertPdfAssert.cs      — PDF document assertions (PdfPig)
-│   ├── FileAssertXmlAssert.cs      — XML document assertions (System.Xml.Linq/XPath)
-│   ├── FileAssertHtmlAssert.cs     — HTML document assertions (HtmlAgilityPack)
-│   ├── FileAssertYamlAssert.cs     — YAML document assertions (YamlDotNet)
-│   ├── FileAssertJsonAssert.cs     — JSON document assertions (System.Text.Json)
-│   └── FileAssertZipAssert.cs      — zip archive entry assertions (System.IO.Compression)
-├── Utilities/
-│   ├── IFileContainer.cs           — uniform file-access abstraction interface
-│   ├── DirectoryFileContainer.cs   — filesystem implementation of IFileContainer
-│   ├── ZipFileContainer.cs         — zip archive implementation of IFileContainer
-│   ├── PathHelpers.cs              — safe path-combination utility
-│   └── TemporaryDirectory.cs       — disposable temporary directory utility
-└── SelfTest/
-    └── Validation.cs               — self-validation test runner
-```
-
-The test project mirrors the same layout under `test/DemaConsulting.FileAssert.Tests/`.
+- **src/** - source files and projects
+  - **DemaConsulting.FileAssert/** - FileAssert system source
+    - **Cli/** - Cli subsystem
+    - **Configuration/** - Configuration subsystem
+    - **Modeling/** - Modeling subsystem
+    - **Utilities/** - Utilities subsystem
+    - **SelfTest/** - SelfTest subsystem
 
 ## Document Conventions
 

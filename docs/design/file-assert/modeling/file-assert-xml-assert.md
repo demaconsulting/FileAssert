@@ -1,5 +1,7 @@
 ### FileAssertXmlAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertXmlAssert` class attempts to parse a matched file as an XML document using

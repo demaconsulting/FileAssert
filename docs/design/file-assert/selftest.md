@@ -1,5 +1,7 @@
 ## SelfTest Subsystem Design
 
+![SelfTest Structure](SelfTestView.svg)
+
 ### Overview
 
 The SelfTest subsystem provides built-in self-validation functionality that verifies the core

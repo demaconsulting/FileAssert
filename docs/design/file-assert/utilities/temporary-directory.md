@@ -1,5 +1,7 @@
 ### TemporaryDirectory Design
 
+![Utilities Structure](UtilitiesView.svg)
+
 #### Overview
 
 `TemporaryDirectory` is a disposable utility class that creates a uniquely-named temporary

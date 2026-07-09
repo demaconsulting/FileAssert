@@ -1,5 +1,7 @@
 ### FileAssertFile Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertFile` class locates files on disk using a glob pattern, enforces

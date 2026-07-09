@@ -1,5 +1,7 @@
 ### FileAssertConfig Design
 
+![Configuration Structure](ConfigurationView.svg)
+
 #### Overview
 
 The `FileAssertConfig` class is the top-level entry point for the FileAssert tool's

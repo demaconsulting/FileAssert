@@ -1,5 +1,7 @@
 ### ZipFileContainer Design
 
+![Utilities Structure](UtilitiesView.svg)
+
 #### Purpose
 
 `ZipFileContainer` is the zip archive implementation of `IFileContainer`. It wraps a `ZipArchive`

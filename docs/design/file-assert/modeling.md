@@ -1,5 +1,7 @@
 ## Modeling Subsystem Design
 
+![Modeling Structure](ModelingView.svg)
+
 ### Overview
 
 The Modeling subsystem contains the domain objects that represent a FileAssert test suite at

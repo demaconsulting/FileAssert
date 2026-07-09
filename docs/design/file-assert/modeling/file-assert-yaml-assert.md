@@ -1,5 +1,7 @@
 ### FileAssertYamlAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertYamlAssert` class attempts to parse a matched file as a YAML document using

@@ -1,5 +1,7 @@
 ### FileAssertData Design
 
+![Configuration Structure](ConfigurationView.svg)
+
 #### Overview
 
 `FileAssertData` is the set of YAML data transfer objects (DTOs) used by YamlDotNet to

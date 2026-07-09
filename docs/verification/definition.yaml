@@ -10,6 +10,7 @@ input-files:
   - docs/verification/file-assert/program.md
   - docs/verification/file-assert/cli.md
   - docs/verification/file-assert/cli/context.md
+  - docs/verification/file-assert/cli/i-context.md
   - docs/verification/file-assert/configuration.md
   - docs/verification/file-assert/configuration/file-assert-config.md
   - docs/verification/file-assert/configuration/file-assert-data.md
@@ -23,8 +24,13 @@ input-files:
   - docs/verification/file-assert/modeling/file-assert-html-assert.md
   - docs/verification/file-assert/modeling/file-assert-yaml-assert.md
   - docs/verification/file-assert/modeling/file-assert-json-assert.md
+  - docs/verification/file-assert/modeling/file-assert-zip-assert.md
   - docs/verification/file-assert/utilities.md
   - docs/verification/file-assert/utilities/path-helpers.md
+  - docs/verification/file-assert/utilities/temporary-directory.md
+  - docs/verification/file-assert/utilities/i-file-container.md
+  - docs/verification/file-assert/utilities/directory-file-container.md
+  - docs/verification/file-assert/utilities/zip-file-container.md
   - docs/verification/file-assert/selftest.md
   - docs/verification/file-assert/selftest/validation.md
   - docs/verification/ots.md
@@ -37,6 +43,11 @@ input-files:
   - docs/verification/ots/versionmark.md
   - docs/verification/ots/weasyprint.md
   - docs/verification/ots/xunit.md
+  - docs/verification/ots/yamldotnet.md
+  - docs/verification/ots/pdfpig.md
+  - docs/verification/ots/htmlagilitypack.md
+  - docs/verification/ots/filesystemglobbing.md
+  - docs/verification/ots/sysml2tools.md
   - docs/verification/shared.md
   - docs/verification/shared/fileassert.md
 template: template.html

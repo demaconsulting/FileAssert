@@ -19,6 +19,7 @@
 │   ├── requirements_doc/
 │   ├── requirements_report/
 │   ├── reqstream/
+│   ├── sysml2/
 │   ├── user_guide/
 │   └── verification/
 ├── src/
@@ -42,10 +43,12 @@ This repository follows a reference template for structure and file conventions.
 
 # Codebase Navigation (ALL Agents)
 
-When working with source code, design, or requirements artifacts, read
-`docs/design/introduction.md` first. It provides the software structure,
-folder layout, and companion artifact locations. Use it as the primary map
-before searching the filesystem.
+When working with source code, design, or requirements artifacts, query the SysML2
+architecture model under `docs/sysml2/` first (see the `sysml2tools-query` skill) to
+understand software structure, purpose, and relationships. Fall back to
+`docs/design/introduction.md` for the human-facing narrative, folder layout, and
+companion artifact locations, and use it as the primary map when the model doesn't
+yet cover something.
 
 # Key Configuration Files
 
@@ -60,6 +63,7 @@ before searching the filesystem.
 - **`package.json`** - Node.js dependencies for formatting tools
 - **`requirements.yaml`** - Root requirements file with includes
 - **`pip-requirements.txt`** - Python dependencies for yamllint and yamlfix
+- **`docs/sysml2/`** - SysML2 architecture model; authoritative source for software structure
 - **`fix.ps1`** - Applies all auto-fixers silently (dotnet format, markdown, YAML). Always exits 0.
 - **`build.ps1`** - Builds the solution and runs all tests.
 
@@ -76,6 +80,7 @@ from `.github/standards/`. Use this matrix to determine which to load:
 - **Design docs**: `software-items.md`, `design-documentation.md`, `technical-documentation.md`
 - **Verification docs**: `software-items.md`, `verification-documentation.md`, `technical-documentation.md`
 - **Review configuration**: `software-items.md`, `reviewmark-usage.md`
+- **Software structure**: `sysml2-modeling.md`
 - **Any documentation**: `technical-documentation.md`
 
 Load only the standards relevant to your specific task scope.
@@ -130,7 +135,7 @@ responsibility - invoke the lint-fix agent once before submitting a pull request
 ## CI Quality Tools
 
 CI runs `lint.ps1` which checks: markdownlint-cli2, cspell, yamllint, dotnet format,
-reqstream, versionmark, and reviewmark.
+reqstream, versionmark, reviewmark, and sysml2tools.
 
 # Scope Discipline (ALL Agents Must Follow)
 
