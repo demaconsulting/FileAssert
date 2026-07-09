@@ -47,6 +47,7 @@ input-files:
   - docs/verification/ots/pdfpig.md
   - docs/verification/ots/htmlagilitypack.md
   - docs/verification/ots/filesystemglobbing.md
+  - docs/verification/ots/sysml2tools.md
   - docs/verification/shared.md
   - docs/verification/shared/fileassert.md
 template: template.html

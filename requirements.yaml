@@ -44,3 +44,4 @@ includes:
   - docs/reqstream/ots/pdfpig.yaml
   - docs/reqstream/ots/htmlagilitypack.yaml
   - docs/reqstream/ots/filesystemglobbing.yaml
+  - docs/reqstream/ots/sysml2tools.yaml

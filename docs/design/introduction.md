@@ -32,6 +32,7 @@ OTS items:
 - **ReviewMark**: integration and usage design.
 - **SarifMark**: integration and usage design.
 - **SonarMark**: integration and usage design.
+- **SysML2Tools**: integration and usage design.
 - **VersionMark**: integration and usage design.
 - **WeasyPrint**: integration and usage design.
 - **XUnit**: integration and usage design.

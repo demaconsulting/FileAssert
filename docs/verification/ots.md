@@ -17,10 +17,11 @@ depending on the nature of the item:
 
 - **CI pipeline evidence**: Items whose primary function is to produce artefacts consumed by
   downstream pipeline steps (BuildMark, Pandoc, ReqStream, ReviewMark, SarifMark, SonarMark,
-  VersionMark, WeasyPrint) are verified by a chain of transitive evidence: the item executes in
-  CI, produces its expected output, and a subsequent step (typically a FileAssert assertion or a
-  ReqStream enforce check) fails the build if the output is absent or malformed. A passing
-  pipeline run therefore constitutes evidence that each item performed its required function.
+  SysML2Tools, VersionMark, WeasyPrint) are verified by a chain of transitive evidence: the item
+  executes in CI, produces its expected output, and a subsequent step (typically a FileAssert
+  assertion or a ReqStream enforce check) fails the build if the output is absent or malformed. A
+  passing pipeline run therefore constitutes evidence that each item performed its required
+  function.
 
 Per-item verification details, test scenarios, and requirements mappings are documented in the
 individual files under `docs/verification/ots/`.
@@ -74,6 +75,10 @@ The following OTS software items are used by FileAssert and are verified in this
 
 - **SonarMark** — retrieves quality-gate and metrics data from SonarCloud and renders a markdown
   quality report; verified by Pandoc compilation and FileAssert PDF assertions.
+
+- **SysML2Tools** — validates the SysML2 architecture model and renders its declared views to SVG
+  diagrams consumed by the design documentation; verified by CI pipeline lint success and by
+  Pandoc/WeasyPrint compilation of the design documents that embed the rendered diagrams.
 
 - **VersionMark** — captures tool-version metadata from CI jobs and publishes a versions markdown
   document; verified by its inclusion in the Build Notes compilation.
