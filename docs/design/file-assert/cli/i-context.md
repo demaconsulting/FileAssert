@@ -1,5 +1,7 @@
 ### IContext Design
 
+![Cli Structure](CliView.svg)
+
 #### Overview
 
 `IContext` is the output contract interface for reporting assertion results and errors within

@@ -9,6 +9,7 @@ input-files:
   - docs/design/file-assert/program.md
   - docs/design/file-assert/cli.md
   - docs/design/file-assert/cli/context.md
+  - docs/design/file-assert/cli/i-context.md
   - docs/design/file-assert/configuration.md
   - docs/design/file-assert/configuration/file-assert-config.md
   - docs/design/file-assert/configuration/file-assert-data.md
@@ -22,11 +23,15 @@ input-files:
   - docs/design/file-assert/modeling/file-assert-html-assert.md
   - docs/design/file-assert/modeling/file-assert-yaml-assert.md
   - docs/design/file-assert/modeling/file-assert-json-assert.md
+  - docs/design/file-assert/modeling/file-assert-zip-assert.md
   - docs/design/file-assert/utilities.md
   - docs/design/file-assert/utilities/path-helpers.md
+  - docs/design/file-assert/utilities/temporary-directory.md
+  - docs/design/file-assert/utilities/i-file-container.md
+  - docs/design/file-assert/utilities/directory-file-container.md
+  - docs/design/file-assert/utilities/zip-file-container.md
   - docs/design/file-assert/selftest.md
   - docs/design/file-assert/selftest/validation.md
-  - docs/design/file-assert/ots-dependencies.md
   - docs/design/ots.md
   - docs/design/ots/buildmark.md
   - docs/design/ots/pandoc.md
@@ -37,6 +42,10 @@ input-files:
   - docs/design/ots/versionmark.md
   - docs/design/ots/weasyprint.md
   - docs/design/ots/xunit.md
+  - docs/design/ots/yamldotnet.md
+  - docs/design/ots/pdfpig.md
+  - docs/design/ots/htmlagilitypack.md
+  - docs/design/ots/filesystemglobbing.md
   - docs/design/shared.md
   - docs/design/shared/fileassert.md
 template: template.html

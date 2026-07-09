@@ -1,5 +1,7 @@
 ### FileAssertTest Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertTest` class represents a named, tagged test within a FileAssert

@@ -1,5 +1,7 @@
 ### Validation Design
 
+![SelfTest Structure](SelfTestView.svg)
+
 #### Overview
 
 `Validation` is a static class that implements the self-validation test runner for FileAssert.

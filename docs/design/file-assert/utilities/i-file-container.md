@@ -1,5 +1,7 @@
 ### IFileContainer Design
 
+![Utilities Structure](UtilitiesView.svg)
+
 #### Purpose
 
 `IFileContainer` is the uniform file-access abstraction used by all asserters in FileAssert.

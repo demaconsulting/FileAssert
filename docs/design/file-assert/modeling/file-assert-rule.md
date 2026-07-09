@@ -1,5 +1,7 @@
 ### FileAssertRule Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertRule` class hierarchy provides the content validation rules used by

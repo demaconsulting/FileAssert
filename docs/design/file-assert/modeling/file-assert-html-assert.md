@@ -1,5 +1,7 @@
 ### FileAssertHtmlAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertHtmlAssert` class attempts to parse a matched file as an HTML document using

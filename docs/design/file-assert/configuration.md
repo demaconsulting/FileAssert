@@ -1,5 +1,7 @@
 ## Configuration Subsystem Design
 
+![Configuration Structure](ConfigurationView.svg)
+
 ### Overview
 
 The Configuration subsystem is responsible for reading the YAML test-suite configuration file

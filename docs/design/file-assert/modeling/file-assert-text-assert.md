@@ -1,5 +1,7 @@
 ### FileAssertTextAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertTextAssert` class applies a collection of `FileAssertRule` instances to the

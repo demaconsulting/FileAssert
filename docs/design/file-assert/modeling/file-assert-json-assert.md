@@ -1,5 +1,7 @@
 ### FileAssertJsonAssert Design
 
+![Modeling Structure](ModelingView.svg)
+
 #### Overview
 
 The `FileAssertJsonAssert` class attempts to parse a matched file as a JSON document using

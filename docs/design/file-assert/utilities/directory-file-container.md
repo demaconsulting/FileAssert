@@ -1,5 +1,7 @@
 ### DirectoryFileContainer Design
 
+![Utilities Structure](UtilitiesView.svg)
+
 #### Purpose
 
 `DirectoryFileContainer` is the filesystem implementation of `IFileContainer`. It exposes a local

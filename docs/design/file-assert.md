@@ -1,5 +1,7 @@
 # FileAssert System Design
 
+![FileAssert System Structure](FileAssertView.svg)
+
 ## Overview
 
 FileAssert is a .NET command-line tool for asserting file properties using YAML-defined test

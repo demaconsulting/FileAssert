@@ -328,10 +328,17 @@ tests:
 | `json[].count`                      | Exact number of matched JSON nodes                            |
 | `json[].min`                        | Minimum number of matched JSON nodes                          |
 | `json[].max`                        | Maximum number of matched JSON nodes                          |
-| `zip:`                              | Zip archive entry assertions (fails if not a valid zip)       |
-| `zip.entries[].pattern`             | Glob pattern matching zip entry names                         |
-| `zip.entries[].min`                 | Minimum number of matching entries                            |
-| `zip.entries[].max`                 | Maximum number of matching entries                            |
+| `zip:`                              | Zip archive assertions (fails if file is not a valid zip)     |
+| `zip.files[].pattern`               | Glob pattern selecting zip archive entry names                |
+| `zip.files[].min`                   | Minimum number of matching zip entries                        |
+| `zip.files[].max`                   | Maximum number of matching zip entries                        |
+| `zip.files[].text`                  | Text content assertions applied to each matching zip entry    |
+| `zip.files[].pdf`                   | PDF assertions applied to each matching zip entry             |
+| `zip.files[].xml`                   | XML assertions applied to each matching zip entry             |
+| `zip.files[].html`                  | HTML assertions applied to each matching zip entry            |
+| `zip.files[].yaml`                  | YAML assertions applied to each matching zip entry            |
+| `zip.files[].json`                  | JSON assertions applied to each matching zip entry            |
+| `zip.files[].zip`                   | Nested zip assertions (zip-in-zip)                            |
 
 # Command-Line Options
 

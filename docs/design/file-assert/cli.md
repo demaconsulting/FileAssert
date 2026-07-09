@@ -1,5 +1,7 @@
 ## Cli Subsystem Design
 
+![Cli Structure](CliView.svg)
+
 ### Overview
 
 The Cli subsystem is responsible for translating the raw command-line argument array into a
