@@ -23,15 +23,6 @@ package FileAssert {
         part utilities : UtilitiesSubsystem;
         part selfTest : SelfTestSubsystem;
 
-        part buildMark : BuildMark;
-        part pandoc : Pandoc;
-        part reqStream : ReqStream;
-        part reviewMark : ReviewMark;
-        part sarifMark : SarifMark;
-        part sonarMark : SonarMark;
-        part versionMark : VersionMark;
-        part weasyPrint : WeasyPrint;
-        part xUnit : XUnit;
         part yamlDotNet : YamlDotNet;
         part pdfPig : PdfPig;
         part htmlAgilityPack : HtmlAgilityPack;

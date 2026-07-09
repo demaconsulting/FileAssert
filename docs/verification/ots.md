@@ -10,12 +10,12 @@ FileAssert CI pipeline.
 OTS software items used by FileAssert are verified by one of two complementary approaches,
 depending on the nature of the item:
 
-- **Authored integration tests**: Items whose correct behaviour cannot be inferred purely from
+- **Authored integration tests**: Items whose correct behavior cannot be inferred purely from
   pipeline success (xUnit, YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing) are verified
   by named test scenarios that exercise the specific features required by this project. Each
   scenario identifies a test method, the expected outcome, and the requirement it covers.
 
-- **CI pipeline evidence**: Items whose primary function is to produce artefacts consumed by
+- **CI pipeline evidence**: Items whose primary function is to produce artifacts consumed by
   downstream pipeline steps (BuildMark, Pandoc, ReqStream, ReviewMark, SarifMark, SonarMark,
   SysML2Tools, VersionMark, WeasyPrint) are verified by a chain of transitive evidence: the item
   executes in CI, produces its expected output, and a subsequent step (typically a FileAssert
@@ -36,9 +36,9 @@ The following evidence is collected and retained for each OTS item:
 
 - **All other OTS items**: A passing CI pipeline run, including Pandoc HTML generation, WeasyPrint
   PDF rendering, FileAssert assertions on every generated document, and `reqstream --enforce` with
-  no unmet requirements. The combined CI log and artefacts constitute the qualification record.
+  no unmet requirements. The combined CI log and artifacts constitute the qualification record.
 
-All CI artefacts are retained as GitHub Actions run artefacts and are accessible from the
+All CI artifacts are retained as GitHub Actions run artifacts and are accessible from the
 FileAssert releases page.
 
 ## Regression Approach

@@ -105,9 +105,9 @@ OTS items in this project fall into three integration categories:
   `dotnet tool restore` from `.config/dotnet-tools.json` and invoked as command-line executables
   within GitHub Actions workflow steps. No wrapper code is written; tools are invoked directly
   with documented command-line flags. A non-zero exit code from any tool step causes the CI job
-  to fail immediately, consistent with the GitHub Actions default `fail-fast` behaviour.
+  to fail immediately, consistent with the GitHub Actions default `fail-fast` behavior.
 - **NuGet package** (xUnit) — referenced in the test project file and consumed through standard
-  .NET package restore. No explicit initialisation or configuration code is required beyond the
+  .NET package restore. No explicit initialization or configuration code is required beyond the
   test-project target framework declaration.
 - **NuGet package libraries** (YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing) —
   referenced directly by the main `DemaConsulting.FileAssert` project and invoked through their

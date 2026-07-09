@@ -15,7 +15,7 @@ sections:
               architecture model before they reach the generated documentation.
             tags: [ots]
             tests:
-              - SysML2Tools_ModelLint
+              - SysML2Tools_LintSelfTest
 
           - id: FileAssert-OTS-SysML2Tools-Render
             title: SysML2Tools shall render the declared views to SVG diagrams.
@@ -24,7 +24,7 @@ sections:
               render must fail the build rather than silently omit a diagram.
             tags: [ots]
             tests:
-              - SysML2Tools_ViewRender
+              - SysML2Tools_RenderSvgSelfTest
 
           - id: FileAssert-OTS-SysML2Tools
             title: SysML2Tools shall validate the SysML2 model and render its declared views to SVG diagrams.
