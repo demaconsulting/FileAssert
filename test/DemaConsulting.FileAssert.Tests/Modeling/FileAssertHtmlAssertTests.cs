@@ -90,7 +90,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -121,7 +121,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -152,7 +152,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -192,7 +192,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act - the lenient parser repairs the markup so the XPath query can run
@@ -243,7 +243,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -274,7 +274,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -305,7 +305,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -336,7 +336,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -367,7 +367,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -398,7 +398,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -429,7 +429,7 @@ public sealed class FileAssertHtmlAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act

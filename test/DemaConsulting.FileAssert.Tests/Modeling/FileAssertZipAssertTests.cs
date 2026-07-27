@@ -322,7 +322,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -361,7 +361,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -400,7 +400,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -439,7 +439,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -477,7 +477,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -550,7 +550,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -592,7 +592,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -635,7 +635,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -678,7 +678,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -728,7 +728,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -784,7 +784,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -827,7 +827,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -870,7 +870,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -913,7 +913,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -956,7 +956,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -993,7 +993,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -1030,7 +1030,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -1067,7 +1067,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -1104,7 +1104,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -1162,7 +1162,7 @@ public sealed class FileAssertZipAssertTests
             using var context = Context.Create(["--silent"]);
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act
@@ -1205,7 +1205,7 @@ public sealed class FileAssertZipAssertTests
             var capturingContext = new CapturingContext();
 
             var dir = Path.GetDirectoryName(tempFile)!;
-            var fileName = Path.GetFileName(tempFile)!;
+            var fileName = Path.GetFileName(tempFile);
             using var container = new DirectoryFileContainer(dir);
 
             // Act

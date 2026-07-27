@@ -62,7 +62,7 @@ internal sealed class DirectoryFileContainer : IFileContainer, IDisposable
         // the zero-match behavior expected by glob-based count constraints
         if (!Directory.Exists(BasePath))
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         // Enumerate all files recursively, producing paths relative to BasePath
