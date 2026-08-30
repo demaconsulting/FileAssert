@@ -20,6 +20,7 @@
 
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Linq;
 using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Configuration;
 using DemaConsulting.FileAssert.Modeling;
@@ -82,12 +83,13 @@ public sealed class FileAssertZipAssertTests
         File.Delete(path);
 
         using var archive = ZipFile.Open(path, ZipArchiveMode.Create);
-        foreach (var entry in entries)
+        foreach (var stream in entries.Select(entry => archive.CreateEntry(entry).Open()))
         {
-            using var stream = archive.CreateEntry(entry).Open();
-
-            // Write a single placeholder byte so the entry is not an empty-stream edge case
-            stream.WriteByte(0x00);
+            using (stream)
+            {
+                // Write a single placeholder byte so the entry is not an empty-stream edge case
+                stream.WriteByte(0x00);
+            }
         }
     }
 
@@ -238,10 +240,10 @@ public sealed class FileAssertZipAssertTests
 
         // Assert
         Assert.NotNull(zipAssert);
-        Assert.Single(zipAssert.Files);
-        Assert.Equal("lib/**/*.dll", zipAssert.Files[0].Pattern);
-        Assert.Equal(1, zipAssert.Files[0].Min);
-        Assert.Null(zipAssert.Files[0].Max);
+        var file = Assert.Single(zipAssert.Files);
+        Assert.Equal("lib/**/*.dll", file.Pattern);
+        Assert.Equal(1, file.Min);
+        Assert.Null(file.Max);
     }
 
     /// <summary>

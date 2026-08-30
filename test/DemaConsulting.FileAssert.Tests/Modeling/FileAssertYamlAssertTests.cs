@@ -438,8 +438,8 @@ public sealed class FileAssertYamlAssertTests
             yamlAssert.Run(context, container, fileName);
 
             // Assert - exactly one error (the parse failure); the queries are not evaluated
-            Assert.Single(context.Errors);
-            Assert.Contains("could not be parsed", context.Errors[0]);
+            var error = Assert.Single(context.Errors);
+            Assert.Contains("could not be parsed", error);
         }
         finally
         {

@@ -39,13 +39,7 @@ internal sealed class FileAssertFile
     /// <param name="count">The exact number of files that must match, or null for no constraint.</param>
     /// <param name="minSize">The minimum file size in bytes, or null for no constraint.</param>
     /// <param name="maxSize">The maximum file size in bytes, or null for no constraint.</param>
-    /// <param name="textAssert">The text assert unit, or null when no text: block is declared.</param>
-    /// <param name="pdfAssert">The PDF assert unit, or null when no pdf: block is declared.</param>
-    /// <param name="xmlAssert">The XML assert unit, or null when no xml: block is declared.</param>
-    /// <param name="htmlAssert">The HTML assert unit, or null when no html: block is declared.</param>
-    /// <param name="yamlAssert">The YAML assert unit, or null when no yaml: block is declared.</param>
-    /// <param name="jsonAssert">The JSON assert unit, or null when no json: block is declared.</param>
-    /// <param name="zipAssert">The zip assert unit, or null when no zip: block is declared.</param>
+    /// <param name="asserts">The file-type assert units, each null when the corresponding block is not declared.</param>
     private FileAssertFile(
         string pattern,
         int? min,
@@ -53,13 +47,7 @@ internal sealed class FileAssertFile
         int? count,
         long? minSize,
         long? maxSize,
-        FileAssertTextAssert? textAssert,
-        FileAssertPdfAssert? pdfAssert,
-        FileAssertXmlAssert? xmlAssert,
-        FileAssertHtmlAssert? htmlAssert,
-        FileAssertYamlAssert? yamlAssert,
-        FileAssertJsonAssert? jsonAssert,
-        FileAssertZipAssert? zipAssert)
+        FileTypeAsserts asserts)
     {
         // Store all validated properties for use during execution
         Pattern = pattern;
@@ -68,14 +56,34 @@ internal sealed class FileAssertFile
         Count = count;
         MinSize = minSize;
         MaxSize = maxSize;
-        TextAssert = textAssert;
-        PdfAssert = pdfAssert;
-        XmlAssert = xmlAssert;
-        HtmlAssert = htmlAssert;
-        YamlAssert = yamlAssert;
-        JsonAssert = jsonAssert;
-        ZipAssert = zipAssert;
+        TextAssert = asserts.TextAssert;
+        PdfAssert = asserts.PdfAssert;
+        XmlAssert = asserts.XmlAssert;
+        HtmlAssert = asserts.HtmlAssert;
+        YamlAssert = asserts.YamlAssert;
+        JsonAssert = asserts.JsonAssert;
+        ZipAssert = asserts.ZipAssert;
     }
+
+    /// <summary>
+    ///     Groups the optional file-type assert units so they can be passed to the
+    ///     <see cref="FileAssertFile"/> constructor as a single parameter.
+    /// </summary>
+    /// <param name="TextAssert">The text assert unit, or null when no text: block is declared.</param>
+    /// <param name="PdfAssert">The PDF assert unit, or null when no pdf: block is declared.</param>
+    /// <param name="XmlAssert">The XML assert unit, or null when no xml: block is declared.</param>
+    /// <param name="HtmlAssert">The HTML assert unit, or null when no html: block is declared.</param>
+    /// <param name="YamlAssert">The YAML assert unit, or null when no yaml: block is declared.</param>
+    /// <param name="JsonAssert">The JSON assert unit, or null when no json: block is declared.</param>
+    /// <param name="ZipAssert">The zip assert unit, or null when no zip: block is declared.</param>
+    private readonly record struct FileTypeAsserts(
+        FileAssertTextAssert? TextAssert,
+        FileAssertPdfAssert? PdfAssert,
+        FileAssertXmlAssert? XmlAssert,
+        FileAssertHtmlAssert? HtmlAssert,
+        FileAssertYamlAssert? YamlAssert,
+        FileAssertJsonAssert? JsonAssert,
+        FileAssertZipAssert? ZipAssert);
 
     /// <summary>
     ///     Gets the glob pattern used to match files.
@@ -172,7 +180,7 @@ internal sealed class FileAssertFile
         // Return the fully constructed file assertion
         return new FileAssertFile(
             data.Pattern, data.Min, data.Max, data.Count, data.MinSize, data.MaxSize,
-            textAssert, pdfAssert, xmlAssert, htmlAssert, yamlAssert, jsonAssert, zipAssert);
+            new FileTypeAsserts(textAssert, pdfAssert, xmlAssert, htmlAssert, yamlAssert, jsonAssert, zipAssert));
     }
 
     /// <summary>

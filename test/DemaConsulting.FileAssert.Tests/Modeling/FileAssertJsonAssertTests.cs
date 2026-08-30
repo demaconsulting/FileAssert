@@ -364,8 +364,8 @@ public sealed class FileAssertJsonAssertTests
             jsonAssert.Run(context, container, fileName);
 
             // Assert: the error identifies a parse failure, not an IO failure
-            Assert.Single(context.Errors);
-            Assert.Contains("could not be parsed as a JSON document", context.Errors[0]);
+            var error = Assert.Single(context.Errors);
+            Assert.Contains("could not be parsed as a JSON document", error);
         }
         finally
         {
@@ -389,8 +389,8 @@ public sealed class FileAssertJsonAssertTests
         jsonAssert.Run(context, container, "data.json");
 
         // Assert: the error identifies an IO failure, not a parse failure
-        Assert.Single(context.Errors);
-        Assert.Contains("could not be read", context.Errors[0]);
+        var error = Assert.Single(context.Errors);
+        Assert.Contains("could not be read", error);
     }
 
     /// <summary>

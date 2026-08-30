@@ -460,8 +460,8 @@ public sealed class FileAssertHtmlAssertTests
         htmlAssert.Run(context, container, "page.html");
 
         // Assert: the IO failure is reported
-        Assert.Single(context.Errors);
-        Assert.Contains("could not be parsed as an HTML document", context.Errors[0]);
+        var error = Assert.Single(context.Errors);
+        Assert.Contains("could not be parsed as an HTML document", error);
     }
 
     /// <summary>

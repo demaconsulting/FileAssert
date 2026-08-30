@@ -49,7 +49,7 @@ internal static partial class Validation
             var configFile = tempDir.GetFilePath(".fileassert.yaml");
 
             // Build a minimal PDF in memory using PdfPig's writer API
-            var builder = new PdfDocumentBuilder();
+            using var builder = new PdfDocumentBuilder();
             builder.DocumentInformation.Title = "Test PDF";
             var font = builder.AddStandard14Font(Standard14Font.Helvetica);
             var page = builder.AddPage(PageSize.A4);
