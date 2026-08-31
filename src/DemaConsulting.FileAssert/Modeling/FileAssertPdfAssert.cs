@@ -316,7 +316,8 @@ internal sealed class FileAssertPdfAssert
         }
         else
         {
-            _pages?.Apply(context, displayPath, document.GetPages().Count());
+            // When we reach here _text is empty, so the guard above guarantees _pages is non-null
+            _pages!.Apply(context, displayPath, document.GetPages().Count());
         }
     }
 
@@ -326,7 +327,7 @@ internal sealed class FileAssertPdfAssert
     /// </summary>
     /// <param name="pages">The ordered list of pages from the PDF document.</param>
     /// <returns>A single string containing all page text joined with newline separators.</returns>
-    private static string BuildPageText(IReadOnlyList<Page> pages)
+    private static string BuildPageText(List<Page> pages)
     {
         var sb = new StringBuilder();
         for (var i = 0; i < pages.Count; i++)

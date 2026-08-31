@@ -57,13 +57,11 @@ public class ConfigurationTests
         var config = FileAssertConfig.ReadFromFile(configPath);
 
         // Assert - the full hierarchy is correctly constructed
-        Assert.Single(config.Tests);
-        var test = config.Tests[0];
+        var test = Assert.Single(config.Tests);
         Assert.Equal("License Check", test.Name);
-        Assert.Single(test.Tags);
-        Assert.Equal("license", test.Tags[0]);
-        Assert.Single(test.Files);
-        var file = test.Files[0];
+        var tag = Assert.Single(test.Tags);
+        Assert.Equal("license", tag);
+        var file = Assert.Single(test.Files);
         Assert.Equal("**/*.txt", file.Pattern);
         Assert.Equal(1, file.Min);
         Assert.Single(file.TextAssert!.Rules);

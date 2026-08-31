@@ -94,8 +94,8 @@ public class ContextNewPropertiesTests
         // Assert
         Assert.True(context.Silent);
         Assert.Equal("cfg.yaml", context.ConfigFile);
-        Assert.Single(context.Filters);
-        Assert.Equal("my-filter", context.Filters[0]);
+        var filter = Assert.Single(context.Filters);
+        Assert.Equal("my-filter", filter);
     }
 
     /// <summary>

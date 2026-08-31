@@ -64,8 +64,8 @@ public class FileAssertConfigTests
         var config = FileAssertConfig.ReadFromFile(configPath);
 
         // Assert
-        Assert.Single(config.Tests);
-        Assert.Equal("Sample Test", config.Tests[0].Name);
+        var test = Assert.Single(config.Tests);
+        Assert.Equal("Sample Test", test.Name);
 
     }
 
@@ -285,11 +285,9 @@ public class FileAssertConfigTests
         var config = FileAssertConfig.ReadFromFile(configPath);
 
         // Assert - one test was parsed with one file assertion and populated PDF settings
-        Assert.Single(config.Tests);
-        Assert.Equal("PDF Check", config.Tests[0].Name);
-        Assert.Single(config.Tests[0].Files);
-
-        var fileAssertion = config.Tests[0].Files[0];
+        var test = Assert.Single(config.Tests);
+        Assert.Equal("PDF Check", test.Name);
+        var fileAssertion = Assert.Single(test.Files);
         Assert.Equal("report.pdf", fileAssertion.Pattern);
         Assert.NotNull(fileAssertion.PdfAssert);
 

@@ -43,8 +43,8 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsType<FileAssertContainsRule>(rule);
-        Assert.Equal("expected text", ((FileAssertContainsRule)rule).Value);
+        var containsRule = Assert.IsType<FileAssertContainsRule>(rule);
+        Assert.Equal("expected text", containsRule.Value);
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsType<FileAssertMatchesRule>(rule);
-        Assert.Equal(@"\d+", ((FileAssertMatchesRule)rule).Pattern);
+        var matchesRule = Assert.IsType<FileAssertMatchesRule>(rule);
+        Assert.Equal(@"\d+", matchesRule.Pattern);
     }
 
     /// <summary>
@@ -172,8 +172,8 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsType<FileAssertDoesNotContainRule>(rule);
-        Assert.Equal("forbidden text", ((FileAssertDoesNotContainRule)rule).Value);
+        var doesNotContainRule = Assert.IsType<FileAssertDoesNotContainRule>(rule);
+        Assert.Equal("forbidden text", doesNotContainRule.Value);
     }
 
     /// <summary>
@@ -189,8 +189,8 @@ public class FileAssertRuleTests
         var rule = FileAssertRule.Create(data);
 
         // Assert
-        Assert.IsType<FileAssertDoesNotMatchRule>(rule);
-        Assert.Equal(@"FATAL|ERROR", ((FileAssertDoesNotMatchRule)rule).Pattern);
+        var doesNotMatchRule = Assert.IsType<FileAssertDoesNotMatchRule>(rule);
+        Assert.Equal(@"FATAL|ERROR", doesNotMatchRule.Pattern);
     }
 
     /// <summary>
