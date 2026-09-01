@@ -178,8 +178,6 @@ public sealed class FileAssertZipAssertTests
     /// <summary>
     ///     A test-only <see cref="IContext"/> implementation that captures all error messages
     ///     written via <see cref="WriteError"/> for inspection in breadcrumb tests.
-    ///     <see cref="WithPrefix"/> chains a scoped wrapper that mirrors the behavior of
-    ///     <c>Context.ScopedContext</c> so that the full breadcrumb path is accumulated.
     /// </summary>
     private sealed class CapturingContext : IContext
     {
@@ -193,31 +191,6 @@ public sealed class FileAssertZipAssertTests
 
         /// <inheritdoc/>
         public void WriteError(string message) => _errors.Add(message);
-
-        /// <inheritdoc/>
-        public IContext WithPrefix(string prefix) => new PrefixedContext(this, prefix);
-
-        /// <summary>
-        ///     Scoped wrapper that prepends a prefix to each error before delegating to the
-        ///     parent context. Mirrors the behavior of <c>Context.ScopedContext</c>.
-        /// </summary>
-        private sealed class PrefixedContext : IContext
-        {
-            private readonly IContext _parent;
-            private readonly string _prefix;
-
-            internal PrefixedContext(IContext parent, string prefix)
-            {
-                _parent = parent;
-                _prefix = prefix;
-            }
-
-            public void WriteLine(string message) => _parent.WriteLine(message);
-
-            public void WriteError(string message) => _parent.WriteError($"{_prefix} > {message}");
-
-            public IContext WithPrefix(string prefix) => new PrefixedContext(this, prefix);
-        }
     }
 
     /// <summary>

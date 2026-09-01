@@ -60,6 +60,7 @@ sections:
         children:
           - FileAssert-FileAssertTextAssert-Creation
           - FileAssert-FileAssertTextAssert-RuleApplication
+          - FileAssert-FileAssertTextAssert-IOError
         tests:
           - Modeling_ExecuteChain_PassesWhenAllConstraintsMet
 
@@ -192,6 +193,7 @@ sections:
           - FileAssert-FileAssertYamlAssert-QueryMinCount
           - FileAssert-FileAssertYamlAssert-QueryMaxCount
           - FileAssert-FileAssertYamlAssert-QueryExactCount
+          - FileAssert-FileAssertYamlAssert-MalformedQueryRejected
         tests:
           - Modeling_QueryAssertions_YamlQueryMeetsCount_NoError
 

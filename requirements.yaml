@@ -1,7 +1,9 @@
 ---
 # Root requirements file - includes all subsystem, platform, and OTS requirements
+root-tags: [system, quality]
 includes:
   - docs/reqstream/file-assert.yaml
+  - docs/reqstream/quality.yaml
   - docs/reqstream/file-assert/program.yaml
   - docs/reqstream/file-assert/cli.yaml
   - docs/reqstream/file-assert/cli/context.yaml

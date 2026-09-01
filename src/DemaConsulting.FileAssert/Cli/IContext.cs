@@ -24,10 +24,9 @@ namespace DemaConsulting.FileAssert.Cli;
 ///     Defines the output contract for reporting assertion results and errors.
 /// </summary>
 /// <remarks>
-///     IContext is implemented by Context (the root context) and Context.ScopedContext (a
-///     scoped wrapper that prepends a path prefix to all error messages). Accepting IContext
-///     in Run methods allows FileAssertZipAssert to pass a scoped context to nested asserters
-///     without requiring those asserters to know about the scoping mechanism.
+///     IContext is implemented by Context. Accepting IContext in Run methods allows
+///     asserters to report output and errors without depending on the concrete Context
+///     implementation.
 /// </remarks>
 internal interface IContext
 {
@@ -42,13 +41,4 @@ internal interface IContext
     /// </summary>
     /// <param name="message">The error message to write.</param>
     void WriteError(string message);
-
-    /// <summary>
-    ///     Returns a new scoped context that prepends <c>"{prefix} > "</c> to every
-    ///     <see cref="WriteError"/> message.
-    /// </summary>
-    /// <param name="prefix">The prefix to prepend to all error messages. Must not be null.</param>
-    /// <returns>A new scoped context delegating state to this context.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="prefix"/> is null.</exception>
-    IContext WithPrefix(string prefix);
 }

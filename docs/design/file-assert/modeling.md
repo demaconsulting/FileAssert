@@ -89,9 +89,9 @@ Domain objects are constructed and executed in the following layers:
 3. During execution, `FileAssertConfig.Run` calls `FileAssertTest.Run` → `FileAssertFile.Run`
    → assert unit `Run` methods, threading `IContext` through every layer so all failures are
    reported via a single path. `FileAssertTest.Run` wraps the base path in a
-   `DirectoryFileContainer` before passing it down. `FileAssertZipAssert.Run` calls
-   `context.WithPrefix(displayPath)` to create a scoped `IContext` that prepends the archive
-   path as a breadcrumb to every nested error message.
+   `DirectoryFileContainer` before passing it down. `FileAssertZipAssert.Run` derives a
+   breadcrumb-prefixed display path via `ZipFileContainer.GetDisplayPath` so every nested error
+   message identifies the archive and entry that produced it.
 
 ### Dependencies
 

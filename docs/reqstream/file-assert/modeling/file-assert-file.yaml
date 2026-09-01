@@ -26,6 +26,8 @@ sections:
         justification: |
           The minimum-count constraint catches missing required artifacts (such as a build
           output that should always be produced).
+        children:
+          - FileAssert-OTS-FileSystemGlobbing
         tests:
           - FileAssertFile_Run_TooFewFiles_WritesError
           - FileAssertFile_Run_NoMatchingFiles_NoConstraints_NoError
@@ -83,6 +85,8 @@ sections:
           Delegating file-type assertions to dedicated units keeps FileAssertFile free of
           format-specific parsing and assertion logic, making each unit independently testable
           and the overall design extensible to future formats.
+        children:
+          - FileAssert-IContext-OutputContract
         tests:
           - FileAssertFile_Create_ValidData_CreatesFile
           - FileAssertFile_Run_WithContentRule_ContentContainsValue_NoError

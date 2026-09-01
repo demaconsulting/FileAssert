@@ -66,19 +66,3 @@ sections:
         tests:
           - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
           - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
-
-      - id: FileAssert-Cli-ScopedContext
-        title: The Cli subsystem shall provide breadcrumb-style context scoping so that error messages produced inside a nested
-          assertion identify the enclosing container path.
-        justification: |
-          When asserting files inside a zip archive, error messages must identify both the
-          archive and the entry that failed. Breadcrumb-style context scoping prepends the
-          enclosing container path to error messages, giving users immediate context without
-          requiring each asserter to format breadcrumb paths explicitly. Nested scopes support
-          zip-in-zip scenarios.
-        children:
-          - FileAssert-IContext-OutputContract
-        tests:
-          - Context_WithPrefix_ReturnsNonNullScopedContext
-          - ScopedContext_WriteError_PropagatesExitCodeToRoot
-          - ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot

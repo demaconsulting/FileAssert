@@ -30,6 +30,8 @@ sections:
         justification: |
           Provides a built-in mechanism to verify the tool is functioning correctly
           in the deployment environment.
+        children:
+          - FileAssert-SelfTest-ValidationPipeline
         tests:
           - Program_Run_WithValidateFlag_RunsValidation
 

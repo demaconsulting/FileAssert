@@ -479,9 +479,6 @@ public sealed class FileAssertHtmlAssertTests
 
         /// <inheritdoc/>
         public void WriteError(string message) => _errors.Add(message);
-
-        /// <inheritdoc/>
-        public IContext WithPrefix(string prefix) => this;
     }
 
     /// <summary>
