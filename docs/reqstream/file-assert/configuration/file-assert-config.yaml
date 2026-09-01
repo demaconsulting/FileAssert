@@ -15,6 +15,8 @@ sections:
           caller and allows the class to validate its inputs before returning a usable
           instance. Failing early with a descriptive exception when the file is missing
           avoids silent failures that would be difficult to diagnose.
+        children:
+          - FileAssert-OTS-YamlDotNet
         tests:
           - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
           - FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException

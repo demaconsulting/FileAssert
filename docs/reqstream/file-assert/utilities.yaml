@@ -17,6 +17,7 @@ sections:
           utility functions are accessible to and correctly used by dependent subsystems.
         children:
           - FileAssert-PathHelpers-SafeCombine
+          - FileAssert-PathHelpers-RejectRootedPaths
           - FileAssert-PathHelpers-NullValidation
         tests:
           - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
@@ -31,6 +32,7 @@ sections:
         children:
           - FileAssert-TemporaryDirectory-Lifecycle
           - FileAssert-TemporaryDirectory-SafePath
+          - FileAssert-Utilities-SafePathOperations
         tests:
           - Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
 
@@ -47,6 +49,7 @@ sections:
           - FileAssert-DirectoryFileContainer-FileSystemAccess
           - FileAssert-ZipFileContainer-EntryEnumeration
           - FileAssert-ZipFileContainer-BreadcrumbDisplayPath
+          - FileAssert-ZipFileContainer-OpenEntry
           - FileAssert-ZipFileContainer-MissingEntryException
           - FileAssert-ZipFileContainer-EntrySize
         tests:

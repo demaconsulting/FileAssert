@@ -462,8 +462,5 @@ public sealed class FileAssertYamlAssertTests
 
         /// <inheritdoc/>
         public void WriteError(string message) => _errors.Add(message);
-
-        /// <inheritdoc/>
-        public IContext WithPrefix(string prefix) => this;
     }
 }

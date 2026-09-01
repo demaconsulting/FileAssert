@@ -57,8 +57,7 @@ Execution proceeds in the following steps:
 4. If `InvalidDataException`, `IOException`, or `UnauthorizedAccessException` is thrown constructing
    the `ZipFileContainer`, writes the parse error and returns immediately. The stream is disposed in
    a nested `try` block even when the `ZipFileContainer` constructor throws.
-5. Creates a scoped context via `context.WithPrefix(displayPath)`.
-6. Runs each `FileAssertFile` in `Files` against the `ZipFileContainer` and scoped context.
+5. Runs each `FileAssertFile` in `Files` against the `ZipFileContainer` and context.
 
 ###### Run Error Messages
 
@@ -107,10 +106,9 @@ pdf, nested zip) against the archive contents.
   stream is disposed even when the `ZipFileContainer` constructor throws `InvalidDataException`.
   Without this guard, the stream from `container.OpenEntry` would remain open, locking the
   underlying file or archive entry.
-- **Scoped context for breadcrumbs**: `context.WithPrefix(displayPath)` creates a scoped
-  `IContext` that prepends the archive's display path to every error message, giving users
-  unambiguous context (`"outer.zip > entry.xml > error"`) without requiring any formatting
-  logic in the individual asserters.
+- **Breadcrumb display path**: `container.GetDisplayPath(entryPath)` computes a breadcrumb path
+  (e.g., `"outer.zip > entry.xml"`) that `ZipFileContainer` embeds in error messages, giving users
+  unambiguous context without requiring any formatting logic in the individual asserters.
 - **Forward-slash normalization handled by `ZipFileContainer`**: Entry path normalization is the
   responsibility of `ZipFileContainer.GetEntries`, not `FileAssertZipAssert`. This keeps the
   asserter free of container-specific logic.

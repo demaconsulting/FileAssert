@@ -16,8 +16,10 @@ sections:
           The primary purpose of the tool is to assert properties of files on the file system
           using YAML-defined test suites. Verifying this core behavior at the system level
           confirms that all subsystems integrate correctly to produce the expected outcome.
+        tags: [system]
         children:
           - FileAssert-Configuration-LoadAndBuild
+          - FileAssert-Modeling-ExecutionChain
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
 
@@ -29,8 +31,11 @@ sections:
           CI/CD pipelines and scripts depend on the exit code to detect assertion failures.
           A non-zero exit code when an assertion fails is the primary mechanism for the tool
           to signal that files do not meet the declared constraints.
+        tags: [system]
         children:
           - FileAssert-Context-ExitCode
+          - FileAssert-Cli-ErrorReporting
+          - FileAssert-Modeling-FailureReporting
         tests:
           - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
 
@@ -40,8 +45,10 @@ sections:
           Automated pipelines that parse or redirect tool output must be able to run the tool
           without cluttering their own output. The --silent flag provides this capability
           while still allowing exit code and log file output to carry result information.
+        tags: [system]
         children:
           - FileAssert-Context-Silent
+          - FileAssert-Cli-OutputPipeline
         tests:
           - IntegrationTest_SilentFlag_SuppressesOutput
 
@@ -51,8 +58,10 @@ sections:
           Persistent log files allow post-hoc inspection of tool output in CI/CD environments
           where console output may be discarded. The log file must capture all messages that
           would otherwise appear on the console.
+        tags: [system]
         children:
           - FileAssert-Context-Output
+          - FileAssert-Cli-OutputPipeline
         tests:
           - IntegrationTest_LogFlag_WritesOutputToFile
 
@@ -64,9 +73,13 @@ sections:
           Supporting a custom configuration file path lets users maintain multiple test suites
           and select the appropriate one per invocation. The default path ensures the common
           single-suite case requires no additional arguments.
+        tags: [system]
         children:
           - FileAssert-Context-ConfigFile
           - FileAssert-FileAssertConfig-ReadFromFile
+          - FileAssert-Cli-ArgumentExposure
+          - FileAssert-Program-MissingDefaultConfig
+          - FileAssert-Program-MissingExplicitConfig
         tests:
           - IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero
           - IntegrationTest_ValidConfig_FailingAssertions_ReturnsNonZero
@@ -81,10 +94,12 @@ sections:
           Pipelines; JUnit XML is supported by Jenkins, GitLab CI, and most other CI tools.
           Results are written both from the self-validation path (--validate --results) and from
           the normal file assertion path (--results without --validate).
+        tags: [system]
         children:
           - FileAssert-FileAssertConfig-ResultsTrx
           - FileAssert-FileAssertConfig-ResultsJUnit
           - FileAssert-Validation-Results
+          - FileAssert-Configuration-ResultsFiles
         tests:
           - IntegrationTest_ValidateWithResults_GeneratesTrxFile
           - IntegrationTest_ValidateWithResults_GeneratesJUnitFile
@@ -99,9 +114,11 @@ sections:
           Selective test execution is essential for phased CI/CD pipelines where only a subset
           of tests (for example, smoke tests) should run in a given stage. Filtering by name or
           tag keeps the command line concise and consistent with common CLI testing tools.
+        tags: [system]
         children:
           - FileAssert-Context-Filters
           - FileAssert-Configuration-FilterExecution
+          - FileAssert-Cli-ArgumentExposure
         tests:
           - IntegrationTest_TestFiltering_OnlyRunsMatchingTests
 
@@ -113,6 +130,7 @@ sections:
           Enforcing a minimum file count guards against missing build outputs or required
           artifacts that should always be present. Users declare the lower bound they expect;
           the tool reports a violation when fewer files are found.
+        tags: [system]
         children:
           - FileAssert-FileAssertFile-MinCountConstraint
         tests:
@@ -126,6 +144,7 @@ sections:
           Enforcing a maximum file count prevents unexpected duplicate build outputs or
           configuration files from silently passing validation. Users declare the upper
           bound they expect; the tool reports a violation when more files are found.
+        tags: [system]
         children:
           - FileAssert-FileAssertFile-MaxCountConstraint
         tests:
@@ -140,6 +159,7 @@ sections:
           formats and date patterns that cannot be expressed as a simple substring check.
           Verifying both the passing and failing paths at the system level confirms end-to-end
           integration from the YAML rule definition through to the exit code.
+        tags: [system]
         children:
           - FileAssert-FileAssertRule-MatchesRule
         tests:
@@ -155,6 +175,7 @@ sections:
           must assert that precisely one artifact, configuration file, or report was
           produced. Any deviation from the expected count is a configuration drift
           that should be caught immediately.
+        tags: [system]
         children:
           - FileAssert-FileAssertFile-ExactCount
         tests:
@@ -170,6 +191,7 @@ sections:
           (max-size). Enforcing these constraints at the system level confirms that the
           YAML configuration, deserialization, and file system inspection all integrate
           correctly.
+        tags: [system]
         children:
           - FileAssert-FileAssertFile-MinSize
           - FileAssert-FileAssertFile-MaxSize
@@ -186,6 +208,7 @@ sections:
           assert that sensitive strings such as hard-coded passwords or debug flags are
           absent from committed files. System-level verification confirms the rule
           integrates correctly from YAML configuration through to the exit code.
+        tags: [system]
         children:
           - FileAssert-FileAssertRule-DoesNotContainRule
         tests:
@@ -201,6 +224,7 @@ sections:
           as asserting that log files contain no FATAL or ERROR entries. System-level
           verification confirms the rule integrates correctly from YAML configuration
           through to the exit code.
+        tags: [system]
         children:
           - FileAssert-FileAssertRule-DoesNotContainRegexRule
         tests:
@@ -211,6 +235,7 @@ sections:
         justification: |
           Displaying the tool version on request is a standard CLI convention and allows
           users and CI/CD pipelines to verify which version of the tool is installed.
+        tags: [system]
         children:
           - FileAssert-Program-Version
         tests:
@@ -221,6 +246,7 @@ sections:
         justification: |
           A help flag is a standard CLI convention that allows users to discover available
           options and their usage without consulting external documentation.
+        tags: [system]
         children:
           - FileAssert-Program-Help
         tests:
@@ -232,6 +258,7 @@ sections:
           The self-validation mode lets users verify that the installed tool is functioning
           correctly in their environment. This is especially valuable in regulated environments
           where tool qualification evidence is required.
+        tags: [system]
         children:
           - FileAssert-Program-Validate
         tests:
@@ -243,8 +270,10 @@ sections:
           Rejecting unknown arguments prevents silent misconfiguration where a typo in a flag
           name causes the tool to run without the intended option. A non-zero exit code ensures
           CI/CD pipelines detect the erroneous invocation.
+        tags: [system]
         children:
           - FileAssert-Context-InvalidArgs
+          - FileAssert-Cli-ArgumentParsing
         tests:
           - IntegrationTest_UnknownArgument_ReturnsError
 
@@ -258,6 +287,7 @@ sections:
           assertions are the primary mechanism for content validation in CI/CD pipelines.
           The supported assertion types are: `contains`, `does-not-contain`, `matches`
           (regex), and `does-not-contain-regex` (regex).
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
         tests:
@@ -275,9 +305,11 @@ sections:
           text content allows users to verify that generated PDF outputs meet documented
           requirements. An immediate failure when the file is not a valid PDF prevents
           misleading partial results.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-FileTypeParseError
+          - FileAssert-OTS-PdfPig
         tests:
           - IntegrationTest_PdfAssert_InvalidFile_ReturnsNonZero
           - IntegrationTest_PdfAssert_FailingAssertion_ReturnsNonZero
@@ -292,6 +324,7 @@ sections:
           in enterprise and regulated environments. XPath-based node count assertions allow
           users to verify document structure and element presence without writing custom
           parsers. An immediate failure on invalid XML prevents misleading partial results.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-FileTypeParseError
@@ -311,9 +344,11 @@ sections:
           structure such as title presence and link counts. Because the parser is lenient and
           tolerates syntactically imperfect markup, only IO failures (not parse failures) are
           treated as errors.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-QueryAssertions
+          - FileAssert-OTS-HtmlAgilityPack
         tests:
           - IntegrationTest_HtmlAssert_PassingQuery_ReturnsZero
           - IntegrationTest_HtmlAssert_ZeroMatchingElements_ReturnsNonZero
@@ -328,6 +363,7 @@ sections:
           and infrastructure-as-code files. Dot-notation path assertions allow users to verify
           that required configuration keys are present and have the expected cardinality.
           An immediate failure on invalid YAML prevents misleading partial results.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-FileTypeParseError
@@ -346,6 +382,7 @@ sections:
           outputs. Dot-notation paths allow users to verify that required keys are present and
           have the expected cardinality without writing custom parsers. An immediate failure on
           invalid JSON prevents misleading partial results.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-FileTypeParseError
@@ -367,10 +404,13 @@ sections:
           individual entries allow users to validate the content of packaged files directly from the
           archive. Recursive nesting lets users validate archives embedded inside other archives. An
           immediate failure on an invalid zip archive prevents misleading partial results.
+        tags: [system]
         children:
           - FileAssert-Modeling-FileTypeParsing
           - FileAssert-Modeling-FileTypeParseError
           - FileAssert-FileAssertZipAssert-EntryMatching
+          - FileAssert-Modeling-ZipEntryContentAssertions
+          - FileAssert-Modeling-ZipEntryBreadcrumbReporting
         tests:
           - IntegrationTest_ZipAssert_PassingQuery_ReturnsZero
           - IntegrationTest_ZipAssert_InvalidFile_ReturnsNonZero
@@ -388,6 +428,7 @@ sections:
           Running the default-named configuration from the current directory with no arguments
           provides a zero-configuration entry point for users and CI/CD pipelines, allowing a
           project to be validated simply by invoking the tool from its root.
+        tags: [system]
         children:
           - FileAssert-Program-DefaultBehavior
         tests:
@@ -401,8 +442,10 @@ sections:
           The --depth flag allows users to embed self-validation output at an appropriate
           heading level within existing Markdown documents. A default of 1 ensures top-level
           output without explicit configuration.
+        tags: [system]
         children:
           - FileAssert-Context-Depth
+          - FileAssert-Cli-ArgumentExposure
         tests:
           - IntegrationTest_DepthFlag_ProducesHeadingsAtSpecifiedDepth
           - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
@@ -413,6 +456,7 @@ sections:
         justification: |
           CI/CD pipelines operate across heterogeneous environments. Supporting all three major
           platforms ensures the tool can be used consistently regardless of the build agent OS.
+        tags: [system]
         children:
           - FileAssert-Platform-Windows
           - FileAssert-Platform-Linux
@@ -428,6 +472,7 @@ sections:
         justification: |
           Supporting multiple .NET runtimes allows projects targeting different LTS and current
           versions to adopt FileAssert without being forced to upgrade their runtime.
+        tags: [system]
         children:
           - FileAssert-Platform-Net8
           - FileAssert-Platform-Net9

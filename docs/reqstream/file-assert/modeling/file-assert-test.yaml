@@ -39,6 +39,8 @@ sections:
         justification: |
           Running all file assertions in the test ensures complete coverage; skipping any
           file assertion entry would leave gaps in validation that may go undetected.
+        children:
+          - FileAssert-Utilities-FileContainerAbstraction
         tests:
           - FileAssertTest_Run_RunsAllFiles
 

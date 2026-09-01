@@ -29,6 +29,7 @@ sections:
           - FileAssert-Validation-ZipTest
           - FileAssert-Validation-NullContext
           - FileAssert-Validation-Depth
+          - FileAssert-Utilities-TemporaryDirectory
         tests:
           - SelfTest_Run_ExecutesBuiltInTestsAndProducesSummary
           - SelfTest_Run_WhenInvoked_PrintsSystemInfoHeader

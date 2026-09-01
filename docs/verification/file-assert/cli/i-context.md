@@ -1,15 +1,16 @@
 ### IContext Verification
 
-This document describes the unit-level verification design for the `IContext` interface and its
-`ScopedContext` implementation. It defines the test scenarios, dependency usage, and requirement
-coverage for `Cli/IContext.cs` and the nested `ScopedContext` class inside `Cli/Context.cs`.
+This document describes the unit-level verification design for the `IContext` interface. It
+defines the test scenarios, dependency usage, and requirement coverage for `Cli/IContext.cs`.
 
 #### Verification Approach
 
-`IContext` and `ScopedContext` are verified with unit tests defined in `ScopedContextTests.cs`.
-Tests exercise `Context.WithPrefix`, error propagation from scoped contexts to the root context,
-and multi-level nesting. No mocking or test doubles are needed because the tests operate directly
-on a `Context` instance created with `["--silent"]` to suppress console output.
+`IContext` has no implementation of its own; it is verified indirectly through `Context`, its
+sole implementer. Tests defined in `ContextTests.cs` exercise the `WriteLine` and `WriteError`
+contract members via the concrete `Context` instance, confirming that output/error reporting
+and exit-code state behave as `IContext` consumers (the asserters) expect. No mocking or test
+doubles are needed at this level because the tests operate directly on a `Context` instance
+created with the standard `Context.Create` factory.
 
 #### Test Environment
 
@@ -26,45 +27,19 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-`ScopedContext` depends on `Context` for error accumulation. No external dependencies
-require mocking at this level.
+No external dependencies require mocking at this level.
 
 #### Test Scenarios
 
-##### Context_WithPrefix_ReturnsNonNullScopedContext
+##### Context_WriteLine_NotSilent_WritesToConsole
 
-**Scenario**: `context.WithPrefix("archive.zip")` is called on a valid root context.
+**Scenario**: `context.WriteLine("Test message")` is called on a context created without
+`--silent`.
 
-**Expected**: The returned `IContext` instance is not null.
+**Expected**: The message appears on console standard output.
 
-##### Context_WithPrefix_NullPrefix_ThrowsArgumentNullException
+##### Context_WriteError_SetsErrorExitCode
 
-**Scenario**: `context.WithPrefix(null!)` is called on a valid root context.
+**Scenario**: `context.WriteError("Test error message")` is called on a valid context.
 
-**Expected**: An `ArgumentNullException` is thrown.
-
-**Boundary / error path**: Null argument guard.
-
-##### ScopedContext_WriteError_PropagatesExitCodeToRoot
-
-**Scenario**: An error is written via a scoped context derived from a root context.
-
-**Expected**: `context.ExitCode` is `1` and `context.ErrorCount` is `1`.
-
-##### ScopedContext_WriteLine_DoesNotSetError
-
-**Scenario**: An informational message is written via a scoped context.
-
-**Expected**: `context.ExitCode` is `0` and `context.ErrorCount` is `0`.
-
-##### ScopedContext_Nested_WriteError_PropagatesExitCodeToRoot
-
-**Scenario**: Two levels of `WithPrefix` are applied; an error is written via the deepest scope.
-
-**Expected**: `context.ExitCode` is `1` and `context.ErrorCount` is `1`.
-
-##### ScopedContext_MultipleErrors_AllAccumulateOnRoot
-
-**Scenario**: Two separate scoped contexts and the root context each write one error.
-
-**Expected**: `context.ErrorCount` is `3` and `context.ExitCode` is `1`.
+**Expected**: `context.ExitCode` is `1`.
