@@ -23,7 +23,7 @@
     <!-- Cli -->
     <rect x="170" y="162" width="420" height="52" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
     <text x="380" y="185" font-size="16" font-weight="600" fill="#166534" text-anchor="middle">Cli</text>
-    <text x="380" y="204" font-size="12" fill="#166534" text-anchor="middle">Parses flags, then dispatches to the requested action</text>
+    <text x="380" y="204" font-size="12" fill="#166534" text-anchor="middle">Parses flags and owns the output and log streams</text>
 
     <!-- Configuration, Utilities, SelfTest -->
     <rect x="170" y="230" width="128" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
@@ -32,12 +32,12 @@
     <text x="234" y="291" font-size="12" fill="#1e40af" text-anchor="middle">test suite file</text>
     <rect x="316" y="230" width="128" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
     <text x="380" y="256" font-size="15" font-weight="600" fill="#1e3a8a" text-anchor="middle">Utilities</text>
-    <text x="380" y="276" font-size="12" fill="#1e40af" text-anchor="middle">Glob matching and</text>
+    <text x="380" y="276" font-size="12" fill="#1e40af" text-anchor="middle">Path helpers and</text>
     <text x="380" y="291" font-size="12" fill="#1e40af" text-anchor="middle">file containers</text>
     <rect x="462" y="230" width="128" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
     <text x="526" y="256" font-size="15" font-weight="600" fill="#1e3a8a" text-anchor="middle">SelfTest</text>
-    <text x="526" y="276" font-size="12" fill="#1e40af" text-anchor="middle">Built-in checks</text>
-    <text x="526" y="291" font-size="12" fill="#1e40af" text-anchor="middle">(--validate)</text>
+    <text x="526" y="276" font-size="12" fill="#1e40af" text-anchor="middle">Self-checks with</text>
+    <text x="526" y="291" font-size="12" fill="#1e40af" text-anchor="middle">--validate instead</text>
 
     <!-- Modeling -->
     <rect x="170" y="318" width="420" height="140" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
@@ -85,6 +85,7 @@
     <line x1="590" y1="389" x2="646" y2="389" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
 
     <!-- Internal flow -->
+    <line x1="526" y1="214" x2="526" y2="226" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
     <line x1="234" y1="214" x2="234" y2="226" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
     <line x1="234" y1="302" x2="234" y2="314" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
     <line x1="380" y1="302" x2="380" y2="314" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>

@@ -16,7 +16,7 @@ files against acceptance criteria such as size constraints, content requirements
 making it ideal for CI/CD pipelines and compliance workflows.
 
 ![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
-Utilities, SelfTest, and Modeling subsystems into pass or fail results][architecture]
+Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead][architecture]
 
 ## Features
 

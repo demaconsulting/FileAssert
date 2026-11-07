@@ -12,7 +12,7 @@ The figure below shows how the pieces fit together: the `fileassert` command rea
 files each test names, applies the assertions, and reports the results.
 
 ![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
-Utilities, SelfTest, and Modeling subsystems into pass or fail results](architecture.svg)
+Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead](architecture.svg)
 
 ## Scope
 
