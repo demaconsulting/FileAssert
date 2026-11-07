@@ -87,7 +87,8 @@ __pycache__/
 *$py.class
 .venv/
 
-# Generated documentation
+# Generated documentation (build outputs - never committed)
+**/generated/
 docs/**/*.html
 docs/**/*.pdf
 docs/design/generated/

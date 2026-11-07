@@ -15,6 +15,9 @@ FileAssert is a .NET CLI tool for asserting file properties using YAML-defined t
 files against acceptance criteria such as size constraints, content requirements, and pattern matching,
 making it ideal for CI/CD pipelines and compliance workflows.
 
+![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
+Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead][architecture]
+
 ## Features
 
 - **File Assertion Testing**: YAML-defined test suites that validate file properties against acceptance criteria
@@ -357,5 +360,6 @@ By contributing to this project, you agree that your contributions will be licen
 [link-quality]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-security]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-nuget]: https://www.nuget.org/packages/DemaConsulting.FileAssert
+[architecture]: https://raw.githubusercontent.com/demaconsulting/FileAssert/main/docs/images/architecture.png
 [link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/user_guide/introduction.md
 [link-continuous-compliance]: https://github.com/demaconsulting/ContinuousCompliance
