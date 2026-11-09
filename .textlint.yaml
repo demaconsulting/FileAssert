@@ -1,5 +1,5 @@
 ---
-# Spell-Checking
+# Spell-Checking with TextLint
 #
 # PURPOSE:
 # - Maintain professional documentation and code quality
@@ -13,58 +13,40 @@ version: '0.2'
 
 language: en
 
+# Files to spell-check (applied when TextLint is run without arguments)
+files:
+  - "**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}"
+# Include hidden paths such as .github/
+enableGlobDot: true
+
 # Project-specific technical terms and tool names
 words:
   - appsettings
-  - artifacts
-  - artefacts
-  - behavior
-  - behaviour
-  - buildmark
-  - canvasnet
   - Dema
+  - DEMA
   - demaconsulting
-  - deserialize
-  - deserializes
+  - DEMACONSULTINGNUGETKEY
   - dogfooding
   - enation
-  - fileassert
   - filesystemglobbing
   - fontconfig
   - htmlagilitypack
-  - initialise
-  - initialized
-  - initialisation
-  - Linq
-  - materialize
-  - materialise
+  - ncipollo
+  - nestings
+  - netstandard
   - Pango
-  - pandoc
-  - pandoctool
   - pdfpig
-  - recognized
-  - recognise
-  - recognises
-  - recognised
-  - reqstream
-  - reviewmark
+  - sarif
   - Sarif
-  - sarifmark
+  - SARIF
   - selftest
-  - serialize
-  - serializes
-  - serialise
-  - serialises
-  - sonarcloud
-  - sonarmark
-  - sysml
-  - sysml2tools
-  - unrecognized
-  - unrecognised
-  - versionmark
-  - Weasyprint
-  - weasyprinttool
-  - xunit
+  - shopt
+  - slnx
+  - snupkg
+  - sonarscanner
+  - thirdparty
+  - unidirectionality
+  - venv
   - yamldotnet
   - yamlfix
 

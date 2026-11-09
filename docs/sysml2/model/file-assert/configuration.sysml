@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def ConfigurationSubsystem {
         doc /* Top-level configuration loading, deserialization, and test execution. */
 
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/Configuration/ConfigurationTests.cs */
-        comment designRef /* Design: docs/design/file-assert/configuration.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/configuration.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/configuration.yaml */
+        metadata info : SoftwareInfo {
+            description = "Top-level configuration loading, deserialization, and test execution.";
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/Configuration/ConfigurationTests.cs");
+            designFiles = ("docs/design/file-assert/configuration.md");
+            verificationFiles = ("docs/verification/file-assert/configuration.md");
+            requirementFiles = ("docs/reqstream/file-assert/configuration.yaml");
+        }
 
         part fileAssertConfig : FileAssertConfig;
         part fileAssertData : FileAssertData;

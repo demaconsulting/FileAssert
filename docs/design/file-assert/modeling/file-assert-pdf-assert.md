@@ -227,7 +227,7 @@ Inner class `PdfPages` holds:
 | Metadata field value fails `Matches` check  | Error written via `context.WriteError`; other rules continue.        |
 | Page count below `Min` or above `Max`       | Error written via `context.WriteError`; text rules continue.         |
 | Body text rule failure                      | Delegated to `FileAssertRule.Apply`; errors reported individually.   |
-| Unrecognised metadata field name            | Result is `null`; `Contains`/`Matches` run against null.             |
+| Unrecognized metadata field name            | Result is `null`; `Contains`/`Matches` run against null.             |
 
 #### Dependencies
 

@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def Validation {
         doc /* Self-validation test runner. */
 
-        comment sourceRef /* Source: src/DemaConsulting.FileAssert/SelfTest/Validation.cs */
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/SelfTest/ValidationTests.cs */
-        comment designRef /* Design: docs/design/file-assert/selftest/validation.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/selftest/validation.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/selftest/validation.yaml */
+        metadata info : SoftwareInfo {
+            description = "Self-validation test runner.";
+            sourceFiles = ("src/DemaConsulting.FileAssert/SelfTest/Validation.cs");
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/SelfTest/ValidationTests.cs");
+            designFiles = ("docs/design/file-assert/selftest/validation.md");
+            verificationFiles = ("docs/verification/file-assert/selftest/validation.md");
+            requirementFiles = ("docs/reqstream/file-assert/selftest/validation.yaml");
+        }
     }
 }

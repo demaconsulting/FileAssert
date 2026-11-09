@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def FileAssertRule {
         doc /* Abstract content validation rule hierarchy. */
 
-        comment sourceRef /* Source: src/DemaConsulting.FileAssert/Modeling/FileAssertRule.cs */
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertRuleTests.cs */
-        comment designRef /* Design: docs/design/file-assert/modeling/file-assert-rule.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/modeling/file-assert-rule.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/modeling/file-assert-rule.yaml */
+        metadata info : SoftwareInfo {
+            description = "Abstract content validation rule hierarchy.";
+            sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertRule.cs");
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertRuleTests.cs");
+            designFiles = ("docs/design/file-assert/modeling/file-assert-rule.md");
+            verificationFiles = ("docs/verification/file-assert/modeling/file-assert-rule.md");
+            requirementFiles = ("docs/reqstream/file-assert/modeling/file-assert-rule.yaml");
+        }
     }
 }

@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def FileAssertXmlAssert {
         doc /* XML document assertions (System.Xml.Linq/XPath). */
 
-        comment sourceRef /* Source: src/DemaConsulting.FileAssert/Modeling/FileAssertXmlAssert.cs */
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertXmlAssertTests.cs */
-        comment designRef /* Design: docs/design/file-assert/modeling/file-assert-xml-assert.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/modeling/file-assert-xml-assert.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml */
+        metadata info : SoftwareInfo {
+            description = "XML document assertions (System.Xml.Linq/XPath).";
+            sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertXmlAssert.cs");
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertXmlAssertTests.cs");
+            designFiles = ("docs/design/file-assert/modeling/file-assert-xml-assert.md");
+            verificationFiles = ("docs/verification/file-assert/modeling/file-assert-xml-assert.md");
+            requirementFiles = ("docs/reqstream/file-assert/modeling/file-assert-xml-assert.yaml");
+        }
     }
 }
