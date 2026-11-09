@@ -1,6 +1,7 @@
 package FileAssert {
     import OtsDependencies::*;
     import SharedDependencies::*;
+    private import SoftwareItemMetadata::*;
 
     doc
     /*
@@ -11,10 +12,13 @@ package FileAssert {
     part def FileAssertSystem {
         doc /* The FileAssert system as a whole. */
 
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/IntegrationTests.cs */
-        comment designRef /* Design: docs/design/file-assert.md */
-        comment verificationRef /* Verification: docs/verification/file-assert.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert.yaml */
+        metadata info : SoftwareInfo {
+            description = "The FileAssert system as a whole.";
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/IntegrationTests.cs");
+            designFiles = ("docs/design/file-assert.md");
+            verificationFiles = ("docs/verification/file-assert.md");
+            requirementFiles = ("docs/reqstream/file-assert.yaml");
+        }
 
         part program : Program;
         part cli : CliSubsystem;

@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def ModelingSubsystem {
         doc /* Test-suite data model and content-assertion rule implementations. */
 
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/Modeling/ModelingTests.cs */
-        comment designRef /* Design: docs/design/file-assert/modeling.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/modeling.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/modeling.yaml */
+        metadata info : SoftwareInfo {
+            description = "Test-suite data model and content-assertion rule implementations.";
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/ModelingTests.cs");
+            designFiles = ("docs/design/file-assert/modeling.md");
+            verificationFiles = ("docs/verification/file-assert/modeling.md");
+            requirementFiles = ("docs/reqstream/file-assert/modeling.yaml");
+        }
 
         part fileAssertTest : FileAssertTest;
         part fileAssertFile : FileAssertFile;

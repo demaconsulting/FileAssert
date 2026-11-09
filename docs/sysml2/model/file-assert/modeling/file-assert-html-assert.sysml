@@ -1,11 +1,16 @@
 package FileAssert {
+    private import SoftwareItemMetadata::*;
+
     part def FileAssertHtmlAssert {
         doc /* HTML document assertions (HtmlAgilityPack). */
 
-        comment sourceRef /* Source: src/DemaConsulting.FileAssert/Modeling/FileAssertHtmlAssert.cs */
-        comment testRef /* Test: test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertHtmlAssertTests.cs */
-        comment designRef /* Design: docs/design/file-assert/modeling/file-assert-html-assert.md */
-        comment verificationRef /* Verification: docs/verification/file-assert/modeling/file-assert-html-assert.md */
-        comment reqRef /* Requirements: docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml */
+        metadata info : SoftwareInfo {
+            description = "HTML document assertions (HtmlAgilityPack).";
+            sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertHtmlAssert.cs");
+            testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertHtmlAssertTests.cs");
+            designFiles = ("docs/design/file-assert/modeling/file-assert-html-assert.md");
+            verificationFiles = ("docs/verification/file-assert/modeling/file-assert-html-assert.md");
+            requirementFiles = ("docs/reqstream/file-assert/modeling/file-assert-html-assert.yaml");
+        }
     }
 }
