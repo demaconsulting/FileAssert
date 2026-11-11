@@ -19,7 +19,7 @@ requirement is satisfied.
 
 ### Test Environment
 
-The standard `dotnet test` runner on the supported .NET runtimes (net8.0, net9.0, net10.0); no
+The standard `dotnet test` runner on the supported .NET runtimes (net10.0, net11.0); no
 additional environment setup is required.
 
 ### Acceptance Criteria

@@ -22,10 +22,8 @@ enableGlobDot: true
 # Project-specific technical terms and tool names
 words:
   - appsettings
-  - Dema
   - DEMA
   - demaconsulting
-  - DEMACONSULTINGNUGETKEY
   - dogfooding
   - enation
   - filesystemglobbing
@@ -36,7 +34,6 @@ words:
   - netstandard
   - Pango
   - pdfpig
-  - sarif
   - Sarif
   - SARIF
   - selftest

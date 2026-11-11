@@ -15,8 +15,11 @@ FileAssert is a .NET CLI tool for asserting file properties using YAML-defined t
 files against acceptance criteria such as size constraints, content requirements, and pattern matching,
 making it ideal for CI/CD pipelines and compliance workflows.
 
-![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
-Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead][architecture]
+The workflow below shows how to use it: write a YAML test suite, run `fileassert` locally or in a CI
+pipeline, and use the exit code and results files to gate the build and record evidence.
+
+![FileAssert workflow: write a YAML test suite, run fileassert, get an exit code, console report and
+TRX or JUnit results, then use them as a CI gate, in test reports and as compliance evidence][workflow]
 
 ## Features
 
@@ -29,7 +32,7 @@ Utilities, and Modeling subsystems into pass or fail results; --validate runs th
 - **TRX and JUnit Output**: Write test results to TRX or JUnit format via DemaConsulting.TestResults
 - **Self-Validation**: Built-in validation tests confirm the tool is functioning correctly
 - **Multi-Platform Support**: Builds and runs on Windows, Linux, and macOS
-- **Multi-Runtime Support**: Targets .NET 8, 9, and 10
+- **Multi-Runtime Support**: Targets .NET 10 and 11
 - **Comprehensive CI/CD**: GitHub Actions workflows with quality checks, builds, and integration tests
 - **Continuous Compliance**: Compliance evidence generated automatically on every CI run, following
   the [Continuous Compliance][link-continuous-compliance] methodology
@@ -360,6 +363,6 @@ By contributing to this project, you agree that your contributions will be licen
 [link-quality]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-security]: https://sonarcloud.io/dashboard?id=demaconsulting_FileAssert
 [link-nuget]: https://www.nuget.org/packages/DemaConsulting.FileAssert
-[architecture]: https://raw.githubusercontent.com/demaconsulting/FileAssert/main/docs/images/architecture.png
+[workflow]: https://raw.githubusercontent.com/demaconsulting/FileAssert/main/docs/images/workflow.png
 [link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/user_guide/introduction.md
 [link-continuous-compliance]: https://github.com/demaconsulting/ContinuousCompliance
