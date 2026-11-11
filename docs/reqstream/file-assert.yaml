@@ -468,16 +468,14 @@ sections:
 
       - id: FileAssert-System-MultiRuntime
         title: |
-          The FileAssert tool shall run correctly on .NET 8, .NET 9, and .NET 10 runtimes.
+          The FileAssert tool shall run correctly on .NET 10 and .NET 11 runtimes.
         justification: |
-          Supporting multiple .NET runtimes allows projects targeting different LTS and current
+          Supporting multiple .NET runtimes allows projects targeting the current LTS and latest
           versions to adopt FileAssert without being forced to upgrade their runtime.
         tags: [system]
         children:
-          - FileAssert-Platform-Net8
-          - FileAssert-Platform-Net9
           - FileAssert-Platform-Net10
+          - FileAssert-Platform-Net11
         tests:
-          - "net8.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
-          - "net9.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
           - "net10.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"
+          - "net11.0@IntegrationTest_ValidConfig_PassingAssertions_ReturnsZero"

@@ -8,11 +8,11 @@ FileAssert is a .NET CLI tool for asserting file properties using YAML-defined t
 files against acceptance criteria such as size constraints, content requirements, and pattern matching,
 enabling automated file validation in CI/CD pipelines and regulated environments.
 
-The figure below shows how the pieces fit together: the `fileassert` command reads your YAML test suite, finds the
-files each test names, applies the assertions, and reports the results.
+The workflow below shows how FileAssert is used: write a YAML test suite, run the `fileassert` command
+locally or in a CI pipeline, and use the exit code and results files to gate the build and record evidence.
 
-![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
-Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead](architecture.svg)
+![FileAssert workflow: write a YAML test suite, run fileassert, get an exit code, console report and
+TRX or JUnit results, then use them as a CI gate, in test reports and as compliance evidence](workflow.svg)
 
 ## Scope
 

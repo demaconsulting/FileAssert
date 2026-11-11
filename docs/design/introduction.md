@@ -58,6 +58,14 @@ diagram or the prose below.
 
 ![Software Structure](SoftwareStructureView.svg)
 
+The diagram below complements the structure view by showing how data flows at run time: the
+`fileassert` command passes its arguments to the Cli subsystem, Configuration reads the YAML test
+suite, Modeling runs each test against the files matched through the Utilities file containers, and
+the results are reported as pass or fail; `--validate` runs the SelfTest subsystem instead.
+
+![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
+Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead](architecture.svg)
+
 ## Folder Layout
 
 - **src/** - source files and projects
