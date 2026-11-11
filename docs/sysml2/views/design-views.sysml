@@ -5,7 +5,8 @@
 // 'render' - is what scopes the rendered diagram content.
 package FileAssert {
     view SoftwareStructureView {
-        expose FileAssert;
+        expose FileAssert::**;
+        render asInterconnectionDiagram;
     }
 
     view FileAssertView {
