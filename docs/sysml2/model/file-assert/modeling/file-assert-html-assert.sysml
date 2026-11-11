@@ -5,7 +5,6 @@ package FileAssert {
         doc /* HTML document assertions (HtmlAgilityPack). */
 
         metadata info : SoftwareInfo {
-            description = "HTML document assertions (HtmlAgilityPack).";
             sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertHtmlAssert.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertHtmlAssertTests.cs");
             designFiles = ("docs/design/file-assert/modeling/file-assert-html-assert.md");

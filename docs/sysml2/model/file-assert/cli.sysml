@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Command-line argument parsing and output-reporting contract. */
 
         metadata info : SoftwareInfo {
-            description = "Command-line argument parsing and output-reporting contract.";
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Cli/CliTests.cs");
             designFiles = ("docs/design/file-assert/cli.md");
             verificationFiles = ("docs/verification/file-assert/cli.md");

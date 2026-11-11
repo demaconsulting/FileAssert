@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Self-validation test runner. */
 
         metadata info : SoftwareInfo {
-            description = "Self-validation test runner.";
             sourceFiles = ("src/DemaConsulting.FileAssert/SelfTest/Validation.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/SelfTest/ValidationTests.cs");
             designFiles = ("docs/design/file-assert/selftest/validation.md");

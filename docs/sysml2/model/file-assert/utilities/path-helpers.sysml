@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Safe path-combination utility. */
 
         metadata info : SoftwareInfo {
-            description = "Safe path-combination utility.";
             sourceFiles = ("src/DemaConsulting.FileAssert/Utilities/PathHelpers.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Utilities/PathHelpersTests.cs");
             designFiles = ("docs/design/file-assert/utilities/path-helpers.md");

@@ -5,7 +5,6 @@ package FileAssert {
         doc /* YAML document assertions (YamlDotNet). */
 
         metadata info : SoftwareInfo {
-            description = "YAML document assertions (YamlDotNet).";
             sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertYamlAssert.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertYamlAssertTests.cs");
             designFiles = ("docs/design/file-assert/modeling/file-assert-yaml-assert.md");

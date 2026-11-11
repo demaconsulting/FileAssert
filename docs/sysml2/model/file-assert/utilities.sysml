@@ -5,7 +5,6 @@ package FileAssert {
         doc /* File-access abstraction and small supporting helpers. */
 
         metadata info : SoftwareInfo {
-            description = "File-access abstraction and small supporting helpers.";
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Utilities/UtilitiesTests.cs");
             designFiles = ("docs/design/file-assert/utilities.md");
             verificationFiles = ("docs/verification/file-assert/utilities.md");

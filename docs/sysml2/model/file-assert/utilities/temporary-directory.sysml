@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Disposable temporary directory utility. */
 
         metadata info : SoftwareInfo {
-            description = "Disposable temporary directory utility.";
             sourceFiles = ("src/DemaConsulting.FileAssert/Utilities/TemporaryDirectory.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Utilities/TemporaryDirectoryTests.cs");
             designFiles = ("docs/design/file-assert/utilities/temporary-directory.md");
