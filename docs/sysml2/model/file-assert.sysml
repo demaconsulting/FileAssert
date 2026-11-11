@@ -13,7 +13,6 @@ package FileAssert {
         doc /* The FileAssert system as a whole. */
 
         metadata info : SoftwareInfo {
-            description = "The FileAssert system as a whole.";
             testFiles = ("test/DemaConsulting.FileAssert.Tests/IntegrationTests.cs");
             designFiles = ("docs/design/file-assert.md");
             verificationFiles = ("docs/verification/file-assert.md");

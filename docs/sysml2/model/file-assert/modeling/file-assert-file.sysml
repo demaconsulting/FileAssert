@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Glob pattern matcher with count constraints and content rules. */
 
         metadata info : SoftwareInfo {
-            description = "Glob pattern matcher with count constraints and content rules.";
             sourceFiles = ("src/DemaConsulting.FileAssert/Modeling/FileAssertFile.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/FileAssertFileTests.cs");
             designFiles = ("docs/design/file-assert/modeling/file-assert-file.md");

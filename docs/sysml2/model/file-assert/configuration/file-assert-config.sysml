@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Top-level configuration loader and test runner. */
 
         metadata info : SoftwareInfo {
-            description = "Top-level configuration loader and test runner.";
             sourceFiles = ("src/DemaConsulting.FileAssert/Configuration/FileAssertConfig.cs");
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Configuration/FileAssertConfigTests.cs");
             designFiles = ("docs/design/file-assert/configuration/file-assert-config.md");

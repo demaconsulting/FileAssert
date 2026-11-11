@@ -5,7 +5,6 @@ package FileAssert {
         doc /* Test-suite data model and content-assertion rule implementations. */
 
         metadata info : SoftwareInfo {
-            description = "Test-suite data model and content-assertion rule implementations.";
             testFiles = ("test/DemaConsulting.FileAssert.Tests/Modeling/ModelingTests.cs");
             designFiles = ("docs/design/file-assert/modeling.md");
             verificationFiles = ("docs/verification/file-assert/modeling.md");
