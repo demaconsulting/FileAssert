@@ -10,8 +10,8 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 
 ### Subsystem Contents
 
-| Unit         | File            | Responsibility                                           |
-| :----------- | :-------------- | :------------------------------------------------------- |
+| Unit | File | Responsibility |
+| :--- | :--- | :--- |
 | `Validation` | `Validation.cs` | Runs built-in self-validation tests and reports results. |
 
 ### Subsystem Responsibilities
@@ -25,19 +25,19 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 
 #### Exposed
 
-| Member / Class            | Description                                                                          |
-| :-----------------------  | :----------------------------------------------------------------------------------- |
-| `Validation.Run(Context)` | Executes all built-in self-validation tests and writes results via `Context`.        |
+| Member / Class | Description |
+| :--- | :--- |
+| `Validation.Run(Context)` | Executes all built-in self-validation tests and writes results via `Context`. |
 
 #### Consumed
 
-| Dependency                       | Usage                                                                         |
-| :-------------------------       | :---------------------------------------------------------------------------- |
-| `Context` (Cli subsystem)        | Receives test output and result file path; exposes `ResultsFile`.             |
-| `Program.Version`                | Included in the system information header printed before tests run.           |
-| `Program.Run`                    | Called within each built-in test to exercise the tool's execution logic.      |
-| `TemporaryDirectory` (Utilities) | Provides isolated, self-cleaning workspaces for test fixture files.           |
-| `DemaConsulting.TestResults`     | Serializes validation outcomes to TRX or JUnit XML when requested.            |
+| Dependency | Usage |
+| :--- | :--- |
+| `Context` (Cli subsystem) | Receives test output and result file path; exposes `ResultsFile`. |
+| `Program.Version` | Included in the system information header printed before tests run. |
+| `Program.Run` | Called within each built-in test to exercise the tool's execution logic. |
+| `TemporaryDirectory` (Utilities) | Provides isolated, self-cleaning workspaces for test fixture files. |
+| `DemaConsulting.TestResults` | Serializes validation outcomes to TRX or JUnit XML when requested. |
 
 ### Design
 
@@ -53,12 +53,12 @@ produces structured test results that can be written to a TRX or JUnit XML file.
 
 ### Dependencies
 
-| Dependency  | Usage                                                              |
-| :---------- | :----------------------------------------------------------------- |
-| Cli         | Receives a `Context` to write output and collect errors.           |
-| Utilities   | Uses `PathHelpers.SafePathCombine` to create temporary file paths. |
-| Program     | References `Program.Version` for the system information header.    |
-|             | Calls `Program.Run` and `Context.Create` to exercise the tool.     |
+| Dependency | Usage |
+| :--- | :--- |
+| Cli | Receives a `Context` to write output and collect errors. |
+| Utilities | Uses `PathHelpers.SafePathCombine` to create temporary file paths. |
+| Program | References `Program.Version` for the system information header. |
+| | Calls `Program.Run` and `Context.Create` to exercise the tool. |
 
 ### Callers
 

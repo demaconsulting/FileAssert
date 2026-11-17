@@ -33,9 +33,9 @@ variable injected by the CI job. No additional configuration files are required.
 
 The project uses the following SonarMark command-line interface:
 
-| Invocation                                                      | Effect                                          |
-| :-------------------------------------------------------------- | :---------------------------------------------- |
-| `dotnet sonarmark --project <key> --output <markdown-file>`     | Queries SonarCloud and writes a Markdown report |
+| Invocation | Effect |
+| :--- | :--- |
+| `dotnet sonarmark --project <key> --output <markdown-file>` | Queries SonarCloud and writes a Markdown report |
 
 The generated Markdown file is written to `docs/code_quality/generated/sonar-quality.md` and
 consumed by Pandoc to produce the Code Quality HTML and subsequently the Code Quality PDF.

@@ -37,9 +37,9 @@ specifier (32 lowercase hex digits, no hyphens).
 
 **Exceptions thrown:**
 
-| Exception                  | Condition                                                   |
-| :------------------------- | :---------------------------------------------------------- |
-| `InvalidOperationException`| Directory could not be created (wraps the underlying cause) |
+| Exception | Condition |
+| :--- | :--- |
+| `InvalidOperationException` | Directory could not be created (wraps the underlying cause) |
 
 ##### GetFilePath Method
 
@@ -60,10 +60,10 @@ intermediate subdirectories.
 
 **Exceptions thrown:**
 
-| Exception              | Condition                                                    |
-| :--------------------- | :----------------------------------------------------------- |
-| `ArgumentNullException`| `relativePath` is `null`                                     |
-| `ArgumentException`    | `relativePath` would escape the temporary directory          |
+| Exception | Condition |
+| :--- | :--- |
+| `ArgumentNullException` | `relativePath` is `null` |
+| `ArgumentException` | `relativePath` would escape the temporary directory |
 
 ##### Dispose Method
 
@@ -104,24 +104,24 @@ directory.
 
 #### Data Model
 
-| Field           | Type     | Description                              |
-| :-------------- | :------- | :--------------------------------------- |
-| `DirectoryPath` | `string` | Full path to the temporary directory     |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `DirectoryPath` | `string` | Full path to the temporary directory |
 
 #### Key Methods
 
-| Method                                  |
-| :-------------------------------------- |
-| `TemporaryDirectory()` *(constructor)*  |
-| `GetFilePath(string relativePath)`      |
-| `Dispose()`                             |
+| Method |
+| :--- |
+| `TemporaryDirectory()` *(constructor)* |
+| `GetFilePath(string relativePath)` |
+| `Dispose()` |
 
 #### Error Handling
 
-| Scenario                                          |
-| :------------------------------------------------ |
-| Temporary directory creation failure              |
-| Null or traversal-escaping `relativePath`         |
+| Scenario |
+| :--- |
+| Temporary directory creation failure |
+| Null or traversal-escaping `relativePath` |
 | Temporary directory deletion failure (suppressed) |
 
 #### Dependencies

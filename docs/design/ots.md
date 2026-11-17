@@ -27,45 +27,45 @@ builds and provides an audit record of which tool version produced each release 
 
 ## OTS Item Summary
 
-| OTS Item           | Role                                                                          |
-| :----------------- | :---------------------------------------------------------------------------- |
-| BuildMark          | Generates build-notes documentation from GitHub Actions metadata              |
-| Pandoc             | Converts Markdown source documents to HTML for each document collection       |
-| ReqStream          | Enforces requirements traceability against TRX test-result files              |
-| ReviewMark         | Generates review plan and review report from the review configuration         |
-| SarifMark          | Converts CodeQL SARIF results into a human-readable Markdown report           |
-| SonarMark          | Generates a SonarCloud quality and security metrics report                    |
-| SysML2Tools        | Validates the SysML2 architecture model and renders its views to SVG diagrams |
-| VersionMark        | Captures and publishes tool-version information for each CI job               |
-| WeasyPrint         | Converts HTML documents to PDF for release artifact archiving                 |
-| xUnit              | Discovers, executes, and reports unit tests; produces TRX output              |
-| YamlDotNet         | Parses and deserializes YAML configuration and documents under test           |
-| PdfPig             | Parses PDF documents under test for `pdf:` assertions                         |
-| HtmlAgilityPack    | Parses HTML documents under test for `html:` XPath assertions                 |
-| FileSystemGlobbing | Resolves glob patterns against candidate files for `count:`/file matching     |
+| OTS Item | Role |
+| :--- | :--- |
+| BuildMark | Generates build-notes documentation from GitHub Actions metadata |
+| Pandoc | Converts Markdown source documents to HTML for each document collection |
+| ReqStream | Enforces requirements traceability against TRX test-result files |
+| ReviewMark | Generates review plan and review report from the review configuration |
+| SarifMark | Converts CodeQL SARIF results into a human-readable Markdown report |
+| SonarMark | Generates a SonarCloud quality and security metrics report |
+| SysML2Tools | Validates the SysML2 architecture model and renders its views to SVG diagrams |
+| VersionMark | Captures and publishes tool-version information for each CI job |
+| WeasyPrint | Converts HTML documents to PDF for release artifact archiving |
+| xUnit | Discovers, executes, and reports unit tests; produces TRX output |
+| YamlDotNet | Parses and deserializes YAML configuration and documents under test |
+| PdfPig | Parses PDF documents under test for `pdf:` assertions |
+| HtmlAgilityPack | Parses HTML documents under test for `html:` XPath assertions |
+| FileSystemGlobbing | Resolves glob patterns against candidate files for `count:`/file matching |
 
 > **Note**: FileAssert is not an OTS item for this project. Because this project consumes an
 > earlier released version of its own package in CI, it is classified as a **Shared Package**.
-> See the _Shared Package Integration Design_ section for details.
+> See the *Shared Package Integration Design* section for details.
 
 ## Per-Item Design
 
 Detailed design for each OTS item is provided in the following sections of this document:
 
-- See _BuildMark OTS Design_ for the build-notes generation tool.
-- See _Pandoc OTS Design_ for the Markdown-to-HTML conversion tool.
-- See _ReqStream OTS Design_ for the requirements traceability enforcement tool.
-- See _ReviewMark OTS Design_ for the review plan and report generation tool.
-- See _SarifMark OTS Design_ for the CodeQL SARIF report tool.
-- See _SonarMark OTS Design_ for the SonarCloud quality report tool.
-- See _SysML2Tools OTS Design_ for the architecture model validation and diagram rendering tool.
-- See _VersionMark OTS Design_ for the tool-version capture and publish tool.
-- See _WeasyPrint OTS Design_ for the HTML-to-PDF conversion tool.
-- See _xUnit OTS Design_ for the unit-testing framework.
-- See _YamlDotNet OTS Design_ for the YAML parsing and deserialization library.
-- See _PdfPig OTS Design_ for the PDF parsing library.
-- See _HtmlAgilityPack OTS Design_ for the HTML parsing library.
-- See _FileSystemGlobbing OTS Design_ for the glob pattern-matching library.
+- See *BuildMark OTS Design* for the build-notes generation tool.
+- See *Pandoc OTS Design* for the Markdown-to-HTML conversion tool.
+- See *ReqStream OTS Design* for the requirements traceability enforcement tool.
+- See *ReviewMark OTS Design* for the review plan and report generation tool.
+- See *SarifMark OTS Design* for the CodeQL SARIF report tool.
+- See *SonarMark OTS Design* for the SonarCloud quality report tool.
+- See *SysML2Tools OTS Design* for the architecture model validation and diagram rendering tool.
+- See *VersionMark OTS Design* for the tool-version capture and publish tool.
+- See *WeasyPrint OTS Design* for the HTML-to-PDF conversion tool.
+- See *xUnit OTS Design* for the unit-testing framework.
+- See *YamlDotNet OTS Design* for the YAML parsing and deserialization library.
+- See *PdfPig OTS Design* for the PDF parsing library.
+- See *HtmlAgilityPack OTS Design* for the HTML parsing library.
+- See *FileSystemGlobbing OTS Design* for the glob pattern-matching library.
 
 ## Selection Criteria
 

@@ -92,29 +92,29 @@ symmetry with `ZipFileContainer` so both can be used in `using` statements.
 
 #### Data Model
 
-| Field      | Type     | Description                              |
-| :--------- | :------- | :--------------------------------------- |
+| Field | Type | Description |
+| :--- | :--- | :--- |
 | `BasePath` | `string` | The absolute path of the root directory. |
 
 #### Key Methods
 
-| Method                                     | Description                                            |
-| :----------------------------------------- | :----------------------------------------------------- |
-| `DirectoryFileContainer(string basePath)`  | Constructor: stores the base path.                     |
-| `GetEntries() → IReadOnlyList<string>`     | Enumerate all files recursively with forward slashes.  |
-| `OpenEntry(string) → Stream`               | Open a file by relative path for reading.              |
-| `GetEntrySize(string) → long`              | Return the file size in bytes.                         |
-| `GetDisplayPath(string) → string`          | Return the full file-system path for error messages.   |
-| `Dispose()`                                | No-op for IDisposable symmetry.                        |
+| Method | Description |
+| :--- | :--- |
+| `DirectoryFileContainer(string basePath)` | Constructor: stores the base path. |
+| `GetEntries() → IReadOnlyList<string>` | Enumerate all files recursively with forward slashes. |
+| `OpenEntry(string) → Stream` | Open a file by relative path for reading. |
+| `GetEntrySize(string) → long` | Return the file size in bytes. |
+| `GetDisplayPath(string) → string` | Return the full file-system path for error messages. |
+| `Dispose()` | No-op for IDisposable symmetry. |
 
 #### Error Handling
 
-| Scenario                              | Handling                                                           |
-| :------------------------------------ | :----------------------------------------------------------------- |
-| Non-existent base directory           | `GetEntries()` returns empty list; no exception.                   |
-| Missing file on `OpenEntry`           | `FileNotFoundException` thrown by `File.OpenRead`.                 |
-| Null `entryPath`                      | `ArgumentNullException` thrown before path combination.            |
-| Null `basePath`                       | `ArgumentNullException` thrown in constructor.                     |
+| Scenario | Handling |
+| :--- | :--- |
+| Non-existent base directory | `GetEntries()` returns empty list; no exception. |
+| Missing file on `OpenEntry` | `FileNotFoundException` thrown by `File.OpenRead`. |
+| Null `entryPath` | `ArgumentNullException` thrown before path combination. |
+| Null `basePath` | `ArgumentNullException` thrown in constructor. |
 
 #### Dependencies
 

@@ -14,9 +14,9 @@ pattern consistent with all other file-type assert units.
 
 ##### Properties
 
-| Property | Type                            | Description                             |
-| :------- | :------------------------------ | :-------------------------------------- |
-| `Rules`  | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file text. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Rules` | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file text. |
 
 ##### Factory Method
 
@@ -26,14 +26,14 @@ internal static FileAssertTextAssert Create(IEnumerable<FileAssertRuleData> data
 
 Creates a `FileAssertRule` for each entry in the data list via `FileAssertRule.Create`.
 
-| Parameter | Type                               | Description                                          |
-| :-------- | :--------------------------------- | :--------------------------------------------------- |
-| `data`    | `IEnumerable<FileAssertRuleData>`  | List of rule data objects from YAML configuration.   |
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `data` | `IEnumerable<FileAssertRuleData>` | List of rule data objects from YAML configuration. |
 
-| Return / Exception           | Description                                              |
-| :--------------------------- | :------------------------------------------------------- |
-| Returns                      | A new `FileAssertTextAssert` instance.                   |
-| `ArgumentNullException`      | Thrown when `data` is null.                              |
+| Return / Exception | Description |
+| :--- | :--- |
+| Returns | A new `FileAssertTextAssert` instance. |
+| `ArgumentNullException` | Thrown when `data` is null. |
 
 ##### Run Method
 
@@ -58,15 +58,15 @@ Execution proceeds in the following steps:
 File '<displayPath>' could not be read as text
 ```
 
-| Parameter   | Type             | Description                                                               |
-| :---------- | :--------------- | :------------------------------------------------------------------------ |
-| `context`   | `IContext`       | Reporting sink used to record errors. Must not be null.                   |
-| `container` | `IFileContainer` | Container used to open the entry. Must not be null.                       |
-| `entryPath` | `string`         | Path of the entry, **relative to** `container`. Must not be null.         |
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `context` | `IContext` | Reporting sink used to record errors. Must not be null. |
+| `container` | `IFileContainer` | Container used to open the entry. Must not be null. |
+| `entryPath` | `string` | Path of the entry, **relative to** `container`. Must not be null. |
 
-| Exception                   | Condition                                                              |
-| :-------------------------- | :--------------------------------------------------------------------- |
-| `ArgumentNullException`     | Thrown when `context`, `container`, or `entryPath` is null.            |
+| Exception | Condition |
+| :--- | :--- |
+| `ArgumentNullException` | Thrown when `context`, `container`, or `entryPath` is null. |
 
 #### YAML Configuration
 
@@ -100,25 +100,25 @@ file-type assert units, keeping `FileAssertFile` free of rule-application logic.
 
 #### Data Model
 
-| Property | Type                            | Description                               |
-| :------- | :------------------------------ | :---------------------------------------- |
-| `Rules`  | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file's text. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Rules` | `IReadOnlyList<FileAssertRule>` | Content rules applied to the file's text. |
 
 #### Key Methods
 
-| Method                                         | Purpose                                                            |
-| :--------------------------------------------- | :----------------------------------------------------------------- |
-| `Create(IEnumerable<FileAssertRuleData> data)` | Static factory: creates a `FileAssertRule` for each DTO entry.     |
-| `Run(IContext, IFileContainer, string)`        | Reads the file as UTF-8 text and applies each rule to the content. |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(IEnumerable<FileAssertRuleData> data)` | Static factory: creates a `FileAssertRule` for each DTO entry. |
+| `Run(IContext, IFileContainer, string)` | Reads the file as UTF-8 text and applies each rule to the content. |
 
 #### Error Handling
 
-| Scenario                                                    | Handling                                             |
-| :---------------------------------------------------------- | :--------------------------------------------------- |
-| Null `data` passed to `Create`                              | `ArgumentNullException` thrown.                      |
-| Null `context`, `container`, or `entryPath` passed to `Run` | `ArgumentNullException` thrown.                      |
-| `IOException` or `UnauthorizedAccessException` on read      | Error via `context.WriteError`; `Run` returns.       |
-| Individual rule check fails                                 | Error via `context` in `Rule.Apply`; rules continue. |
+| Scenario | Handling |
+| :--- | :--- |
+| Null `data` passed to `Create` | `ArgumentNullException` thrown. |
+| Null `context`, `container`, or `entryPath` passed to `Run` | `ArgumentNullException` thrown. |
+| `IOException` or `UnauthorizedAccessException` on read | Error via `context.WriteError`; `Run` returns. |
+| Individual rule check fails | Error via `context` in `Rule.Apply`; rules continue. |
 
 #### Dependencies
 

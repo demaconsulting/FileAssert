@@ -11,10 +11,10 @@ and runs the tests.
 
 ### Subsystem Contents
 
-| Unit               | File                   | Responsibility                                              |
-| :----------------- | :--------------------- | :---------------------------------------------------------- |
-| `FileAssertConfig` | `FileAssertConfig.cs`  | Loads the YAML file and runs the filtered test suite.       |
-| `FileAssertData`   | `FileAssertData.cs`    | Data transfer objects for YAML deserialization.             |
+| Unit | File | Responsibility |
+| :--- | :--- | :--- |
+| `FileAssertConfig` | `FileAssertConfig.cs` | Loads the YAML file and runs the filtered test suite. |
+| `FileAssertData` | `FileAssertData.cs` | Data transfer objects for YAML deserialization. |
 
 ### Subsystem Responsibilities
 
@@ -29,21 +29,21 @@ and runs the tests.
 
 #### Exposed
 
-| Member / Class                               | Description                                                                       |
-| :------------------------------------------- | :-------------------------------------------------------------------------------- |
-| `FileAssertConfig.ReadFromFile(path)`        | Reads and deserializes the YAML file; returns a `FileAssertConfig` instance.      |
-| `FileAssertConfig.Run(context, filters)`     | Executes filtered tests; writes results when `context.ResultsFile` is set.        |
-| `FileAssertData` DTO classes                 | Intermediate data holders produced during deserialization; consumed by Modeling.  |
+| Member / Class | Description |
+| :--- | :--- |
+| `FileAssertConfig.ReadFromFile(path)` | Reads and deserializes the YAML file; returns a `FileAssertConfig` instance. |
+| `FileAssertConfig.Run(context, filters)` | Executes filtered tests; writes results if `context.ResultsFile` is set. |
+| `FileAssertData` DTO classes | Intermediate data holders produced during deserialization; consumed by Modeling. |
 
 #### Consumed
 
-| Dependency                          | Usage                                                                     |
-| :---------------------------------- | :----------------------------------------------------------------------   |
-| `Context` (Cli subsystem)           | Receives error and progress output; provides filter list and config path. |
-| `FileAssertTest.Create` (Modeling)  | Converts each `FileAssertTestData` DTO into a domain object.              |
-| `FileAssertTest.Run` (Modeling)     | Executes each selected test.                                              |
-| YamlDotNet                          | Deserializes the YAML configuration file into DTO objects.                |
-| `DemaConsulting.TestResults`        | Serializes test outcomes to TRX or JUnit XML when results are requested.  |
+| Dependency | Usage |
+| :--- | :--- |
+| `Context` (Cli subsystem) | Receives error and progress output; provides filter list and config path. |
+| `FileAssertTest.Create` (Modeling) | Converts each `FileAssertTestData` DTO into a domain object. |
+| `FileAssertTest.Run` (Modeling) | Executes each selected test. |
+| YamlDotNet | Deserializes the YAML configuration file into DTO objects. |
+| `DemaConsulting.TestResults` | Serializes test outcomes to TRX or JUnit XML when results are requested. |
 
 ### Design
 
@@ -60,12 +60,12 @@ and runs the tests.
 
 ### Dependencies
 
-| Dependency                 | Usage                                                            |
-| :------------------------- | :--------------------------------------------------------------- |
-| Cli                        | Receives a `Context` to report errors and write progress output. |
-| Modeling                   | Delegates test construction to `FileAssertTest.Create` and       |
-|                            | execution to `FileAssertTest.Run`.                               |
-| DemaConsulting.TestResults | Aggregates per-test results into TRX/JUnit output documents.     |
+| Dependency | Usage |
+| :--- | :--- |
+| Cli | Receives a `Context` to report errors and write progress output. |
+| Modeling | Delegates test construction to `FileAssertTest.Create` and |
+| | execution to `FileAssertTest.Run`. |
+| DemaConsulting.TestResults | Aggregates per-test results into TRX/JUnit output documents. |
 
 ### Callers
 

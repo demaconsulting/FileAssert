@@ -10,18 +10,18 @@ executable domain objects and drives the assertion logic.
 
 ### Subsystem Contents
 
-| Unit                    | File                        | Responsibility                                         |
-| :---------------------- | :-------------------------- | :----------------------------------------------------- |
-| `FileAssertTest`        | `FileAssertTest.cs`         | Named test with file assertions and filter matching.   |
-| `FileAssertFile`        | `FileAssertFile.cs`         | Glob pattern matcher; count constraints and rules.     |
-| `FileAssertRule`        | `FileAssertRule.cs`         | Abstract content validation rule hierarchy.            |
-| `FileAssertTextAssert`  | `FileAssertTextAssert.cs`   | Applies text content rules to matched file text.       |
-| `FileAssertPdfAssert`   | `FileAssertPdfAssert.cs`    | Parses PDF; applies metadata, page, and text rules.    |
-| `FileAssertXmlAssert`   | `FileAssertXmlAssert.cs`    | Parses XML; applies XPath node count assertions.       |
-| `FileAssertHtmlAssert`  | `FileAssertHtmlAssert.cs`   | Parses HTML; applies XPath node count assertions.      |
-| `FileAssertYamlAssert`  | `FileAssertYamlAssert.cs`   | Parses YAML; applies dot-notation path assertions.     |
-| `FileAssertJsonAssert`  | `FileAssertJsonAssert.cs`   | Parses JSON; applies dot-notation path assertions.     |
-| `FileAssertZipAssert`   | `FileAssertZipAssert.cs`    | Opens zip; applies full assertion suite to entries.    |
+| Unit | File | Responsibility |
+| :--- | :--- | :--- |
+| `FileAssertTest` | `FileAssertTest.cs` | Named test with file assertions and filter matching. |
+| `FileAssertFile` | `FileAssertFile.cs` | Glob pattern matcher; count constraints and rules. |
+| `FileAssertRule` | `FileAssertRule.cs` | Abstract content validation rule hierarchy. |
+| `FileAssertTextAssert` | `FileAssertTextAssert.cs` | Applies text content rules to matched file text. |
+| `FileAssertPdfAssert` | `FileAssertPdfAssert.cs` | Parses PDF; applies metadata, page, and text rules. |
+| `FileAssertXmlAssert` | `FileAssertXmlAssert.cs` | Parses XML; applies XPath node count assertions. |
+| `FileAssertHtmlAssert` | `FileAssertHtmlAssert.cs` | Parses HTML; applies XPath node count assertions. |
+| `FileAssertYamlAssert` | `FileAssertYamlAssert.cs` | Parses YAML; applies dot-notation path assertions. |
+| `FileAssertJsonAssert` | `FileAssertJsonAssert.cs` | Parses JSON; applies dot-notation path assertions. |
+| `FileAssertZipAssert` | `FileAssertZipAssert.cs` | Opens zip; applies full assertion suite to entries. |
 
 ### Subsystem Responsibilities
 
@@ -34,7 +34,8 @@ executable domain objects and drives the assertion logic.
 - Report an immediate error when a file cannot be parsed as the declared format.
 - Apply structured-document query assertions (XPath or dot-notation) to parsed document nodes.
 - Open zip archives, wrap them in `ZipFileContainer`, and apply the full assertion suite to their entries.
-- Report assertion failures via the `IContext` interface from the Cli subsystem, enabling scoped breadcrumb error messages for nested zip assertions.
+- Report assertion failures via the `IContext` interface from the Cli subsystem, enabling scoped breadcrumb error
+  messages for nested zip assertions.
 
 ### Object Hierarchy
 
@@ -59,23 +60,24 @@ FileAssertTest
 
 #### Exposed
 
-| Member / Class                 | Description                                                                                 |
-| :--------------------------    | :------------------------------------------------------------------------------------------ |
-| `FileAssertTest.Create`        | Factory method: builds a domain test object from a `FileAssertTestData` DTO.                |
-| `FileAssertTest.MatchesFilter` | Returns whether the test name or tags match the provided filter list.                       |
-| `FileAssertTest.Run`           | Executes all file assertions within the test and reports results via `Context`.             |
-| `FileAssertFile.Create`        | Factory method: builds a domain file-pattern object from a `FileAssertFileData` DTO.        |
-| `FileAssertRule.Create`        | Factory method: selects and returns the correct concrete rule subclass.                     |
+| Member / Class | Description |
+| :--- | :--- |
+| `FileAssertTest.Create` | Factory method: builds a domain test object from a `FileAssertTestData` DTO. |
+| `FileAssertTest.MatchesFilter` | Returns whether the test name or tags match the provided filter list. |
+| `FileAssertTest.Run` | Executes all file assertions within the test and reports results via `Context`. |
+| `FileAssertFile.Create` | Factory method: builds a domain file-pattern object from a `FileAssertFileData` DTO. |
+| `FileAssertRule.Create` | Factory method: selects and returns the correct concrete rule subclass. |
 
 #### Consumed
 
-| Dependency                                                                                    | Usage                                                                          |
-| :-------------------------                                                                    | :----------------------------------------------------------------------------- |
-| `IContext` (Cli subsystem)                                                                    | Receives assertion failure messages and error exit code.                       |
-| `IFileContainer` (Utilities subsystem)                                                        | Uniform file-access abstraction; enables assertions over directories and zips. |
-| `FileAssertData` DTOs                                                                         | Input types for all `Create` factory methods.                                  |
-| Microsoft.Extensions.FileSystemGlobbing                                                       | Cross-platform glob evaluation for file discovery.                             |
-| YamlDotNet, PdfPig, HtmlAgilityPack, System.Xml.Linq, System.Text.Json, System.IO.Compression | Format-specific parsing libraries.                                             |
+| Dependency | Usage |
+| :--- | :--- |
+| `IContext` (Cli subsystem) | Receives assertion failure messages and error exit code. |
+| `IFileContainer` (Utilities subsystem) | Uniform file-access abstraction for assertions over directories and zips. |
+| `FileAssertData` DTOs | Input types for all `Create` factory methods. |
+| Microsoft.Extensions.FileSystemGlobbing | Cross-platform glob evaluation for file discovery. |
+| YamlDotNet, PdfPig, HtmlAgilityPack | Format-specific parsing libraries (YAML, PDF, HTML). |
+| System.Xml.Linq, System.Text.Json, System.IO.Compression | Format-specific parsing libraries (XML, JSON, zip). |
 
 ### Design
 
@@ -95,11 +97,11 @@ Domain objects are constructed and executed in the following layers:
 
 ### Dependencies
 
-| Dependency    | Usage                                                          |
-| :------------ | :------------------------------------------------------------- |
-| Cli           | Receives `IContext` to report assertion failures.              |
-| Utilities     | Accesses files via `IFileContainer` and `ZipFileContainer`.    |
-| Configuration | Accepts DTO types for test, file, and rule construction.       |
+| Dependency | Usage |
+| :--- | :--- |
+| Cli | Receives `IContext` to report assertion failures. |
+| Utilities | Accesses files via `IFileContainer` and `ZipFileContainer`. |
+| Configuration | Accepts DTO types for test, file, and rule construction. |
 
 ### Callers
 

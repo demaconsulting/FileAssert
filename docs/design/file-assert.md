@@ -11,40 +11,40 @@ files do not meet the declared constraints.
 
 ## System-Level Responsibilities
 
-| Responsibility          | Description                                                               |
-| :---------------------- | :------------------------------------------------------------------------ |
-| Argument parsing        | Accept and validate command-line flags and positional filter arguments.   |
-| Configuration loading   | Read and deserialize a YAML test-suite configuration file.                |
-| Configuration file path | Accept a custom configuration file path via `--config`.                   |
-| Test filtering          | Run only the tests whose name or tags match the positional filter args.   |
-| Test execution          | Run selected tests, evaluating file patterns and content rules.           |
-| File-type parsing       | Parse matched files as structured documents (PDF, XML, HTML, YAML, JSON)  |
-|                         | when file-type assertion blocks are declared; report an immediate error   |
-|                         | if the file cannot be parsed.                                             |
-| Output and logging      | Report results to stdout/stderr and optionally to a log file.             |
-| Self-validation         | Verify core functionality at run time via built-in tests.                 |
-| Validation output depth | Accept a `--depth` value (1-6) controlling the Markdown heading level of  |
-|                         | self-validation output, defaulting to 1.                                  |
-| Results serialization   | Write test outcome records to TRX or JUnit XML format.                    |
+| Responsibility | Description |
+| :--- | :--- |
+| Argument parsing | Accept and validate command-line flags and positional filter arguments. |
+| Configuration loading | Read and deserialize a YAML test-suite configuration file. |
+| Configuration file path | Accept a custom configuration file path via `--config`. |
+| Test filtering | Run only the tests whose name or tags match the positional filter args. |
+| Test execution | Run selected tests, evaluating file patterns and content rules. |
+| File-type parsing | Parse matched files as structured documents (PDF, XML, HTML, YAML, JSON) |
+| | when file-type assertion blocks are declared; report an immediate error |
+| | if the file cannot be parsed. |
+| Output and logging | Report results to stdout/stderr and optionally to a log file. |
+| Self-validation | Verify core functionality at run time via built-in tests. |
+| Validation output depth | Accept a `--depth` value (1-6) controlling the Markdown heading level of |
+| | self-validation output, defaulting to 1. |
+| Results serialization | Write test outcome records to TRX or JUnit XML format. |
 
 ## Software Item Hierarchy
 
 The system is decomposed into one top-level unit (Program) and five subsystems, each containing
 one or more units:
 
-| Item          | Level     | Units contained                                                               |
-| :------------ | :-------- | :---------------------------------------------------------------------------- |
-| FileAssert    | System    | —                                                                             |
-| Program       | Unit      | —                                                                             |
-| Cli           | Subsystem | IContext, Context                                                             |
-| Configuration | Subsystem | FileAssertConfig, FileAssertData                                              |
-| Modeling      | Subsystem | FileAssertTest, FileAssertFile, FileAssertRule,                               |
-|               |           | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert,               |
-|               |           | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert,             |
-|               |           | FileAssertZipAssert                                                           |
-| Utilities     | Subsystem | IFileContainer, DirectoryFileContainer, ZipFileContainer,                     |
-|               |           | PathHelpers, TemporaryDirectory                                               |
-| SelfTest      | Subsystem | Validation                                                                    |
+| Item | Level | Units contained |
+| :--- | :--- | :--- |
+| FileAssert | System | — |
+| Program | Unit | — |
+| Cli | Subsystem | IContext, Context |
+| Configuration | Subsystem | FileAssertConfig, FileAssertData |
+| Modeling | Subsystem | FileAssertTest, FileAssertFile, FileAssertRule, |
+| | | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert, |
+| | | FileAssertHtmlAssert, FileAssertYamlAssert, FileAssertJsonAssert, |
+| | | FileAssertZipAssert |
+| Utilities | Subsystem | IFileContainer, DirectoryFileContainer, ZipFileContainer, |
+| | | PathHelpers, TemporaryDirectory |
+| SelfTest | Subsystem | Validation |
 
 ## Execution Flow
 
@@ -97,15 +97,15 @@ The following sequence describes the normal execution path:
 The FileAssert system contains one top-level unit and five subsystems. There is no
 system-level code; the system boundary is defined by the combination of its parts.
 
-| Item          | Level     | Responsibility                                                                      |
-| :------------ | :-------- | :---------------------------------------------------------------------------------- |
-| Program       | Unit      | Entry point; creates `Context`; dispatches to validation or config logic.           |
-| Cli           | Subsystem | Contains `IContext`/`Context`; owns arg parsing, I/O references, filter list, exit. |
-| Configuration | Subsystem | Contains `FileAssertConfig`/`FileAssertData`; YAML deserialization, tests.          |
-| Modeling      | Subsystem | Contains assertion classes; pure domain objects evaluating file rules.              |
-| Utilities     | Subsystem | Contains `IFileContainer`, `DirectoryFileContainer`, `ZipFileContainer`,            |
-|               |           | `PathHelpers`, and `TemporaryDirectory`; shared utilities.                          |
-| SelfTest      | Subsystem | Contains `Validation`; runs built-in assertions when `--validate` passed.           |
+| Item | Level | Responsibility |
+| :--- | :--- | :--- |
+| Program | Unit | Entry point; creates `Context`; dispatches to validation or config logic. |
+| Cli | Subsystem | Contains `IContext`/`Context`; owns arg parsing, I/O references, filter list, exit. |
+| Configuration | Subsystem | Contains `FileAssertConfig`/`FileAssertData`; YAML deserialization, tests. |
+| Modeling | Subsystem | Contains assertion classes; pure domain objects evaluating file rules. |
+| Utilities | Subsystem | Contains `IFileContainer`, `DirectoryFileContainer`, `ZipFileContainer`, |
+| | | `PathHelpers`, and `TemporaryDirectory`; shared utilities. |
+| SelfTest | Subsystem | Contains `Validation`; runs built-in assertions when `--validate` passed. |
 
 All subsystems receive a `Context` instance (created by `Program`) rather than reading
 command-line arguments directly. This removes argument-parsing concerns from every
@@ -113,15 +113,15 @@ subsystem and makes error recording consistent — all violations flow through `
 
 ## External Interfaces
 
-| Interface                    | Direction | Description                                                              |
-| :--------------------------- | :-------- | :----------------------------------------------------------------------- |
-| Command-line arguments       | Input     | POSIX flags and positional filters; unrecognized flags produce an error. |
-| YAML configuration file      | Input     | YAML matching `FileAssertData` schema; default `.fileassert.yaml`.       |
-| File system (asserted files) | Input     | Any file type; glob patterns relative to config file. Read-only.         |
-| Results file                 | Output    | TRX or JUnit XML; written only when `--results` is specified.            |
-| Standard output              | Output    | UTF-8 text; one line per test pass or summary.                           |
-| Standard error               | Output    | UTF-8 text; one line per rule violation or parse failure.                |
-| Log file                     | Output    | Plain text mirroring stdout/stderr; written when `--log` is specified.   |
+| Interface | Direction | Description |
+| :--- | :--- | :--- |
+| Command-line arguments | Input | POSIX flags and positional filters; unrecognized flags produce an error. |
+| YAML configuration file | Input | YAML matching `FileAssertData` schema; default `.fileassert.yaml`. |
+| File system (asserted files) | Input | Any file type; glob patterns relative to config file. Read-only. |
+| Results file | Output | TRX or JUnit XML; written only when `--results` is specified. |
+| Standard output | Output | UTF-8 text; one line per test pass or summary. |
+| Standard error | Output | UTF-8 text; one line per rule violation or parse failure. |
+| Log file | Output | Plain text mirroring stdout/stderr; written when `--log` is specified. |
 
 ## Dependencies
 
@@ -138,7 +138,7 @@ Runtime library dependencies used by the FileAssert system:
 
 Test-project dependency:
 
-- **xUnit**: unit test discovery, execution, and TRX reporting — see _xUnit Integration Design_.
+- **xUnit**: unit test discovery, execution, and TRX reporting — see *xUnit Integration Design*.
 
 ## Risk Control Measures
 

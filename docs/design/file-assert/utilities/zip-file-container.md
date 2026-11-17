@@ -26,10 +26,10 @@ closes the underlying `stream` automatically.
 
 **Exceptions thrown:**
 
-| Exception              | Condition                                        |
-| :--------------------- | :----------------------------------------------- |
-| `ArgumentNullException`| `stream` or `displayName` is null.               |
-| `InvalidDataException` | Stream does not contain a valid zip archive.     |
+| Exception | Condition |
+| :--- | :--- |
+| `ArgumentNullException` | `stream` or `displayName` is null. |
+| `InvalidDataException` | Stream does not contain a valid zip archive. |
 
 ##### GetEntries Method
 
@@ -118,30 +118,30 @@ it also closes and disposes the underlying stream.
 
 #### Data Model
 
-| Field          | Type          | Description                                              |
-| :------------- | :------------ | :------------------------------------------------------- |
-| `_archive`     | `ZipArchive`  | The open zip archive wrapping the supplied stream.       |
-| `_displayName` | `string`      | The archive's display name for breadcrumb path building. |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_archive` | `ZipArchive` | The open zip archive wrapping the supplied stream. |
+| `_displayName` | `string` | The archive's display name for breadcrumb path building. |
 
 #### Key Methods
 
-| Method                                    | Description                                                          |
-| :---------------------------------------- | :------------------------------------------------------------------- |
-| `ZipFileContainer(Stream, string)`        | Constructor: opens `ZipArchive` from stream.                         |
-| `GetEntries() → IReadOnlyList<string>`    | Enumerate all file entries (no directory markers) with `/` paths.    |
-| `OpenEntry(string) → Stream`              | Open a named entry; throws `IOException` when not found.             |
-| `GetEntrySize(string) → long`             | Return the uncompressed size of a named entry.                       |
-| `GetDisplayPath(string) → string`         | Return `"{displayName} > {entryPath}"` for error messages.           |
-| `Dispose()`                               | Dispose the `ZipArchive` (also closes the underlying stream).        |
+| Method | Description |
+| :--- | :--- |
+| `ZipFileContainer(Stream, string)` | Constructor: opens `ZipArchive` from stream. |
+| `GetEntries() → IReadOnlyList<string>` | Enumerate all file entries (no directory markers) with `/` paths. |
+| `OpenEntry(string) → Stream` | Open a named entry; throws `IOException` when not found. |
+| `GetEntrySize(string) → long` | Return the uncompressed size of a named entry. |
+| `GetDisplayPath(string) → string` | Return `"{displayName} > {entryPath}"` for error messages. |
+| `Dispose()` | Dispose the `ZipArchive` (also closes the underlying stream). |
 
 #### Error Handling
 
-| Scenario                         | Handling                                                            |
-| :------------------------------- | :------------------------------------------------------------------ |
-| Stream is not a valid zip file   | `InvalidDataException` thrown by `ZipArchive` constructor.          |
-| Entry not found on `OpenEntry`   | `IOException` thrown with `"Zip entry '{name}' not found"` message. |
-| Null `stream` or `displayName`   | `ArgumentNullException` thrown in constructor.                      |
-| Null `entryPath`                 | `ArgumentNullException` thrown before archive lookup.               |
+| Scenario | Handling |
+| :--- | :--- |
+| Stream is not a valid zip file | `InvalidDataException` thrown by `ZipArchive` constructor. |
+| Entry not found on `OpenEntry` | `IOException` thrown with `"Zip entry '{name}' not found"` message. |
+| Null `stream` or `displayName` | `ArgumentNullException` thrown in constructor. |
+| Null `entryPath` | `ArgumentNullException` thrown before archive lookup. |
 
 #### Dependencies
 

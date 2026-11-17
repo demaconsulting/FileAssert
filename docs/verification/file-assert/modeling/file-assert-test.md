@@ -23,10 +23,10 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency        | Usage in Tests                                                       |
-|-------------------|----------------------------------------------------------------------|
-| `Context`         | Used directly (not mocked) — created with controlled flags.          |
-| `FileAssertFile`  | Used directly (not mocked) — called through `FileAssertTest.Run`.    |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags. |
+| `FileAssertFile` | Used directly (not mocked) — called through `FileAssertTest.Run`. |
 
 #### Test Scenarios
 

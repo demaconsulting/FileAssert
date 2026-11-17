@@ -25,10 +25,10 @@ internal interface IContext
 }
 ```
 
-| Member                         | Description                                                                       |
-| :----------------------------- | :-------------------------------------------------------------------------------- |
-| `WriteLine(string message)`    | Writes an informational output line. Does not affect the error state.             |
-| `WriteError(string message)`   | Writes an error message and marks the context as having errors.                   |
+| Member | Description |
+| :--- | :--- |
+| `WriteLine(string message)` | Writes an informational output line. Does not affect the error state. |
+| `WriteError(string message)` | Writes an error message and marks the context as having errors. |
 
 #### Design Rationale
 

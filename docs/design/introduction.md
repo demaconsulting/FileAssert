@@ -64,7 +64,8 @@ suite, Modeling runs each test against the files matched through the Utilities f
 the results are reported as pass or fail; `--validate` runs the SelfTest subsystem instead.
 
 ![FileAssert architecture: a YAML test suite and the files to check flow through the Cli, Configuration,
-Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest subsystem instead](architecture.svg)
+Utilities, and Modeling subsystems into pass or fail results; --validate runs the SelfTest
+subsystem instead](architecture.svg)
 
 ## Folder Layout
 

@@ -25,12 +25,12 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency               | Usage in Tests                                                          |
-|--------------------------|-------------------------------------------------------------------------|
-| `Context`                | Used directly (not mocked) — created with controlled flags.             |
-| `CapturingContext`       | Test double captures `WriteError` calls for assertion of error wording. |
-| `ThrowingFileContainer`  | Test double simulates IO failures from `OpenEntry`.                     |
-| `DirectoryFileContainer` | Real implementation; backs file-system fixtures used by the tests.      |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags. |
+| `CapturingContext` | Test double captures `WriteError` calls for assertion of error wording. |
+| `ThrowingFileContainer` | Test double simulates IO failures from `OpenEntry`. |
+| `DirectoryFileContainer` | Real implementation; backs file-system fixtures used by the tests. |
 
 #### Test Scenarios
 

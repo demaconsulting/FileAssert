@@ -35,8 +35,8 @@ separate WeasyPrint configuration files are used in this project.
 
 The project uses the following WeasyPrint command-line interface:
 
-| Invocation                                                  |
-| :---------------------------------------------------------- |
+| Invocation |
+| :--- |
 | `dotnet weasyprint --input <html-file> --output <pdf-file>` |
 
 The generated PDF files are validated by FileAssert assertions (`WeasyPrint_BuildNotesPdf`,

@@ -17,18 +17,18 @@ The main class coordinating dot-notation path assertions for a YAML file.
 
 ###### FileAssertYamlAssert Fields
 
-| Field      | Type                               | Description                         |
-| :--------- | :--------------------------------- | :---------------------------------- |
-| `_queries` | `IReadOnlyList<YamlQuery>`         | Dot-notation path query assertions. |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_queries` | `IReadOnlyList<YamlQuery>` | Dot-notation path query assertions. |
 
 Each `YamlQuery` private nested record holds:
 
-| Property | Type     | Description                      |
-| :------- | :------- | :------------------------------- |
-| `Query`  | `string` | Dot-notation path to evaluate.   |
-| `Count`  | `int?`   | Exact number of matched nodes.   |
-| `Min`    | `int?`   | Minimum number of matched nodes. |
-| `Max`    | `int?`   | Maximum number of matched nodes. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | Dot-notation path to evaluate. |
+| `Count` | `int?` | Exact number of matched nodes. |
+| `Min` | `int?` | Minimum number of matched nodes. |
+| `Max` | `int?` | Maximum number of matched nodes. |
 
 ###### FileAssertYamlAssert Factory
 
@@ -102,34 +102,35 @@ min, max, and exact node-count constraints per path.
 
 #### Data Model
 
-| Field / Property | Type                               | Description                                   |
-| :--------------- | :--------------------------------- | :-------------------------------------------- |
-| `_queries`       | `IReadOnlyList<YamlQuery>`         | Ordered list of dot-notation path assertions. |
+| Field / Property | Type | Description |
+| :--- | :--- | :--- |
+| `_queries` | `IReadOnlyList<YamlQuery>` | Ordered list of dot-notation path assertions. |
 
 Each `YamlQuery` (private nested record) holds:
 
-| Property | Type     | Description                               |
-| :------- | :------- | :---------------------------------------- |
-| `Query`  | `string` | Dot-notation path to traverse.            |
-| `Count`  | `int?`   | Expected exact node count; `null` = N/A.  |
-| `Min`    | `int?`   | Minimum node count; `null` = no bound.    |
-| `Max`    | `int?`   | Maximum node count; `null` = no bound.    |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | Dot-notation path to traverse. |
+| `Count` | `int?` | Expected exact node count; `null` = N/A. |
+| `Min` | `int?` | Minimum node count; `null` = no bound. |
+| `Max` | `int?` | Maximum node count; `null` = no bound. |
 
 #### Key Methods
 
-| Method                                          | Purpose                                                          |
-| :---------------------------------------------- | :--------------------------------------------------------------- |
-| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `YamlQuery` instances.                    |
-| `Run(IContext, IFileContainer, string)`         | Parses the YAML file and evaluates each dot-notation path query. |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `YamlQuery` instances. |
+| `Run(IContext, IFileContainer, string)` | Parses the YAML file and evaluates each dot-notation path query. |
 
 #### Error Handling
 
-| Scenario                                                            | Handling                                                              |
-| :------------------------------------------------------------------ | :-------------------------------------------------------------------- |
-| `YamlException`, `IOException`, or `UnauthorizedAccessException`    | Error written via `context.WriteError`; `Run` returns immediately.    |
-| Query result below `Min`                                            | Error written via `context.WriteError`; subsequent queries continue.  |
-| Query result above `Max`                                            | Error written via `context.WriteError`; subsequent queries continue.  |
-| Query result not equal to `Count`                                   | Error written via `context.WriteError`; subsequent queries continue.  |
+| Scenario | Handling |
+| :--- | :--- |
+| `YamlException` or `IOException` | Error written via `context.WriteError`; `Run` returns immediately. |
+| `UnauthorizedAccessException` | Error written via `context.WriteError`; `Run` returns immediately. |
+| Query result below `Min` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result above `Max` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result not equal to `Count` | Error written via `context.WriteError`; subsequent queries continue. |
 
 #### Dependencies
 

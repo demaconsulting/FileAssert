@@ -33,9 +33,9 @@ artifact, and passed directly to SarifMark.
 
 The project uses the following SarifMark command-line interface:
 
-| Invocation                                                   | Effect                                       |
-| :----------------------------------------------------------- | :------------------------------------------- |
-| `dotnet sarifmark --sarif <sarif-file> --output <md-file>`   | Converts SARIF results to a Markdown report  |
+| Invocation | Effect |
+| :--- | :--- |
+| `dotnet sarifmark --sarif <sarif-file> --output <md-file>` | Converts SARIF results to a Markdown report |
 
 The generated Markdown file is written to `docs/code_quality/generated/codeql-quality.md` and
 consumed by Pandoc to produce the Code Quality HTML and subsequently the Code Quality PDF.

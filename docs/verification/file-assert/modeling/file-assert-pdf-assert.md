@@ -23,9 +23,9 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency | Usage in Tests                                              |
-|------------|-------------------------------------------------------------|
-| `Context`  | Used directly (not mocked) — created with controlled flags. |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags. |
 
 #### Test Scenarios
 

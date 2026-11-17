@@ -23,11 +23,11 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency               | Usage in Tests                                                       |
-|--------------------------|----------------------------------------------------------------------|
-| `Context`                | Used directly (not mocked) — created with controlled flags.          |
-| `DirectoryFileContainer` | Used directly to open temporary YAML files as container entries.     |
-| Temporary file system    | Real temporary files written to disk provide controlled YAML inputs. |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags. |
+| `DirectoryFileContainer` | Used directly to open temporary YAML files as container entries. |
+| Temporary file system | Real temporary files written to disk provide controlled YAML inputs. |
 
 #### Test Scenarios
 
