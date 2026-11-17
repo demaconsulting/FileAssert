@@ -62,12 +62,12 @@ spawning a child process.
 
 **Algorithm**: Inspects context flags in the following priority order:
 
-| Priority | Condition          | Action                           |
-| :------- | :----------------- | :------------------------------- |
-| 1        | `context.Version`  | Write `Version` and return.      |
-| 2        | `context.Help`     | Print banner, print help, return.|
-| 3        | `context.Validate` | Print banner, run validation.    |
-| 4        | Otherwise          | Print banner, run tool logic.    |
+| Priority | Condition | Action |
+| :--- | :--- | :--- |
+| 1 | `context.Version` | Write `Version` and return. |
+| 2 | `context.Help` | Print banner, print help, return. |
+| 3 | `context.Validate` | Print banner, run validation. |
+| 4 | Otherwise | Print banner, run tool logic. |
 
 **Preconditions**: `context` must not be null.
 
@@ -126,11 +126,17 @@ outcomes reflected in `context.ExitCode`.
 
 ### Error Handling
 
-| Exception                   | Detection                                                   | Handling                                                               |
-| :-------------------------- | :---------------------------------------------------------- | :--------------------------------------------------------------------- |
-| `ArgumentException`         | Invalid arguments detected by `Context.Create` or callee    | Caught in `Main`; message printed to standard error; exit code `1`     |
-| `InvalidOperationException` | Invalid state detected by downstream code                   | Caught in `Main`; message printed to standard error; exit code `1`     |
-| All other exceptions        | Unexpected runtime failure (programming error or I/O fault) | Printed to standard error and re-thrown; runtime generates crash log   |
+| Exception | Handling |
+| :--- | :--- |
+| `ArgumentException` | Caught in `Main`; message printed to standard error; exit code `1` |
+| `InvalidOperationException` | Caught in `Main`; message printed to standard error; exit code `1` |
+| All other exceptions | Printed to standard error and re-thrown; runtime generates crash log |
+
+Detection:
+
+- `ArgumentException`: invalid arguments detected by `Context.Create` or callee
+- `InvalidOperationException`: invalid state detected by downstream code
+- All other exceptions: unexpected runtime failure (programming error or I/O fault)
 
 ### Dependencies
 

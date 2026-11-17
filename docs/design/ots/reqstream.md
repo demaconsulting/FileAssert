@@ -36,9 +36,9 @@ under `docs/reqstream/`.
 
 The project uses the following ReqStream command-line interface:
 
-| Invocation                                                           | Effect                                         |
-| :------------------------------------------------------------------- | :--------------------------------------------- |
-| `dotnet reqstream --enforce <requirements.yaml> <trx-files...>`      | Generates reports; fails if coverage is broken |
+| Invocation | Effect |
+| :--- | :--- |
+| `dotnet reqstream --enforce <requirements.yaml> <trx-files...>` | Generates reports; fails if coverage is broken |
 
 The three generated Markdown files (`requirements.md`, `justifications.md`, `trace_matrix.md`)
 are written to `docs/requirements/generated/` and consumed by Pandoc to produce the

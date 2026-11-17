@@ -18,18 +18,18 @@ The main class coordinating XPath-based node count assertions for an XML file.
 
 ###### FileAssertXmlAssert Fields
 
-| Field      | Type                      | Description             |
-|:-----------|:--------------------------|:------------------------|
+| Field | Type | Description |
+| :--- | :--- | :--- |
 | `_queries` | `IReadOnlyList<XmlQuery>` | XPath query assertions. |
 
 Each `XmlQuery` entry holds:
 
-| Property | Type     | Description                      |
-|:---------|:---------|:---------------------------------|
-| `Query`  | `string` | XPath expression to evaluate.    |
-| `Count`  | `int?`   | Exact number of matched nodes.   |
-| `Min`    | `int?`   | Minimum number of matched nodes. |
-| `Max`    | `int?`   | Maximum number of matched nodes. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | XPath expression to evaluate. |
+| `Count` | `int?` | Exact number of matched nodes. |
+| `Min` | `int?` | Minimum number of matched nodes. |
+| `Max` | `int?` | Maximum number of matched nodes. |
 
 ###### FileAssertXmlAssert Factory
 
@@ -99,36 +99,36 @@ exact node-count constraints per query.
 
 #### Data Model
 
-| Field      | Type                      | Description                             |
-|:-----------|:--------------------------|:----------------------------------------|
+| Field | Type | Description |
+| :--- | :--- | :--- |
 | `_queries` | `IReadOnlyList<XmlQuery>` | Ordered list of XPath query assertions. |
 
 Each `XmlQuery` (private nested record) holds:
 
-| Property | Type     | Description                              |
-|:---------|:---------|:-----------------------------------------|
-| `Query`  | `string` | XPath expression to evaluate.            |
-| `Count`  | `int?`   | Expected exact node count; `null` = N/A. |
-| `Min`    | `int?`   | Minimum node count; `null` = no bound.   |
-| `Max`    | `int?`   | Maximum node count; `null` = no bound.   |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | XPath expression to evaluate. |
+| `Count` | `int?` | Expected exact node count; `null` = N/A. |
+| `Min` | `int?` | Minimum node count; `null` = no bound. |
+| `Max` | `int?` | Maximum node count; `null` = no bound. |
 
 #### Key Methods
 
-| Method                                          | Purpose                                                       |
-|:------------------------------------------------|:--------------------------------------------------------------|
-| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `XmlQuery` instances.                  |
-| `Run(IContext, IFileContainer, string)`         | Loads the XML file and evaluates each XPath query against it. |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Converts query DTOs to `XmlQuery` instances. |
+| `Run(IContext, IFileContainer, string)` | Loads the XML file and evaluates each XPath query against it. |
 
 #### Error Handling
 
-| Scenario                                      | Handling                                                                          |
-|:----------------------------------------------|:----------------------------------------------------------------------------------|
-| `Create` called with a blank/whitespace query | `InvalidOperationException` thrown at construction time before any file access.   |
-| `XDocument.Load` throws on parse failure      | Error written via `context.WriteError`; `Run` returns immediately.                |
-| XPath expression malformed (`XPathException`) | Error written via `context.WriteError`; evaluation continues with the next query. |
-| Query result below `Min`                      | Error written via `context.WriteError`; subsequent queries continue.              |
-| Query result above `Max`                      | Error written via `context.WriteError`; subsequent queries continue.              |
-| Query result not equal to `Count`             | Error written via `context.WriteError`; subsequent queries continue.              |
+| Scenario | Handling |
+| :--- | :--- |
+| Blank/whitespace query passed to `Create` | `InvalidOperationException` thrown before any file access. |
+| `XDocument.Load` throws on parse failure | Error written via `context.WriteError`; `Run` returns immediately. |
+| Malformed XPath (`XPathException`) | Error written via `context.WriteError`; the next query is evaluated. |
+| Query result below `Min` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result above `Max` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result not equal to `Count` | Error written via `context.WriteError`; subsequent queries continue. |
 
 #### Dependencies
 

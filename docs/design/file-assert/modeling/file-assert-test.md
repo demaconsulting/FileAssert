@@ -13,11 +13,11 @@ from the command line.
 
 ##### Properties
 
-| Property | Type                            | Description                                |
-| :------- | :------------------------------ | :----------------------------------------- |
-| `Name`   | `string`                        | Unique human-readable name for the test.   |
-| `Tags`   | `IReadOnlyList<string>`         | Tags used for filter-based test selection. |
-| `Files`  | `IReadOnlyList<FileAssertFile>` | File assertions belonging to this test.    |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Name` | `string` | Unique human-readable name for the test. |
+| `Tags` | `IReadOnlyList<string>` | Tags used for filter-based test selection. |
+| `Files` | `IReadOnlyList<FileAssertFile>` | File assertions belonging to this test. |
 
 ##### Factory Method
 
@@ -84,29 +84,29 @@ filter criteria for selective execution, and drive execution of its assertions.
 
 #### Data Model
 
-| Property | Type                            | Description                                     |
-| :------- | :------------------------------ | :---------------------------------------------- |
-| `Name`   | `string`                        | Required human-readable test identifier.        |
-| `Tags`   | `IReadOnlyList<string>`         | Tags used for command-line filter selection.    |
-| `Files`  | `IReadOnlyList<FileAssertFile>` | Ordered file assertions belonging to this test. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Name` | `string` | Required human-readable test identifier. |
+| `Tags` | `IReadOnlyList<string>` | Tags used for command-line filter selection. |
+| `Files` | `IReadOnlyList<FileAssertFile>` | Ordered file assertions belonging to this test. |
 
 #### Key Methods
 
-| Method                                       | Purpose                                                         |
-| :------------------------------------------- | :-------------------------------------------------------------- |
-| `Create(FileAssertTestData data)`            | Validates `Name`; builds `FileAssertFile` list.                 |
-| `MatchesFilter(IEnumerable<string> filters)` | Returns `true` if filters empty or any matches name or tag.     |
-| `Run(IContext context, string basePath)`     | Wraps basePath in `DirectoryFileContainer`; runs each file.     |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(FileAssertTestData data)` | Validates `Name`; builds `FileAssertFile` list. |
+| `MatchesFilter(IEnumerable<string> filters)` | Returns `true` if filters empty or any matches name or tag. |
+| `Run(IContext context, string basePath)` | Wraps basePath in `DirectoryFileContainer`; runs each file. |
 
 #### Error Handling
 
-| Scenario                                 | Handling                                             |
-| :--------------------------------------- | :--------------------------------------------------- |
-| Null `data` passed to `Create`           | `ArgumentNullException` thrown.                      |
-| Null or whitespace `Name` in data        | `InvalidOperationException` thrown by `Create`.      |
-| Null `filters` passed to `MatchesFilter` | `ArgumentNullException` thrown.                      |
-| Null `context` or `basePath` in `Run`    | `ArgumentNullException` thrown.                      |
-| Individual file assertion failures       | Accumulated in `context`; subsequent files continue. |
+| Scenario | Handling |
+| :--- | :--- |
+| Null `data` passed to `Create` | `ArgumentNullException` thrown. |
+| Null or whitespace `Name` in data | `InvalidOperationException` thrown by `Create`. |
+| Null `filters` passed to `MatchesFilter` | `ArgumentNullException` thrown. |
+| Null `context` or `basePath` in `Run` | `ArgumentNullException` thrown. |
+| Individual file assertion failures | Accumulated in `context`; subsequent files continue. |
 
 #### Dependencies
 

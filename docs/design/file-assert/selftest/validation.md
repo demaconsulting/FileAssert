@@ -34,19 +34,19 @@ Entry point for self-validation. Executes the following steps:
 
 ##### Built-in Tests
 
-| Test Name                   |
-| :-------------------------- |
+| Test Name |
+| :--- |
 | `FileAssert_VersionDisplay` |
-| `FileAssert_HelpDisplay`    |
-| `FileAssert_Results`        |
-| `FileAssert_File`           |
-| `FileAssert_Text`           |
-| `FileAssert_Html`           |
-| `FileAssert_Xml`            |
-| `FileAssert_Yaml`           |
-| `FileAssert_Json`           |
-| `FileAssert_Pdf`            |
-| `FileAssert_Zip`            |
+| `FileAssert_HelpDisplay` |
+| `FileAssert_Results` |
+| `FileAssert_File` |
+| `FileAssert_Text` |
+| `FileAssert_Html` |
+| `FileAssert_Xml` |
+| `FileAssert_Yaml` |
+| `FileAssert_Json` |
+| `FileAssert_Pdf` |
+| `FileAssert_Zip` |
 
 Each test is dispatched via `RunValidationTest`, which handles the common boilerplate:
 
@@ -115,35 +115,35 @@ N/A — `Validation` is a `static` class with no instance fields. All state is l
 
 #### Key Methods
 
-| Method                                                                       |
-| :--------------------------------------------------------------------------- |
-| `Run(Context context)` *(public)*                                            |
-| `PrintValidationHeader(Context)` *(private)*                                 |
-| `RunVersionTest(Context, TestResults)` *(private)*                           |
-| `RunHelpTest(Context, TestResults)` *(private)*                              |
-| `RunResultsTest(Context, TestResults)` *(private)*                           |
-| `RunFileTest(Context, TestResults)` *(private)*                              |
-| `RunTextTest(Context, TestResults)` *(private)*                              |
-| `RunHtmlTest(Context, TestResults)` *(private)*                              |
-| `RunXmlTest(Context, TestResults)` *(private)*                               |
-| `RunYamlTest(Context, TestResults)` *(private)*                              |
-| `RunJsonTest(Context, TestResults)` *(private)*                              |
-| `RunPdfTest(Context, TestResults)` *(private)*                               |
-| `RunZipTest(Context, TestResults)` *(private)*                               |
+| Method |
+| :--- |
+| `Run(Context context)` *(public)* |
+| `PrintValidationHeader(Context)` *(private)* |
+| `RunVersionTest(Context, TestResults)` *(private)* |
+| `RunHelpTest(Context, TestResults)` *(private)* |
+| `RunResultsTest(Context, TestResults)` *(private)* |
+| `RunFileTest(Context, TestResults)` *(private)* |
+| `RunTextTest(Context, TestResults)` *(private)* |
+| `RunHtmlTest(Context, TestResults)` *(private)* |
+| `RunXmlTest(Context, TestResults)` *(private)* |
+| `RunYamlTest(Context, TestResults)` *(private)* |
+| `RunJsonTest(Context, TestResults)` *(private)* |
+| `RunPdfTest(Context, TestResults)` *(private)* |
+| `RunZipTest(Context, TestResults)` *(private)* |
 | `RunValidationTest(Context, TestResults, string, Func<string?>)` *(private)* |
-| `WriteResultsFile(Context, TestResults)` *(private)*                         |
-| `CreateTestResult(string)` *(private)*                                       |
+| `WriteResultsFile(Context, TestResults)` *(private)* |
+| `CreateTestResult(string)` *(private)* |
 
 #### Error Handling
 
-| Scenario                                |
-| :-------------------------------------- |
-| Null `context` passed to `Run`          |
+| Scenario |
+| :--- |
+| Null `context` passed to `Run` |
 | Test body throws an unhandled exception |
-| Unsupported results file extension      |
-| Results file write failure              |
-| Temporary directory creation failure    |
-| Temporary directory deletion failure    |
+| Unsupported results file extension |
+| Results file write failure |
+| Temporary directory creation failure |
+| Temporary directory deletion failure |
 
 #### Dependencies
 

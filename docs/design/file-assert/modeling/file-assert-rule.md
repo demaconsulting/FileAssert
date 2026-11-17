@@ -126,32 +126,32 @@ a file's text content.
 
 #### Data Model
 
-| Class                          | Field      | Type    | Description                                                      |
-| :----------------------------- | :--------- | :------ | :--------------------------------------------------------------- |
-| `FileAssertContainsRule`       | `Value`    | `string`| Substring the file content must contain.                         |
-| `FileAssertDoesNotContainRule` | `Value`    | `string`| Substring the file content must NOT contain.                     |
-| `FileAssertMatchesRule`        | `Pattern`  | `string`| Raw pattern string; used in error messages.                      |
-| `FileAssertMatchesRule`        | `_regex`   | `Regex` | Compiled regex (private) the file content must match.            |
-| `FileAssertDoesNotMatchRule`   | `Pattern`  | `string`| Raw pattern string; used in error messages.                      |
-| `FileAssertDoesNotMatchRule`   | `_regex`   | `Regex` | Compiled regex (private) the file content must NOT match.        |
+| Class | Field | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `FileAssertContainsRule` | `Value` | `string` | Substring the file content must contain. |
+| `FileAssertDoesNotContainRule` | `Value` | `string` | Substring the file content must NOT contain. |
+| `FileAssertMatchesRule` | `Pattern` | `string` | Raw pattern string; used in error messages. |
+| `FileAssertMatchesRule` | `_regex` | `Regex` | Compiled regex (private) the file content must match. |
+| `FileAssertDoesNotMatchRule` | `Pattern` | `string` | Raw pattern string; used in error messages. |
+| `FileAssertDoesNotMatchRule` | `_regex` | `Regex` | Compiled regex (private) the file content must NOT match. |
 
 Regex objects are compiled at construction with a ten-second evaluation timeout.
 
 #### Key Methods
 
-| Method                                                                  | Purpose                                    |
-| :---------------------------------------------------------------------  | :----------------------------------------- |
-| `Create(FileAssertRuleData data)` *(static on base)*                    | Returns concrete rule subclass for `data`. |
-| `Apply(IContext context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content.  |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(FileAssertRuleData data)` *(static on base)* | Returns concrete rule subclass for `data`. |
+| `Apply(IContext context, string fileName, string content)` *(abstract)* | Runs rule-specific check on file content. |
 
 #### Error Handling
 
-| Scenario                                      | Handling                                                             |
-| :-------------------------------------------- | :------------------------------------------------------------------- |
-| No rule type set in `FileAssertRuleData`      | `InvalidOperationException` thrown by `Create`.                      |
-| Invalid regex pattern in `FileAssertRuleData` | `ArgumentException` from `Regex` constructor in `Create`.            |
-| Regex evaluation timeout (>10 seconds)        | `RegexMatchTimeoutException` propagated to `Apply` caller.           |
-| Rule check fails at `Apply` time              | Error written via `context.WriteError`; no exception thrown.         |
+| Scenario | Handling |
+| :--- | :--- |
+| No rule type set in `FileAssertRuleData` | `InvalidOperationException` thrown by `Create`. |
+| Invalid regex pattern in `FileAssertRuleData` | `ArgumentException` from `Regex` constructor in `Create`. |
+| Regex evaluation timeout (>10 seconds) | `RegexMatchTimeoutException` propagated to `Apply` caller. |
+| Rule check fails at `Apply` time | Error written via `context.WriteError`; no exception thrown. |
 
 #### Dependencies
 

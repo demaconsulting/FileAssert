@@ -18,18 +18,18 @@ The main class coordinating dot-notation path assertions for a JSON file.
 
 ###### FileAssertJsonAssert Properties
 
-| Field      | Type                       | Description                         |
-|:-----------|:---------------------------|:------------------------------------|
+| Field | Type | Description |
+| :--- | :--- | :--- |
 | `_queries` | `IReadOnlyList<JsonQuery>` | Dot-notation path query assertions. |
 
 Each `JsonQuery` entry holds:
 
-| Property | Type     | Description                      |
-|:---------|:---------|:---------------------------------|
-| `Query`  | `string` | Dot-notation path to evaluate.   |
-| `Count`  | `int?`   | Exact number of matched nodes.   |
-| `Min`    | `int?`   | Minimum number of matched nodes. |
-| `Max`    | `int?`   | Maximum number of matched nodes. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | Dot-notation path to evaluate. |
+| `Count` | `int?` | Exact number of matched nodes. |
+| `Min` | `int?` | Minimum number of matched nodes. |
+| `Max` | `int?` | Maximum number of matched nodes. |
 
 ###### FileAssertJsonAssert Factory
 
@@ -109,35 +109,36 @@ enforces min, max, and exact element-count constraints per path.
 
 #### Data Model
 
-| Field / Property | Type                       | Description                                   |
-|:-----------------|:---------------------------|:----------------------------------------------|
-| `_queries`       | `IReadOnlyList<JsonQuery>` | Ordered list of dot-notation path assertions. |
+| Field / Property | Type | Description |
+| :--- | :--- | :--- |
+| `_queries` | `IReadOnlyList<JsonQuery>` | Ordered list of dot-notation path assertions. |
 
 Each `JsonQuery` (private nested record) holds:
 
-| Property | Type     | Description                                 |
-|:---------|:---------|:--------------------------------------------|
-| `Query`  | `string` | Dot-notation path to traverse.              |
-| `Count`  | `int?`   | Expected exact element count; `null` = N/A. |
-| `Min`    | `int?`   | Minimum element count; `null` = no bound.   |
-| `Max`    | `int?`   | Maximum element count; `null` = no bound.   |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Query` | `string` | Dot-notation path to traverse. |
+| `Count` | `int?` | Expected exact element count; `null` = N/A. |
+| `Min` | `int?` | Minimum element count; `null` = no bound. |
+| `Max` | `int?` | Maximum element count; `null` = no bound. |
 
 #### Key Methods
 
-| Method                                          | Purpose                                                          |
-|:------------------------------------------------|:-----------------------------------------------------------------|
-| `Create(IEnumerable<FileAssertQueryData> data)` | Factory: converts query DTOs to `JsonQuery` instances.           |
-| `Run(IContext, IFileContainer, string)`         | Parses the JSON file and evaluates each dot-notation path query. |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(IEnumerable<FileAssertQueryData> data)` | Factory: converts query DTOs to `JsonQuery` instances. |
+| `Run(IContext, IFileContainer, string)` | Parses the JSON file and evaluates each dot-notation path query. |
 
 #### Error Handling
 
-| Scenario                                                                       | Handling                                                                         |
-|:-------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
-| `JsonException` during `JsonDocument.Parse`                                    | Parse-error message written via `context.WriteError`; `Run` returns immediately. |
-| `IOException`/`UnauthorizedAccessException` while opening or reading the entry | IO-error message written via `context.WriteError`; `Run` returns immediately.    |
-| Query result below `Min`                                                       | Error written via `context.WriteError`; subsequent queries continue.             |
-| Query result above `Max`                                                       | Error written via `context.WriteError`; subsequent queries continue.             |
-| Query result not equal to `Count`                                              | Error written via `context.WriteError`; subsequent queries continue.             |
+| Scenario | Handling |
+| :--- | :--- |
+| `JsonException` during `JsonDocument.Parse` | Parse error written via `context.WriteError`; `Run` returns. |
+| `IOException` opening or reading the entry | I/O error written via `context.WriteError`; `Run` returns. |
+| `UnauthorizedAccessException` accessing the entry | I/O error written via `context.WriteError`; `Run` returns. |
+| Query result below `Min` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result above `Max` | Error written via `context.WriteError`; subsequent queries continue. |
+| Query result not equal to `Count` | Error written via `context.WriteError`; subsequent queries continue. |
 
 #### Dependencies
 

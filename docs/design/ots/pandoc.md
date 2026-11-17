@@ -37,8 +37,8 @@ that specifies:
 
 The project uses the following Pandoc command-line interface:
 
-| Invocation                                     |
-| :--------------------------------------------- |
+| Invocation |
+| :--- |
 | `dotnet pandoc --definition <definition.yaml>` |
 
 The generated HTML file is placed in `docs/{collection}/generated/{collection}.html` and is

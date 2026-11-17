@@ -36,8 +36,8 @@ arguments.
 
 The project uses the following BuildMark command-line interface:
 
-| Invocation                                  | Effect                                                            |
-| :------------------------------------------ | :---------------------------------------------------------------- |
+| Invocation | Effect |
+| :--- | :--- |
 | `dotnet buildmark --output <markdown-file>` | Queries the GitHub API and writes a Markdown build-notes document |
 
 The output Markdown file is the sole artifact consumed downstream. No programmatic API or SDK

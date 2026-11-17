@@ -10,13 +10,13 @@ as a **Shared Package** rather than OTS.
 The following advertised features of the released FileAssert package are consumed by this project,
 each corresponding to a requirement in the FileAssert Shared Package Software Requirements:
 
-| Requirement                            | Feature Consumed                                               |
-| :------------------------------------- | :------------------------------------------------------------- |
-| `FileAssert-Shared-FileAssert-Results` | `--results <file>` writes TRX test result files for ReqStream  |
-| `FileAssert-Shared-FileAssert-File`    | `count:` assertion confirms file existence via glob patterns   |
-| `FileAssert-Shared-FileAssert-Text`    | `text: contains:` asserts text content of generated HTML files |
-| `FileAssert-Shared-FileAssert-Html`    | `html: query:` asserts HTML document structure via XPath       |
-| `FileAssert-Shared-FileAssert-Pdf`     | `pdf:` asserts PDF metadata fields, page count, and body text  |
+| Requirement | Feature Consumed |
+| :--- | :--- |
+| `FileAssert-Shared-FileAssert-Results` | `--results <file>` writes TRX test result files for ReqStream |
+| `FileAssert-Shared-FileAssert-File` | `count:` assertion confirms file existence via glob patterns |
+| `FileAssert-Shared-FileAssert-Text` | `text: contains:` asserts text content of generated HTML files |
+| `FileAssert-Shared-FileAssert-Html` | `html: query:` asserts HTML document structure via XPath |
+| `FileAssert-Shared-FileAssert-Pdf` | `pdf:` asserts PDF metadata fields, page count, and body text |
 
 ### Integration Pattern
 

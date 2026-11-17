@@ -13,9 +13,9 @@ filtering.
 
 ##### Properties
 
-| Property | Type                            | Description                              |
-| :------- | :------------------------------ | :--------------------------------------- |
-| `Tests`  | `IReadOnlyList<FileAssertTest>` | Tests defined in the configuration file. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Tests` | `IReadOnlyList<FileAssertTest>` | Tests defined in the configuration file. |
 
 ##### Factory Method
 
@@ -120,30 +120,30 @@ serialization.
 
 #### Data Model
 
-| Field / Property | Type                            | Description                                            |
-| :--------------- | :------------------------------ | :----------------------------------------------------- |
-| `_configPath`    | `string`                        | Path to the YAML config file; base for glob patterns.  |
-| `Tests`          | `IReadOnlyList<FileAssertTest>` | Ordered list of tests loaded from the configuration.   |
+| Field / Property | Type | Description |
+| :--- | :--- | :--- |
+| `_configPath` | `string` | Path to the YAML config file; base for glob patterns. |
+| `Tests` | `IReadOnlyList<FileAssertTest>` | Ordered list of tests loaded from the configuration. |
 
 #### Key Methods
 
-| Method                                               | Purpose                                                      |
-| :--------------------------------------------------- | :----------------------------------------------------------- |
-| `ReadFromFile(string path)`                          | Reads YAML; validates path; returns new `FileAssertConfig`.  |
-| `Run(Context context, IEnumerable<string> filters)`  | Iterates matching tests, executes each, writes results file. |
-| `WriteResultsFile(Context, TestResults)` *(private)* | Serializes results to TRX or JUnit XML by file extension.    |
+| Method | Purpose |
+| :--- | :--- |
+| `ReadFromFile(string path)` | Reads YAML; validates path; returns new `FileAssertConfig`. |
+| `Run(Context context, IEnumerable<string> filters)` | Iterates matching tests, executes each, writes results file. |
+| `WriteResultsFile(Context, TestResults)` *(private)* | Serializes results to TRX or JUnit XML by file extension. |
 
 #### Error Handling
 
-| Scenario                                    | Handling                                                      |
-| :------------------------------------------ | :------------------------------------------------------------ |
-| Null `path` passed to `ReadFromFile`        | `ArgumentNullException` propagated to caller.                 |
-| Configuration file does not exist           | `FileNotFoundException` propagated to `Program.RunToolLogic`. |
-| Invalid YAML in configuration file          | `YamlDotNet` exceptions propagate to `Program.RunToolLogic`.  |
-| Null `context` or `filters` passed to `Run` | `ArgumentNullException` propagated to caller.                 |
-| Unsupported results file extension          | Error written via `context.WriteError`; no exception.         |
-| Results file write failure                  | Exception caught; error written via `context.WriteError`.     |
-| Individual test assertion failures          | Accumulated in `context` via `WriteError`; run continues.     |
+| Scenario | Handling |
+| :--- | :--- |
+| Null `path` passed to `ReadFromFile` | `ArgumentNullException` propagated to caller. |
+| Configuration file does not exist | `FileNotFoundException` propagated to `Program.RunToolLogic`. |
+| Invalid YAML in configuration file | `YamlDotNet` exceptions propagate to `Program.RunToolLogic`. |
+| Null `context` or `filters` passed to `Run` | `ArgumentNullException` propagated to caller. |
+| Unsupported results file extension | Error written via `context.WriteError`; no exception. |
+| Results file write failure | Exception caught; error written via `context.WriteError`. |
+| Individual test assertion failures | Accumulated in `context` via `WriteError`; run continues. |
 
 #### Dependencies
 

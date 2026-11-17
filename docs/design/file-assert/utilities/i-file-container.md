@@ -26,12 +26,12 @@ internal interface IFileContainer
 }
 ```
 
-| Member                               | Description                                                                          |
-| :----------------------------------- | :----------------------------------------------------------------------------------- |
-| `GetEntries()`                       | Returns all relative entry paths, using forward slashes as the path separator.       |
-| `OpenEntry(string entryPath)`        | Opens the named entry for sequential reading; throws `IOException` on failure.       |
-| `GetEntrySize(string entryPath)`     | Returns the uncompressed byte length of the named entry.                             |
-| `GetDisplayPath(string entryPath)`   | Returns a human-readable path for the entry, used in error messages.                 |
+| Member | Description |
+| :--- | :--- |
+| `GetEntries()` | Returns all relative entry paths, using forward slashes as the path separator. |
+| `OpenEntry(string entryPath)` | Opens the named entry for sequential reading; throws `IOException` on failure. |
+| `GetEntrySize(string entryPath)` | Returns the uncompressed byte length of the named entry. |
+| `GetDisplayPath(string entryPath)` | Returns a human-readable path for the entry, used in error messages. |
 
 #### Design Rationale
 
@@ -53,19 +53,19 @@ internal interface IFileContainer
 
 #### Key Methods
 
-| Method                                   | Description                                              |
-| :--------------------------------------- | :------------------------------------------------------- |
-| `GetEntries() → IReadOnlyList<string>`   | Enumerate all entries (forward-slash paths).             |
-| `OpenEntry(string) → Stream`             | Open a named entry as a readable stream.                 |
-| `GetEntrySize(string) → long`            | Return the uncompressed byte length of an entry.         |
-| `GetDisplayPath(string) → string`        | Return a display path for use in error messages.         |
+| Method | Description |
+| :--- | :--- |
+| `GetEntries() → IReadOnlyList<string>` | Enumerate all entries (forward-slash paths). |
+| `OpenEntry(string) → Stream` | Open a named entry as a readable stream. |
+| `GetEntrySize(string) → long` | Return the uncompressed byte length of an entry. |
+| `GetDisplayPath(string) → string` | Return a display path for use in error messages. |
 
 #### Error Handling
 
-| Scenario                            | Handling                                                            |
-| :---------------------------------- | :------------------------------------------------------------------ |
-| Entry not found on `OpenEntry`      | `IOException` (or subclass) thrown by the implementation.           |
-| Null `entryPath` passed             | `ArgumentNullException` thrown by both implementations.             |
+| Scenario | Handling |
+| :--- | :--- |
+| Entry not found on `OpenEntry` | `IOException` (or subclass) thrown by the implementation. |
+| Null `entryPath` passed | `ArgumentNullException` thrown by both implementations. |
 
 #### Dependencies
 

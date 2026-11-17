@@ -16,11 +16,11 @@ An inner modeling class that applies a single PDF metadata field assertion.
 
 ###### PdfMetadataRule Properties
 
-| Property   | Type      | Description                                        |
-| :--------- | :-------- | :------------------------------------------------- |
-| `Field`    | `string`  | Metadata field name (e.g. Title, Author, Subject). |
-| `Contains` | `string?` | Metadata value must contain this substring.        |
-| `Matches`  | `string?` | Metadata value must match this regular expression. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Field` | `string` | Metadata field name (e.g. Title, Author, Subject). |
+| `Contains` | `string?` | Metadata value must contain this substring. |
+| `Matches` | `string?` | Metadata value must match this regular expression. |
 
 ###### PdfMetadataRule Factory
 
@@ -49,10 +49,10 @@ An inner modeling class that enforces page count constraints.
 
 ###### PdfPages Properties
 
-| Property | Type   | Description              |
-| :------- | :----- | :----------------------- |
-| `Min`    | `int?` | Minimum number of pages. |
-| `Max`    | `int?` | Maximum number of pages. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Min` | `int?` | Minimum number of pages. |
+| `Max` | `int?` | Maximum number of pages. |
 
 ###### PdfPages Factory
 
@@ -81,11 +81,11 @@ The main class coordinating metadata, page count, and body text assertions for a
 
 ###### FileAssertPdfAssert Properties
 
-| Field       | Type                              | Description                                    |
-| :---------- | :-------------------------------- | :--------------------------------------------- |
-| `_metadata` | `IReadOnlyList<PdfMetadataRule>`  | Metadata field assertions.                     |
-| `_pages`    | `PdfPages?`                       | Page count constraints (null if not declared). |
-| `_text`     | `IReadOnlyList<FileAssertRule>`   | Body text rules.                               |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_metadata` | `IReadOnlyList<PdfMetadataRule>` | Metadata field assertions. |
+| `_pages` | `PdfPages?` | Page count constraints (null if not declared). |
+| `_text` | `IReadOnlyList<FileAssertRule>` | Body text rules. |
 
 ###### FileAssertPdfAssert Factory
 
@@ -134,14 +134,14 @@ Returns `null` for unrecognized field names or when the property value is not se
 
 Recognized field names:
 
-| Field Name  | DocumentInformation Property          |
-| :---------- | :------------------------------------ |
-| `Title`     | `document.Information.Title`          |
-| `Author`    | `document.Information.Author`         |
-| `Subject`   | `document.Information.Subject`        |
-| `Keywords`  | `document.Information.Keywords`       |
-| `Creator`   | `document.Information.Creator`        |
-| `Producer`  | `document.Information.Producer`       |
+| Field Name | DocumentInformation Property |
+| :--- | :--- |
+| `Title` | `document.Information.Title` |
+| `Author` | `document.Information.Author` |
+| `Subject` | `document.Information.Subject` |
+| `Keywords` | `document.Information.Keywords` |
+| `Creator` | `document.Information.Creator` |
+| `Producer` | `document.Information.Producer` |
 
 Any other field name returns `null`.
 
@@ -185,49 +185,49 @@ using PdfPig as the PDF parsing library.
 
 #### Data Model
 
-| Field       | Type                             | Description                                     |
-| :---------- | :------------------------------- | :---------------------------------------------- |
-| `_metadata` | `IReadOnlyList<PdfMetadataRule>` | Ordered list of metadata field assertions.      |
-| `_pages`    | `PdfPages?`                      | Page count constraints; `null` if not declared. |
-| `_text`     | `IReadOnlyList<FileAssertRule>`  | Body text rules applied to extracted page text. |
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `_metadata` | `IReadOnlyList<PdfMetadataRule>` | Ordered list of metadata field assertions. |
+| `_pages` | `PdfPages?` | Page count constraints; `null` if not declared. |
+| `_text` | `IReadOnlyList<FileAssertRule>` | Body text rules applied to extracted page text. |
 
 Inner class `PdfMetadataRule` holds:
 
-| Property   | Type      | Description                                       |
-| :--------- | :-------- | :------------------------------------------------ |
-| `Field`    | `string`  | Metadata field name (Title, Author, Subject, etc.)|
-| `Contains` | `string?` | Substring the field value must contain.           |
-| `Matches`  | `string?` | Regex the field value must match.                 |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Field` | `string` | Metadata field name (Title, Author, Subject, etc.) |
+| `Contains` | `string?` | Substring the field value must contain. |
+| `Matches` | `string?` | Regex the field value must match. |
 
 Inner class `PdfPages` holds:
 
-| Property | Type   | Description              |
-| :------- | :----- | :----------------------- |
-| `Min`    | `int?` | Minimum number of pages. |
-| `Max`    | `int?` | Maximum number of pages. |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Min` | `int?` | Minimum number of pages. |
+| `Max` | `int?` | Maximum number of pages. |
 
 #### Key Methods
 
-| Method                                                              | Purpose                                       |
-| :------------------------------------------------------------------ | :-------------------------------------------- |
-| `Create(FileAssertPdfData data)`                                    | Builds metadata/page/text rules from DTO.     |
-| `Run(IContext, IFileContainer, string)`                             | Opens PDF; applies metadata/page/text rules.  |
-| `GetMetadataField(PdfDocument doc, string field)` *(private)*       | Maps field to `DocumentInformation` property. |
-| `PdfMetadataRule.FromData(FileAssertPdfMetadataRuleData)` *(inner)* | Creates a `PdfMetadataRule` from DTO.         |
-| `PdfMetadataRule.Apply(IContext, string, string?)` *(inner)*        | Applies `Contains`/`Matches` to field value.  |
-| `PdfPages.FromData(FileAssertPdfPagesData)` *(inner)*               | Creates `PdfPages` from DTO.                  |
-| `PdfPages.Apply(IContext, string, int)` *(inner)*                   | Checks `Min`/`Max` against actual page count. |
+| Method | Purpose |
+| :--- | :--- |
+| `Create(FileAssertPdfData data)` | Builds metadata/page/text rules from DTO. |
+| `Run(IContext, IFileContainer, string)` | Opens PDF; applies metadata/page/text rules. |
+| `GetMetadataField(PdfDocument doc, string field)` *(private)* | Maps field to `DocumentInformation` property. |
+| `PdfMetadataRule.FromData(FileAssertPdfMetadataRuleData)` *(inner)* | Creates a `PdfMetadataRule` from DTO. |
+| `PdfMetadataRule.Apply(IContext, string, string?)` *(inner)* | Applies `Contains`/`Matches` to field value. |
+| `PdfPages.FromData(FileAssertPdfPagesData)` *(inner)* | Creates `PdfPages` from DTO. |
+| `PdfPages.Apply(IContext, string, int)` *(inner)* | Checks `Min`/`Max` against actual page count. |
 
 #### Error Handling
 
-| Scenario                                    | Handling                                                             |
-| :------------------------------------------ | :------------------------------------------------------------------- |
-| PdfPig throws on `PdfDocument.Open`         | Error written via `context.WriteError`; `Run` returns immediately.   |
-| Metadata field value fails `Contains` check | Error written via `context.WriteError`; other rules continue.        |
-| Metadata field value fails `Matches` check  | Error written via `context.WriteError`; other rules continue.        |
-| Page count below `Min` or above `Max`       | Error written via `context.WriteError`; text rules continue.         |
-| Body text rule failure                      | Delegated to `FileAssertRule.Apply`; errors reported individually.   |
-| Unrecognized metadata field name            | Result is `null`; `Contains`/`Matches` run against null.             |
+| Scenario | Handling |
+| :--- | :--- |
+| PdfPig throws on `PdfDocument.Open` | Error written via `context.WriteError`; `Run` returns immediately. |
+| Metadata field value fails `Contains` check | Error written via `context.WriteError`; other rules continue. |
+| Metadata field value fails `Matches` check | Error written via `context.WriteError`; other rules continue. |
+| Page count below `Min` or above `Max` | Error written via `context.WriteError`; text rules continue. |
+| Body text rule failure | Delegated to `FileAssertRule.Apply`; errors reported individually. |
+| Unrecognized metadata field name | Result is `null`; `Contains`/`Matches` run against null. |
 
 #### Dependencies
 

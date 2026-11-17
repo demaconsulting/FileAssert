@@ -23,11 +23,11 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency                   | Usage in Tests                                                            |
-|------------------------------|---------------------------------------------------------------------------|
-| `Context`                    | Used directly (not mocked) — created with controlled flags for each test. |
-| `PathHelpers`                | Used internally by `Validation` for temp-path construction; not mocked.   |
-| `DemaConsulting.TestResults` | Real TRX/JUnit serializers; their output files are inspected by tests.    |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags for each test. |
+| `PathHelpers` | Used internally by `Validation` for temp-path construction; not mocked. |
+| `DemaConsulting.TestResults` | Real TRX/JUnit serializers; their output files are inspected by tests. |
 
 No test doubles are introduced at the `Validation` unit level.
 

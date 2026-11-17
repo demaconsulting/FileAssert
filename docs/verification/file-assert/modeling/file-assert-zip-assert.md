@@ -23,10 +23,10 @@ meets the project minimum threshold.
 
 #### Dependencies
 
-| Dependency              | Usage in Tests                                              |
-|-------------------------|-------------------------------------------------------------|
-| `Context`               | Used directly (not mocked) — created with controlled flags. |
-| `System.IO.Compression` | Used directly to create real zip archives for each test.    |
+| Dependency | Usage in Tests |
+| --- | --- |
+| `Context` | Used directly (not mocked) — created with controlled flags. |
+| `System.IO.Compression` | Used directly to create real zip archives for each test. |
 
 #### Test Scenarios
 

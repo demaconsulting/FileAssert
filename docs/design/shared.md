@@ -17,12 +17,12 @@ while the in-development build is what produces the next release.
 
 ## Shared Package Summary
 
-| Package     | Role                                                                         |
-| :---------- | :--------------------------------------------------------------------------- |
-| FileAssert  | Validates generated HTML and PDF documents against acceptance criteria       |
+| Package | Role |
+| :--- | :--- |
+| FileAssert | Validates generated HTML and PDF documents against acceptance criteria |
 
 ## Per-Package Design
 
 Detailed integration design is provided in the following section of this document:
 
-- See _FileAssert Shared Package Design_ for the document assertion tool.
+- See *FileAssert Shared Package Design* for the document assertion tool.

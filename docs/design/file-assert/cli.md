@@ -10,10 +10,10 @@ and execution decisions.
 
 ### Subsystem Contents
 
-| Unit       | File          | Responsibility                                                       |
-| :--------- | :------------ | :------------------------------------------------------------------- |
-| `IContext` | `IContext.cs` | Output contract interface for reporting messages and errors.         |
-| `Context`  | `Context.cs`  | Parses arguments and owns all I/O operations.                        |
+| Unit | File | Responsibility |
+| :--- | :--- | :--- |
+| `IContext` | `IContext.cs` | Output contract interface for reporting messages and errors. |
+| `Context` | `Context.cs` | Parses arguments and owns all I/O operations. |
 
 ### Subsystem Responsibilities
 
@@ -30,46 +30,46 @@ The `IContext` interface exposes the following public members:
 
 #### Methods
 
-| Method       | Signature                             | Description                                                              |
-| :----------- | :------------------------------------ | :----------------------------------------------------------------------- |
-| `WriteLine`  | `void WriteLine(string message)`      | Writes an informational message.                                         |
-| `WriteError` | `void WriteError(string message)`     | Writes an error message and marks the context as having errors.          |
+| Method | Signature | Description |
+| :--- | :--- | :--- |
+| `WriteLine` | `void WriteLine(string message)` | Writes an informational message. |
+| `WriteError` | `void WriteError(string message)` | Writes an error message and marks the context as having errors. |
 
 The `Context` unit exposes the following public interface:
 
 #### Properties
 
-| Property       | Type                    | Description                                                     |
-| :------------- | :---------------------- | :-------------------------------------------------------------- |
-| `Silent`       | `bool`                  | `true` when `--silent` was given; suppresses console output.    |
-| `Validate`     | `bool`                  | `true` when `--validate` was specified.                         |
-| `Version`      | `bool`                  | `true` when `--version`/`-v` was specified.                     |
-| `Help`         | `bool`                  | `true` when `--help`/`-h`/`-?` was specified.                   |
-| `Depth`        | `int`                   | Heading depth for validation output (1–6, default 1).           |
-| `ConfigFile`   | `string`                | Configuration file path (default `.fileassert.yaml`).           |
-| `ResultsFile`  | `string?`               | Results file path; `null` if `--results` was not specified.     |
-| `Filters`      | `IReadOnlyList<string>` | Positional name-or-tag filter arguments.                        |
-| `ExitCode`     | `int`                   | `0` when no errors have been reported; `1` otherwise.           |
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| `Silent` | `bool` | `true` when `--silent` was given; suppresses console output. |
+| `Validate` | `bool` | `true` when `--validate` was specified. |
+| `Version` | `bool` | `true` when `--version`/`-v` was specified. |
+| `Help` | `bool` | `true` when `--help`/`-h`/`-?` was specified. |
+| `Depth` | `int` | Heading depth for validation output (1–6, default 1). |
+| `ConfigFile` | `string` | Configuration file path (default `.fileassert.yaml`). |
+| `ResultsFile` | `string?` | Results file path; `null` if `--results` was not specified. |
+| `Filters` | `IReadOnlyList<string>` | Positional name-or-tag filter arguments. |
+| `ExitCode` | `int` | `0` when no errors have been reported; `1` otherwise. |
 
 #### Context Methods
 
-| Method       | Signature                              | Description                                                  |
-| :----------- | :------------------------------------- | :----------------------------------------------------------- |
-| `Create`     | `static Context Create(string[] args)` | Parses args; opens log file when `--log` is specified.       |
-| `WriteLine`  | `void WriteLine(string message)`       | Writes to stdout (unless silent) and to the log file.        |
-| `WriteError` | `void WriteError(string message)`      | Sets `_hasErrors`; writes to stderr (unless silent) and log. |
-| `Dispose`    | `void Dispose()`                       | Closes the log file writer.                                  |
+| Method | Signature | Description |
+| :--- | :--- | :--- |
+| `Create` | `static Context Create(string[] args)` | Parses args; opens log file when `--log` is specified. |
+| `WriteLine` | `void WriteLine(string message)` | Writes to stdout (unless silent) and to the log file. |
+| `WriteError` | `void WriteError(string message)` | Sets `_hasErrors`; writes to stderr (unless silent) and log. |
+| `Dispose` | `void Dispose()` | Closes the log file writer. |
 
 #### Environmental Resources
 
-| Resource              | Direction | Description                                                           |
-| :-------------------- | :-------- | :-------------------------------------------------------------------- |
-| Standard output       | Output    | Receives all `WriteLine` messages when `--silent` is not set.         |
-| Standard error        | Output    | Receives all `WriteError` messages when `--silent` is not set.        |
-| Command-line arguments| Input     | Parsed by the internal `ArgumentParser` nested class.                 |
-| File system (log)     | Output    | Log file opened for writing when `--log <path>` is specified.         |
-| File system (config)  | Input     | Configuration file path resolved from `--config` or default.          |
-| File system (results) | Output    | Results file path; written by the Configuration subsystem.            |
+| Resource | Direction | Description |
+| :--- | :--- | :--- |
+| Standard output | Output | Receives all `WriteLine` messages when `--silent` is not set. |
+| Standard error | Output | Receives all `WriteError` messages when `--silent` is not set. |
+| Command-line arguments | Input | Parsed by the internal `ArgumentParser` nested class. |
+| File system (log) | Output | Log file opened for writing when `--log <path>` is specified. |
+| File system (config) | Input | Configuration file path resolved from `--config` or default. |
+| File system (results) | Output | Results file path; written by the Configuration subsystem. |
 
 ### Design
 
@@ -96,12 +96,12 @@ The `Context` class uses the following collaboration flow:
 
 ### Callers
 
-| Consumer          | Usage                                                                |
-| :---------------- | :------------------------------------------------------------------- |
-| Program           | Creates a `Context` and passes it to all downstream operations.      |
-| Configuration     | Receives a `Context` to report errors and write progress output.     |
-| Modeling          | Receives a `Context` to write error messages for assertion failures. |
-| SelfTest          | Receives a `Context` to write validation results and errors.         |
+| Consumer | Usage |
+| :--- | :--- |
+| Program | Creates a `Context` and passes it to all downstream operations. |
+| Configuration | Receives a `Context` to report errors and write progress output. |
+| Modeling | Receives a `Context` to write error messages for assertion failures. |
+| SelfTest | Receives a `Context` to write validation results and errors. |
 
 ### Design Decisions
 

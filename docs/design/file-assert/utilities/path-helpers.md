@@ -62,8 +62,8 @@ N/A — `PathHelpers` is a `static` class with no instance state or fields.
 
 #### Key Methods
 
-| Method                                                  |
-| :------------------------------------------------------ |
+| Method |
+| :--- |
 | `SafePathCombine(string basePath, string relativePath)` |
 
 **Algorithm:**
