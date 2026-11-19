@@ -22,8 +22,7 @@ sections:
           - TemporaryDirectory_Dispose_AlreadyDeleted_DoesNotThrow
 
       - id: FileAssert-TemporaryDirectory-SafePath
-        title: The TemporaryDirectory class shall construct safe file paths under the temporary directory and create intermediate
-          subdirectories.
+        title: The TemporaryDirectory class shall construct safe file paths under the temporary directory and create intermediate subdirectories.
         justification: |
           Callers supply relative file paths to GetFilePath to resolve output locations
           inside the temporary directory. Using PathHelpers.SafePathCombine ensures that

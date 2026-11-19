@@ -24,8 +24,7 @@ sections:
           - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
 
       - id: FileAssert-Cli-ArgumentExposure
-        title: The Cli subsystem shall make each parsed command-line option's value observable to downstream subsystems so
-          that subsequent execution decisions reflect the user-supplied flags.
+        title: The Cli subsystem shall make each parsed command-line option's value observable to downstream subsystems so that subsequent execution decisions reflect the user-supplied flags.
         justification: |
           Downstream subsystems must be able to read the effective value of every command-line
           option to decide what work to perform. Exposing parsed option values to those

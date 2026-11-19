@@ -9,8 +9,7 @@ sections:
   - title: Modeling Subsystem Requirements
     requirements:
       - id: FileAssert-Modeling-ExecutionChain
-        title: The Modeling subsystem shall report success for a test-file-rule chain only when all of its constraints are
-          met.
+        title: The Modeling subsystem shall report success for a test-file-rule chain only when all of its constraints are met.
         justification: |
           The Modeling subsystem integrates three unit types (FileAssertTest, FileAssertFile,
           FileAssertRule) into a single execution chain. Verifying the chain end-to-end at the

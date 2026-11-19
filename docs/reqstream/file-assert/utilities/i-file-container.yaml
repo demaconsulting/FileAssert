@@ -9,8 +9,7 @@ sections:
   - title: IFileContainer Unit Requirements
     requirements:
       - id: FileAssert-IFileContainer-UniformAccess
-        title: The IFileContainer interface shall provide a uniform API for enumerating, opening, sizing, and displaying entries
-          regardless of backing storage.
+        title: The IFileContainer interface shall provide a uniform API for enumerating, opening, sizing, and displaying entries regardless of backing storage.
         justification: |
           Asserters must be able to validate files whether those files are on disk in a
           directory or stored as entries in a zip archive. A single interface with four
