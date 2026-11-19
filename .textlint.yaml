@@ -5,8 +5,8 @@
 # - Maintain professional documentation and code quality
 # - Catch spelling errors before publication
 # - Support consistent technical terminology usage
-# - Misspelled words should be fixed in the source
-# - NEVER add a misspelled word to the 'words' list
+# - NEVER add a misspelled word - fix the typo in the source instead
+# - NEVER add a British-English spelling - correct to US-English in the source
 # - PROPOSE only genuine technical terms/names as needed
 #
 # Run from the repository root (the pinned tool is restored by 'dotnet tool restore'):
@@ -32,24 +32,23 @@
 #   # Skipped: the sample transcripts are captured from a third-party service in another language
 #   - filename: docs/samples/transcripts/**
 #     enabled: false
-
 version: '0.2'
-
 language: en
 
-# Files to spell-check (applied when TextLint is run without arguments)
-files:
-  - "**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}"
-# Include hidden paths such as .github/
+# Also check hidden paths such as .github/ and .*.yaml
 enableGlobDot: true
 
-# Project-specific technical terms and tool names
+# The files lint.ps1 spell-checks
+files:
+  - "**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}"
 words:
   - appsettings
+  - Dema
   - DEMA
   - demaconsulting
   - dogfooding
   - enation
+  - fileshare
   - filesystemglobbing
   - fontconfig
   - htmlagilitypack
@@ -72,7 +71,6 @@ words:
   - yamldotnet
   - yamlfix
 
-# Exclude common build artifacts, dependencies, and vendored third-party code
 ignorePaths:
   - '**/.git/**'
   - '**/node_modules/**'

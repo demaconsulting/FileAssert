@@ -36,8 +36,7 @@ sections:
           - Configuration_RunWithTagFilter_ExecutesOnlyMatchingTests
 
       - id: FileAssert-Configuration-ResultsFiles
-        title: The Configuration subsystem shall write per-test pass/fail results to a TRX or JUnit XML file when a results
-          file path is provided.
+        title: The Configuration subsystem shall write per-test pass/fail results to a TRX or JUnit XML file when a results file path is provided.
         justification: |
           CI/CD pipelines and regulated environments require machine-readable test result files
           to collect evidence of assertion outcomes. Supporting both TRX and JUnit XML formats

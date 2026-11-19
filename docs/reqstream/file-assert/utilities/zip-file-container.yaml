@@ -42,8 +42,7 @@ sections:
           - ZipFileContainer_GetEntries_ExcludesDirectoryMarkers
 
       - id: FileAssert-ZipFileContainer-BreadcrumbDisplayPath
-        title: The ZipFileContainer class shall provide a breadcrumb display path that prefixes an entry path with the container's
-          display name.
+        title: The ZipFileContainer class shall provide a breadcrumb display path that prefixes an entry path with the container's display name.
         justification: |
           Breadcrumb display paths (displayName > entryPath) give users enough context to
           identify which archive an error occurred in, which is essential for nested archives.
