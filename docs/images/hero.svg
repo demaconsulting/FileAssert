@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="640" viewBox="0 0 1600 640">
   <!-- The README hero banner. Built PDFs and HTML pages, zips and text files, the .fileassert.yaml test suite, and
-       the test names and tags to run flow into the fileassert tool, which writes a pass/fail report for every test,
+       the test names and tags to run flow into the fileassert tool, which writes a pass/fail report of the tests,
        a TRX or JUnit results file, and an exit code that gates the CI pipeline; downstream, the TRX file becomes
        ReqStream test evidence.
        The definitions and the left panel follow the shared DEMA Consulting hero (CanvasNet and BuildMark).
@@ -10,7 +10,7 @@
     <style>
       .word { font: bold 92px sans-serif; fill: #ffffff; }
       .eyebrow { font: bold 25px sans-serif; fill: #a5b4fc; }
-      .tag { font: bold 40px sans-serif; fill: #f8fafc; }
+      .tag { font: bold 36px sans-serif; fill: #f8fafc; }
       .body { font: 25px sans-serif; fill: #cbd5e1; }
       .cmd { font: 25px monospace; fill: #e2e8f0; }
       .prompt { fill: #5eead4; }
@@ -117,11 +117,11 @@
   <text class="word" x="52" y="176">File</text>
   <text class="word brandText" x="210.5" y="176">Assert</text>
   <rect x="58" y="200" width="132" height="6" rx="3" fill="url(#brand)"/>
-  <text class="tag" x="56" y="266">Every output, checked.</text>
-  <text class="tag brandText" x="56" y="316">Every check, recorded.</text>
-  <text class="body" x="58" y="368">Assert sizes, text, PDF, HTML, XML,</text>
-  <text class="body" x="58" y="402">JSON, YAML and zip contents of build</text>
-  <text class="body" x="58" y="436">outputs from one YAML test suite.</text>
+  <text class="tag" x="56" y="266">File content checks</text>
+  <text class="tag" x="56" y="314" style="fill: #a5b4fc">from a YAML test suite.</text>
+  <text class="body" x="58" y="368">Checks sizes, text, and PDF, HTML,</text>
+  <text class="body" x="58" y="402">XML, JSON, YAML and zip contents;</text>
+  <text class="body" x="58" y="436">writes TRX or JUnit and an exit code.</text>
   <!-- The command box: run the tests tagged "release" and write a TRX results file -->
   <rect x="56" y="468" width="480" height="90" rx="12" fill="#0a1022" fill-opacity="0.8" stroke="#a78bfa" stroke-opacity="0.45" stroke-width="1.5"/>
   <text class="cmd prompt" x="78" y="503">$</text>
@@ -129,7 +129,7 @@
   <text class="cmd file" x="273" y="503">release</text>
   <text class="cmd" x="138" y="539">--results</text>
   <text class="cmd file" x="288" y="539">results.trx</text>
-  <text class="note" x="58" y="604">Built for Continuous Compliance.</text>
+  <text class="note" x="58" y="604">.NET 10 and 11 &#183; Windows, Linux, macOS</text>
 
   <!-- Input cards -->
   <g>
@@ -238,7 +238,7 @@
 
   <!-- Output tiles -->
   <g>
-    <!-- Output one: the console report, pass or fail for every test -->
+    <!-- Output one: the console report, pass or fail for each test -->
     <rect class="card" x="580" y="390" width="296" height="210" rx="16"/>
     <rect class="panel" x="588" y="398" width="280" height="152" rx="10"/>
     <circle cx="614" cy="428" r="12" fill="#4ade80" fill-opacity="0.2" stroke="#4ade80" stroke-width="2"/>
