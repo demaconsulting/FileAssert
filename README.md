@@ -1,4 +1,4 @@
-# ![FileAssert: File content checks from a YAML test suite. Checks sizes, text, and PDF, HTML, XML, JSON, YAML and zip contents; writes TRX or JUnit and an exit code. Shown with the command 'fileassert release --results results.trx' and the note '.NET 10 and 11, Windows, Linux, macOS'. Built PDFs and HTML pages, zips and text files, the .fileassert.yaml test suite, and the test names and tags to run flow into the fileassert .NET tool, and arrows lead out to a pass/fail report of the tests, a TRX or JUnit results file, a CI gate that passes with exit 0 and stops with exit 1, and, downstream, the TRX file used by ReqStream as test evidence][hero]
+# ![FileAssert: File content checks from a YAML test suite][hero]
 
 [![GitHub forks][badge-forks]][link-forks]
 [![GitHub stars][badge-stars]][link-stars]
