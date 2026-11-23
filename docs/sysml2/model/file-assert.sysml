@@ -1,6 +1,12 @@
 package FileAssert {
-    import OtsDependencies::*;
-    import SharedDependencies::*;
+    public import FileAssert_Program::*;
+    public import FileAssert_CliSubsystem::*;
+    public import FileAssert_ConfigurationSubsystem::*;
+    public import FileAssert_ModelingSubsystem::*;
+    public import FileAssert_UtilitiesSubsystem::*;
+    public import FileAssert_SelfTestSubsystem::*;
+    private import OtsDependencies::*;
+    private import SharedPackages::*;
     private import SoftwareItemMetadata::*;
 
     doc

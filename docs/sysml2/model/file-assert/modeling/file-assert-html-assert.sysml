@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_FileAssertHtmlAssert {
     private import SoftwareItemMetadata::*;
 
     part def FileAssertHtmlAssert {

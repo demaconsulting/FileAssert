@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_IContext {
     private import SoftwareItemMetadata::*;
 
     part def IContext {

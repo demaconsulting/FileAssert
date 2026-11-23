@@ -1,4 +1,6 @@
-package FileAssert {
+package FileAssert_CliSubsystem {
+    public import FileAssert_IContext::*;
+    public import FileAssert_Context::*;
     private import SoftwareItemMetadata::*;
 
     part def CliSubsystem {

@@ -1,4 +1,6 @@
-package FileAssert {
+package FileAssert_ConfigurationSubsystem {
+    public import FileAssert_FileAssertConfig::*;
+    public import FileAssert_FileAssertData::*;
     private import SoftwareItemMetadata::*;
 
     part def ConfigurationSubsystem {

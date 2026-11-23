@@ -1,4 +1,14 @@
-package FileAssert {
+package FileAssert_ModelingSubsystem {
+    public import FileAssert_FileAssertTest::*;
+    public import FileAssert_FileAssertFile::*;
+    public import FileAssert_FileAssertRule::*;
+    public import FileAssert_FileAssertTextAssert::*;
+    public import FileAssert_FileAssertPdfAssert::*;
+    public import FileAssert_FileAssertXmlAssert::*;
+    public import FileAssert_FileAssertHtmlAssert::*;
+    public import FileAssert_FileAssertYamlAssert::*;
+    public import FileAssert_FileAssertJsonAssert::*;
+    public import FileAssert_FileAssertZipAssert::*;
     private import SoftwareItemMetadata::*;
 
     part def ModelingSubsystem {

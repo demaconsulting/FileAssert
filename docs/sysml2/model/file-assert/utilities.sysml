@@ -1,4 +1,9 @@
-package FileAssert {
+package FileAssert_UtilitiesSubsystem {
+    public import FileAssert_IFileContainer::*;
+    public import FileAssert_DirectoryFileContainer::*;
+    public import FileAssert_ZipFileContainer::*;
+    public import FileAssert_PathHelpers::*;
+    public import FileAssert_TemporaryDirectory::*;
     private import SoftwareItemMetadata::*;
 
     part def UtilitiesSubsystem {

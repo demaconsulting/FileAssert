@@ -1,4 +1,5 @@
-package FileAssert {
+package FileAssert_SelfTestSubsystem {
+    public import FileAssert_Validation::*;
     private import SoftwareItemMetadata::*;
 
     part def SelfTestSubsystem {

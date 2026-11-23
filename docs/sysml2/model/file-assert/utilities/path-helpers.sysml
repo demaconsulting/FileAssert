@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_PathHelpers {
     private import SoftwareItemMetadata::*;
 
     part def PathHelpers {

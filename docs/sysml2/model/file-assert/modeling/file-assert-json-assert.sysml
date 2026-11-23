@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_FileAssertJsonAssert {
     private import SoftwareItemMetadata::*;
 
     part def FileAssertJsonAssert {

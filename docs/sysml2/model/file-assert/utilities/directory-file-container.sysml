@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_DirectoryFileContainer {
     private import SoftwareItemMetadata::*;
 
     part def DirectoryFileContainer {
