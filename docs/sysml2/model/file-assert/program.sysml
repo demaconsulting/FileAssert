@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_Program {
     private import SoftwareItemMetadata::*;
 
     part def Program {

@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_Validation {
     private import SoftwareItemMetadata::*;
 
     part def Validation {

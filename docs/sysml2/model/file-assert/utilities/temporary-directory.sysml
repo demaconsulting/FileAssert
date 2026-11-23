@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_TemporaryDirectory {
     private import SoftwareItemMetadata::*;
 
     part def TemporaryDirectory {

@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_FileAssertYamlAssert {
     private import SoftwareItemMetadata::*;
 
     part def FileAssertYamlAssert {

@@ -1,4 +1,4 @@
-package FileAssert {
+package FileAssert_ZipFileContainer {
     private import SoftwareItemMetadata::*;
 
     part def ZipFileContainer {
