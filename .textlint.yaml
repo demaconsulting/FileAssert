@@ -46,6 +46,7 @@ words:
   - Dema
   - DEMA
   - demaconsulting
+  - distinguishability
   - dogfooding
   - enation
   - fileshare
@@ -61,10 +62,12 @@ words:
   - Sarif
   - SARIF
   - selftest
+  - Sensmetry
   - shopt
   - slnx
   - snupkg
   - sonarscanner
+  - Syside
   - thirdparty
   - unidirectionality
   - venv
