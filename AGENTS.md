@@ -65,8 +65,8 @@ yet cover something.
 - **`docs/sysml2/`** - SysML2 architecture model; authoritative source for software structure
 - **`fix.ps1`** - Applies the auto-fixers (dotnet format, LintMark, YAML); a fixer run always exits 0.
   Requires a scope; see `pwsh ./fix.ps1 -Help`.
-- **`build.ps1`** - Builds the solution and runs the tests. Requires a scope (`-All` is the full build);
-  see `pwsh ./build.ps1 -Help`.
+- **`build.ps1`** - Builds the solution and runs the tests. Requires a scope (`-All` is the full build;
+  `-Project` focuses on named projects); see `pwsh ./build.ps1 -Help`.
 - **`lint.ps1`** - Runs the lint checks (`-All` is the CI merge gate). Requires a scope; see
   `pwsh ./lint.ps1 -Help`.
 - **`scripts/ProjectScripts.psm1`** - PowerShell module with the scoping logic the three scripts share.
@@ -153,8 +153,9 @@ Full `build.ps1 -All` and `lint.ps1 -All` runs can take many minutes on large re
 them once, not after every edit. The scripts require a scope: with no arguments they print usage
 and exit 1.
 
-- **While iterating**, use `-Changed` (or `lint.ps1`/`fix.ps1 -Check`) so only the affected work
-  runs; add `-DryRun` to see the selection without running anything
+- **While iterating**, use `-Changed` (or `lint.ps1`/`fix.ps1 -Check`, or `build.ps1 -Project`, for example
+  `-Project FileAssert` or `-Project Tests`) so only the affected work runs; add `-DryRun` to see the selection
+  without running anything
 - **Before handing back**, run the full gates your agent requires once (`build.ps1 -All`,
   `lint.ps1 -All`); re-run them only if you change files after they pass
 - **Documentation-only changes** need no build
