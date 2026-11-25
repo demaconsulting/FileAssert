@@ -20,9 +20,13 @@
 
 using System.IO.Compression;
 using System.Text.RegularExpressions;
-
+using DemaConsulting.FileAssert.Cli;
 using DemaConsulting.FileAssert.Utilities;
+using DemaConsulting.HelpCards.Catalog;
+using DemaConsulting.HelpCards.Testing;
 using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.Core;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
 using UglyToad.PdfPig.Writer;
 
 namespace DemaConsulting.FileAssert.Tests;
@@ -1425,5 +1429,107 @@ public partial class IntegrationTests
         Assert.Contains("archive.zip", output);
         Assert.Contains("readme.txt", output);
 
+    }
+
+    /// <summary>
+    ///     Test that the help verb lists the help topics.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_HelpTopics_HelpVerb_ListsTopics()
+    {
+        // Arrange: (none — constructor initializes _dllPath)
+
+        // Act: run the tool with the help verb
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            _dllPath,
+            "help");
+
+        // Assert: every topic is listed with its command, without the banner
+        Assert.Equal(0, exitCode);
+        foreach (var topic in HelpCommand.RootCardIds)
+        {
+            Assert.Contains($"{HelpCommand.ToolName} help {topic}", output);
+        }
+
+        Assert.DoesNotContain("Copyright", output);
+    }
+
+    /// <summary>
+    ///     Test that an unknown help topic returns the usage-error exit code.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_HelpTopics_UnknownTopic_ReturnsUsageError()
+    {
+        // Arrange: (none — constructor initializes _dllPath)
+
+        // Act: ask for a topic that does not exist
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            _dllPath,
+            "help",
+            "no-such-topic");
+
+        // Assert: exit code 2 and a message that names the topic
+        Assert.Equal(2, exitCode);
+        Assert.Contains("no-such-topic", output);
+    }
+
+    /// <summary>
+    ///     Test that every command example in the help cards gives the result that its card states.
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_HelpExamples_AllCommandExamples_GiveStatedResults()
+    {
+        // Arrange: the catalog the tool ships, and the files that the examples check: the text files of the
+        // test project, and a PDF manual and a zip package built here so that no binary file is checked in
+        var catalog = HelpCatalog.Create(HelpCommand.CreateOptions().GetCatalogConfiguration());
+        using var inputs = new TemporaryDirectory();
+        var testDataPath = PathHelpers.SafePathCombine(AppContext.BaseDirectory, "TestData");
+        foreach (var file in Directory.GetFiles(PathHelpers.SafePathCombine(testDataPath, "HelpExamples")))
+        {
+            File.Copy(file, inputs.GetFilePath(Path.GetFileName(file)));
+        }
+
+        using (var builder = new PdfDocumentBuilder())
+        {
+            builder.DocumentInformation.Title = "User Manual";
+            var font = builder.AddStandard14Font(Standard14Font.Helvetica);
+            builder.AddPage(PageSize.A4).AddText("Installation", 12, new PdfPoint(25, 700), font);
+            builder.AddPage(PageSize.A4).AddText("Troubleshooting", 12, new PdfPoint(25, 700), font);
+            File.WriteAllBytes(inputs.GetFilePath("manual.pdf"), builder.Build());
+        }
+
+        using (var zip = ZipFile.Open(inputs.GetFilePath("package.zip"), ZipArchiveMode.Create))
+        {
+            zip.CreateEntryFromFile(inputs.GetFilePath("report.md"), "docs/report.md");
+            zip.CreateEntryFromFile(inputs.GetFilePath("app.json"), "app.json");
+        }
+
+        var exampleFiles = Directory.GetFiles(inputs.DirectoryPath);
+
+        // Act: run every command example against the built tool in the runner's scratch folder; the runner
+        // compares the exit codes and the 'expect' fragments. The input files are copied in before every
+        // command, so that a command that overwrites a file cannot affect the next one.
+        var report = HelpExampleRunner.Run(catalog, invocation =>
+        {
+            foreach (var file in exampleFiles)
+            {
+                File.Copy(file, PathHelpers.SafePathCombine(invocation.WorkingDirectory, Path.GetFileName(file)), true);
+            }
+
+            var exitCode = Runner.RunInDirectory(
+                out var output,
+                invocation.WorkingDirectory,
+                "dotnet",
+                [_dllPath, .. invocation.Arguments]);
+            return new HelpExampleOutcome(exitCode, output);
+        });
+
+        // Assert: the cards hold command examples, and every one gave the result its card states
+        Assert.True(report.CommandsRun > 0, "The help cards contain no command examples.");
+        report.AssertSucceeded();
     }
 }

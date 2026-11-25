@@ -64,6 +64,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Test Data -->
+  <ItemGroup>
+    <None Include="TestData\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- Project References -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\DemaConsulting.FileAssert\DemaConsulting.FileAssert.csproj" />
