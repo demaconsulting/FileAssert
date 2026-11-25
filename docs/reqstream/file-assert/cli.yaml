@@ -6,62 +6,64 @@
 # interface for output and logging throughout the tool's execution.
 
 sections:
-  - title: Cli Subsystem Requirements
-    requirements:
-      - id: FileAssert-Cli-ArgumentParsing
-        title: The Cli subsystem shall parse command-line arguments into recognized flags and values.
-        justification: |
-          A dedicated argument-parsing subsystem provides a single point of truth for all
-          command-line interface logic, keeping the rest of the tool free of raw argument
-          handling. It also enables consistent unit and integration testing of argument
-          behavior independently of business logic.
-        children:
-          - FileAssert-Context-ArgumentParsing
-          - FileAssert-Context-InvalidArgs
-        tests:
-          - Cli_CreateContext_ParsesSilentValidateAndLogFlags
-          - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
-          - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
+  - title: FileAssert Requirements
+    sections:
+      - title: Cli Subsystem Requirements
+        requirements:
+          - id: FileAssert-Cli-ArgumentParsing
+            title: The Cli subsystem shall parse command-line arguments into recognized flags and values.
+            justification: |
+              A dedicated argument-parsing subsystem provides a single point of truth for all
+              command-line interface logic, keeping the rest of the tool free of raw argument
+              handling. It also enables consistent unit and integration testing of argument
+              behavior independently of business logic.
+            children:
+              - FileAssert-Context-ArgumentParsing
+              - FileAssert-Context-InvalidArgs
+            tests:
+              - Cli_CreateContext_ParsesSilentValidateAndLogFlags
+              - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
+              - Cli_CreateContext_UnknownArgument_ThrowsArgumentException
 
-      - id: FileAssert-Cli-ArgumentExposure
-        title: The Cli subsystem shall make each parsed command-line option's value observable to downstream subsystems so that subsequent execution decisions reflect the user-supplied flags.
-        justification: |
-          Downstream subsystems must be able to read the effective value of every command-line
-          option to decide what work to perform. Exposing parsed option values to those
-          subsystems eliminates repeated string parsing and ensures execution behavior matches
-          what the user requested.
-        children:
-          - FileAssert-Context-ConfigFile
-          - FileAssert-Context-Filters
-          - FileAssert-Context-Depth
-        tests:
-          - Cli_CreateContext_ParsesSilentValidateAndLogFlags
-          - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
-          - Cli_CreateContext_WithFilters_ParsesPositionalArguments
-          - Cli_CreateContext_ParsesDepthFlag
+          - id: FileAssert-Cli-ArgumentExposure
+            title: The Cli subsystem shall make each parsed command-line option's value observable to downstream subsystems so that subsequent execution decisions reflect the user-supplied flags.
+            justification: |
+              Downstream subsystems must be able to read the effective value of every command-line
+              option to decide what work to perform. Exposing parsed option values to those
+              subsystems eliminates repeated string parsing and ensures execution behavior matches
+              what the user requested.
+            children:
+              - FileAssert-Context-ConfigFile
+              - FileAssert-Context-Filters
+              - FileAssert-Context-Depth
+            tests:
+              - Cli_CreateContext_ParsesSilentValidateAndLogFlags
+              - Cli_CreateContext_ParsesVersionHelpConfigResultsFlags
+              - Cli_CreateContext_WithFilters_ParsesPositionalArguments
+              - Cli_CreateContext_ParsesDepthFlag
 
-      - id: FileAssert-Cli-ErrorReporting
-        title: The Cli subsystem shall set the exit code to 1 when errors are reported.
-        justification: |
-          A non-zero exit code is the standard Unix convention for indicating failure.
-          Setting the exit code to 1 as soon as any error is written ensures that
-          CI/CD pipelines and calling scripts can reliably detect failures.
-        children:
-          - FileAssert-Context-ExitCode
-          - FileAssert-Context-ErrorCount
-        tests:
-          - Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
+          - id: FileAssert-Cli-ErrorReporting
+            title: The Cli subsystem shall set the exit code to 1 when errors are reported.
+            justification: |
+              A non-zero exit code is the standard Unix convention for indicating failure.
+              Setting the exit code to 1 as soon as any error is written ensures that
+              CI/CD pipelines and calling scripts can reliably detect failures.
+            children:
+              - FileAssert-Context-ExitCode
+              - FileAssert-Context-ErrorCount
+            tests:
+              - Cli_WriteError_AfterSuccessfulCreate_ChangesExitCodeToOne
 
-      - id: FileAssert-Cli-OutputPipeline
-        title: The Cli subsystem shall route output and errors to the console and optional log file.
-        justification: |
-          A unified output pipeline ensures that all messages, whether informational or
-          error-level, are consistently written to both the console and any active log file.
-          This provides a reliable audit trail for automated environments and CI/CD pipelines.
-        children:
-          - FileAssert-Context-Output
-          - FileAssert-Context-Silent
-          - FileAssert-Context-ErrorOutput
-        tests:
-          - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
-          - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+          - id: FileAssert-Cli-OutputPipeline
+            title: The Cli subsystem shall route output and errors to the console and optional log file.
+            justification: |
+              A unified output pipeline ensures that all messages, whether informational or
+              error-level, are consistently written to both the console and any active log file.
+              This provides a reliable audit trail for automated environments and CI/CD pipelines.
+            children:
+              - FileAssert-Context-Output
+              - FileAssert-Context-Silent
+              - FileAssert-Context-ErrorOutput
+            tests:
+              - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
+              - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole

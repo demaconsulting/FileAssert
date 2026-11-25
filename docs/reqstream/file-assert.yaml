@@ -6,7 +6,7 @@
 # the tool as a complete, deployed unit.
 
 sections:
-  - title: FileAssert System Requirements
+  - title: FileAssert Requirements
     requirements:
       - id: FileAssert-System-CoreExecution
         title: |

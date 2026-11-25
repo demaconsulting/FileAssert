@@ -6,14 +6,18 @@
 # reporting logic is decoupled from the concrete Context implementation.
 
 sections:
-  - title: IContext Unit Requirements
-    requirements:
-      - id: FileAssert-IContext-OutputContract
-        title: The IContext interface shall define an output contract for reporting informational messages and errors.
-        justification: |
-          All asserters and FileAssertFile accept IContext rather than the concrete Context
-          class, decoupling their reporting logic from the specific output implementation
-          (console, log file, or a future alternative).
-        tests:
-          - Context_WriteLine_NotSilent_WritesToConsole
-          - Context_WriteError_SetsErrorExitCode
+  - title: FileAssert Requirements
+    sections:
+      - title: Cli Subsystem Requirements
+        sections:
+          - title: IContext Unit Requirements
+            requirements:
+              - id: FileAssert-IContext-OutputContract
+                title: The IContext interface shall define an output contract for reporting informational messages and errors.
+                justification: |
+                  All asserters and FileAssertFile accept IContext rather than the concrete Context
+                  class, decoupling their reporting logic from the specific output implementation
+                  (console, log file, or a future alternative).
+                tests:
+                  - Context_WriteLine_NotSilent_WritesToConsole
+                  - Context_WriteError_SetsErrorExitCode

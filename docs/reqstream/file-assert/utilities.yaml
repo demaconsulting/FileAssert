@@ -6,63 +6,65 @@
 # any specific domain subsystem.
 
 sections:
-  - title: Utilities Subsystem Requirements
-    requirements:
-      - id: FileAssert-Utilities-SafePathOperations
-        title: The Utilities subsystem shall provide a safe path operation that prevents path traversal.
-        justification: |
-          Security-sensitive path operations must be isolated in a dedicated subsystem so
-          that they can be verified in isolation and reused across the codebase without
-          duplicating path-safety logic. Testing at the subsystem level confirms that the
-          utility functions are accessible to and correctly used by dependent subsystems.
-        children:
-          - FileAssert-PathHelpers-SafeCombine
-          - FileAssert-PathHelpers-RejectRootedPaths
-          - FileAssert-PathHelpers-NullValidation
-        tests:
-          - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
+  - title: FileAssert Requirements
+    sections:
+      - title: Utilities Subsystem Requirements
+        requirements:
+          - id: FileAssert-Utilities-SafePathOperations
+            title: The Utilities subsystem shall provide a safe path operation that prevents path traversal.
+            justification: |
+              Security-sensitive path operations must be isolated in a dedicated subsystem so
+              that they can be verified in isolation and reused across the codebase without
+              duplicating path-safety logic. Testing at the subsystem level confirms that the
+              utility functions are accessible to and correctly used by dependent subsystems.
+            children:
+              - FileAssert-PathHelpers-SafeCombine
+              - FileAssert-PathHelpers-RejectRootedPaths
+              - FileAssert-PathHelpers-NullValidation
+            tests:
+              - Utilities_SafePathCombine_PreventsPathTraversalToFileSystem
 
-      - id: FileAssert-Utilities-TemporaryDirectory
-        title: The Utilities subsystem shall provide a disposable temporary directory for isolated file operations.
-        justification: |
-          Tests and other consumers that write scratch files need an isolated location that
-          is automatically created on demand and cleaned up on disposal. Providing this as a
-          shared utility prevents ad-hoc temp-file management scattered across the codebase
-          and ensures cleanup even when an operation fails.
-        children:
-          - FileAssert-TemporaryDirectory-Lifecycle
-          - FileAssert-TemporaryDirectory-SafePath
-          - FileAssert-Utilities-SafePathOperations
-        tests:
-          - Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
+          - id: FileAssert-Utilities-TemporaryDirectory
+            title: The Utilities subsystem shall provide a disposable temporary directory for isolated file operations.
+            justification: |
+              Tests and other consumers that write scratch files need an isolated location that
+              is automatically created on demand and cleaned up on disposal. Providing this as a
+              shared utility prevents ad-hoc temp-file management scattered across the codebase
+              and ensures cleanup even when an operation fails.
+            children:
+              - FileAssert-TemporaryDirectory-Lifecycle
+              - FileAssert-TemporaryDirectory-SafePath
+              - FileAssert-Utilities-SafePathOperations
+            tests:
+              - Utilities_TemporaryDirectory_IsolatesAndCleansUpScratchSpace
 
-      - id: FileAssert-Utilities-FileContainerAbstraction
-        title: The Utilities subsystem shall provide a uniform file-access abstraction over directories and zip archives.
-        justification: |
-          Asserters must validate files whether those files reside on disk or inside a zip
-          archive. A shared IFileContainer interface with DirectoryFileContainer and
-          ZipFileContainer implementations allows all asserters to be written once and reused
-          against both backing stores, enabling the full assertion suite inside zip entries
-          without duplicating logic.
-        children:
-          - FileAssert-IFileContainer-UniformAccess
-          - FileAssert-DirectoryFileContainer-FileSystemAccess
-          - FileAssert-ZipFileContainer-EntryEnumeration
-          - FileAssert-ZipFileContainer-BreadcrumbDisplayPath
-          - FileAssert-ZipFileContainer-OpenEntry
-          - FileAssert-ZipFileContainer-MissingEntryException
-          - FileAssert-ZipFileContainer-EntrySize
-        tests:
-          - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
-          - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
-          - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
-          - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
-          - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
-          - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
-          - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
-          - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
-          - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
-          - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
-          - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
-          - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
-          - Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd
+          - id: FileAssert-Utilities-FileContainerAbstraction
+            title: The Utilities subsystem shall provide a uniform file-access abstraction over directories and zip archives.
+            justification: |
+              Asserters must validate files whether those files reside on disk or inside a zip
+              archive. A shared IFileContainer interface with DirectoryFileContainer and
+              ZipFileContainer implementations allows all asserters to be written once and reused
+              against both backing stores, enabling the full assertion suite inside zip entries
+              without duplicating logic.
+            children:
+              - FileAssert-IFileContainer-UniformAccess
+              - FileAssert-DirectoryFileContainer-FileSystemAccess
+              - FileAssert-ZipFileContainer-EntryEnumeration
+              - FileAssert-ZipFileContainer-BreadcrumbDisplayPath
+              - FileAssert-ZipFileContainer-OpenEntry
+              - FileAssert-ZipFileContainer-MissingEntryException
+              - FileAssert-ZipFileContainer-EntrySize
+            tests:
+              - DirectoryFileContainer_GetEntries_ReturnsAllFilesWithForwardSlashes
+              - DirectoryFileContainer_GetEntries_EmptyDirectory_ReturnsEmpty
+              - DirectoryFileContainer_GetEntries_NonExistentDirectory_ReturnsEmpty
+              - DirectoryFileContainer_OpenEntry_ExistingFile_ReturnsStream
+              - DirectoryFileContainer_OpenEntry_NonExistentFile_ThrowsIOException
+              - DirectoryFileContainer_GetEntrySize_ReturnsCorrectSize
+              - DirectoryFileContainer_GetDisplayPath_RootEntry_ReturnsFullPath
+              - ZipFileContainer_GetEntries_ReturnsFileEntriesWithForwardSlashes
+              - ZipFileContainer_OpenEntry_ExistingEntry_ReturnsStream
+              - ZipFileContainer_OpenEntry_NonExistentEntry_ThrowsIOException
+              - ZipFileContainer_GetEntrySize_ReturnsUncompressedLength
+              - ZipFileContainer_GetDisplayPath_ReturnsDisplayNamePrefixedPath
+              - Utilities_FileContainerAbstraction_ZipFileContainer_EndToEnd
