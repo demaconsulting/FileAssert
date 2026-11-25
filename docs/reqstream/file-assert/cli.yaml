@@ -67,3 +67,14 @@ sections:
             tests:
               - Cli_OutputPipeline_WithLogPathAndSilentFlag_WritesMessagesToLogFile
               - Cli_OutputPipeline_WithoutSilentFlag_WritesMessagesToConsole
+
+          - id: FileAssert-Cli-HelpTopics
+            title: The Cli subsystem shall answer the `help` command from built-in help cards.
+            justification: |
+              Users and AI agents need help topics with worked examples from the installed tool.
+            children:
+              - FileAssert-HelpCommand-HelpVerb
+              - FileAssert-HelpCommand-ValidCards
+              - FileAssert-HelpCommand-LineWidth
+            tests:
+              - Cli_HelpCommand_TopicRequested_PrintsTopic

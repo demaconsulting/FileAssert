@@ -16,6 +16,7 @@ codes.
 | --- | --- |
 | `Context` | Used directly (not mocked) — created from the argument array under test. |
 | `Validation` | Used directly (not mocked) — called when the validate flag is set. |
+| `HelpCommand` | Used directly (not mocked) — answers the `help` command with the embedded cards. |
 
 No test doubles are introduced at the `Program` level; all collaborators execute their real logic.
 
@@ -30,7 +31,8 @@ environment configuration is required beyond the standard build toolchain.
 The Program subsystem verification passes when all test scenarios listed in
 this document execute and pass in the CI pipeline without any test failures, unexpected
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
-and platform combinations.
+and platform combinations. `Program.Main` must answer the `help` command before the options
+are parsed, and the usage information must end with the pointer to the help command.
 
 ### Test Scenarios
 
@@ -45,7 +47,16 @@ exit code is 0.
 
 **Scenario**: `Program.Run` is called with a context created from `["--help"]`.
 
-**Expected**: Standard output contains "Usage:"; exit code is 0.
+**Expected**: Standard output contains "Usage:", "Options:", "--version", "--help", and the
+`fileassert help [topic]` usage line, and ends with the pointer to the help command; exit code
+is 0.
+
+#### Program_Main_WithHelpVerb_PrintsHelpIndex
+
+**Scenario**: `Program.Main` is invoked with `["help"]`, which is not an option.
+
+**Expected**: Standard output contains the help topic index and no banner; the return value is 0,
+confirming the help command is answered before the options are parsed.
 
 #### Program_Run_WithValidateFlag_RunsValidation
 

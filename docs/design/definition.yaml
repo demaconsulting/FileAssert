@@ -13,6 +13,7 @@ input-files:
   - docs/design/file-assert/cli.md
   - docs/design/file-assert/cli/context.md
   - docs/design/file-assert/cli/i-context.md
+  - docs/design/file-assert/cli/help-command.md
   - docs/design/file-assert/configuration.md
   - docs/design/file-assert/configuration/file-assert-config.md
   - docs/design/file-assert/configuration/file-assert-data.md
@@ -49,6 +50,7 @@ input-files:
   - docs/design/ots/pdfpig.md
   - docs/design/ots/htmlagilitypack.md
   - docs/design/ots/filesystemglobbing.md
+  - docs/design/ots/help-cards.md
   - docs/design/ots/sysml2tools.md
   - docs/design/shared.md
   - docs/design/shared/fileassert.md

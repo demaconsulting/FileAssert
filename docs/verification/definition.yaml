@@ -11,6 +11,7 @@ input-files:
   - docs/verification/file-assert/cli.md
   - docs/verification/file-assert/cli/context.md
   - docs/verification/file-assert/cli/i-context.md
+  - docs/verification/file-assert/cli/help-command.md
   - docs/verification/file-assert/configuration.md
   - docs/verification/file-assert/configuration/file-assert-config.md
   - docs/verification/file-assert/configuration/file-assert-data.md
@@ -47,6 +48,7 @@ input-files:
   - docs/verification/ots/pdfpig.md
   - docs/verification/ots/htmlagilitypack.md
   - docs/verification/ots/filesystemglobbing.md
+  - docs/verification/ots/help-cards.md
   - docs/verification/ots/sysml2tools.md
   - docs/verification/shared.md
   - docs/verification/shared/fileassert.md

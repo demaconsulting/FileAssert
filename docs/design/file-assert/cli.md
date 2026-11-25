@@ -6,7 +6,8 @@
 
 The Cli subsystem is responsible for translating the raw command-line argument array into a
 structured, immutable context object that the rest of the tool uses for output, configuration,
-and execution decisions.
+and execution decisions. It also answers the built-in `help` command from the help cards
+embedded in the tool assembly.
 
 ### Subsystem Contents
 
@@ -14,6 +15,7 @@ and execution decisions.
 | :--- | :--- | :--- |
 | `IContext` | `IContext.cs` | Output contract interface for reporting messages and errors. |
 | `Context` | `Context.cs` | Parses arguments and owns all I/O operations. |
+| `HelpCommand` | `HelpCommand.cs` | Answers the `help` command from the built-in help cards. |
 
 ### Subsystem Responsibilities
 
@@ -23,6 +25,7 @@ and execution decisions.
 - Open and manage a log file when `--log` is specified.
 - Write output to stdout and the log file; write errors to stderr and the log file.
 - Expose an exit code that reflects whether any errors have been reported.
+- Answer the `help` command, given as the first argument, from the built-in help cards.
 
 ### Interfaces
 
@@ -71,7 +74,26 @@ The `Context` unit exposes the following public interface:
 | File system (config) | Input | Configuration file path resolved from `--config` or default. |
 | File system (results) | Output | Results file path; written by the Configuration subsystem. |
 
+The `HelpCommand` unit exposes the following interface to `Program`:
+
+#### HelpCommand Members
+
+| Member | Signature | Description |
+| :--- | :--- | :--- |
+| `TryRun` | `bool TryRun(string[] args, out int exitCode)` | Answers `help`; `false` and no output otherwise. |
+| `Footer` | `string Footer { get; }` | The pointer to the help command; never builds the catalog. |
+
+`TryRun` is called on the shared `HelpCommand.Default` instance, does not throw for user input,
+and does not use `Context`; its exit codes are described under *Help Command* in the system
+design.
+
 ### Design
+
+The `Context` and `HelpCommand` units do not call each other. `Program.Main` offers the
+arguments to `HelpCommand.TryRun` first; when the help command answers, the invocation ends with
+its exit code and no `Context` is created. `HelpCommand` writes its answers to the console
+itself, the one exception to `Context` owning all output, because the `help` command is answered
+before a `Context` exists.
 
 The `Context` class uses the following collaboration flow:
 
@@ -92,13 +114,14 @@ The `Context` class uses the following collaboration flow:
 
 ### Dependencies
 
-- None.
+- **HelpCards** (OTS) — used by `HelpCommand` to load, validate, and serve the help cards.
+- **Program** — `HelpCommand` reads the tool version from `Program.Version`.
 
 ### Callers
 
 | Consumer | Usage |
 | :--- | :--- |
-| Program | Creates a `Context` and passes it to all downstream operations. |
+| Program | Calls `HelpCommand.Default.TryRun` and `Footer`; creates a `Context` for all other runs. |
 | Configuration | Receives a `Context` to report errors and write progress output. |
 | Modeling | Receives a `Context` to write error messages for assertion failures. |
 | SelfTest | Receives a `Context` to write validation results and errors. |

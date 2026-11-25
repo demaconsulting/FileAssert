@@ -4,7 +4,8 @@
 
 ### Purpose
 
-`Program` is the static entry-point class for the FileAssert tool. It constructs the execution
+`Program` is the static entry-point class for the FileAssert tool. It hands the `help` command to
+`HelpCommand`; otherwise it constructs the execution
 `Context` from command-line arguments, dispatches to the appropriate handler (version display,
 help, self-validation, or main tool logic), and returns the final process exit code. It also
 exposes a `Version` property used by both the version display path and the self-validation header.
@@ -34,13 +35,17 @@ attribute is absent, then to `"0.0.0"` if neither is available.
 #### Main Method
 
 ```csharp
-private static int Main(string[] args)
+public static int Main(string[] args)
 ```
 
-**Purpose**: Operating-system entry point; creates execution context, delegates to `Run`, and
-returns the process exit code.
+**Purpose**: Operating-system entry point; answers the `help` command or creates execution
+context, delegates to `Run`, and returns the process exit code. Declared `public` so that unit
+tests can invoke it directly.
 
-**Algorithm**: Creates a `Context` via `Context.Create(args)`, calls `Run(context)`, and returns
+**Algorithm**: First calls `HelpCommand.Default.TryRun(args, out exitCode)`. The `help` command
+is not an option, so `Context.Create` would take it as a test filter; when the help command
+answers, `Main` returns its exit code (see *Help Command* in the system design). Otherwise creates
+a `Context` via `Context.Create(args)`, calls `Run(context)`, and returns
 `context.ExitCode`. Catches `ArgumentException` and `InvalidOperationException` to print their
 messages to standard error and return exit code `1`. Any other exception is printed to standard
 error and re-thrown so that the runtime generates a crash-report event-log entry.
@@ -48,7 +53,8 @@ error and re-thrown so that the runtime generates a crash-report event-log entry
 **Preconditions**: `args` is the raw command-line argument array supplied by the runtime (may be
 empty; must not be null).
 
-**Post-conditions**: Returns `0` for success or a non-zero value for failure.
+**Post-conditions**: Returns `0` for success or a non-zero value for failure; for the `help`
+command, the exit code of `HelpCommand`.
 
 #### Run Method
 
@@ -95,9 +101,11 @@ separator line.
 private static void PrintHelp(Context context)
 ```
 
-**Purpose**: Writes usage information and available options to the context output.
+**Purpose**: Writes usage information and available options to the context output, ending with a
+pointer to the built-in help topics.
 
-**Algorithm**: Writes the usage line followed by a formatted table of all supported options.
+**Algorithm**: Writes the usage lines (including `fileassert help [topic]`) followed by a
+formatted table of all supported options, a blank line, and `HelpCommand.Default.Footer`.
 
 **Preconditions**: `context` must not be null.
 
@@ -140,6 +148,8 @@ Detection:
 
 ### Dependencies
 
+- `HelpCommand` answers the `help` command in `Main` before the options are parsed, and supplies
+  the `Footer` that `PrintHelp` writes.
 - `Context` provides the parsed flags, config path, filters, and output methods used by every
   execution path.
 - `Validation` runs the built-in self-validation flow when `context.Validate` is set.

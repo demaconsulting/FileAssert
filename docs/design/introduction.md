@@ -25,6 +25,7 @@ OTS items:
 
 - **BuildMark**: integration and usage design.
 - **FileSystemGlobbing**: integration and usage design.
+- **HelpCards**: integration and usage design.
 - **HtmlAgilityPack**: integration and usage design.
 - **Pandoc**: integration and usage design.
 - **PdfPig**: integration and usage design.
@@ -71,7 +72,8 @@ subsystem instead](architecture.svg)
 
 - **src/** - source files and projects
   - **DemaConsulting.FileAssert/** - FileAssert system source
-    - **Cli/** - Cli subsystem
+    - **Cli/** - Cli subsystem, including `HelpCommand.cs` for the built-in help
+    - **Help/** - built-in help cards (Markdown with front matter), embedded in the assembly
     - **Configuration/** - Configuration subsystem
     - **Modeling/** - Modeling subsystem
     - **Utilities/** - Utilities subsystem

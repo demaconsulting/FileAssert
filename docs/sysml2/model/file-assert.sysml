@@ -36,6 +36,7 @@ package FileAssert {
         part pdfPig : PdfPig;
         part htmlAgilityPack : HtmlAgilityPack;
         part fileSystemGlobbing : FileSystemGlobbing;
+        part helpCards : HelpCards;
 
         part fileAssertSharedPackage : FileAssertSharedPackage;
     }
