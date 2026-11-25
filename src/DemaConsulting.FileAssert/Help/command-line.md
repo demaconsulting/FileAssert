@@ -80,7 +80,9 @@ argument is a filter: the name or a tag of the tests to run.
 | `--validate` | Run the self-tests; see [[self-validation]]. |
 | `--depth <n>` | First heading level of the `--validate` report, 1 to 6; default 1. |
 
-**Order.** `--version` wins over everything and prints only the version.
+**Order.** The tool checks all arguments first, so an unknown option or a
+missing value is an error even with `--version`. `--version`, when all
+arguments are valid, prints only the version and skips everything else.
 Otherwise the tool prints a banner, then handles the first of `--help`,
 `--validate`, or the test suite. A passing suite prints nothing more;
 every failed assertion prints one line, and the tool exits 1.
