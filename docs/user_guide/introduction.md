@@ -20,6 +20,7 @@ This user guide covers:
 
 - Installation instructions
 - Running file assertion tests
+- The built-in `fileassert help` command
 - YAML test file format and acceptance criteria
 - Command-line options reference
 - Practical examples for various scenarios
@@ -69,6 +70,24 @@ Display usage information:
 ```bash
 fileassert --help
 ```
+
+The usage information ends with a pointer to the built-in help.
+
+## Built-in Help
+
+The `help` command prints help topics that explain each task with worked examples, for people and
+for AI agents that have only the installed tool. List the topics, then print one with its examples:
+
+```bash
+fileassert help
+fileassert help getting-started
+```
+
+Add `--search <words>` to find a topic, `--example <name>` to print one example of a topic, and
+`--json` to get any help answer as JSON. `help` is a command, not an option: it must be the first
+argument, and `--silent` and `--log` do not apply to it. It exits with code 0 on success, and with
+code 2 after printing a hint for an unknown topic or a wrong help argument. To run a test or tag
+named `help`, put another argument first, for example `fileassert --config tests.yaml help`.
 
 ## Running Tests
 
@@ -190,6 +209,9 @@ Write output to a log file:
 ```bash
 fileassert --log output.log
 ```
+
+Argument errors, such as an unknown option, are found before `--silent` and `--log` take effect,
+so they are always printed and never logged.
 
 # FileAssert YAML Format
 
