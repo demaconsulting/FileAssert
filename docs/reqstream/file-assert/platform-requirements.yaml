@@ -16,7 +16,7 @@
 #   dotnet11.x@TestName   - proves the self-validation test ran with .NET 11.x runtime
 
 sections:
-  - title: Platform Support
+  - title: FileAssert Requirements
     requirements:
       - id: FileAssert-Platform-Windows
         title: The tool shall build and run on Windows platforms.

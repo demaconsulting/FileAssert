@@ -1,6 +1,6 @@
 # OTS Integration Design
 
-FileAssert relies on fourteen off-the-shelf (OTS) tools and libraries that support CI/CD
+FileAssert relies on fifteen off-the-shelf (OTS) tools and libraries that support CI/CD
 automation, documentation generation, compliance checking, and core assertion functionality. This
 chapter describes the overall OTS integration strategy and introduces each item's role in the
 pipeline or product.
@@ -18,8 +18,8 @@ The OTS items used by this project fall into four functional groups:
 - **Document generation** — Pandoc converts Markdown to HTML and WeasyPrint converts HTML to
   PDF; both are installed as dotnet global tools via `.config/dotnet-tools.json`.
 - **Production code libraries** — NuGet packages referenced directly by the main
-  `DemaConsulting.FileAssert` project to implement assertion functionality: YamlDotNet, PdfPig,
-  HtmlAgilityPack, and FileSystemGlobbing.
+  `DemaConsulting.FileAssert` project to implement assertion functionality and the built-in
+  help: YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing, and HelpCards.
 
 All dotnet global tools are pinned to specific versions in `.config/dotnet-tools.json` and
 restored with `dotnet tool restore` at the beginning of each CI job. This ensures reproducible
@@ -43,6 +43,7 @@ builds and provides an audit record of which tool version produced each release 
 | PdfPig | Parses PDF documents under test for `pdf:` assertions |
 | HtmlAgilityPack | Parses HTML documents under test for `html:` XPath assertions |
 | FileSystemGlobbing | Resolves glob patterns against candidate files for `count:`/file matching |
+| HelpCards | Serves and validates the built-in help cards of the `help` command |
 
 > **Note**: FileAssert is not an OTS item for this project. Because this project consumes an
 > earlier released version of its own package in CI, it is classified as a **Shared Package**.
@@ -66,6 +67,7 @@ Detailed design for each OTS item is provided in the following sections of this 
 - See *PdfPig OTS Design* for the PDF parsing library.
 - See *HtmlAgilityPack OTS Design* for the HTML parsing library.
 - See *FileSystemGlobbing OTS Design* for the glob pattern-matching library.
+- See *HelpCards OTS Design* for the built-in help library.
 
 ## Selection Criteria
 
@@ -109,11 +111,12 @@ OTS items in this project fall into three integration categories:
 - **NuGet package** (xUnit) — referenced in the test project file and consumed through standard
   .NET package restore. No explicit initialization or configuration code is required beyond the
   test-project target framework declaration.
-- **NuGet package libraries** (YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing) —
-  referenced directly by the main `DemaConsulting.FileAssert` project and invoked through their
-  public API from production code to implement assertion functionality. Each library is wrapped
-  by a thin FileAssert-owned adapter (the corresponding `FileAssert*Assert`/`IFileContainer`
-  unit) rather than being exposed directly to configuration authors.
+- **NuGet package libraries** (YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing,
+  HelpCards) — referenced directly by the main `DemaConsulting.FileAssert` project and invoked
+  through their public API from production code to implement assertion functionality and the
+  built-in help. Each library is wrapped by a thin FileAssert-owned adapter (the corresponding
+  `FileAssert*Assert`/`IFileContainer` unit, or `HelpCommand` for HelpCards) rather than being
+  exposed directly to configuration authors.
 
 Error handling across all tool invocations relies on exit-code contracts documented in each tool's
 own user guide. No custom error-recovery logic is applied.

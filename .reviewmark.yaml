@@ -14,6 +14,7 @@ needs-review:
   - "docs/design/**/*.md"
   - "docs/verification/**/*.md"
   - "docs/sysml2/**/*.sysml"
+  - "src/**/Help/**"
   - "!**/obj/**"
   - "!**/bin/**"
 
@@ -168,6 +169,22 @@ reviews:
       - "src/**/Cli/Context.cs"                                      # implementation
       - "test/**/Cli/ContextTests.cs"                                # unit tests
       - "test/**/Cli/ContextNewPropertiesTests.cs"                   # unit tests
+
+  # FileAssert-Cli-HelpCommand Review (one per unit)
+  - id: FileAssert-Cli-HelpCommand
+    title: Review that FileAssert Cli HelpCommand Implementation is Correct
+    context:
+      - "docs/design/file-assert.md"
+      - "docs/reqstream/file-assert.yaml"
+      - "docs/design/file-assert/cli.md"
+      - "docs/reqstream/file-assert/cli.yaml"
+    paths:
+      - "docs/reqstream/file-assert/cli/help-command.yaml"           # requirements
+      - "docs/design/file-assert/cli/help-command.md"                # design
+      - "docs/verification/file-assert/cli/help-command.md"          # verification
+      - "src/**/Cli/HelpCommand.cs"                                  # implementation
+      - "src/**/Help/**"                                             # help cards
+      - "test/**/Cli/HelpCommandTests.cs"                            # unit tests
 
   # FileAssert-Program Review (one per unit)
   - id: FileAssert-Program
@@ -483,6 +500,14 @@ reviews:
       - "docs/reqstream/shared/fileassert.yaml"                      # Shared Package requirements
       - "docs/design/shared/fileassert.md"                           # Shared Package design
       - "docs/verification/shared/fileassert.md"                     # Shared Package verification
+
+  # OTS-HelpCards Review (one per OTS item)
+  - id: OTS-HelpCards
+    title: Review that HelpCards Provides Required Functionality
+    paths:
+      - "docs/reqstream/ots/help-cards.yaml"                         # OTS requirements
+      - "docs/design/ots/help-cards.md"                              # OTS design
+      - "docs/verification/ots/help-cards.md"                        # OTS verification
 
   # OTS-Pandoc Review (one per OTS item)
   - id: OTS-Pandoc

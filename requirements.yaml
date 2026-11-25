@@ -8,6 +8,7 @@ includes:
   - docs/reqstream/file-assert/cli.yaml
   - docs/reqstream/file-assert/cli/context.yaml
   - docs/reqstream/file-assert/cli/i-context.yaml
+  - docs/reqstream/file-assert/cli/help-command.yaml
   - docs/reqstream/file-assert/configuration.yaml
   - docs/reqstream/file-assert/configuration/file-assert-config.yaml
   - docs/reqstream/file-assert/configuration/file-assert-data.yaml
@@ -46,4 +47,5 @@ includes:
   - docs/reqstream/ots/pdfpig.yaml
   - docs/reqstream/ots/htmlagilitypack.yaml
   - docs/reqstream/ots/filesystemglobbing.yaml
+  - docs/reqstream/ots/help-cards.yaml
   - docs/reqstream/ots/sysml2tools.yaml

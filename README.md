@@ -31,6 +31,8 @@ TRX or JUnit results, then use them as a CI gate, in test reports and as complia
 - **Tag-Based Test Filtering**: Run a targeted subset of tests by filtering on tags
 - **TRX and JUnit Output**: Write test results to TRX or JUnit format via DemaConsulting.TestResults
 - **Self-Validation**: Built-in validation tests confirm the tool is functioning correctly
+- **Built-in Help**: `fileassert help` serves Markdown help cards ([DemaConsulting.HelpCards][link-helpcards])
+  with runnable examples, search, and JSON output for AI agents
 - **Multi-Platform Support**: Builds and runs on Windows, Linux, and macOS
 - **Multi-Runtime Support**: Targets .NET 10 and 11
 - **Comprehensive CI/CD**: GitHub Actions workflows with quality checks, builds, and integration tests
@@ -57,6 +59,10 @@ fileassert --version
 
 # Display help
 fileassert --help
+
+# List the built-in help topics, then read one
+fileassert help
+fileassert help getting-started
 
 # Run tests from the default .fileassert.yaml file
 fileassert
@@ -367,3 +373,4 @@ By contributing to this project, you agree that your contributions will be licen
 [workflow]: https://raw.githubusercontent.com/demaconsulting/FileAssert/main/docs/images/workflow.png
 [link-guide]: https://github.com/demaconsulting/FileAssert/blob/main/docs/user_guide/introduction.md
 [link-continuous-compliance]: https://github.com/demaconsulting/ContinuousCompliance
+[link-helpcards]: https://www.nuget.org/packages/DemaConsulting.HelpCards

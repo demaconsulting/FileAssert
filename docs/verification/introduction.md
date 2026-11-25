@@ -21,6 +21,7 @@ This document covers the verification design for the same software items describ
 - **Cli** — command-line interface subsystem
   - **Context** — argument parser and I/O owner
   - **IContext** — output and error-reporting contract for assertion context
+  - **HelpCommand** — built-in help command
 - **Configuration** — configuration loading subsystem
   - **FileAssertConfig** — configuration file reader
   - **FileAssertData** — deserialization data transfer objects
@@ -66,6 +67,7 @@ The following OTS items are also covered:
 - **PdfPig** — PDF parsing library
 - **HtmlAgilityPack** — HTML parsing library
 - **FileSystemGlobbing** — glob pattern-matching library
+- **HelpCards** — built-in help library
 
 ## Companion Artifact Structure
 

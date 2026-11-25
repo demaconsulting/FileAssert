@@ -6,17 +6,21 @@
 # to a YAML structure and contains no business logic.
 
 sections:
-  - title: FileAssertData Unit Requirements
-    requirements:
-      - id: FileAssert-FileAssertData-YamlSchema
-        title: |
-          The FileAssertData classes shall define the YAML schema for the FileAssert configuration
-          file, mapping YAML keys to typed properties.
-        justification: |
-          Explicit YAML aliases decouple C# naming conventions from the YAML schema, ensuring
-          the configuration file format remains stable even if internal class names change.
-          All properties are nullable to correctly represent absent YAML keys without throwing
-          during deserialization.
-        tests:
-          - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
-          - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
+  - title: FileAssert Requirements
+    sections:
+      - title: Configuration Subsystem Requirements
+        sections:
+          - title: FileAssertData Unit Requirements
+            requirements:
+              - id: FileAssert-FileAssertData-YamlSchema
+                title: |
+                  The FileAssertData classes shall define the YAML schema for the FileAssert configuration
+                  file, mapping YAML keys to typed properties.
+                justification: |
+                  Explicit YAML aliases decouple C# naming conventions from the YAML schema, ensuring
+                  the configuration file format remains stable even if internal class names change.
+                  All properties are nullable to correctly represent absent YAML keys without throwing
+                  during deserialization.
+                tests:
+                  - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
+                  - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly

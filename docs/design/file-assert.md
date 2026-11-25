@@ -22,6 +22,7 @@ files do not meet the declared constraints.
 | | when file-type assertion blocks are declared; report an immediate error |
 | | if the file cannot be parsed. |
 | Output and logging | Report results to stdout/stderr and optionally to a log file. |
+| Built-in help | Answer the `help` command from help cards embedded in the tool. |
 | Self-validation | Verify core functionality at run time via built-in tests. |
 | Validation output depth | Accept a `--depth` value (1-6) controlling the Markdown heading level of |
 | | self-validation output, defaulting to 1. |
@@ -36,7 +37,7 @@ one or more units:
 | :--- | :--- | :--- |
 | FileAssert | System | — |
 | Program | Unit | — |
-| Cli | Subsystem | IContext, Context |
+| Cli | Subsystem | IContext, Context, HelpCommand |
 | Configuration | Subsystem | FileAssertConfig, FileAssertData |
 | Modeling | Subsystem | FileAssertTest, FileAssertFile, FileAssertRule, |
 | | | FileAssertTextAssert, FileAssertPdfAssert, FileAssertXmlAssert, |
@@ -50,10 +51,14 @@ one or more units:
 
 The following sequence describes the normal execution path:
 
-1. `Program.Main` creates a `Context` instance by parsing command-line arguments.
+1. `Program.Main` offers the arguments to `HelpCommand.TryRun`. When the first argument is
+   `help`, the help command builds the card catalog, writes its answer to the console without
+   a banner, and `Program.Main` returns its exit code. Any other first argument returns at once
+   without building the catalog, and `Program.Main` creates a `Context` instance by parsing the
+   command-line arguments.
 2. `Program.Run` inspects context flags in priority order:
    a. `--version` — prints the version string and exits.
-   b. `--help` — prints usage information and exits.
+   b. `--help` — prints usage information, ending with the pointer to the help command, and exits.
    c. `--validate` — delegates to `Validation.Run` for self-validation and exits. The optional
       `--depth` value (default 1, range 1-6) sets the Markdown heading level used for the
       self-validation report so it can be embedded at an appropriate level within a larger document.
@@ -99,8 +104,9 @@ system-level code; the system boundary is defined by the combination of its part
 
 | Item | Level | Responsibility |
 | :--- | :--- | :--- |
-| Program | Unit | Entry point; creates `Context`; dispatches to validation or config logic. |
+| Program | Unit | Entry point; offers `help` to `HelpCommand`; creates `Context`; dispatches. |
 | Cli | Subsystem | Contains `IContext`/`Context`; owns arg parsing, I/O references, filter list, exit. |
+| | | Contains `HelpCommand`; answers the `help` command from the built-in help cards. |
 | Configuration | Subsystem | Contains `FileAssertConfig`/`FileAssertData`; YAML deserialization, tests. |
 | Modeling | Subsystem | Contains assertion classes; pure domain objects evaluating file rules. |
 | Utilities | Subsystem | Contains `IFileContainer`, `DirectoryFileContainer`, `ZipFileContainer`, |
@@ -116,12 +122,29 @@ subsystem and makes error recording consistent — all violations flow through `
 | Interface | Direction | Description |
 | :--- | :--- | :--- |
 | Command-line arguments | Input | POSIX flags and positional filters; unrecognized flags produce an error. |
+| Help command | Input/Output | `fileassert help [topic]`; prints help cards to stdout; see Help Command. |
 | YAML configuration file | Input | YAML matching `FileAssertData` schema; default `.fileassert.yaml`. |
 | File system (asserted files) | Input | Any file type; glob patterns relative to config file. Read-only. |
 | Results file | Output | TRX or JUnit XML; written only when `--results` is specified. |
 | Standard output | Output | UTF-8 text; one line per test pass or summary. |
 | Standard error | Output | UTF-8 text; one line per rule violation or parse failure. |
 | Log file | Output | Plain text mirroring stdout/stderr; written when `--log` is specified. |
+
+Argument errors (an unknown option, an option without its value, a `--depth` outside 1-6, or a
+log file that cannot be opened) are found before `--silent` and `--log` take effect, so they are
+always printed to stderr and never logged.
+
+**Help Command**: Built-in help, answered from help cards embedded in the tool assembly.
+
+- *Type*: CLI.
+- *Role*: Provider.
+- *Contract*: `fileassert help` prints the topic index and `fileassert help <topic>` prints a
+  topic card with its examples; HelpCards adds `--example`, `--search`, and `--json`. Returns exit
+  code 0 for success, 2 for a wrong help argument or an unknown topic, and 70 for a defective card
+  catalog.
+- *Constraints*: `help` must be the first argument. It is answered before the options are parsed,
+  so `--silent` and `--log` do not apply and no banner is printed. A test or tag named `help` is
+  selected only when another argument comes first, such as `--config <file> help`.
 
 ## Dependencies
 
@@ -132,6 +155,8 @@ Runtime library dependencies used by the FileAssert system:
 - **HtmlAgilityPack**: lenient HTML document parsing for XPath node-count assertions.
 - **Microsoft.Extensions.FileSystemGlobbing**: cross-platform glob pattern evaluation for file discovery.
 - **DemaConsulting.TestResults**: serialization of test results to TRX and JUnit XML formats.
+- **DemaConsulting.HelpCards**: loads, validates, and serves the built-in help cards for the
+  `help` command (see *HelpCards*, the OTS integration design).
 - **System.Xml.Linq / System.Xml.XPath** (.NET BCL): XML document parsing and XPath node-count assertions.
 - **System.Text.Json** (.NET BCL): JSON document parsing for dot-notation path assertions.
 - **System.IO.Compression** (.NET BCL): zip archive entry enumeration and glob-based count assertions.
@@ -151,6 +176,8 @@ imposes no memory or process isolation boundaries beyond standard .NET process c
 
 ```text
 Command-line arguments
+  ├─► help [topic] (first argument) ─► HelpCommand ──────────► stdout/stderr → exit 0 or 2
+  │
   └─► Context (parsed flags, filter list, ResultsFile path)
         │
         ├─► --version / --help ──────────────────────────────► stdout → exit 0
@@ -206,7 +233,8 @@ Outputs:
   in-process; very large files may exhaust available heap, which is an accepted limitation of the
   current design.
 - **Exit code contract**: `0` when all assertions pass or `--help`/`--version` is used; `1` when at
-  least one assertion violation or self-validation failure is recorded.
+  least one assertion violation or self-validation failure is recorded. The `help` command has its
+  own exit codes; see Help Command under External Interfaces.
 - **Missing default configuration file**: When no `--config` flag is provided and the
   default `.fileassert.yaml` file does not exist, the tool prints guidance and exits with
   code 0 (not an error condition). When an explicit `--config` path is missing, the tool

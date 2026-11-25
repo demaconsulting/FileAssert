@@ -12,6 +12,8 @@ test exercises the `Cli` subsystem's public surface — primarily `Context.Creat
 `Program.Run`. Tests pass controlled argument arrays and assert on captured console output,
 file system side-effects, and exit codes.
 
+The help command is verified through `HelpCommand.Create`, which writes to in-memory writers.
+
 ### Dependencies and Mocking Strategy
 
 At the subsystem boundary, `Validation` (part of the `SelfTest` subsystem) is the only external
@@ -33,7 +35,8 @@ environment configuration is required beyond the standard build toolchain.
 The Cli subsystem verification passes when all test scenarios listed in
 this document execute and pass in the CI pipeline without any test failures, unexpected
 exceptions, or assertion errors. Each named scenario must pass on all supported runtime
-and platform combinations.
+and platform combinations. The `help` command must print a requested topic from the built-in
+help cards.
 
 ### Test Scenarios
 
@@ -90,3 +93,11 @@ through `Context.Create`.
 called with a message.
 
 **Expected**: The message appears on standard output; exit code is 0.
+
+#### Cli_HelpCommand_TopicRequested_PrintsTopic
+
+**Scenario**: Arguments `["help", "command-line"]` are offered to `HelpCommand.TryRun` on a help
+command created with in-memory writers.
+
+**Expected**: The command answers with the command-line topic (`# Command-line options`); exit
+code is 0.

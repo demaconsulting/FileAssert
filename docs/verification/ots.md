@@ -11,7 +11,7 @@ OTS software items used by FileAssert are verified by one of two complementary a
 depending on the nature of the item:
 
 - **Authored integration tests**: Items whose correct behavior cannot be inferred purely from
-  pipeline success (xUnit, YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing) are verified
+  pipeline success (xUnit, YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing, HelpCards) are verified
   by named test scenarios that exercise the specific features required by this project. Each
   scenario identifies a test method, the expected outcome, and the requirement it covers.
 
@@ -30,7 +30,7 @@ individual files under `docs/verification/ots/`.
 
 The following evidence is collected and retained for each OTS item:
 
-- **xUnit, YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing**: TRX result files generated
+- **xUnit, YamlDotNet, PdfPig, HtmlAgilityPack, FileSystemGlobbing, HelpCards**: TRX result files generated
   by `dotnet test` during CI. Each TRX file is consumed by `reqstream --enforce` to confirm that
   all named test scenarios have a recorded passing result.
 
@@ -102,6 +102,10 @@ The following OTS software items are used by FileAssert and are verified in this
 - **FileSystemGlobbing** — resolves glob patterns against candidate files for file-count and
   content assertions; verified by authored test scenarios covering include/exclude pattern
   matching.
+
+- **HelpCards** — serves the built-in help of the `help` command from the cards embedded in the
+  tool assembly, and validates the cards and their examples in the tests; verified by authored
+  test scenarios covering the help command, card validation, and the example runner.
 
 ## Acceptance Criteria
 

@@ -6,64 +6,85 @@
 # flags, and returns the exit code.
 
 sections:
-  - title: Program Unit Requirements
-    requirements:
-      - id: FileAssert-Program-Version
-        title: The Program class shall support -v and --version flags to display version information.
-        justification: |
-          Users need to quickly identify the version of the tool they are using for
-          troubleshooting and compatibility verification.
-        tests:
-          - Program_Run_WithVersionFlag_DisplaysVersionOnly
-          - Program_Version_ReturnsNonEmptyString
+  - title: FileAssert Requirements
+    sections:
+      - title: Program Unit Requirements
+        requirements:
+          - id: FileAssert-Program-Version
+            title: The Program class shall support -v and --version flags to display version information.
+            justification: |
+              Users need to quickly identify the version of the tool they are using for
+              troubleshooting and compatibility verification.
+            tests:
+              - Program_Run_WithVersionFlag_DisplaysVersionOnly
+              - Program_Version_ReturnsNonEmptyString
 
-      - id: FileAssert-Program-Help
-        title: The Program class shall support -?, -h, and --help flags to display usage information.
-        justification: |
-          Users need access to command-line usage documentation without requiring
-          external resources.
-        tests:
-          - Program_Run_WithHelpFlag_DisplaysUsageInformation
+          - id: FileAssert-Program-Help
+            title: The Program class shall support -?, -h, and --help flags to display usage information.
+            justification: |
+              Users need access to command-line usage documentation without requiring
+              external resources.
+            tests:
+              - Program_Run_WithHelpFlag_DisplaysUsageInformation
 
-      - id: FileAssert-Program-Validate
-        title: The Program class shall support --validate flag to invoke the self-validation framework.
-        justification: |
-          Provides a built-in mechanism to verify the tool is functioning correctly
-          in the deployment environment.
-        children:
-          - FileAssert-SelfTest-ValidationPipeline
-        tests:
-          - Program_Run_WithValidateFlag_RunsValidation
+          - id: FileAssert-Program-HelpCommand
+            title: >-
+              The Program class shall answer the `help` command before the command-line options are
+              parsed and return its exit code.
+            justification: |
+              The `help` command is not an option, so the option parser would take it as a test
+              filter. Offering the arguments to the help command first lets `fileassert help` work
+              while every other run continues to the option parser unchanged.
+            tests:
+              - Program_Main_WithHelpVerb_PrintsHelpIndex
 
-      - id: FileAssert-Program-DefaultBehavior
-        title: |
-          The Program class shall, when invoked with no arguments, print the application banner
-          and then load and execute the default `.fileassert.yaml` configuration.
-        justification: |
-          When no arguments are supplied the tool prints the version and copyright banner to give
-          the user a quick visual confirmation that the tool is installed and operational, then
-          proceeds to load and run the default-named configuration from the current working
-          directory so the project can be validated with zero configuration.
-        tests:
-          - Program_Run_NoArguments_DisplaysDefaultBehavior
+          - id: FileAssert-Program-HelpFooter
+            title: The Program class shall end its usage information with a pointer to the help command.
+            justification: |
+              The short usage text stays short and still tells a reader where the help topics
+              with worked examples are.
+            tests:
+              - Program_Run_WithHelpFlag_DisplaysUsageInformation
 
-      - id: FileAssert-Program-MissingDefaultConfig
-        title: |
-          The Program class shall, when invoked with no `--config` and no `.fileassert.yaml`
-          in the current directory, print user guidance and exit with success.
-        justification: |
-          Treating an absent default configuration as an informational state (rather than an
-          error) lets first-time users discover how to create a config without seeing a
-          confusing failure exit code.
-        tests:
-          - Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance
+          - id: FileAssert-Program-Validate
+            title: The Program class shall support --validate flag to invoke the self-validation framework.
+            justification: |
+              Provides a built-in mechanism to verify the tool is functioning correctly
+              in the deployment environment.
+            children:
+              - FileAssert-SelfTest-ValidationPipeline
+            tests:
+              - Program_Run_WithValidateFlag_RunsValidation
 
-      - id: FileAssert-Program-MissingExplicitConfig
-        title: |
-          The Program class shall, when an explicit `--config <file>` argument refers to a
-          non-existent file, write an error and set a non-zero exit code.
-        justification: |
-          When the user names a configuration file explicitly, a missing file is unambiguously
-          an error and must surface as such so CI pipelines fail fast.
-        tests:
-          - Program_Run_ExplicitConfigMissing_WritesError
+          - id: FileAssert-Program-DefaultBehavior
+            title: |
+              The Program class shall, when invoked with no arguments, print the application banner
+              and then load and execute the default `.fileassert.yaml` configuration.
+            justification: |
+              When no arguments are supplied the tool prints the version and copyright banner to give
+              the user a quick visual confirmation that the tool is installed and operational, then
+              proceeds to load and run the default-named configuration from the current working
+              directory so the project can be validated with zero configuration.
+            tests:
+              - Program_Run_NoArguments_DisplaysDefaultBehavior
+
+          - id: FileAssert-Program-MissingDefaultConfig
+            title: |
+              The Program class shall, when invoked with no `--config` and no `.fileassert.yaml`
+              in the current directory, print user guidance and exit with success.
+            justification: |
+              Treating an absent default configuration as an informational state (rather than an
+              error) lets first-time users discover how to create a config without seeing a
+              confusing failure exit code.
+            tests:
+              - Program_Run_NoArguments_MissingDefaultConfig_WritesGuidance
+
+          - id: FileAssert-Program-MissingExplicitConfig
+            title: |
+              The Program class shall, when an explicit `--config <file>` argument refers to a
+              non-existent file, write an error and set a non-zero exit code.
+            justification: |
+              When the user names a configuration file explicitly, a missing file is unambiguously
+              an error and must surface as such so CI pipelines fail fast.
+            tests:
+              - Program_Run_ExplicitConfigMissing_WritesError

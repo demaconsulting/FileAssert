@@ -6,58 +6,62 @@
 # the test hierarchy, and drives test execution with optional name/tag filtering.
 
 sections:
-  - title: FileAssertConfig Unit Requirements
-    requirements:
-      - id: FileAssert-FileAssertConfig-ReadFromFile
-        title: The FileAssertConfig class shall load and parse a YAML configuration file via a static factory method.
-        justification: |
-          Providing a static factory method keeps construction concerns separate from the
-          caller and allows the class to validate its inputs before returning a usable
-          instance. Failing early with a descriptive exception when the file is missing
-          avoids silent failures that would be difficult to diagnose.
-        children:
-          - FileAssert-OTS-YamlDotNet
-        tests:
-          - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
-          - FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
-          - FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException
-          - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
+  - title: FileAssert Requirements
+    sections:
+      - title: Configuration Subsystem Requirements
+        sections:
+          - title: FileAssertConfig Unit Requirements
+            requirements:
+              - id: FileAssert-FileAssertConfig-ReadFromFile
+                title: The FileAssertConfig class shall load and parse a YAML configuration file via a static factory method.
+                justification: |
+                  Providing a static factory method keeps construction concerns separate from the
+                  caller and allows the class to validate its inputs before returning a usable
+                  instance. Failing early with a descriptive exception when the file is missing
+                  avoids silent failures that would be difficult to diagnose.
+                children:
+                  - FileAssert-OTS-YamlDotNet
+                tests:
+                  - FileAssertConfig_ReadFromFile_ValidFile_ReturnsConfig
+                  - FileAssertConfig_ReadFromFile_FileNotFound_ThrowsFileNotFoundException
+                  - FileAssertConfig_ReadFromFile_NullPath_ThrowsArgumentNullException
+                  - FileAssertConfig_ReadFromFile_PdfAssertConfig_ParsesCorrectly
 
-      - id: FileAssert-FileAssertConfig-Run
-        title: |
-          The FileAssertConfig class shall run tests that match the provided filters and report results via the context.
-        justification: |
-          Driving test execution from the top-level configuration class provides a single
-          point of entry for the tool's main logic. Supporting name and tag filters lets
-          callers run targeted subsets of tests for smoke testing or phased validation,
-          while an empty filter list defaults to running all tests.
-        tests:
-          - FileAssertConfig_Run_WithNoFilter_RunsAllTests
-          - FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
-          - FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
+              - id: FileAssert-FileAssertConfig-Run
+                title: |
+                  The FileAssertConfig class shall run tests that match the provided filters and report results via the context.
+                justification: |
+                  Driving test execution from the top-level configuration class provides a single
+                  point of entry for the tool's main logic. Supporting name and tag filters lets
+                  callers run targeted subsets of tests for smoke testing or phased validation,
+                  while an empty filter list defaults to running all tests.
+                tests:
+                  - FileAssertConfig_Run_WithNoFilter_RunsAllTests
+                  - FileAssertConfig_Run_WithMatchingFilter_RunsMatchingTest
+                  - FileAssertConfig_Run_WithNonMatchingFilter_SkipsTests
 
-      - id: FileAssert-FileAssertConfig-ResultsTrx
-        title: |
-          The FileAssertConfig class shall write per-test pass/fail results to a TRX file
-          when context.ResultsFile has a .trx extension.
-        justification: |
-          CI/CD pipelines and regulated environments require machine-readable test result files
-          to collect evidence of assertion outcomes. The TRX format is consumed by Visual Studio
-          and Azure Pipelines, providing integration with Microsoft tooling. Recording per-test
-          pass/fail outcomes allows the results file to identify which individual tests passed
-          and which failed, rather than just reporting an aggregate exit code.
-        tests:
-          - FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
+              - id: FileAssert-FileAssertConfig-ResultsTrx
+                title: |
+                  The FileAssertConfig class shall write per-test pass/fail results to a TRX file
+                  when context.ResultsFile has a .trx extension.
+                justification: |
+                  CI/CD pipelines and regulated environments require machine-readable test result files
+                  to collect evidence of assertion outcomes. The TRX format is consumed by Visual Studio
+                  and Azure Pipelines, providing integration with Microsoft tooling. Recording per-test
+                  pass/fail outcomes allows the results file to identify which individual tests passed
+                  and which failed, rather than just reporting an aggregate exit code.
+                tests:
+                  - FileAssertConfig_Run_WithResultsFile_WritesTrxWithPassedOutcome
 
-      - id: FileAssert-FileAssertConfig-ResultsJUnit
-        title: |
-          The FileAssertConfig class shall write per-test pass/fail results to a JUnit XML
-          file when context.ResultsFile has a .xml extension.
-        justification: |
-          CI/CD pipelines and regulated environments require machine-readable test result files
-          to collect evidence of assertion outcomes. The JUnit XML format is widely supported
-          by CI systems such as GitHub Actions, Jenkins, and GitLab CI. Recording per-test
-          pass/fail outcomes allows the results file to identify which individual tests passed
-          and which failed, rather than just reporting an aggregate exit code.
-        tests:
-          - FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome
+              - id: FileAssert-FileAssertConfig-ResultsJUnit
+                title: |
+                  The FileAssertConfig class shall write per-test pass/fail results to a JUnit XML
+                  file when context.ResultsFile has a .xml extension.
+                justification: |
+                  CI/CD pipelines and regulated environments require machine-readable test result files
+                  to collect evidence of assertion outcomes. The JUnit XML format is widely supported
+                  by CI systems such as GitHub Actions, Jenkins, and GitLab CI. Recording per-test
+                  pass/fail outcomes allows the results file to identify which individual tests passed
+                  and which failed, rather than just reporting an aggregate exit code.
+                tests:
+                  - FileAssertConfig_Run_WithResultsFile_WritesJUnitWithFailedOutcome

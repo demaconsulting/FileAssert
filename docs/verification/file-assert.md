@@ -18,6 +18,14 @@ observable outputs only.
 assertions (e.g., "standard error is empty") are therefore not possible at the integration test
 level; all assertions are made against the combined output.
 
+The help examples are verified with the example runner of HelpCards. It saves the source
+examples of each help card to a fresh scratch folder and calls a delegate for each command
+example; the delegate copies the files that the examples check into that folder and runs the
+built tool there with `Runner.RunInDirectory`, and the runner compares the exit code and the
+output with the `exit` and `expect` values of the example. The text files that the examples check
+are test data in `TestData/HelpExamples/`; the PDF manual and the zip package are built by the
+test, so that no binary file is checked in.
+
 ## Test Environments
 
 Integration tests are executed across the following environments to satisfy multi-runtime and
@@ -45,6 +53,9 @@ The system-level verification is considered complete and passing when:
 2. No integration test exits with an unexpected exit code or fails an assertion.
 3. The `--validate` flag integration test passes, confirming that the installed tool
    is self-consistent.
+4. The `help` command lists the topics with exit code 0, and exits with code 2 for an unknown
+   topic.
+5. Every command example in the help cards gives the exit code and output that its card states.
 
 Failure of any single integration test scenario constitutes a system-level acceptance failure.
 
@@ -328,3 +339,25 @@ unit-level coverage for the heading-depth behavior is provided by
 **Expected**: Exit code 0; the combined output contains the top-level validation heading at the
 requested depth (`### DEMA Consulting FileAssert`), confirming the `--depth` flag is recognized at
 the system boundary and applied to the validation output.
+
+### IntegrationTest_HelpTopics_HelpVerb_ListsTopics
+
+**Scenario**: The `help` command is passed as the sole argument.
+
+**Expected**: Exit code 0; the combined output lists every root topic with its command and
+contains no banner.
+
+### IntegrationTest_HelpTopics_UnknownTopic_ReturnsUsageError
+
+**Scenario**: The arguments `help no-such-topic` name a topic that does not exist.
+
+**Expected**: Exit code 2; the combined output names the topic.
+
+### IntegrationTest_HelpExamples_AllCommandExamples_GiveStatedResults
+
+**Scenario**: The catalog that the tool ships is built, and every command example of every card
+is run against the built tool in a scratch folder that holds the source examples of the card and
+the files that the examples check.
+
+**Expected**: At least one command example exists, and each run gives the exit code and output
+fragments that its card states.

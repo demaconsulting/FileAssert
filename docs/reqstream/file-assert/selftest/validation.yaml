@@ -6,122 +6,126 @@
 # It supports writing results to TRX (MSTest) or JUnit XML format.
 
 sections:
-  - title: Validation Unit Requirements
-    requirements:
-      - id: FileAssert-Validation-Run
-        title: The Validation class shall run self-validation tests and print a summary.
-        justification: |
-          Provides a built-in mechanism to verify the tool is functioning correctly
-          in the deployment environment. A summary is printed for human review.
-        tests:
-          - Validation_Run_WithSilentContext_PrintsSummary
-          - Validation_Run_WithSilentContext_ExitCodeIsZero
+  - title: FileAssert Requirements
+    sections:
+      - title: SelfTest Subsystem Requirements
+        sections:
+          - title: Validation Unit Requirements
+            requirements:
+              - id: FileAssert-Validation-Run
+                title: The Validation class shall run self-validation tests and print a summary.
+                justification: |
+                  Provides a built-in mechanism to verify the tool is functioning correctly
+                  in the deployment environment. A summary is printed for human review.
+                tests:
+                  - Validation_Run_WithSilentContext_PrintsSummary
+                  - Validation_Run_WithSilentContext_ExitCodeIsZero
 
-      - id: FileAssert-Validation-Results
-        title: The Validation class shall write test results to a file in TRX or JUnit format.
-        justification: |
-          Enables integration with CI/CD systems that expect standard test result formats.
-          TRX format is compatible with MSTest; JUnit XML is compatible with many CI tools.
-        tests:
-          - Validation_Run_WithTrxResultsFile_WritesTrxFile
-          - Validation_Run_WithXmlResultsFile_WritesXmlFile
-          - Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
+              - id: FileAssert-Validation-Results
+                title: The Validation class shall write test results to a file in TRX or JUnit format.
+                justification: |
+                  Enables integration with CI/CD systems that expect standard test result formats.
+                  TRX format is compatible with MSTest; JUnit XML is compatible with many CI tools.
+                tests:
+                  - Validation_Run_WithTrxResultsFile_WritesTrxFile
+                  - Validation_Run_WithXmlResultsFile_WritesXmlFile
+                  - Validation_Run_WithUnsupportedResultsFormat_DoesNotWriteFile
 
-      - id: FileAssert-Validation-ResultsTest
-        title: The Validation class shall include a self-test that verifies results file generation.
-        justification: |
-          Demonstrates that passing and failing test outcomes are produced correctly and that
-          the --results flag causes a results file to be written. This provides evidence that
-          the results generation feature works in the deployment environment.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertResults
+              - id: FileAssert-Validation-ResultsTest
+                title: The Validation class shall include a self-test that verifies results file generation.
+                justification: |
+                  Demonstrates that passing and failing test outcomes are produced correctly and that
+                  the --results flag causes a results file to be written. This provides evidence that
+                  the results generation feature works in the deployment environment.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertResults
 
-      - id: FileAssert-Validation-FileTest
-        title: The Validation class shall include a self-test that verifies file-existence checking.
-        justification: |
-          Demonstrates that glob-pattern file-existence assertions work correctly in the
-          deployment environment, providing evidence that the core file-matching feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertFile
+              - id: FileAssert-Validation-FileTest
+                title: The Validation class shall include a self-test that verifies file-existence checking.
+                justification: |
+                  Demonstrates that glob-pattern file-existence assertions work correctly in the
+                  deployment environment, providing evidence that the core file-matching feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertFile
 
-      - id: FileAssert-Validation-TextTest
-        title: The Validation class shall include a self-test that verifies text-content checking.
-        justification: |
-          Demonstrates that text-contains assertions work correctly in the deployment
-          environment, providing evidence that the file content inspection feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertText
+              - id: FileAssert-Validation-TextTest
+                title: The Validation class shall include a self-test that verifies text-content checking.
+                justification: |
+                  Demonstrates that text-contains assertions work correctly in the deployment
+                  environment, providing evidence that the file content inspection feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertText
 
-      - id: FileAssert-Validation-HtmlTest
-        title: The Validation class shall include a self-test that verifies HTML assertion checking.
-        justification: |
-          Demonstrates that HTML XPath assertions work correctly in the deployment
-          environment, providing evidence that the HTML content inspection feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertHtml
+              - id: FileAssert-Validation-HtmlTest
+                title: The Validation class shall include a self-test that verifies HTML assertion checking.
+                justification: |
+                  Demonstrates that HTML XPath assertions work correctly in the deployment
+                  environment, providing evidence that the HTML content inspection feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertHtml
 
-      - id: FileAssert-Validation-XmlTest
-        title: The Validation class shall include a self-test that verifies XML assertion checking.
-        justification: |
-          Demonstrates that XML XPath assertions work correctly in the deployment
-          environment, providing evidence that the XML content inspection feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertXml
+              - id: FileAssert-Validation-XmlTest
+                title: The Validation class shall include a self-test that verifies XML assertion checking.
+                justification: |
+                  Demonstrates that XML XPath assertions work correctly in the deployment
+                  environment, providing evidence that the XML content inspection feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertXml
 
-      - id: FileAssert-Validation-YamlTest
-        title: The Validation class shall include a self-test that verifies YAML assertion checking.
-        justification: |
-          Demonstrates that YAML dot-path assertions work correctly in the deployment
-          environment, providing evidence that the YAML content inspection feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertYaml
+              - id: FileAssert-Validation-YamlTest
+                title: The Validation class shall include a self-test that verifies YAML assertion checking.
+                justification: |
+                  Demonstrates that YAML dot-path assertions work correctly in the deployment
+                  environment, providing evidence that the YAML content inspection feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertYaml
 
-      - id: FileAssert-Validation-JsonTest
-        title: The Validation class shall include a self-test that verifies JSON assertion checking.
-        justification: |
-          Demonstrates that JSON dot-path assertions work correctly in the deployment
-          environment, providing evidence that the JSON content inspection feature
-          is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertJson
+              - id: FileAssert-Validation-JsonTest
+                title: The Validation class shall include a self-test that verifies JSON assertion checking.
+                justification: |
+                  Demonstrates that JSON dot-path assertions work correctly in the deployment
+                  environment, providing evidence that the JSON content inspection feature
+                  is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertJson
 
-      - id: FileAssert-Validation-PdfTest
-        title: The Validation class shall include a self-test that verifies PDF assertion checking.
-        justification: |
-          Demonstrates that PDF metadata and text assertions work correctly in the
-          deployment environment, providing evidence that the PDF content inspection
-          feature is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertPdf
+              - id: FileAssert-Validation-PdfTest
+                title: The Validation class shall include a self-test that verifies PDF assertion checking.
+                justification: |
+                  Demonstrates that PDF metadata and text assertions work correctly in the
+                  deployment environment, providing evidence that the PDF content inspection
+                  feature is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertPdf
 
-      - id: FileAssert-Validation-ZipTest
-        title: The Validation class shall include a self-test that verifies ZIP assertion checking.
-        justification: |
-          Demonstrates that ZIP nested file assertions work correctly in the
-          deployment environment, providing evidence that the ZIP archive inspection
-          feature is functioning as expected.
-        tests:
-          - Validation_Run_WithSilentContext_LogContainsFileAssertZip
+              - id: FileAssert-Validation-ZipTest
+                title: The Validation class shall include a self-test that verifies ZIP assertion checking.
+                justification: |
+                  Demonstrates that ZIP nested file assertions work correctly in the
+                  deployment environment, providing evidence that the ZIP archive inspection
+                  feature is functioning as expected.
+                tests:
+                  - Validation_Run_WithSilentContext_LogContainsFileAssertZip
 
-      - id: FileAssert-Validation-NullContext
-        title: The Validation class shall reject a null context argument.
-        justification: |
-          Null context would cause a NullReferenceException deep in the validation
-          logic. Explicit null validation with ArgumentNullException provides a
-          clear, actionable error at the point of invalid input.
-        tests:
-          - Validation_Run_NullContext_ThrowsArgumentNullException
+              - id: FileAssert-Validation-NullContext
+                title: The Validation class shall reject a null context argument.
+                justification: |
+                  Null context would cause a NullReferenceException deep in the validation
+                  logic. Explicit null validation with ArgumentNullException provides a
+                  clear, actionable error at the point of invalid input.
+                tests:
+                  - Validation_Run_NullContext_ThrowsArgumentNullException
 
-      - id: FileAssert-Validation-Depth
-        title: The Validation class shall use the context Depth property to set the heading level.
-        justification: |
-          The self-validation report may be embedded within a larger document at varying
-          heading depths. Using the Depth property from the context allows the heading
-          to be rendered at the correct level for the consuming document.
-        tests:
-          - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
+              - id: FileAssert-Validation-Depth
+                title: The Validation class shall use the context Depth property to set the heading level.
+                justification: |
+                  The self-validation report may be embedded within a larger document at varying
+                  heading depths. Using the Depth property from the context allows the heading
+                  to be rendered at the correct level for the consuming document.
+                tests:
+                  - Validation_Run_WithDepth_UsesSpecifiedHeadingDepth
